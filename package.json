@@ -42,6 +42,8 @@
         "vinyl-source-stream": "^2.0.0"
     },
     "dependencies": {
-        "bignumber.js": "^7.2.1"
+        "axios": "^0.18.0",
+        "bignumber.js": "^7.2.1",
+        "jsonrpc-lite": "^1.3.1"
     }
 }
