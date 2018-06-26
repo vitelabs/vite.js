@@ -4,3 +4,4 @@ node_modules
 test
 example
 .eslintrc.js
+docs

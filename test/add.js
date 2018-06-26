@@ -2,9 +2,7 @@
  * 测试用例
  */
 
-const assert = require('assert');
-const ViteJS = require('../index.js');
-
+import ViteJS from '../index.js';
 console.log(ViteJS);
 
 let Jsonrpc = new ViteJS.Jsonrpc();

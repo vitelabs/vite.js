@@ -1,13 +1,13 @@
-var gulp = require('gulp');
-var rename = require('gulp-rename');
-var uglify = require('gulp-uglify');
-var replace = require('gulp-replace');
-var streamify = require('gulp-streamify');
-var babelify = require('babelify');
-var exorcist = require('exorcist');
-var browserify = require('browserify');
-var source = require('vinyl-source-stream');
-var path = require('path');
+const gulp = require('gulp');
+const rename = require('gulp-rename');
+const uglify = require('gulp-uglify');
+const replace = require('gulp-replace');
+const streamify = require('gulp-streamify');
+const babelify = require('babelify');
+const exorcist = require('exorcist');
+const browserify = require('browserify');
+const source = require('vinyl-source-stream');
+const path = require('path');
 
 const BUILD_PATH = path.join(__dirname, 'static/');
 const ENTRY_PATH = path.join(__dirname, 'index.js');

@@ -6,7 +6,7 @@
     "scripts": {
         "clean": "rm -rf static",
         "build": "npm run clean && gulp",
-        "test": " mocha",
+        "test": "mocha --require babel-register",
         "example": "node example/bin/startRPC",
         "lint": "eslint ./ --cache",
         "lint-all": "eslint ./"
