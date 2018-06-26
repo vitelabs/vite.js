@@ -25,7 +25,7 @@
 * Test on branch 'test'
 * Fixed version on branch 'dev/{version}'
 
-`Notice: Development branch split from 'dev/{version}'. If 'dev/{version}' is not exist, split from 'master'`
+`Notice: development branch split from 'dev/{version}'. If 'dev/{version}' is not exist, split from 'master'`
 
 #### example
 

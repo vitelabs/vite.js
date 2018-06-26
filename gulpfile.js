@@ -17,7 +17,7 @@ const version = require('./lib/config/version.json');
 const browserifyOptions = {
     entries: ENTRY_PATH,
     debug: true,
-    bundleExternal: false
+    bundleExternal: true
 };
 
 // 替换package的version: 避免与代码逻辑中version不统一
@@ -33,7 +33,6 @@ gulp.task('build', function (cb) {
     console.log('标准构建');
     return browserify(browserifyOptions)
         .require(ENTRY_PATH, { expose: 'viteJS' })
-        .require('bignumber.js')
         .transform(babelify, { 'presets': ['es2015'] })
         .bundle()
         .pipe(exorcist(path.join(BUILD_PATH, APP_NAME + '.js.map')))
