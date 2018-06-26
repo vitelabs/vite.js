@@ -2,3 +2,4 @@
 node_modules
 .eslintcache
 static
+package-lock.json
