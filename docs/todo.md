@@ -1,4 +1,3 @@
-1. webpack pack example
-2. .eslintrc more
-3. jsonrpc go on
-4. test peerDependencies
+1. .eslintrc more
+2. jsonrpc errors
+3. test peerDependencies
