@@ -11,7 +11,8 @@
 
 ## Testing (mocha)
 
-`npm run test`
+1. `npm run rpc`
+2. `npm run test`
 
 
 ## start
