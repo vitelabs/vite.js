@@ -20,7 +20,7 @@ const browserifyOptions = {
     bundleExternal: true
 };
 
-// 替换package的version: 避免与代码逻辑中version不统一
+// Replace version in 'package.json', avoid being inconsistent with version in 'lib/config/version'.
 gulp.task('version', function () {
     console.log(`同步 version 为: ${version.viteJSVersion}`);
     return gulp.src(['./package.json'])
@@ -28,7 +28,7 @@ gulp.task('version', function () {
         .pipe(gulp.dest('./'));
 });
 
-// [TODO] 构建任务现阶段不区分轻量级打包。后续可能需要支持
+// [TODO] Not building a lightweight package, now. Maybe support in future.
 gulp.task('build', function (cb) {
     console.log('标准构建');
     return browserify(browserifyOptions)
