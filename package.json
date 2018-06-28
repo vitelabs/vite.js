@@ -4,10 +4,11 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "clean": "rm -rf static",
-        "build": "npm run clean && gulp",
+        "docs:dev": "vuepress dev docs",
+        "docs:build": "vuepress build docs",
+        "build": "rm -rf static && gulp",
         "test": "mocha --require babel-register --no-timeouts",
-        "example": "node example/bin/startRPC",
+        "rpc": "node example/bin/startRPC",
         "lint": "eslint ./ --cache",
         "lint-all": "eslint ./"
     },
@@ -45,7 +46,8 @@
         "mocha": "~5.2.0",
         "npm": "~6.1.0",
         "pre-commit": "~1.2.2",
-        "vinyl-source-stream": "~2.0.0"
+        "vinyl-source-stream": "~2.0.0",
+        "vuepress": "^0.10.2"
     },
     "dependencies": {
         "bignumber.js": "^7.2.1",
