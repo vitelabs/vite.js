@@ -3,3 +3,4 @@ node_modules
 .eslintcache
 static
 package-lock.json
+docs/.vuepress/dist
