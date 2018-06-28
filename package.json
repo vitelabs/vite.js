@@ -4,11 +4,10 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "docs:dev": "vuepress dev docs",
         "docs:build": "vuepress build docs",
         "build": "rm -rf static && gulp",
         "test": "mocha --require babel-register --no-timeouts",
-        "rpc": "node example/bin/startRPC",
+        "rpc": "node bin/startRPC",
         "lint": "eslint ./ --cache",
         "lint-all": "eslint ./"
     },
