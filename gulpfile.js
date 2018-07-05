@@ -22,15 +22,15 @@ const browserifyOptions = {
 
 // Replace version in 'package.json', avoid being inconsistent with version in 'lib/config/version'.
 gulp.task('version', function () {
-    console.log(`同步 version 为: ${version.viteJSVersion}`);
+    console.log(`sync version: ${version.viteJSVersion}`);
     return gulp.src(['./package.json'])
         .pipe(replace(/\"version\"\: \"([\.0-9]*)\"/, '"version": "' + version.viteJSVersion + '"'))
         .pipe(gulp.dest('./'));
 });
 
 // [TODO] Not building a lightweight package, now. Maybe support in future.
-gulp.task('build', function (cb) {
-    console.log('标准构建');
+gulp.task('build', function () {
+    console.log('standard build');
     return browserify(browserifyOptions)
         .require(ENTRY_PATH, { expose: 'viteJS' })
         .transform(babelify, { 'presets': ['es2015'] })

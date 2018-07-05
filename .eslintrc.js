@@ -14,8 +14,11 @@ module.exports = {
         "sourceType": "module"
     },
     "globals": {
-        "window": true
+        "window": true,
+        "describe": true,
+        "it": true
     },
+    "extends": "eslint:recommended",
     "rules": {
         "indent": [
             "error",
@@ -32,6 +35,8 @@ module.exports = {
         "semi": [
             "error",
             "always"
-        ]
+        ],
+        "no-console": "off",
+        "no-useless-escape": "off"
     }
 };
