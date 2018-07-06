@@ -1,5 +1,3 @@
-// [TODO] eslint rules
-
 module.exports = {
     "env": {
         "browser": true,
@@ -20,22 +18,10 @@ module.exports = {
     },
     "extends": "eslint:recommended",
     "rules": {
-        "indent": [
-            "error",
-            4
-        ],
-        "linebreak-style": [
-            "error",
-            "unix"
-        ],
-        "quotes": [
-            "error",
-            "single"
-        ],
-        "semi": [
-            "error",
-            "always"
-        ],
+        "indent": ["error", 4],
+        "linebreak-style": ["error", "unix"],
+        "quotes": ["error", "single"],
+        "semi": ["error", "always"],
         "no-console": "off",
         "no-useless-escape": "off"
     }
