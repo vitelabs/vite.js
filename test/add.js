@@ -1,7 +1,7 @@
 // import ViteJS from '../index.js';
 
-// const Jsonrpc = new ViteJS.Jsonrpc();
-// const viteJSInstance = new ViteJS(Jsonrpc);
+// const HTTP_RPC = new ViteJS.HTTP_RPC();
+// const viteJSInstance = new ViteJS(HTTP_RPC);
 
 describe('tools/add', function () {
     it('1 + 1 = 2', function () {

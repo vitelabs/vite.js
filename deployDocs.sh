@@ -1,23 +1,23 @@
-# 确保脚本抛出遇到的错误
+# Make sure the script throws the error encountered
 set -e
 
-# 生成静态文件
+# Generate static files
 npm run docs:build
 
-# 进入生成的文件夹
+# Enter the generated folder
 cd docs/.vuepress/dist
 
-# 如果是发布到自定义域名
+# If it is posted to a custom domain name
 # echo 'www.example.com' > CNAME
 
 git init
 git add -A
 git commit -m 'deployDocs'
 
-# 如果发布到 https://<USERNAME>.github.io
+# Deploy https://<USERNAME>.github.io
 # git push -f git@github.com:<USERNAME>/<USERNAME>.github.io.git master
 
-# 如果发布到 https://<USERNAME>.github.io/<REPO>
+# Deploy https://<USERNAME>.github.io/<REPO>
 # git push -f git@github.com:<USERNAME>/<REPO>.git master:gh-pages
 
 cd -

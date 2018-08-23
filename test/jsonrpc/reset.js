@@ -1,14 +1,14 @@
 const assert = require('assert');
 import ViteJS from '../../index.js';
-import errors from '../../lib/tools/errors.js';
+import errors from '../../lib/errors.js';
 
-const Jsonrpc = new ViteJS.Jsonrpc({
+const HTTP_RPC = new ViteJS.HTTP_RPC({
     timeout: 200
 });
 
 describe('jsonrpc_reset', function () {
     it('reset_finish_requests', function (done) {
-        Jsonrpc.batch([
+        HTTP_RPC.batch([
             {
                 type: 'request',
                 methodName: 'jsonrpcSuccess',
@@ -35,10 +35,10 @@ describe('jsonrpc_reset', function () {
 
     it('reset_timeout_batch_request', function (done) {
         setTimeout(() => {
-            Jsonrpc.reset();
+            HTTP_RPC.reset();
         }, 50);
 
-        Jsonrpc.batch([
+        HTTP_RPC.batch([
             {
                 type: 'request',
                 methodName: 'jsonrpcTimeoutSuccess',
@@ -93,10 +93,10 @@ describe('jsonrpc_reset', function () {
         };
 
         setTimeout(() => {
-            Jsonrpc.reset();
+            HTTP_RPC.reset();
         }, 50);
 
-        Jsonrpc.batch([{
+        HTTP_RPC.batch([{
             type: 'request',
             methodName: 'jsonrpcTimeoutError',
             params: [1, 2]
@@ -118,19 +118,19 @@ describe('jsonrpc_reset', function () {
             pushResult('batchTimeout', err.message);
         });
 
-        Jsonrpc.notification('jsonrpcTimeoutSuccess', [1, 2]).then(() => {
+        HTTP_RPC.notification('jsonrpcTimeoutSuccess', [1, 2]).then(() => {
             pushResult('notificationTimeout');
         }).catch((err) => {            
             pushResult('notificationTimeout', err.message);
         });
 
-        Jsonrpc.request('jsonrpcTimeoutSuccess', [1, 2]).then(() => {
+        HTTP_RPC.request('jsonrpcTimeoutSuccess', [1, 2]).then(() => {
             pushResult('requestTimeout');
         }).catch((err) => {
             pushResult('requestTimeout', err.message);
         });
 
-        Jsonrpc.request('jsonrpcSuccess', [1, 2]).then(() => {
+        HTTP_RPC.request('jsonrpcSuccess', [1, 2]).then(() => {
             pushResult('requestSuccess');
         }).catch((err) => {
             pushResult('requestSuccess', err.message);

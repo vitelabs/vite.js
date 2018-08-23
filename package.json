@@ -7,7 +7,7 @@
         "docs:build": "vuepress build docs",
         "build": "rm -rf static && gulp",
         "test": "mocha --require babel-register --no-timeouts",
-        "rpc": "node bin/startRPC",
+        "rpc": "node test/bin/startRPC",
         "lint": "eslint ./ --cache",
         "lint-all": "eslint ./"
     },

@@ -13,18 +13,18 @@ const BUILD_PATH = path.join(__dirname, 'static/');
 const ENTRY_PATH = path.join(__dirname, 'index.js');
 const APP_NAME = 'vite';
 
-const version = require('./lib/config/version.json');
+const version = require('./src/version.json');
 const browserifyOptions = {
     entries: ENTRY_PATH,
     debug: true,
     bundleExternal: true
 };
 
-// Replace version in 'package.json', avoid being inconsistent with version in 'lib/config/version'.
+// Replace version in 'package.json', avoid being inconsistent with version in 'src/config/version'.
 gulp.task('version', function () {
-    console.log(`sync version: ${version.viteJSVersion}`);
+    console.log(`sync version: ${version.ViteJS}`);
     return gulp.src(['./package.json'])
-        .pipe(replace(/\"version\"\: \"([\.0-9]*)\"/, '"version": "' + version.viteJSVersion + '"'))
+        .pipe(replace(/\"version\"\: \"([\.0-9]*)\"/, '"version": "' + version.ViteJS + '"'))
         .pipe(gulp.dest('./'));
 });
 
@@ -32,7 +32,7 @@ gulp.task('version', function () {
 gulp.task('build', function () {
     console.log('standard build');
     return browserify(browserifyOptions)
-        .require(ENTRY_PATH, { expose: 'viteJS' })
+        .require(ENTRY_PATH, { expose: 'ViteJS' })
         .transform(babelify, { 'presets': ['es2015'] })
         .bundle()
         .pipe(exorcist(path.join(BUILD_PATH, APP_NAME + '.js.map')))

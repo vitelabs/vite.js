@@ -1,7 +1,7 @@
 const assert = require('assert');
 import ViteJS from '../../index.js';
 
-const Jsonrpc = new ViteJS.Jsonrpc({
+const HTTP_RPC = new ViteJS.HTTP_RPC({
     timeout: 200
 });
 
@@ -9,25 +9,25 @@ describe('payload should be in the correct format', function () {
     const Method_Name = 'request_payload_method';
     const Params = { x: 1, y: 2 };
 
-    const Request_Payload = Jsonrpc._getRequestPayload(Method_Name, Params);
+    const Request_Payload = HTTP_RPC._getRequestPayload(Method_Name, Params);
     const Request_Payload_Result = {
         jsonrpc: '2.0',
         method: Method_Name,
         params: Params,
-        id: Jsonrpc._requestId
+        id: HTTP_RPC._requestId
     };
-    const Request_Payload_No_Method = Jsonrpc._getRequestPayload();
+    const Request_Payload_No_Method = HTTP_RPC._getRequestPayload();
 
-    const Notification_Payload = Jsonrpc._getNotificationPayload(Method_Name, Params);
+    const Notification_Payload = HTTP_RPC._getNotificationPayload(Method_Name, Params);
     const Notification_Payload_Result = {
         jsonrpc: '2.0',
         method: Method_Name,
         params: Params
     };
-    const Notification_Payload_No_Method = Jsonrpc._getNotificationPayload();
+    const Notification_Payload_No_Method = HTTP_RPC._getNotificationPayload();
 
-    let currentId = Jsonrpc._requestId;
-    const Batch_Payload = Jsonrpc._getBatchPayload([
+    let currentId = HTTP_RPC._requestId;
+    const Batch_Payload = HTTP_RPC._getBatchPayload([
         {
             type: 'request',
             methodName: 'request1',
@@ -63,8 +63,8 @@ describe('payload should be in the correct format', function () {
             id: currentId + 2
         },
     ];
-    const Batch_Payload_No_Requests = Jsonrpc._getBatchPayload();
-    const Batch_Payload_No_Requests_Length = Jsonrpc._getBatchPayload([]);
+    const Batch_Payload_No_Requests = HTTP_RPC._getBatchPayload();
+    const Batch_Payload_No_Requests_Length = HTTP_RPC._getBatchPayload([]);
 
     it('request_payload', function () {
         assert.deepEqual(Request_Payload, Request_Payload_Result);

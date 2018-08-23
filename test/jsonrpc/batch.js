@@ -1,13 +1,13 @@
 const assert = require('assert');
 import ViteJS from '../../index.js';
 
-const Jsonrpc = new ViteJS.Jsonrpc({
+const HTTP_RPC = new ViteJS.HTTP_RPC({
     timeout: 200
 });
 
 describe('jsonrpc_batch', function () {
     it('batch_no_requests', function (done) {
-        Jsonrpc.batch().then(() => {
+        HTTP_RPC.batch().then(() => {
             done('the test case don\'t have param \'methodName\', should return error, but now, return success.');
         }).catch(() => {
             done();
@@ -15,7 +15,7 @@ describe('jsonrpc_batch', function () {
     });
 
     it('batch_requests_no_length', function (done) {
-        Jsonrpc.batch([]).then(() => {
+        HTTP_RPC.batch([]).then(() => {
             done('the test case don\'t have param \'methodName\', should return error, but now, return success.');
         }).catch(() => {
             done();
@@ -23,7 +23,7 @@ describe('jsonrpc_batch', function () {
     });
 
     it('batch_requests_all_request_all_success', function (done) {
-        Jsonrpc.batch([
+        HTTP_RPC.batch([
             {
                 type: 'request',
                 methodName: 'jsonrpcSuccess',
@@ -64,7 +64,7 @@ describe('jsonrpc_batch', function () {
     });
 
     it('batch_requests_all_request_some_success', function (done) {
-        Jsonrpc.batch([
+        HTTP_RPC.batch([
             {
                 type: 'request',
                 methodName: 'jsonrpcSuccess',
@@ -111,7 +111,7 @@ describe('jsonrpc_batch', function () {
     });
 
     it('batch_requests_all_request_all_error', function (done) {
-        Jsonrpc.batch([
+        HTTP_RPC.batch([
             {
                 type: 'request',
                 methodName: 'jsonrpcError',
@@ -164,7 +164,7 @@ describe('jsonrpc_batch', function () {
     });
 
     it('batch_requests_all_request_some_timeout', function (done) {
-        Jsonrpc.batch([
+        HTTP_RPC.batch([
             {
                 type: 'request',
                 methodName: 'jsonrpcSuccess',
@@ -190,7 +190,7 @@ describe('jsonrpc_batch', function () {
     });
 
     it('batch_requests_all_request_timeout_success', function (done) {
-        Jsonrpc.batch([
+        HTTP_RPC.batch([
             {
                 type: 'request',
                 methodName: 'jsonrpcTimeoutSuccess',
@@ -231,7 +231,7 @@ describe('jsonrpc_batch', function () {
     });
 
     it('batch_requests_all_notification_all_success', function (done) {
-        Jsonrpc.batch([
+        HTTP_RPC.batch([
             {
                 type: 'notification',
                 methodName: 'jsonrpcSuccess',
@@ -258,7 +258,7 @@ describe('jsonrpc_batch', function () {
     });
 
     it('batch_requests_all_notification_some_success', function (done) {
-        Jsonrpc.batch([
+        HTTP_RPC.batch([
             {
                 type: 'notification',
                 methodName: 'jsonrpcSuccess',
@@ -285,7 +285,7 @@ describe('jsonrpc_batch', function () {
     });
 
     it('batch_requests_all_notification_all_error', function (done) {
-        Jsonrpc.batch([
+        HTTP_RPC.batch([
             {
                 type: 'notification',
                 methodName: 'jsonrpcError',
@@ -312,7 +312,7 @@ describe('jsonrpc_batch', function () {
     });
 
     it('batch_requests_all_notification_some_timeout', function (done) {
-        Jsonrpc.batch([
+        HTTP_RPC.batch([
             {
                 type: 'notification',
                 methodName: 'jsonrpcSuccess',
@@ -338,7 +338,7 @@ describe('jsonrpc_batch', function () {
     });
 
     it('batch_requests_all_notification_some_timeout_success', function (done) {
-        Jsonrpc.batch([
+        HTTP_RPC.batch([
             {
                 type: 'notification',
                 methodName: 'jsonrpcTimeoutSuccess',
@@ -365,7 +365,7 @@ describe('jsonrpc_batch', function () {
     });
 
     it('batch_requests_some_notification_all_success', function (done) {
-        Jsonrpc.batch([
+        HTTP_RPC.batch([
             {
                 type: 'request',
                 methodName: 'jsonrpcSuccess',
@@ -398,7 +398,7 @@ describe('jsonrpc_batch', function () {
     });
 
     it('batch_requests_some_notification_some_success', function (done) {
-        Jsonrpc.batch([
+        HTTP_RPC.batch([
             {
                 type: 'request',
                 methodName: 'jsonrpcSuccess',
@@ -434,7 +434,7 @@ describe('jsonrpc_batch', function () {
     });
 
     it('batch_requests_some_notification_all_error', function (done) {
-        Jsonrpc.batch([
+        HTTP_RPC.batch([
             {
                 type: 'request',
                 methodName: 'jsonrpcError',
@@ -473,7 +473,7 @@ describe('jsonrpc_batch', function () {
     });
 
     it('batch_requests_some_notification_some_timeout', function (done) {
-        Jsonrpc.batch([
+        HTTP_RPC.batch([
             {
                 type: 'request',
                 methodName: 'jsonrpcSuccess',
@@ -499,7 +499,7 @@ describe('jsonrpc_batch', function () {
     });
 
     it('batch_requests_some_notification_some_timeout_success_one_Error', function (done) {
-        Jsonrpc.batch([
+        HTTP_RPC.batch([
             {
                 type: 'request',
                 methodName: 'jsonrpcError',
