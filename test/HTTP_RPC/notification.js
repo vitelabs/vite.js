@@ -5,7 +5,7 @@ const HTTP_RPC = new ViteJS.HTTP_RPC({
     timeout: 200
 });
 
-describe('jsonrpc_notification', function () {
+describe('http_rpc_notification', function () {
     it('notification_no_method', function (done) {
         HTTP_RPC.notification().then(() => {
             done('the test case don\'t have param \'methodName\', should return error, but now, return success.');

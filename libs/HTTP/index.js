@@ -1,86 +1,33 @@
-const jsonrpcLite = require('jsonrpc-lite');
+import Communication from '../Communication/index.js';
 const XMLHttpRequest = typeof window !== 'undefined' && window.XMLHttpRequest ?
     window.XMLHttpRequest : require('xhr2');
 const Promise = typeof window !== 'undefined' && window.Promise ?
     window.Promise :
     typeof Promise !== 'undefined' ? Promise : require('es6-promise');
-import errors from '../errors';
 
-let requestCount = 0;
-
-// [TODO] protocol host port
-class Jsonrpc {
-    constructor({ host = 'http://localhost:8415', headers, timeout = 0 } = { host: 'http://localhost:8415', headers, timeout: 0 }) {
-        this.host = host;
-        this.timeout = timeout;
-        this.headers = headers;
-        this._requestId = 0;
-        this._requestManager = [];
-    }
-
-    reset({ host = 'http://localhost:8415', timeout = 0, headers, abort = true } = { host: 'http://localhost:8415', headers, timeout: 0, abort: true }) {
-        if (abort) {
-            this._requestManager.forEach(({ request, rej }) => {
-                request.abort();
-                rej(errors.ABORT_ERROR());
-            });
-            this._requestManager = [];
-        }
+class HTTP_RPC extends Communication {
+    constructor({ 
+        host = 'http://localhost:8415', 
+        headers, 
+        timeout = 0 
+    } = { 
+        host: 'http://localhost:8415', 
+        headers, 
+        timeout: 0 
+    }) {
+        super();
 
         this.host = host;
         this.timeout = timeout;
         this.headers = headers;
-    }
-
-    _getRequestPayload(methodName, params) {
-        if (!methodName) {
-            return errors.PARAMS_ERROR();
-        }
-
-        this._requestId++;
-        return jsonrpcLite.request(this._requestId, methodName, params);
-    }
-
-    _getNotificationPayload(methodName, params) {
-        if (!methodName) {
-            return errors.PARAMS_ERROR();
-        }
-
-        return jsonrpcLite.notification(methodName, params);
-    }
-
-    _getBatchPayload(requests = []) {
-        if (!requests || !requests.length) {
-            return errors.PARAMS_ERROR();
-        }
-
-        let _requests = [];
-        for (let i = 0; i < requests.length; i++) {
-            let request = requests[i];
-
-            if (!request || !request.type || (request.type !== 'request' && request.type !== 'notification')) {
-                return errors.PARAMS_ERROR();
-            }
-
-            let requestObj = request.type === 'notification' ?
-                this._getNotificationPayload(request.methodName, request.params) :
-                this._getRequestPayload(request.methodName, request.params);
-
-            if (requestObj instanceof Error) {
-                return requestObj;
-            }
-
-            _requests.push(requestObj);
-        }
-
-        return _requests;
     }
 
     _getRequest() {
         let request = new XMLHttpRequest();
 
         request.open('POST', this.host);
-        // set headers
+
+        // Set headers
         request.setRequestHeader('Content-Type', 'application/json;charset=utf-8');
         request.setRequestHeader('Access-Control-Allow-Origin', '*');
         this.headers && this.headers.forEach(function (header) {
@@ -92,63 +39,58 @@ class Jsonrpc {
 
     _send(payload) {
         return new Promise((res, rej) => {
+            // Init request
             let resetAbort = false;
             let request = this._getRequest();
-            let _request = {
-                id: ++requestCount,
+            let _request = this._addReq({
                 request,
                 rej: (err)=>{
                     resetAbort = true;
                     rej(err);
                 }
-            };
-            this._requestManager.push(_request);
-
+            });
+            
             let clearRequestAndTimeout = () => {
                 requestTimeout && clearTimeout(requestTimeout);
                 requestTimeout = null;
-                for (let i = 0; i < this._requestManager.length; i++) {
-                    if (this._requestManager[i].id === _request.id) {
-                        this._requestManager.splice(i, 1);
-                        break;
-                    }
-                }
+                this._removeReq(_request);
             };
 
-            // request timeout
+            // Set request timeout
             let requestTimeout = this.timeout ? setTimeout(() => {
                 if (resetAbort) {
                     return;
                 }
+
                 request.abort();
                 clearRequestAndTimeout();
-                return rej(errors.TIMEOUT_ERROR());
+                return rej( this.ERRORS.TIMEOUT(this.timeout) );
             }, this.timeout) : null;
 
-            // request finish
+            // Request finish
             request.onreadystatechange = () => {
                 if (request.readyState !== 4 || resetAbort) {
                     return;
                 }
-                clearRequestAndTimeout();
 
+                clearRequestAndTimeout();
                 let result = request.responseText;
+
                 try {
                     result = result ? JSON.parse(result) : null;
                 } catch (e) {
-                    return rej(errors.INVAILID_RESPONSE(result));
+                    return rej( this.ERRORS.INVAILID_RESPONSE(result) );
                 }
 
                 return res(result);
             };
 
-            // send request
+            // Send request
             try {
-                request.send(JSON.stringify(payload));
+                request.send( JSON.stringify(payload) );
             } catch (err) {
                 clearRequestAndTimeout();
-                let error = new Error(errors.CONNECT_ERROR());
-                return rej(error);
+                return rej( this.ERRORS.CONNECT(this.host) );
             }
         });
     }
@@ -162,7 +104,7 @@ class Jsonrpc {
 
         return this._send(requestObj).then((res) => {
             if (!res) {
-                throw errors.INVAILID_RESPONSE(res);
+                throw this.ERRORS.INVAILID(res);
             }
 
             return {
@@ -222,4 +164,4 @@ class Jsonrpc {
     }
 }
 
-export default Jsonrpc;
+export default HTTP_RPC;

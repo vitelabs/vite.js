@@ -1,29 +1,35 @@
-class Ledger {
-    CreateTxWithPassphrase() {
+import basicStruct from '../basicStruct.js';
+
+class Ledger extends basicStruct {
+    constructor(provider) {
+        super(provider);
+    }
+
+    createTX() {
 
     }
 
-    GetBlocksByAccAddr() {
+    getBlocks (accAddr) {
+        console.log(accAddr);
+    }
+
+    getUnconfirmedBlocks (accAddr) {
+        console.log(accAddr);
+    }
+
+    getAccount (accAddr) {
+        console.log(accAddr);
+    }
+
+    getUnconfirmedInfo (accAddr) {
+        console.log(accAddr);
+    }
+
+    getInitSyncInfo() {
 
     }
 
-    GetUnconfirmedBlocksByAccAddr() {
-
-    }
-
-    GetAccountByAccAddr() {
-
-    }
-
-    GetUnconfirmedInfo() {
-
-    }
-
-    GetInitSyncInfo() {
-
-    }
-
-    GetSnapshotChainHeight() {
+    getSnapshotChainHeight() {
 
     }
 }

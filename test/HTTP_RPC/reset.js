@@ -1,12 +1,11 @@
 const assert = require('assert');
 import ViteJS from '../../index.js';
-import errors from '../../lib/errors.js';
 
 const HTTP_RPC = new ViteJS.HTTP_RPC({
     timeout: 200
 });
 
-describe('jsonrpc_reset', function () {
+describe('http_rpc_reset', function () {
     it('reset_finish_requests', function (done) {
         HTTP_RPC.batch([
             {
@@ -59,13 +58,13 @@ describe('jsonrpc_reset', function () {
         ]).then(() => {
             done('already reset: request should be aborted');
         }).catch((err) => {
-            assert.equal(err.message, errors.ABORT_ERROR().message);
+            assert.equal(err.message, HTTP_RPC.ERRORS.ABORT().message);
             done();
         });
     });
 
     it('reset_timeout_requests', function (done) {
-        const errMsg = errors.ABORT_ERROR().message;
+        const errMsg = HTTP_RPC.ERRORS.ABORT().message;
         let doneResult = null;
 
         let testCount = 0;

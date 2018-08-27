@@ -1,13 +1,13 @@
 import basicStruct from '../basicStruct.js';
 
-class P2P extends basicStruct {
+class Types extends basicStruct {
     constructor(provider) {
         super(provider);
     }
 
-    isNetworkAvailable() {
+    isValidTokenId() {
 
     }
 }
 
-export default P2P;
+export default Types;

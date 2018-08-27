@@ -5,7 +5,7 @@ const HTTP_RPC = new ViteJS.HTTP_RPC({
     timeout: 200
 });
 
-describe('jsonrpc_batch', function () {
+describe('http_rpc_batch', function () {
     it('batch_no_requests', function (done) {
         HTTP_RPC.batch().then(() => {
             done('the test case don\'t have param \'methodName\', should return error, but now, return success.');
