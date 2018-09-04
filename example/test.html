@@ -7,6 +7,13 @@
     <script type="text/javascript">
         console.log(window.ViteJS);
         let HTTP_RPC = new ViteJS.HTTP_RPC();
+        let ViteJSLibs = new ViteJS(HTTP_RPC);
+
+        console.log(ViteJSLibs);
+
+        let k = ViteJSLibs.Vite.Account.newHexAddress();
+        let keystore = ViteJSLibs.Vite.Account.encryptKeystore(k, '1');
+        // window.viteA = a;
     </script>
 </head>
 

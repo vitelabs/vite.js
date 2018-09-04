@@ -6,7 +6,7 @@ class P2P extends basicStruct {
     }
 
     isNetworkAvailable() {
-
+        return this.provider.request('p2p.NetworkAvailable');
     }
 }
 

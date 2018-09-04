@@ -5,32 +5,32 @@ class Ledger extends basicStruct {
         super(provider);
     }
 
-    createTX() {
-
+    createTX(pass) {
+        return this.provider.request('ledger.CreateTxWithPassphrase', pass);
     }
 
     getBlocks (accAddr) {
-        console.log(accAddr);
+        return this.provider.request('ledger.GetBlocksByAccAddr', accAddr);
     }
 
     getUnconfirmedBlocks (accAddr) {
-        console.log(accAddr);
+        return this.provider.request('ledger.GetUnconfirmedBlocksByAccAddr', accAddr);
     }
 
     getAccount (accAddr) {
-        console.log(accAddr);
+        return this.provider.request('ledger.GetAccountByAccAddr', accAddr);
     }
 
     getUnconfirmedInfo (accAddr) {
-        console.log(accAddr);
+        return this.provider.request('ledger.GetUnconfirmedInfo', accAddr);
     }
 
     getInitSyncInfo() {
-
+        return this.provider.request('ledger.GetInitSyncInfo');
     }
 
     getSnapshotChainHeight() {
-
+        return this.provider.request('ledger.GetSnapshotChainHeight');
     }
 }
 

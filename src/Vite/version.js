@@ -24,6 +24,10 @@ class Version extends basicStruct {
     getAccountVersion() {
 
     }
+
+    getKeystoreVersion() {
+        
+    }
 }
 
 export default Version;
