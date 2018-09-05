@@ -1,3 +1,6 @@
+// Copy from https://github.com/alepop/ed25519-hd-key
+// To ed25519-blake2b
+
 import createHmac from 'create-hmac';
 import tweetnacl from 'tweetnacl-blake2b';
 
@@ -5,7 +8,39 @@ const ED25519_CURVE = 'ed25519 blake2b seed';
 const HARDENED_OFFSET = 0x80000000;
 
 const pathRegex = new RegExp('^m(\\/[0-9]+\')+$');
-const replaceDerive = (val) => val.replace('\'', '');
+const replaceDerive = val => val.replace('\'', '');
+
+export default {
+    getMasterKeyFromSeed,
+
+    getPublicKey (seed) {
+        let {
+            secretKey, publicKey
+        } = tweetnacl.sign.keyPair.fromSeed(seed);
+        return {
+            publicKey, 
+            privateKey: secretKey
+        };
+    },
+    
+    derivePath (path, seed) {
+        if (!isValidPath(path)) {
+            throw new Error('Invalid derivation path');
+        }
+    
+        const { key, chainCode } = getMasterKeyFromSeed(seed);
+        const segments = path
+            .split('/')
+            .slice(1)
+            .map(replaceDerive)
+            .map(el => parseInt(el, 10));
+    
+        return segments.reduce(
+            (parentKeys, segment) => CKDPriv(parentKeys, segment + HARDENED_OFFSET),
+            { key, chainCode }
+        );
+    }
+};
 
 function getMasterKeyFromSeed (seed) {
     const hmac = createHmac('sha512', ED25519_CURVE);
@@ -33,41 +68,9 @@ function CKDPriv ({ key, chainCode }, index) {
     };
 }
 
-function getPublicKey (seed) {
-    let {
-        secretKey, publicKey
-    } = tweetnacl.sign.keyPair.fromSeed(seed);
-    return {
-        publicKey, 
-        privateKey: secretKey
-    };
-}
-
 function isValidPath (path) {
     if (!pathRegex.test(path)) {
         return false;
     }
     return !path.split('/').slice(1).map(replaceDerive).some(isNaN);
 }
-
-function derivePath (path, seed) {
-    if (!isValidPath(path)) {
-        throw new Error('Invalid derivation path');
-    }
-
-    const { key, chainCode } = getMasterKeyFromSeed(seed);
-    const segments = path
-        .split('/')
-        .slice(1)
-        .map(replaceDerive)
-        .map(el => parseInt(el, 10));
-
-    return segments.reduce(
-        (parentKeys, segment) => CKDPriv(parentKeys, segment + HARDENED_OFFSET),
-        { key, chainCode }
-    );
-}
-
-export default {
-    getMasterKeyFromSeed, getPublicKey, derivePath
-};

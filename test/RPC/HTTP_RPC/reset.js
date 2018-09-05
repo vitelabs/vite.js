@@ -1,5 +1,5 @@
 const assert = require('assert');
-import ViteJS from '../../index.js';
+import ViteJS from '../../../index.js';
 
 const HTTP_RPC = new ViteJS.HTTP_RPC({
     timeout: 200

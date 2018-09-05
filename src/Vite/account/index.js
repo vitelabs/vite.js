@@ -1,4 +1,4 @@
-import basicStruct from '../basicStruct.js';
+import basicStruct from '../basicStruct';
 import utils from '../../utils/index';
 
 class Account extends basicStruct {

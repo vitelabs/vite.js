@@ -1,4 +1,4 @@
-import libUtils from '../../libs/utils/index';
+import libUtils from '../../libs/utils';
 import utils from '../utils/index';
 
 const uuid = require('pure-uuid');
@@ -95,7 +95,7 @@ class keystore {
             !keyJson.crypto || 
             !keyJson.hexaddress || 
             !keyJson.keystoreversion || 
-            !utils.isValidHexAddress(keyJson.hexaddress)) {
+            !utils.isValidHexAddr(keyJson.hexaddress)) {
             return false;
         }
     

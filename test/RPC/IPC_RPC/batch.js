@@ -1,4 +1,4 @@
-import ViteJS from '../../index.js';
+import ViteJS from '../../../index.js';
 
 const IPC_RPC = new ViteJS.IPC_RPC({
     path: '/Users/sisi/viteisbest/vite.ipc',

@@ -12,15 +12,15 @@ describe('Account_newHexAddr', function () {
 describe('Account_isValidHexAddr', function () {
     it('test-viteJS', function () {
         let k = utils.newHexAddr();
-        assert.equal( utils.isValidHexAddress(k.hexAddr), true );
+        assert.equal( utils.isValidHexAddr(k.hexAddr), true );
     });
 
     it('test-go-vite-1', function () {
-        assert.equal( utils.isValidHexAddress('vite_69f3bdb5cdcfa145ae6cc42593a89088ff3dac587eb692d689'), true );
+        assert.equal( utils.isValidHexAddr('vite_69f3bdb5cdcfa145ae6cc42593a89088ff3dac587eb692d689'), true );
     });
 
     it('test-go-vite-2', function () {
-        assert.equal( utils.isValidHexAddress('vite_c18cadb085fc4e291469106e5a3f197aef87f96cd297eb6b46'), true );
+        assert.equal( utils.isValidHexAddr('vite_c18cadb085fc4e291469106e5a3f197aef87f96cd297eb6b46'), true );
     });
 });
 
