@@ -1,5 +1,5 @@
 const assert = require('assert');
-import Communication from '../libs/Communication/index.js';
+import Communication from '../../libs/Communication/index.js';
 
 const C = new Communication();
 

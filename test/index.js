@@ -1,9 +1,3 @@
-describe('Wallet Test: src/Wallet', function () {
-//     require('./Wallet/keystore');
-    require('./Wallet/hd');
-    require('./Wallet/memory');
-});
-
 // describe('IPC_RPC Base Library Test: libs/HTTP/index.js', function () {
 //     require('./IPC_RPC/request');
 //     require('./IPC_RPC/notification');
@@ -18,10 +12,16 @@ describe('Wallet Test: src/Wallet', function () {
 //     require('./HTTP_RPC/reset');
 // });
 
-// describe('Account Test: src/Vite/account/index.js', function () {
-//     require('./Account/newAddress');
-// });
+describe('Communication Base Library Test: libs/Communication/index.js', function() {
+    require('./Communication/index');
+});
 
-// describe('Communication Base Library Test: libs/Communication/index.js', function() {
-//     require('./Communication/index');
-// });
+describe('Wallet Test: src/Wallet', function () {
+    require('./Wallet/keystore');
+    require('./Wallet/hd');
+    require('./Wallet/memory');
+});
+
+describe('Account Test: src/Vite/account/index.js', function () {
+    require('./Account/newAddress');
+});
