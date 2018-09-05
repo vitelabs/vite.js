@@ -1,4 +1,4 @@
-let blake = require('blakejs');
+let blake = require('blakejs/blake2b');
 let tweetnacl = require('tweetnacl-blake2b');
 
 import libUtils from '../../libs/utils/index';
@@ -20,9 +20,9 @@ export default {
 
         // HumanReadableAddress = 'vite_' + Hex(address + checkSum)
         return {
-            privKey: libUtils.uint8ArrayToHexStr(privKey),
-            addr: libUtils.uint8ArrayToHexStr(addr),
-            hexAddr: ADDR_PRE + libUtils.uint8ArrayToHexStr(addr) + libUtils.uint8ArrayToHexStr(checkSum)
+            privKey: libUtils.bytesToHex(privKey),
+            addr: libUtils.bytesToHex(addr),
+            hexAddr: ADDR_PRE + libUtils.bytesToHex(addr) + checkSum
         };
     },
 
@@ -32,7 +32,7 @@ export default {
 function newAddr(privKey) {
     let addr = '';
     if (privKey) {
-        privKey = privKey instanceof ArrayBuffer ? privKey : libUtils.hexToArrayBuffer(privKey);
+        privKey = privKey instanceof ArrayBuffer ? privKey : libUtils.hexToBytes(privKey);
         addr = newAddrFromPriv(privKey);
     } else {
         let keyPair = tweetnacl.sign.keyPair();
@@ -45,20 +45,19 @@ function newAddr(privKey) {
 }
 
 function newAddrFromPub(pubKey) {
-    let pre = blake.blake2b(pubKey, null, 32);
+    let pre = blake.blake2b(pubKey, null, ADDR_SIZE);
+    // console.log(libUtils.bytesToHex(pubKey), ADDR_SIZE, libUtils.bytesToHex(pre));
     return pre.slice(0, ADDR_SIZE);
 }
 
 function newAddrFromPriv(privKey) {
-    let pre = blake.blake2b(privKey, null, 64);
-    return pre.slice(32, ADDR_SIZE + 32);
+    return newAddrFromPub( privKey.slice(32) );
 }
 
 function getAddrCheckSum(addr) {
-    // console.log(addr);
-    let after = blake.blake2b(addr, null, 32);
-    // console.log(after);
-    return after.slice(after.length - ADDR_CHECK_SUM_SIZE);
+    let res = blake.blake2bHex(addr, null, ADDR_CHECK_SUM_SIZE);
+    // console.log(libUtils.bytesToHex(addr), ADDR_CHECK_SUM_SIZE, res);
+    return res;
 }
 
 function isValidHexAddress(hexAddr) {
@@ -67,10 +66,10 @@ function isValidHexAddress(hexAddr) {
     }
 
     let pre = hexAddr.slice(ADDR_PRE.length, ADDR_PRE.length + ADDR_SIZE * 2);
-    let addr = libUtils.hexToArrayBuffer(pre); 
+    let addr = libUtils.hexToBytes(pre); 
 
+    let currentChecksum = hexAddr.slice(ADDR_PRE.length + ADDR_SIZE * 2);
     let checkSum = getAddrCheckSum(addr);
-    let currentCheckSum = hexAddr.slice(ADDR_LEN - ADDR_CHECK_SUM_SIZE * 2);
-    
-    return libUtils.uint8ArrayToHexStr(checkSum) === currentCheckSum;
+  
+    return currentChecksum === checkSum;
 }

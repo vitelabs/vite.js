@@ -1,4 +1,5 @@
 import Vite from './Vite/index.js';
+import Wallet from './Wallet/index.js';
 import HTTP_RPC from '../libs/HTTP/index.js';
 import IPC_RPC from '../libs/IPC/index.js';
 import BigNumber from 'bignumber.js';
@@ -10,6 +11,8 @@ class ViteJS {
         this._currentProvider = provider;
 
         this.Vite = new Vite(provider);
+        this.Wallet = new Wallet();
+
         this.version = version;
         this.ViteVersion = this.Vite.version;
     }
