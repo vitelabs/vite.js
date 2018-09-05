@@ -4,3 +4,4 @@ node_modules
 static
 package-lock.json
 docs/.vuepress/dist
+.idea/
