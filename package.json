@@ -4,7 +4,7 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "build": "rm -rf static && gulp",
+        "build": "gulp",
         "test:rpc": "cross-env NODE_ENV=test nyc mocha test/RPC --no-timeouts",
         "test": "cross-env NODE_ENV=test nyc mocha test/index.js --no-timeouts",
         "test:w": "cross-env NODE_ENV=testWatch mocha test/index.js --require @babel/register -w --no-timeouts",
@@ -26,18 +26,19 @@
         "url": "https://github.com/vitelabs/vite.js/issues"
     },
     "homepage": "https://github.com/vitelabs/vite.js#readme",
-    "peerDependencies": {
-        "babel-preset-es2015": "^6.24.1"
+    "peerDependency": {
+        "tweetnacl-blake2b": "^1.0.1"
     },
     "devDependencies": {
         "@babel/cli": "^7.0.0",
         "@babel/core": "^7.0.0",
         "@babel/preset-env": "^7.0.0",
+        "@babel/preset-es2015": "^7.0.0-beta.53",
         "@babel/register": "^7.0.0",
         "babel-plugin-istanbul": "^5.0.1",
-        "babel-preset-es2015": "^6.24.1",
-        "babelify": "^8.0.0",
+        "babelify": "^10.0.0-beta.1",
         "browserify": "~16.2.2",
+        "browserify-replace": "^0.9.3",
         "buffer": "^5.2.1",
         "chai": "^4.1.2",
         "coveralls": "^3.0.2",
@@ -46,7 +47,6 @@
         "exorcist": "~1.0.1",
         "gulp": "~3.9.1",
         "gulp-rename": "~1.3.0",
-        "gulp-replace": "~1.0.0",
         "gulp-streamify": "~1.0.2",
         "gulp-uglify": "~3.0.0",
         "install": "~0.11.0",
