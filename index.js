@@ -1,7 +1,7 @@
-import viteJS from './lib/index.js';
+import ViteJS from './src/index.js';
 
-if (typeof window !== 'undefined' && typeof window.viteJS === 'undefined') {
-    window.viteJS = viteJS;
+if (typeof window !== 'undefined' && typeof window.ViteJS === 'undefined') {
+    window.ViteJS = ViteJS;
 }
 
-export default viteJS;
+export default ViteJS;

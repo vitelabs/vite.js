@@ -5,3 +5,5 @@ static
 package-lock.json
 docs/.vuepress/dist
 .idea/
+coverage
+.nyc_output/

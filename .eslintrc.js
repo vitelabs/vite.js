@@ -23,6 +23,7 @@ module.exports = {
         "quotes": ["error", "single"],
         "semi": ["error", "always"],
         "no-console": "off",
-        "no-useless-escape": "off"
+        "no-useless-escape": "off",
+        "no-control-regex": "off"
     }
 };
