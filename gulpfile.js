@@ -1,8 +1,8 @@
 const gulp = require('gulp');
-// const rename = require('gulp-rename');
-// const uglify = require('gulp-uglify');
+const rename = require('gulp-rename');
+const uglify = require('gulp-uglify');
 const replace = require('gulp-replace');
-// const streamify = require('gulp-streamify');
+const streamify = require('gulp-streamify');
 const babelify = require('babelify');
 const exorcist = require('exorcist');
 const browserify = require('browserify');
@@ -33,14 +33,15 @@ gulp.task('build', function () {
     console.log('standard build');
     return browserify(browserifyOptions)
         .require(ENTRY_PATH, { expose: 'ViteJS' })
-        .transform(babelify, { 'presets': ['es2015'] })
+        .transform(babelify)
         .bundle()
         .pipe(exorcist(path.join(BUILD_PATH, APP_NAME + '.js.map')))
         .pipe(source(APP_NAME + '.js'))
+        .pipe(gulp.dest(BUILD_PATH))
+        .pipe(streamify(uglify())) 
+        .on('error', function (err) { console.log(err); })
+        .pipe(rename(APP_NAME + '.min.js'))
         .pipe(gulp.dest(BUILD_PATH));
-    // .pipe(streamify(uglify()))
-    // .pipe(rename(APP_NAME + '.min.js'))
-    // .pipe(gulp.dest(BUILD_PATH));
 });
 
 gulp.task('default', ['version', 'build'], function (done) {
