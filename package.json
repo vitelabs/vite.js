@@ -5,8 +5,10 @@
     "main": "index.js",
     "scripts": {
         "build": "rm -rf static && gulp",
-        "testRPC": "mocha test/RPC",
-        "test": "mocha test/index.js --require babel-register --no-timeouts",
+        "test:rpc": "cross-env NODE_ENV=test nyc mocha test/RPC --no-timeouts",
+        "test": "cross-env NODE_ENV=test nyc mocha test/index.js --no-timeouts",
+        "test:w": "cross-env NODE_ENV=testWatch mocha test/index.js --require @babel/register -w --no-timeouts",
+        "coverage": "nyc report --reporter=text-lcov | coveralls",
         "rpc": "node test/bin/startRPC",
         "lint": "eslint ./ --cache",
         "lint-all": "eslint ./"
@@ -25,15 +27,21 @@
     },
     "homepage": "https://github.com/vitelabs/vite.js#readme",
     "peerDependencies": {
-        "babel-core": "^6.26.3",
         "babel-preset-es2015": "^6.24.1"
     },
     "devDependencies": {
-        "babel-core": "^6.26.3",
+        "@babel/cli": "^7.0.0",
+        "@babel/core": "^7.0.0",
+        "@babel/preset-env": "^7.0.0",
+        "@babel/register": "^7.0.0",
+        "babel-plugin-istanbul": "^5.0.1",
         "babel-preset-es2015": "^6.24.1",
-        "babelify": "~8.0.0",
+        "babelify": "^8.0.0",
         "browserify": "~16.2.2",
         "buffer": "^5.2.1",
+        "chai": "^4.1.2",
+        "coveralls": "^3.0.2",
+        "cross-env": "^5.2.0",
         "eslint": "~4.19.1",
         "exorcist": "~1.0.1",
         "gulp": "~3.9.1",
@@ -43,8 +51,8 @@
         "gulp-uglify": "~3.0.0",
         "install": "~0.11.0",
         "jayson": "~2.0.6",
-        "mocha": "~5.2.0",
-        "npm": "~6.1.0",
+        "mocha": "^5.2.0",
+        "nyc": "^13.0.1",
         "pre-commit": "~1.2.2",
         "vinyl-source-stream": "~2.0.0"
     },
@@ -60,5 +68,16 @@
         "scryptsy": "^2.0.0",
         "tweetnacl-blake2b": "^1.0.1",
         "xhr2": "^0.1.4"
+    },
+    "nyc": {
+        "require": [
+            "@babel/register"
+        ],
+        "reporter": [
+            "html",
+            "text"
+        ],
+        "sourceMap": false,
+        "instrument": false
     }
 }
