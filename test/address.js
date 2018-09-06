@@ -1,7 +1,7 @@
 const assert = require('assert');
-import utils from '../../src/utils/index';
+import utils from '../src/utils/index';
 
-describe('Account_newHexAddr', function () {
+describe('newHexAddr', function () {
     it('test', function () {
         let privKey = 'afa2a3ab3347b5bbe210dc099b2e010e5491d698e5112db6bc278cfd8fa27eb9f0fde0110193147e7961e61eeb22576c535b3442fd6bd9c457775e0cc69f1951';
         let k = utils.newHexAddr(privKey);
@@ -9,7 +9,7 @@ describe('Account_newHexAddr', function () {
     });
 });
 
-describe('Account_isValidHexAddr', function () {
+describe('isValidHexAddr', function () {
     it('test-viteJS', function () {
         let k = utils.newHexAddr();
         assert.equal( utils.isValidHexAddr(k.hexAddr), true );
@@ -23,16 +23,3 @@ describe('Account_isValidHexAddr', function () {
         assert.equal( utils.isValidHexAddr('vite_c18cadb085fc4e291469106e5a3f197aef87f96cd297eb6b46'), true );
     });
 });
-
-// describe('Account_newHexAddr', function () {
-//     it('test', function () {
-//         utils.newHexAddr();
-//         utils.newHexAddr();
-//         utils.newHexAddr();
-//         utils.newHexAddr();
-//         utils.newHexAddr();
-//         utils.newHexAddr();
-//         utils.newHexAddr();
-//         utils.newHexAddr();
-//     });
-// });

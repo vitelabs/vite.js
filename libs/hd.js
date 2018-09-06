@@ -1,5 +1,5 @@
 // Copy from https://github.com/alepop/ed25519-hd-key
-// To ed25519-blake2b
+// Convert to ed25519-blake2b
 
 import createHmac from 'create-hmac';
 import tweetnacl from 'tweetnacl-blake2b';

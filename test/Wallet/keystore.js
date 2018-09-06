@@ -11,7 +11,7 @@ if (process.env.NODE_ENV !== 'testWatch') {
     describe('Wallet_encryptKeystore', function () {
         it('test_encrypt', function () {
             let privKey = 'afa2a3ab3347b5bbe210dc099b2e010e5491d698e5112db6bc278cfd8fa27eb9f0fde0110193147e7961e61eeb22576c535b3442fd6bd9c457775e0cc69f1951';
-            let k = ViteJS.Vite.Account.newHexAddress(privKey);
+            let k = ViteJS.Vite.Account.newHexAddr(privKey);
             let keystore = ViteJS.Wallet.Keystore.encrypt(k, '1');
             assert.equal(ViteJS.Wallet.Keystore.decrypt(keystore, '1'), privKey);
         });
@@ -27,7 +27,7 @@ if (process.env.NODE_ENV !== 'testWatch') {
     describe('Wallet_decryptKeystore', function() {
         it('test_decrypt', function () {
             let privKey = ViteJS.Wallet.Keystore.decrypt(keystore, '1');
-            let k = ViteJS.Vite.Account.newHexAddress(privKey);
+            let k = ViteJS.Vite.Account.newHexAddr(privKey);
             assert.equal(k.hexAddr, keyJSON.hexaddress);
         });
     });

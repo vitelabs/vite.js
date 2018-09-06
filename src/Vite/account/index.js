@@ -6,7 +6,7 @@ class Account extends basicStruct {
         super(provider);
     }
 
-    newHexAddress(privKey) {
+    newHexAddr(privKey) {
         return utils.newHexAddr(privKey);
     }
 

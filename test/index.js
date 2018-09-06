@@ -6,10 +6,15 @@ describe('HD Test: libs/hd', function () {
     require('./hd');
 });
 
-// describe('Wallet Test: src/Wallet', function () {
-//     require('./Wallet/keystore');
-// });
+describe('Ed25519 blake2b Test: tweetnale-blake2b', function () {
+    require('./ed25519');
+});
 
-// describe('Account Test: src/Vite/account/index.js', function () {
-//     require('./Account/newAddress');
-// });
+describe('Address Test: src/utils/address', function () {
+    require('./address');
+});
+
+describe('Wallet Test: src/Wallet', function () {
+    require('./Wallet/keystore');
+    require('./Wallet/hd');
+});
