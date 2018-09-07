@@ -1,4 +1,5 @@
 // [TODO] Fork and publish
+
 // Copy from https://github.com/alepop/ed25519-hd-key
 // Convert to ed25519-blake2b
 
