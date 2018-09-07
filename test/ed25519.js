@@ -1,5 +1,5 @@
 const assert = require('assert');
-const tweetnacl = require('tweetnacl-blake2b');
+const nacl = require('../libs/nacl_blake2b');
 import utils from '../libs/utils';
 
 let testData = [
@@ -58,10 +58,10 @@ let testData = [
 
 testData.forEach((testCase, index)=>{
     let privByte = utils.hexToBytes( testCase.priv );
-    let key = tweetnacl.sign.keyPair.fromSecretKey(privByte);
+    let key = nacl.sign.keyPair.fromSecretKey(privByte);
 
     let message = utils.hexToBytes(testCase.message);
-    let signData = tweetnacl.sign.detached(message, privByte);
+    let signData = nacl.sign.detached(message, privByte);
     let signHex = utils.bytesToHex(signData);
 
     describe(`test_${index}`, function () {
@@ -74,7 +74,7 @@ testData.forEach((testCase, index)=>{
         });
 
         it('verifySign', function() {
-            let result = tweetnacl.sign.detached.verify(message, signData, key.publicKey);
+            let result = nacl.sign.detached.verify(message, signData, key.publicKey);
             assert.equal(result, true);
         });
     });

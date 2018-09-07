@@ -3,7 +3,7 @@ import utils from '../utils/index';
 
 const uuid = require('pure-uuid');
 const scryptsy = require('scryptsy');
-const tweetnacl = require('tweetnacl-blake2b');
+const nacl = require('../../libs/nacl_blake2b');
 const crypto = typeof window !== 'undefined' ? require('browserify-aes') : require('crypto');
 
 const versions = [1];
@@ -35,7 +35,7 @@ class keystore {
             r: this.scryptR,
             p: this.p,
             keylen: this.scryptKeyLen,
-            salt: libUtils.bytesToHex(tweetnacl.randomBytes(32)),
+            salt: libUtils.bytesToHex(nacl.randomBytes(32)),
         };
         let encryptPwd = encryptKey(pwd, scryptParams);
 
@@ -48,7 +48,7 @@ class keystore {
         // });
         // 'c47a0f805282c664df34f0c32e5cc43331362585cf090734850001d32cb91f62971277056c222f0c904ee8'
     
-        let nonce = tweetnacl.randomBytes(12);
+        let nonce = nacl.randomBytes(12);
         let text = cipherText({
             hexData: key.privKey,
             pwd: encryptPwd, 

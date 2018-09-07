@@ -1,8 +1,9 @@
+// [TODO] Fork and publish
 // Copy from https://github.com/alepop/ed25519-hd-key
 // Convert to ed25519-blake2b
 
 import createHmac from 'create-hmac';
-import tweetnacl from 'tweetnacl-blake2b';
+import nacl from './nacl_blake2b';
 
 const ED25519_CURVE = 'ed25519 blake2b seed';
 const HARDENED_OFFSET = 0x80000000;
@@ -16,7 +17,7 @@ export default {
     getPublicKey (seed) {
         let {
             secretKey, publicKey
-        } = tweetnacl.sign.keyPair.fromSeed(seed);
+        } = nacl.sign.keyPair.fromSeed(seed);
         return {
             publicKey, 
             privateKey: secretKey

@@ -1,5 +1,5 @@
 let blake = require('blakejs/blake2b');
-let tweetnacl = require('tweetnacl-blake2b');
+let nacl = require('../../libs/nacl_blake2b');
 
 import utils from '../../libs/utils';
 
@@ -48,7 +48,7 @@ function newAddr(privKey) {
         privKey = privKey instanceof ArrayBuffer ? privKey : utils.hexToBytes(privKey);
         addr = newAddrFromPriv(privKey);
     } else {
-        let keyPair = tweetnacl.sign.keyPair();
+        let keyPair = nacl.sign.keyPair();
         let publicKey = keyPair.publicKey;
         privKey = keyPair.secretKey;
         addr = newAddrFromPub(publicKey);

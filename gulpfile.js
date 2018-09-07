@@ -35,7 +35,7 @@ gulp.task('build', function () {
         .pipe(source(APP_NAME + '.js'))
         .pipe(gulp.dest(BUILD_PATH))
         .pipe(streamify(uglify())) 
-        .on('error', function (err) { console.log(err); })
+        // .on('error', function (err) { console.log(err); })
         .pipe(rename(APP_NAME + '.min.js'))
         .pipe(gulp.dest(BUILD_PATH));
 });
