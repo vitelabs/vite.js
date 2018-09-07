@@ -10,10 +10,6 @@ class HTTP_RPC extends Communication {
         host = 'http://localhost:8415', 
         headers, 
         timeout = 0 
-    } = { 
-        host: 'http://localhost:8415', 
-        headers, 
-        timeout: 0 
     }) {
         super();
 
@@ -29,7 +25,6 @@ class HTTP_RPC extends Communication {
 
         // Set headers
         request.setRequestHeader('Content-Type', 'application/json;charset=utf-8');
-        request.setRequestHeader('Access-Control-Allow-Origin', '*');
         this.headers && this.headers.forEach(function (header) {
             request.setRequestHeader(header.name, header.value);
         });
@@ -72,7 +67,7 @@ class HTTP_RPC extends Communication {
                 if (request.readyState !== 4 || resetAbort) {
                     return;
                 }
-
+ 
                 clearRequestAndTimeout();
                 let result = request.responseText;
 

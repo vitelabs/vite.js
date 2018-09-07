@@ -27,7 +27,7 @@ describe('ipc_rpc_request', function () {
     });
     
     it('request_success', function (done) {
-        IPC_RPC.request('wallet.ListAddress').then(() => {
+        IPC_RPC.request('wallet_listAddress').then(() => {
             addResCount();
             done();
         }).catch((err) => {

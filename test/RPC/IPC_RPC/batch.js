@@ -39,19 +39,14 @@ describe('ipc_rpc_batch', function () {
         IPC_RPC.batch([
             {
                 type: 'request',
-                methodName: 'wallet.ListAddress'
+                methodName: 'wallet_listAddress'
             }, {
                 type: 'notification',
-                methodName: 'wallet.ReloadAndFixAddressFile'
+                methodName: 'wallet_reloadAndFixAddressFile'
             }, {
                 type: 'request',
-                methodName: 'wallet.Status'
-            }, 
-            // {
-            //     type: 'request',
-            //     methodName: 'wallet.NewAddress',
-            //     params: ['sdsdsd']
-            // }
+                methodName: 'wallet_status'
+            }
         ]).then(() => {
             addResCount();
             done();
@@ -65,13 +60,13 @@ describe('ipc_rpc_batch', function () {
         let err = IPC_RPC.batch([
             {
                 type: 'notification',                    
-                methodName: 'wallet.ReloadAndFixAddressFile'
+                methodName: 'wallet_reloadAndFixAddressFile'
             }, {
                 type: 'notification',
-                methodName: 'wallet.ReloadAndFixAddressFile'
+                methodName: 'wallet_reloadAndFixAddressFile'
             }, {
                 type: 'notification',
-                methodName: 'wallet.ReloadAndFixAddressFile'
+                methodName: 'wallet_reloadAndFixAddressFile'
             }
         ]);
         addResCount();

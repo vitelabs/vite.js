@@ -22,7 +22,7 @@ describe('ipc_rpc_notification', function () {
     });
     
     it('notification_success', function (done) {
-        let err = IPC_RPC.notification('wallet.ReloadAndFixAddressFile');
+        let err = IPC_RPC.notification('wallet_reloadAndFixAddressFile');
         addResCount();
         done(err);
     });

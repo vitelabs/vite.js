@@ -14,7 +14,7 @@ function addResCount() {
 }
 
 // WS.on('connect', ()=>{
-describe('ipc_rpc_reset', function () {
+describe('ws_rpc_reset', function () {
     it('reset_timeout_batch_request', function (done) {
         setTimeout(() => {
             WS.reset();

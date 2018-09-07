@@ -1,13 +1,16 @@
-import Communication from '../Communication/index.js';
+import IPC_WS from '../Communication/ipc_ws';
 const net = require('net');
 
-class IPC_RPC extends Communication {
+class IPC_RPC extends IPC_WS {
     constructor({
         path = '',
         delimiter = '\n',
         timeout = 0
     }) {
-        super();
+        super({
+            onEventTypes: ['error', 'end', 'timeout', 'data', 'close', 'connect'],
+            sendFuncName: 'write'
+        });
 
         if (!path) {
             console.error( this.ERRORS.CONNECT() );
@@ -17,36 +20,20 @@ class IPC_RPC extends Communication {
         this.path = path;
         this.delimiter = delimiter;
         this.timeout = timeout;
-        this.connectStatus = false;
-
-        this._connectEnd = null;
-        this._connectErr= null;
-        this._connectTimeout = null;
-        this._connectConnect = null;
-        this._connectClose = null;
-
-        this.responseCbs = {};
 
         this.socket = net.connect({ path });
-
-        this.socket.on('connect', () => {
-            this.connectStatus = true;
-            this._connectConnect && this._connectConnect();
+        this.socket.on('connect', ()=>{
+            this._connected();
         });
-
-        this.socket.on('close', () => {
-            this.connectStatus = false;
-            this._connectClose && this._connectClose();
+        this.socket.on('close', ()=>{
+            this._closed();
         });
-
-        this.socket.on('error', (err) => {
-            this._connectErr && this._connectErr(err);
+        this.socket.on('error', ()=>{
+            this._errored();
         });
-
         this.socket.on('end', (err) => {
             this._connectEnd && this._connectEnd(err);
         });
-    
         this.socket.on('timeout', (err) => {
             this._connectTimeout && this._connectTimeout(err);
         });
@@ -61,150 +48,18 @@ class IPC_RPC extends Communication {
     
             data = ipcBuffer + data;
             ipcBuffer = '';
+            data = data.split(this.delimiter);
     
-            data = this._parse(data);
-            data.forEach((ele) => {
-                if ( !(ele instanceof Array) && !ele.id) {
-                    return;
-                }
-
-                if (ele.id) {
-                    this.responseCbs[ele.id] && this.responseCbs[ele.id](ele);
-                    return;
-                }
-
-                for(let i=0; i<ele.length; i++) {
-                    if (!ele[i].id) {
-                        continue;
-                    }
-
-                    let id = ele[i].id;
-                    if (!this.responseCbs[id]) {
-                        continue;
-                    }
-
-                    this.responseCbs[id](ele);
-                }
-            });
+            this._parse(data);
         });
-    }
-
-    on (type, cb) {
-        let i = ['error', 'end', 'timeout', 'data', 'close', 'connect'].indexOf(type);
-        if ( i < 0 ) {
-            return this.ERRORS.IPC_ON(type);
-        }
-
-        if (!cb) {
-            return this.ERRORS.IPC_ON_CB(type);
-        }
-
-        let eventType = type.substring(0,1).toUpperCase() + type.substring(1);
-        this[`_connect${eventType}`] = cb;
-    }
-
-    remove(type, cb) {
-        let i = ['error', 'end', 'timeout', 'data', 'close', 'connect'].indexOf(type);
-        if ( i < 0 ) {
-            return this.ERRORS.IPC_ON(type);
-        }
-
-        let eventType = type.substring(0,1).toUpperCase() + type.substring(1);
-        this[`_connect${eventType}`] = null;
-        cb && cb;
-    }
-
-    _parse (data) {
-        data = data.split(this.delimiter);
-
-        let results = [];
-        data.forEach(ele => {
-            if (!ele) {
-                return;
-            }
-
-            try {
-                let res = JSON.parse(ele);
-                if ( !(res instanceof Array) && res.result ) {
-                    // Compatible: somtimes data.result is a json string, sometimes not.
-                    try {
-                        res.result = JSON.parse(res.result);
-                    } catch (e) {
-                        // console.log(e);
-                    }
-                }
-                
-                results.push(res);
-            } catch (error) {
-                console.log(error);
-            }
-        });
-
-        data = null;
-        return results;
     }
 
     _send(payloads) {
+        if (!this.connectStatus) {
+            return Promise.reject( this.ERRORS.CONNECT(this.path) );
+        }
         this.socket.write( JSON.stringify(payloads) );
-
-        let id;
-        if (payloads instanceof Array) {
-            for (let i=0; i<payloads.length; i++) {
-                if (payloads[i].id) {
-                    id = payloads[i].id;
-                    break;
-                }
-            }
-        } else {
-            id = payloads.id || null;
-        }
-
-        if (!id) {
-            return;
-        }
-
-        return new Promise((res, rej) => {
-            let resetAbort = false;
-            let request = { 
-                id,
-                abort: ()=>{
-                    resetAbort = true;
-                }
-            };
-
-            this.responseCbs[id] = (data)=>{
-                clearRequestAndTimeout();
-                res(data);
-            };
-            let _request = this._addReq({
-                request, 
-                rej: (err)=>{
-                    clearRequestAndTimeout();
-                    rej(err);
-                }
-            });
-
-            let clearRequestAndTimeout = () => {
-                requestTimeout && clearTimeout(requestTimeout);
-                requestTimeout = null;
-                this._removeReq(_request);
-                for( let key in this.responseCbs ) {
-                    if (this.responseCbs[key] === id) {
-                        delete this.responseCbs[key];
-                        break;
-                    }
-                }
-            };
-
-            let requestTimeout = this.timeout ? setTimeout(() => {
-                if (resetAbort) {
-                    return;
-                }
-
-                clearRequestAndTimeout();
-                return rej( this.ERRORS.TIMEOUT(this.timeout) );
-            }, this.timeout) : null;
-        });
+        return this._onSend(payloads);
     }
 
     reconnect() {

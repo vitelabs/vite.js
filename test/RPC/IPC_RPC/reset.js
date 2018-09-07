@@ -24,10 +24,10 @@ describe('ipc_rpc_reset', function () {
         IPC_RPC.batch([
             {
                 type: 'request',
-                methodName: 'wallet.ListAddress'
+                methodName: 'wallet_listAddress'
             }, {
                 type: 'notification',
-                methodName: 'wallet.ReloadAndFixAddressFile'
+                methodName: 'wallet_reloadAndFixAddressFile'
             }, {
                 type: 'request',
                 methodName: 'wallet.sdsdsd'

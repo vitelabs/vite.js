@@ -13,7 +13,7 @@ function addResCount() {
     }
 }
 
-describe('ipc_rpc_request', function () {
+describe('ws_rpc_request', function () {
     it('request_no_method', function (done) {
         WS.request().then(() => {
             addResCount();
@@ -34,14 +34,14 @@ describe('ipc_rpc_request', function () {
         });
     });
 
-    it('request_timeout_error', function (done) {
-        const Params = [1, 2];
-        WS.request('jsonrpcTimeoutError', Params).then((res) => {
-            addResCount();
-            done(res);
-        }).catch(() => {
-            addResCount();
-            done();
-        });
-    });
+    // it('request_timeout_error', function (done) {
+    //     const Params = [1, 2];
+    //     WS.request('jsonrpcTimeoutError', Params).then((res) => {
+    //         addResCount();
+    //         done(res);
+    //     }).catch(() => {
+    //         addResCount();
+    //         done();
+    //     });
+    // });
 });
