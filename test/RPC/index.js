@@ -17,3 +17,10 @@ describe('HTTP_RPC Base Library Test: libs/HTTP/index.js', function () {
     require('./HTTP_RPC/batch');
     require('./HTTP_RPC/reset');
 });
+
+describe('WS_RPC Base Library Test: libs/WS/index.js', function () {
+    require('./WS_RPC/request');
+    require('./WS_RPC/notification');
+    require('./WS_RPC/batch');
+    require('./WS_RPC/reset');
+});

@@ -11,7 +11,7 @@ class IPC_RPC extends Communication {
 
         if (!path) {
             console.error( this.ERRORS.CONNECT() );
-            return;
+            return this.ERRORS.CONNECT();
         }
 
         this.path = path;

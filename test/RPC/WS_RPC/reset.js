@@ -1,8 +1,7 @@
 const assert = require('assert');
-import ViteJS from '../../../index.js';
+import WS_RPC from '../../../libs/WS/index';
 
-const IPC_RPC = new ViteJS.IPC_RPC({
-    path: '/Users/sisi/viteisbest/vite.ipc',
+let WS = new WS_RPC({
     timeout: 200
 });
 
@@ -10,18 +9,18 @@ let resultCount = 0;
 function addResCount() {
     resultCount++;
     if (resultCount ===  1) {
-        IPC_RPC.disconnect();
+        WS.disconnect();
     }
 }
 
-// IPC_RPC.on('connect', ()=>{
+// WS.on('connect', ()=>{
 describe('ipc_rpc_reset', function () {
     it('reset_timeout_batch_request', function (done) {
         setTimeout(() => {
-            IPC_RPC.reset();
+            WS.reset();
         }, 0);
 
-        IPC_RPC.batch([
+        WS.batch([
             {
                 type: 'request',
                 methodName: 'wallet.ListAddress'
@@ -37,7 +36,7 @@ describe('ipc_rpc_reset', function () {
             done(res);
         }).catch((err) => {
             addResCount();
-            assert.equal(err.message, IPC_RPC.ERRORS.ABORT().message);
+            assert.equal(err.message, WS.ERRORS.ABORT().message);
             done();
         });
     });

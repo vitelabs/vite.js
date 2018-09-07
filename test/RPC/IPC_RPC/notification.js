@@ -13,18 +13,18 @@ function addResCount() {
     }
 }
 
-IPC_RPC.on('connect', ()=>{
-    describe('ipc_rpc_notification', function () {
-        it('notification_no_method', function (done) {
-            let err = IPC_RPC.notification();
-            addResCount();
-            done(!err);
-        });
+// IPC_RPC.on('connect', ()=>{
+describe('ipc_rpc_notification', function () {
+    it('notification_no_method', function (done) {
+        let err = IPC_RPC.notification();
+        addResCount();
+        done(!err);
+    });
     
-        it('notification_success', function (done) {
-            let err = IPC_RPC.notification('wallet.ReloadAndFixAddressFile');
-            addResCount();
-            done(err);
-        });
+    it('notification_success', function (done) {
+        let err = IPC_RPC.notification('wallet.ReloadAndFixAddressFile');
+        addResCount();
+        done(err);
     });
 });
+// });

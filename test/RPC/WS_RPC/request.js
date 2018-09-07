@@ -1,7 +1,6 @@
-import ViteJS from '../../../index.js';
+import WS_RPC from '../../../libs/WS/index';
 
-const IPC_RPC = new ViteJS.IPC_RPC({
-    path: '/Users/sisi/viteisbest/vite.ipc',
+let WS = new WS_RPC({
     timeout: 200
 });
 
@@ -10,14 +9,13 @@ let resultCount = 0;
 function addResCount() {
     resultCount++;
     if (resultCount ===  2) {
-        IPC_RPC.disconnect();
+        WS.disconnect();
     }
 }
 
-// IPC_RPC.on('connect', ()=>{
 describe('ipc_rpc_request', function () {
     it('request_no_method', function (done) {
-        IPC_RPC.request().then(() => {
+        WS.request().then(() => {
             addResCount();
             done('the test case don\'t have param \'methodName\', should return error, but now, return success.');
         }).catch(() => {                
@@ -25,9 +23,9 @@ describe('ipc_rpc_request', function () {
             done();
         });
     });
-    
+
     it('request_success', function (done) {
-        IPC_RPC.request('wallet.ListAddress').then(() => {
+        WS.request('wallet_listAddress').then(() => {
             addResCount();
             done();
         }).catch((err) => {
@@ -35,10 +33,10 @@ describe('ipc_rpc_request', function () {
             done(err);
         });
     });
-    
+
     it('request_timeout_error', function (done) {
         const Params = [1, 2];
-        IPC_RPC.request('jsonrpcTimeoutError', Params).then((res) => {
+        WS.request('jsonrpcTimeoutError', Params).then((res) => {
             addResCount();
             done(res);
         }).catch(() => {
@@ -47,4 +45,3 @@ describe('ipc_rpc_request', function () {
         });
     });
 });
-// });
