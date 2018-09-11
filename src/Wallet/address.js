@@ -7,15 +7,15 @@ class Address {
         this.Vite = Vite;
     }
 
-    getMnemonicFromEntropy(mnemonic) {        
+    getEntropyFromMnemonic(mnemonic) {
         let valid = bip39.validateMnemonic(mnemonic);
         if (!valid) {
             return false;
-        }
+        }    
         return bip39.mnemonicToEntropy(mnemonic);
     }
 
-    getEntropyFromMnemonic(entropy) {
+    getMnemonicFromEntropy(entropy) {
         return bip39.entropyToMnemonic(entropy);
     }
 
