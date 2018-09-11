@@ -1,5 +1,5 @@
 import keystore from './keystore.js';
-import hd from './hd.js';
+import address from './address.js';
 
 class Wallet {
     constructor(Vite) {
@@ -7,7 +7,7 @@ class Wallet {
         this.Vite = Vite;
 
         this.Keystore = new keystore();
-        this.HD = new hd(this.Vite);
+        this.Address = new address(this.Vite);
     }
 }
 

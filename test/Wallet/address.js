@@ -3,25 +3,13 @@ import vitejs from '../../index.js';
 
 const HTTP_RPC = new vitejs.HTTP_RPC({});
 const ViteJS = new vitejs(HTTP_RPC);
-const WalletHD = ViteJS.Wallet.HD;
+const WalletHD = ViteJS.Wallet.Address;
 
-describe('Wallet_HD', function () {
+describe('Wallet_Address', function () {
     let mnemonic = 'truck female picnic cactus mountain around keen letter brass assume night air shallow predict gap scheme again moon drive slender tone coin stairs seven';
-    let seed = 'f3ceb491b91476cc604e7fe57fd30483aa4611c705d7ef0591bd3a1ff23071c2ce3d88f8959cbafb9fd99d079b91ea863704c9d5447a83ad09661f3c1db33d60';
 
-    it('test_getSeed', function () {
-        let s = WalletHD.getSeed();
-        let ss = WalletHD.getSeed(s.mnemonic);
-        assert.equal(s.seed, ss.seed);
-    });
-
-    it('test_getSeed_mnemonic', function () {
-        let s = WalletHD.getSeed(mnemonic);
-        assert.equal(s.seed, seed);
-    });
-
-    it('test_getAddrsFromSeed', function () {
-        let as = WalletHD.getAddrsFromSeed(seed);
+    it('test_getAddrsFromMnemonic', function () {
+        let as = WalletHD.getAddrsFromMnemonic(mnemonic, 'm/44\'/999\'');
         let arr = [];
         as.forEach((item)=>{
             arr.push(item.hexAddr);
@@ -39,10 +27,5 @@ describe('Wallet_HD', function () {
             'vite_74630139fa3d47e65e63efba781b56d5a2bea820597bc73a75',
             'vite_4d49f23a4a2cbf6866788f84328181a7ee02c9fd9842e8f60c'
         ]);
-    });
-
-    it('test_getAddrFromPath', function () {
-        let addr = WalletHD.getAddrFromPath('m/44\'/999\'/5\'', seed);
-        assert.equal(addr.hexAddr, 'vite_af6fdd10ed33d0317b21cf11f3df0bf9f79948790d36b9e2e8');
     });
 });

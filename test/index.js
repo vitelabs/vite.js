@@ -16,5 +16,5 @@ describe('Address Test: src/utils/address', function () {
 
 describe('Wallet Test: src/Wallet', function () {
     require('./Wallet/keystore');
-    require('./Wallet/hd');
+    require('./Wallet/address');
 });
