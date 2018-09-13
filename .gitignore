@@ -5,3 +5,4 @@ ViteJS
 .idea/
 coverage
 .nyc_output/
+package-lock.json
