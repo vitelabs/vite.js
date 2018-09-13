@@ -1,8 +1,7 @@
 .DS_Store
 node_modules
 .eslintcache
-static
-docs/.vuepress/dist
+ViteJS
 .idea/
 coverage
 .nyc_output/

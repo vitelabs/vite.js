@@ -2,7 +2,7 @@ import Vite from './Vite/index.js';
 import Wallet from './Wallet/index.js';
 
 import HTTP_RPC from '../libs/HTTP/index.js';
-import IPC_RPC from '../libs/IPC/index.js';
+// import IPC_RPC from '../libs/IPC/index.js';
 import WS_RPC from '../libs/WS/index.js';
 
 import BigNumber from 'bignumber.js';
@@ -27,7 +27,7 @@ class ViteJS {
 }
 
 ViteJS.HTTP_RPC = HTTP_RPC;
-ViteJS.IPC_RPC = IPC_RPC;
+// ViteJS.IPC_RPC = IPC_RPC;
 ViteJS.WS_RPC = WS_RPC;
 // Libs
 ViteJS.BigNumber = BigNumber;

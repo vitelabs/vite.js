@@ -99,7 +99,7 @@ class HTTP_RPC extends Communication {
 
         return this._send(requestObj).then((res) => {
             if (!res) {
-                throw this.ERRORS.INVAILID(res);
+                throw this.ERRORS.INVAILID_RESPONSE(res);
             }
 
             return {
