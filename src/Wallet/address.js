@@ -1,12 +1,9 @@
 import bip39 from 'bip39';
 import hd from '../../libs/hd';
 import libUtils from '../../libs/utils';
+import utils from '../utils/index';
 
 class Address {
-    constructor(Vite) {
-        this.Vite = Vite;
-    }
-
     getEntropyFromMnemonic(mnemonic) {
         let valid = bip39.validateMnemonic(mnemonic);
         if (!valid) {
@@ -70,5 +67,5 @@ function getAddrFromPath(path, seed) {
     let { key } = hd.derivePath(path, seed);
     let { privateKey } = hd.getPublicKey(key);
     let priv = libUtils.bytesToHex(privateKey);
-    return this.Vite.Account.newHexAddr(priv);
+    return utils.newHexAddr(priv);
 }

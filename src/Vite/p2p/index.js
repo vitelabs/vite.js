@@ -5,8 +5,12 @@ class P2P extends basicStruct {
         super(provider);
     }
 
-    isNetworkAvailable() {
-        return this.provider.request('p2p.NetworkAvailable');
+    networkAvailable() {
+        return this.provider.request('p2p_networkAvailable');
+    }
+
+    peersCount() {
+        return this.provider.request('p2p_peersCount');
     }
 }
 

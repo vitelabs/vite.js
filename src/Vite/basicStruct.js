@@ -1,10 +1,10 @@
 class basicStruct {
     constructor(provider) {
-        this.currentProvider = provider;
+        this.provider = provider;
     }
 
     setProvider(provider) {
-        this.currentProvider = provider;
+        this.provider = provider;
     }
 }
 

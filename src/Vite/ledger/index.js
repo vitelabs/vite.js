@@ -5,32 +5,59 @@ class Ledger extends basicStruct {
         super(provider);
     }
 
-    createTX(pass) {
-        return this.provider.request('ledger.CreateTxWithPassphrase', pass);
+    createTx(AccountBlock) {
+        return this.provider.request('ledger_createTx', AccountBlock);
     }
 
-    getBlocks (accAddr) {
-        return this.provider.request('ledger.GetBlocksByAccAddr', accAddr);
+    // SelfAddr: string of addr 
+    // ToAddr: string of addr
+    // Passphrase: string
+    // TokenTypeId: string of tokentypeid
+    // Amount:big int
+    createTxWithPassphrase(AccountBlock) {
+        return this.provider.request('ledger_createTxWithPassphrase', AccountBlock);
     }
 
-    getUnconfirmedBlocks (accAddr) {
-        return this.provider.request('ledger.GetUnconfirmedBlocksByAccAddr', accAddr);
+    getBlocksByAccAddr ({
+        accAddr, index, count = 20
+    }) {
+        return this.provider.request('ledger_getBlocksByAccAddr', {
+            Addr: accAddr,
+            Index: index,
+            Count: count
+        });
     }
 
-    getAccount (accAddr) {
-        return this.provider.request('ledger.GetAccountByAccAddr', accAddr);
+    getAccountByAccAddr (accAddr) {
+        return this.provider.request('ledger_getAccountByAccAddr', accAddr);
     }
 
     getUnconfirmedInfo (accAddr) {
-        return this.provider.request('ledger.GetUnconfirmedInfo', accAddr);
+        return this.provider.request('ledger_getUnconfirmedInfo', accAddr);
+    }
+
+    getUnconfirmedBlocksByAccAddr (accAddr) {
+        return this.provider.request('ledger_getUnconfirmedBlocksByAccAddr', accAddr);
+    }
+    
+    getLatestBlock (accAddr) {
+        return this.provider.request('ledger_getLatestBlock', accAddr);
+    }
+    
+    getTokenMintage () {
+        return this.provider.request('ledger_getTokenMintage');
+    }
+
+    getBlocksByHash (accAddr) {
+        return this.provider.request('ledger_getBlocksByHash', accAddr);
     }
 
     getInitSyncInfo() {
-        return this.provider.request('ledger.GetInitSyncInfo');
+        return this.provider.request('ledger_getInitSyncInfo');
     }
 
     getSnapshotChainHeight() {
-        return this.provider.request('ledger.GetSnapshotChainHeight');
+        return this.provider.request('ledger_getSnapshotChainHeight');
     }
 }
 

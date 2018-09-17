@@ -7,7 +7,7 @@ class Wallet {
         this.Vite = Vite;
 
         this.Keystore = new keystore();
-        this.Address = new address(this.Vite);
+        this.Address = new address();
     }
 }
 
