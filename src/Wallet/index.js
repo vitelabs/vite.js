@@ -1,5 +1,6 @@
 import keystore from './keystore.js';
 import address from './address.js';
+import account from './account.js';
 
 class Wallet {
     constructor(Vite) {
@@ -8,6 +9,7 @@ class Wallet {
 
         this.Keystore = new keystore();
         this.Address = new address();
+        this.Account = new account(Vite);
     }
 }
 

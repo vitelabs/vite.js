@@ -59,6 +59,23 @@ class Ledger extends basicStruct {
     getSnapshotChainHeight() {
         return this.provider.request('ledger_getSnapshotChainHeight');
     }
+
+    // GetUnconfirmedTransactionRequest(address: address.description),
+    //                     GetLatestAccountBlockRequest(address: address.description),
+    //                     GetLatestSnapshotChainHashRequest()))
+    // receiveBlock(addr) {
+    //     this.provider.batch({
+    //         type: 'request',                    
+    //         methodName: 'ledger_getUnconfirmedBlocksByAccAddr',
+    //         params: [addr, 0, 1]
+    //     }, {
+    //         type: 'request',
+    //         methodName: 'wallet_reloadAndFixAddressFile'
+    //     }, {
+    //         type: 'notification',
+    //         methodName: 'wallet_reloadAndFixAddressFile'
+    //     })
+    // }
 }
 
 export default Ledger;
