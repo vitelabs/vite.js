@@ -1,4 +1,4 @@
-const loopTime = 2000;
+// const loopTime = 2000;
 
 class Account {
     constructor(Vite) {
