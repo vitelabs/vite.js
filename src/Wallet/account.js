@@ -3,46 +3,59 @@ const loopTime = 2000;
 class Account {
     constructor(Vite) {
         this.Vite = Vite;
-
         this.addrList = [];
-        // this._loopAddrList();
     }
 
-    unlock(address) {
+    getunLockAddrList () {
+        return this.addrList;
+    }
+
+    unlock(address, privKey) {
         this.addrList.push(address);
-        this._loopAddr(address);
+        this._loopAddr(address, privKey);
     }
 
     lock(address) {
-        let i;
-        for (i=0; i<this.addrList.length; i++) {
-            if (this.addrList[i] === address) {
-                break;
-            }
-        }
-
-        if (i >= this.addrList.length) {
+        let i = this.addrList.indexOf(address);
+        if (i < 0) {
             return;
         }
         this.addrList = this.addrList.splice(i, 1);
     }
 
-    _loopAddr(address) {
+    _loopAddr(address, privKey) {
         if (this.addrList.indexOf(address) < 0) {
             return;
         }
 
-        let loop = ()=>{
-            let loopTimeout = setTimeout(()=>{
-                clearTimeout(loopTimeout);
-                loopTimeout = null;
-                this._loopAddr(address);
-            }, loopTime);
-        };
+        // let loop = ()=>{
+        //     let loopTimeout = setTimeout(()=>{
+        //         clearTimeout(loopTimeout);
+        //         loopTimeout = null;
+        //         this._loopAddr(address, privKey);
+        //     }, loopTime);
+        // };
 
-        this.Vite.Ledger.receiveBlock(address).then((data)=>{
-            console.log(data);
-            loop();
+        this.Vite.Ledger.getReceiveBlock(address).then((accountBlock)=>{
+            if (!accountBlock) {
+                return;
+            }
+
+            let { hash, signature } = this.Vite.Account.signTX(accountBlock, privKey);
+            accountBlock.hash = hash;
+            accountBlock.signature = signature;
+
+            // [TODO]
+            console.log(accountBlock);
+            this.Vite.Ledger.createTx(accountBlock).then((data)=>{
+                console.log(data);
+            }).catch((err)=>{
+                console.log(err);
+            });
+            // loop();
+        }).catch((err)=>{
+            console.error(err);
+            // loop();
         });
     }
 

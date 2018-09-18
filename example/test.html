@@ -2,8 +2,8 @@
 <html>
 
 <head>
-    <script type="text/javascript" src="../static/vite.min.js"></script>
-    <!-- <script type="text/javascript" src="../static/vite.js"></script> -->
+    <!-- <script type="text/javascript" src="../static/vite.min.js"></script> -->
+    <script type="text/javascript" src="../ViteJS/vite.js"></script>
     <script type="text/javascript">
         let HTTP_RPC = new ViteJS.HTTP_RPC({});
         let ViteJSLibs = new ViteJS(HTTP_RPC);
@@ -18,21 +18,21 @@
             let k = ViteJSLibs.Vite.Account.newHexAddr(privKey);
             console.log('Test keystore', k.hexAddr === keyJSON.hexaddress);
         }
-        // keystore();
+        keystore();
 
-        function hd() {
-            const WalletHD = ViteJSLibs.Wallet.HD;
+        // function hd() {
+        //     const WalletHD = ViteJSLibs.Wallet.HD;
 
-            let mnemonic = 'truck female picnic cactus mountain around keen letter brass assume night air shallow predict gap scheme again moon drive slender tone coin stairs seven';
-            let seed = 'f3ceb491b91476cc604e7fe57fd30483aa4611c705d7ef0591bd3a1ff23071c2ce3d88f8959cbafb9fd99d079b91ea863704c9d5447a83ad09661f3c1db33d60';
+        //     let mnemonic = 'truck female picnic cactus mountain around keen letter brass assume night air shallow predict gap scheme again moon drive slender tone coin stairs seven';
+        //     let seed = 'f3ceb491b91476cc604e7fe57fd30483aa4611c705d7ef0591bd3a1ff23071c2ce3d88f8959cbafb9fd99d079b91ea863704c9d5447a83ad09661f3c1db33d60';
 
-            let s = WalletHD.getSeed(mnemonic);
-            console.log('Test hd seed', s.seed === seed);
+        //     let s = WalletHD.getSeed(mnemonic);
+        //     console.log('Test hd seed', s.seed === seed);
 
-            let addr = WalletHD.getAddrFromPath('m/44\'/999\'/5\'', seed);
-            console.log('Test hd addr', addr.hexAddr === 'vite_af6fdd10ed33d0317b21cf11f3df0bf9f79948790d36b9e2e8')
-        }
-        hd();
+        //     let addr = WalletHD.getAddrFromPath('m/44\'/999\'/5\'', seed);
+        //     console.log('Test hd addr', addr.hexAddr === 'vite_af6fdd10ed33d0317b21cf11f3df0bf9f79948790d36b9e2e8')
+        // }
+        // hd();
     </script>
 </head>
 

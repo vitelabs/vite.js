@@ -22,25 +22,43 @@ export default {
         addr = utils.bytesToHex(addr);
         return {
             addr,
+            pubKey: utils.bytesToHex( privToPub(privKey) ),
             privKey: utils.bytesToHex(privKey),
             hexAddr: ADDR_PRE + addr + checkSum
         };
     },
 
-    isValidHexAddr(hexAddr) {
-        if (!hexAddr || hexAddr.length !== ADDR_LEN || hexAddr.indexOf(ADDR_PRE) !== 0) {
-            return false;
+    isValidHexAddr,
+
+    getAddrFromHexAddr(hexAddr) {
+        if (!isValidHexAddr(hexAddr)) {
+            return null;
         }
-    
-        let pre = hexAddr.slice(ADDR_PRE.length, ADDR_PRE.length + ADDR_SIZE * 2);
-        let addr = utils.hexToBytes(pre); 
-    
-        let currentChecksum = hexAddr.slice(ADDR_PRE.length + ADDR_SIZE * 2);
-        let checkSum = getAddrCheckSum(addr);
-      
-        return currentChecksum === checkSum;
+        return getRealAddr(hexAddr);
     }
 };
+
+function isValidHexAddr(hexAddr) {
+    if (!hexAddr || hexAddr.length !== ADDR_LEN || hexAddr.indexOf(ADDR_PRE) !== 0) {
+        return false;
+    }
+
+    let pre = hexAddr.slice(ADDR_PRE.length, ADDR_PRE.length + ADDR_SIZE * 2);
+    let addr = utils.hexToBytes(pre); 
+
+    let currentChecksum = hexAddr.slice(ADDR_PRE.length + ADDR_SIZE * 2);
+    let checkSum = getAddrCheckSum(addr);
+  
+    return currentChecksum === checkSum;
+}
+
+function getRealAddr(hexAddr) {
+    return hexAddr.slice(ADDR_PRE.length, ADDR_PRE.length + ADDR_SIZE * 2);
+}
+
+function privToPub(privKey) {
+    return privKey.slice(32);
+}
 
 function newAddr(privKey) {
     let addr = '';
@@ -63,7 +81,7 @@ function newAddrFromPub(pubKey) {
 }
 
 function newAddrFromPriv(privKey) {
-    return newAddrFromPub( privKey.slice(32) );
+    return newAddrFromPub( privToPub(privKey) );
 }
 
 function getAddrCheckSum(addr) {

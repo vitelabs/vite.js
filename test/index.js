@@ -14,6 +14,10 @@ describe('Address Test: src/utils/address', function () {
     require('./address');
 });
 
+describe('Vite Test: src/Vite', function () {
+    require('./Vite/account');
+});
+
 describe('Wallet Test: src/Wallet', function () {
     require('./Wallet/keystore');
     require('./Wallet/address');
