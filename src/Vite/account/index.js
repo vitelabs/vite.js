@@ -64,5 +64,7 @@ function getRawTokenid(tokenId) {
     if (tokenId.indexOf('tti_') !== 0) {
         return null;
     }
-    return tokenId.slice(4);
+    console.log(tokenId);
+    console.log(tokenId.slice(4, tokenId.length - 2));
+    return tokenId.slice(4, tokenId.length - 2);
 }

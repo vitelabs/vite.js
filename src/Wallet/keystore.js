@@ -150,7 +150,6 @@ class keystore {
             privKey = decipher.update(libUtils.hexToBytes(ciphertext), 'utf8', 'hex');
             privKey += decipher.final('hex');
         } catch(err) {
-            console.warn(err);
             return false;
         }
 

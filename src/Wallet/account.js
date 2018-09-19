@@ -47,7 +47,7 @@ class Account {
 
             // [TODO]
             console.log(accountBlock);
-            this.Vite.Ledger.createTx(accountBlock).then((data)=>{
+            this.Vite.Ledger.sendTx(accountBlock).then((data)=>{
                 console.log(data);
             }).catch((err)=>{
                 console.log(err);

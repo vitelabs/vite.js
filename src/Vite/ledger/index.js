@@ -17,26 +17,23 @@ class Ledger extends basicStruct {
         super(provider);
     }
 
-    createTx(AccountBlock) {
-        return this.provider.request('ledger_createTx', [AccountBlock]);
+    sendTx(accountBlock) {
+        return this.provider.request('ledger_sendTx', [ accountBlock ]);
     }
 
-    // SelfAddr: string of addr 
-    // ToAddr: string of addr
-    // Passphrase: string
-    // TokenTypeId: string of tokentypeid
-    // Amount:big int
-    createTxWithPassphrase(AccountBlock) {
-        return this.provider.request('ledger_createTxWithPassphrase', AccountBlock);
+    createTxWithPassphrase({
+        selfAddr, toAddr, passphrase, tokenTypeId, amount
+    }) {
+        return this.provider.request('ledger_createTxWithPassphrase', {
+            selfAddr, toAddr, passphrase, tokenTypeId, amount
+        });
     }
 
     getBlocksByAccAddr ({
-        accAddr, index, count = 20
+        accAddr, index, count = 20, needTokenInfo = false
     }) {
         return this.provider.request('ledger_getBlocksByAccAddr', {
-            Addr: accAddr,
-            Index: index,
-            Count: count
+            accAddr, index, count, needTokenInfo
         });
     }
 
@@ -97,7 +94,9 @@ class Ledger extends basicStruct {
             }
             let block = blocks[0];
 
-            let height = latestBlock.meta.height ? new BigNumber(block.meta.height).plus(1).toFormat() : 1;
+            let height = latestBlock.meta.height ? new BigNumber(latestBlock.meta.height).plus(1).toFormat() : 1;
+            let timestamp = new BigNumber(new Date().getTime()).dividedToIntegerBy(1000).toFormat();
+
             return {
                 meta: {
                     height
@@ -105,12 +104,13 @@ class Ledger extends basicStruct {
                 accountAddress: addr,
                 fromHash: block.hash,
                 prevHash: latestBlock.hash,
-                timestamp: new Date().getTime(),
+                timestamp,
                 tokenId: block.tokenId,
                 data: block.data,
                 snapshotTimestamp: latestSnapshotChainHash,
                 nonce: '0000000000',
-                difficulty: '0000000000'
+                difficulty: '0000000000',
+                fAmount: '0'
             };
         });
     }
