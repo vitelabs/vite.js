@@ -1,4 +1,4 @@
-import IPC_WS from '../Communication/ipc_ws';
+import IPC_WS from './Communication/ipc_ws';
 const net = require('net');
 
 class IPC_RPC extends IPC_WS {

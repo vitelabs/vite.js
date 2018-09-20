@@ -1,9 +1,9 @@
 import Vite from './Vite/index.js';
 import Wallet from './Wallet/index.js';
 
-import HTTP_RPC from '../libs/HTTP/index.js';
-// import IPC_RPC from '../libs/IPC/index.js';
-import WS_RPC from '../libs/WS/index.js';
+import HTTP_RPC from '../libs/HTTP.js';
+// import IPC_RPC from '../libs/IPC.js';
+import WS_RPC from '../libs/WS.js';
 
 import BigNumber from 'bignumber.js';
 

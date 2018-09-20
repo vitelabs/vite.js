@@ -1,4 +1,4 @@
-import IPC_WS from '../Communication/ipc_ws';
+import IPC_WS from './Communication/ipc_ws';
 const websocket = require('websocket').w3cwebsocket;
 
 class WS_RPC extends IPC_WS {

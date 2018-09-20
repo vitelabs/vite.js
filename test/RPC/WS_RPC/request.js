@@ -1,4 +1,4 @@
-import WS_RPC from '../../../libs/WS/index';
+import WS_RPC from '../../../libs/WS';
 
 let WS = new WS_RPC({
     timeout: 200

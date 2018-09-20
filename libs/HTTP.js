@@ -1,4 +1,4 @@
-import Communication from '../Communication/index.js';
+import Communication from './Communication/index.js';
 const XMLHttpRequest = typeof window !== 'undefined' && window.XMLHttpRequest ?
     window.XMLHttpRequest : require('xhr2');
 const Promise = typeof window !== 'undefined' && window.Promise ?
