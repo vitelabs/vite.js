@@ -1,4 +1,4 @@
-import basicStruct from '../basicStruct.js';
+import basicStruct from './basicStruct.js';
 import BigNumber from 'bignumber.js';
 
 BigNumber.config({ 
@@ -19,14 +19,6 @@ class Ledger extends basicStruct {
 
     sendTx(accountBlock) {
         return this.provider.request('ledger_sendTx', [ accountBlock ]);
-    }
-
-    createTxWithPassphrase({
-        selfAddr, toAddr, passphrase, tokenTypeId, amount
-    }) {
-        return this.provider.request('ledger_createTxWithPassphrase', {
-            selfAddr, toAddr, passphrase, tokenTypeId, amount
-        });
     }
 
     getBlocksByAccAddr ({

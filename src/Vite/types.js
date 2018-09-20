@@ -1,5 +1,5 @@
-import basicStruct from '../basicStruct.js';
-import utils from '../../utils/index';
+import basicStruct from './basicStruct.js';
+import address from '../address';
 
 class Types extends basicStruct {
     constructor(provider) {
@@ -7,7 +7,7 @@ class Types extends basicStruct {
     }
 
     isValidHexAddr(hexAddr) {
-        return utils.isValidHexAddr(hexAddr);
+        return address.isValidHexAddr(hexAddr);
     }
 
     isValidTokenId(tokenId) {

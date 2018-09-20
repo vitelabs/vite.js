@@ -21,4 +21,5 @@ describe('Vite Test: src/Vite', function () {
 describe('Wallet Test: src/Wallet', function () {
     require('./Wallet/keystore');
     require('./Wallet/address');
+    require('./Wallet/account');
 });

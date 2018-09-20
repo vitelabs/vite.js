@@ -9,7 +9,7 @@ describe('Wallet_Address', function () {
     let mnemonic = 'truck female picnic cactus mountain around keen letter brass assume night air shallow predict gap scheme again moon drive slender tone coin stairs seven';
 
     it('test_getAddrsFromMnemonic', function () {
-        let as = WalletHD.getAddrsFromMnemonic(mnemonic, 'm/44\'/999\'');
+        let as = WalletHD.getAddrsFromMnemonic(mnemonic, 10, 'm/44\'/999\'');
         let arr = [];
         as.forEach((item)=>{
             arr.push(item.hexAddr);

@@ -1,8 +1,8 @@
 import Version from './version.js';
-import Account from './account/index.js';
-import Ledger from './ledger/index.js';
-import P2P from './p2p/index.js';
-import Types from './types/index.js';
+import Account from './account.js';
+import Ledger from './ledger.js';
+import P2P from './p2p.js';
+import Types from './types.js';
 
 class Vite {
     constructor(provider) {

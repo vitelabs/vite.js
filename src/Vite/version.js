@@ -12,7 +12,6 @@ class Version extends basicStruct {
 
     }
 
-    // ???
     getP2PVersion() {
 
     }

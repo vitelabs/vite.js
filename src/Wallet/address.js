@@ -1,7 +1,9 @@
 import bip39 from 'bip39';
 import hd from '../../libs/hd';
 import libUtils from '../../libs/utils';
-import utils from '../utils/index';
+import address from '../address';
+
+const rootPath = 'm/44\'/666666\'';
 
 class Address {
     getEntropyFromMnemonic(mnemonic) {
@@ -16,7 +18,7 @@ class Address {
         return bip39.entropyToMnemonic(entropy);
     }
 
-    newAddr(rootPath) {
+    newAddr() {
         let mnemonic = bip39.generateMnemonic(256);
         let entropy = bip39.mnemonicToEntropy(mnemonic);
         let seed = bip39.mnemonicToSeedHex(mnemonic);
@@ -24,8 +26,8 @@ class Address {
         return { addr, entropy };
     }
 
-    newAddrFromMnemonic(mnemonic, path) {
-        if (!mnemonic || !path) {
+    newAddrFromMnemonic(mnemonic, index) {
+        if (!mnemonic) {
             return false;
         }
 
@@ -34,12 +36,14 @@ class Address {
             return false;
         }
 
+        let path = `${rootPath}/${index}\'`;
         let seed = bip39.mnemonicToSeedHex(mnemonic);
         return getAddrFromPath.call(this, path, seed);
     }
 
-    getAddrsFromMnemonic(mnemonic, rootPath, num = 10) {
-        if (!mnemonic || !rootPath) {
+    getAddrsFromMnemonic(mnemonic, num = 10, path) {
+        path = path || rootPath;
+        if (!mnemonic || num > 10 || num < 0) {
             return false;
         }
 
@@ -52,7 +56,7 @@ class Address {
         let seed = bip39.mnemonicToSeedHex(mnemonic);
 
         for (let i=0; i<num; i++) {
-            let currentPath = `${rootPath}/${i}\'`;
+            let currentPath = `${path}/${i}\'`;
             let addr = getAddrFromPath.call(this, currentPath, seed);
             addrs.push(addr);
         }
@@ -67,5 +71,5 @@ function getAddrFromPath(path, seed) {
     let { key } = hd.derivePath(path, seed);
     let { privateKey } = hd.getPublicKey(key);
     let priv = libUtils.bytesToHex(privateKey);
-    return utils.newHexAddr(priv);
+    return address.newHexAddr(priv);
 }

@@ -1,7 +1,7 @@
 let blake = require('blakejs/blake2b');
-let nacl = require('../../libs/nacl_blake2b');
+let nacl = require('../libs/nacl_blake2b');
 
-import utils from '../../libs/utils';
+import utils from '../libs/utils';
 
 const ADDR_PRE = 'vite_';
 const ADDR_SIZE = 20;

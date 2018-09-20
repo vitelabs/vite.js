@@ -1,4 +1,4 @@
-import basicStruct from '../basicStruct.js';
+import basicStruct from './basicStruct.js';
 
 class P2P extends basicStruct {
     constructor(provider) {

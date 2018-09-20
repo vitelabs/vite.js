@@ -1,5 +1,5 @@
 import libUtils from '../../libs/utils';
-import utils from '../utils/index';
+import address from '../address.js';
 
 const uuid = require('pure-uuid');
 const scryptsy = require('scryptsy');
@@ -95,7 +95,7 @@ class keystore {
             !keyJson.crypto || 
             !keyJson.hexaddress || 
             !keyJson.keystoreversion || 
-            !utils.isValidHexAddr(keyJson.hexaddress)) {
+            !address.isValidHexAddr(keyJson.hexaddress)) {
             return false;
         }
     
@@ -150,6 +150,7 @@ class keystore {
             privKey = decipher.update(libUtils.hexToBytes(ciphertext), 'utf8', 'hex');
             privKey += decipher.final('hex');
         } catch(err) {
+            console.warn(err);
             return false;
         }
 

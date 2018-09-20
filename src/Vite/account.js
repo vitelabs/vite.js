@@ -1,9 +1,9 @@
-let nacl = require('../../../libs/nacl_blake2b');
+let nacl = require('../../libs/nacl_blake2b');
 let blake = require('blakejs/blake2b');
 
-import basicStruct from '../basicStruct';
-import libUtils from '../../../libs/utils';
-import utils from '../../utils/index';
+import basicStruct from './basicStruct';
+import libUtils from '../../libs/utils';
+import address from '../address';
 
 class Account extends basicStruct {
     constructor(provider) {
@@ -11,14 +11,14 @@ class Account extends basicStruct {
     }
 
     newHexAddr(privKey) {
-        return utils.newHexAddr(privKey);
+        return address.newHexAddr(privKey);
     }
 
     signTX(accountBlock, privKey) {
         let source = getSource(accountBlock);
         source = libUtils.hexToBytes(source);
 
-        let addr = utils.newHexAddr(privKey);
+        let addr = address.newHexAddr(privKey);
         let pubKey = addr.pubKey; // Hex string
 
         let hash = blake.blake2b(source, null, 32);
@@ -41,9 +41,9 @@ function getSource(accountBlock) {
 
     source += accountBlock.prevHash || '';
     source += (accountBlock.meta && accountBlock.meta.height) ? libUtils.strToHex(accountBlock.meta.height) : '';
-    source += accountBlock.accountAddress ? utils.getAddrFromHexAddr(accountBlock.accountAddress) : '';
+    source += accountBlock.accountAddress ? address.getAddrFromHexAddr(accountBlock.accountAddress) : '';
     if (accountBlock.to) {
-        source += utils.getAddrFromHexAddr(accountBlock.to);
+        source += address.getAddrFromHexAddr(accountBlock.to);
         source += getRawTokenid(accountBlock.tokenId) || '';
         source += libUtils.strToHex(accountBlock.amount) || '';
     } else {
@@ -64,7 +64,5 @@ function getRawTokenid(tokenId) {
     if (tokenId.indexOf('tti_') !== 0) {
         return null;
     }
-    console.log(tokenId);
-    console.log(tokenId.slice(4, tokenId.length - 2));
     return tokenId.slice(4, tokenId.length - 2);
 }

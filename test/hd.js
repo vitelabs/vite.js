@@ -2,7 +2,7 @@ const assert = require('assert');
 const bip39 = require('bip39');
 
 import hd from '../libs/hd';
-import utils from '../src/utils';
+import address from '../src/address.js';
 import libUtils from '../libs/utils';
 
 const path = 'm/44\'/999\'/';
@@ -235,7 +235,7 @@ function verification(Accounts, seedHex) {
         let { key } = hd.derivePath(currentPath, seedHex);
         
         let { privateKey } = hd.getPublicKey(key);
-        let hexAddr = utils.newHexAddr( libUtils.bytesToHex(privateKey) ).hexAddr;
+        let hexAddr = address.newHexAddr( libUtils.bytesToHex(privateKey) ).hexAddr;
 
         describe(currentPath, function() {
             it('key', function () {
