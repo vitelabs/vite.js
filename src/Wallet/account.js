@@ -26,6 +26,10 @@ class Account {
     }
 
     unlock(address, privKey) {
+        this.addrList = this.addrList || [];
+        if (this.addrList.indexOf(address) >= 0) {
+            return;
+        }
         this.addrList.push(address);
         this._loopAddr(address, privKey);
     }
@@ -35,7 +39,7 @@ class Account {
         if (i < 0) {
             return;
         }
-        this.addrList = this.addrList.splice(i, 1);
+        this.addrList.splice(i, 1);
     }
 
     _loopAddr(address, privKey) {
@@ -52,7 +56,12 @@ class Account {
         };
 
         this.Vite.Ledger.getReceiveBlock(address).then((accountBlock)=>{
+            if (this.addrList.indexOf(address) < 0) {
+                return;
+            }
+            
             if (!accountBlock) {
+                loop();
                 return;
             }
 
@@ -60,8 +69,6 @@ class Account {
             accountBlock.hash = hash;
             accountBlock.signature = signature;
 
-            // [TODO]
-            console.log(accountBlock);
             this.Vite.Ledger.sendTx(accountBlock).then((data)=>{
                 console.log(data);
             }).catch((err)=>{
