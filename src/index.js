@@ -6,6 +6,7 @@ import HTTP_RPC from '../libs/HTTP.js';
 import WS_RPC from '../libs/WS.js';
 
 import BigNumber from 'bignumber.js';
+import utils from '../libs/utils.js';
 
 class ViteJS {
     constructor(provider) {
@@ -31,5 +32,6 @@ ViteJS.HTTP_RPC = HTTP_RPC;
 ViteJS.WS_RPC = WS_RPC;
 // Libs
 ViteJS.BigNumber = BigNumber;
+ViteJS.utils = utils;
 
 export default ViteJS;

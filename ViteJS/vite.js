@@ -49960,6 +49960,8 @@ var _WS = _interopRequireDefault(require("../libs/WS.js"));
 
 var _bignumber = _interopRequireDefault(require("bignumber.js"));
 
+var _utils = _interopRequireDefault(require("../libs/utils.js"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -50000,10 +50002,11 @@ ViteJS.HTTP_RPC = _HTTP.default; // ViteJS.IPC_RPC = IPC_RPC;
 ViteJS.WS_RPC = _WS.default; // Libs
 
 ViteJS.BigNumber = _bignumber.default;
+ViteJS.utils = _utils.default;
 var _default = ViteJS;
 exports.default = _default;
 
-},{"../libs/HTTP.js":4,"../libs/WS.js":5,"./Vite/index.js":185,"./Wallet/index.js":192,"bignumber.js":24}],"ViteJS":[function(require,module,exports){
+},{"../libs/HTTP.js":4,"../libs/WS.js":5,"../libs/utils.js":8,"./Vite/index.js":185,"./Wallet/index.js":192,"bignumber.js":24}],"ViteJS":[function(require,module,exports){
 "use strict";
 
 var _index = _interopRequireDefault(require("./src/index.js"));
