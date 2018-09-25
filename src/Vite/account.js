@@ -15,8 +15,8 @@ class Account extends basicStruct {
     }
 
     signTX(accountBlock, privKey) {
-        let source = getSource(accountBlock);
-        source = libUtils.hexToBytes(source);
+        let sourceHex = getSource(accountBlock);
+        let source = libUtils.hexToBytes(sourceHex);
 
         let addr = address.newHexAddr(privKey);
         let pubKey = addr.pubKey; // Hex string
@@ -28,6 +28,7 @@ class Account extends basicStruct {
         let signatureHex = libUtils.bytesToHex(signature);
 
         return {
+            pubKey,
             hash: hashString, 
             signature: signatureHex
         };
@@ -42,6 +43,7 @@ function getSource(accountBlock) {
     source += accountBlock.prevHash || '';
     source += (accountBlock.meta && accountBlock.meta.height) ? libUtils.strToHex(accountBlock.meta.height) : '';
     source += accountBlock.accountAddress ? address.getAddrFromHexAddr(accountBlock.accountAddress) : '';
+
     if (accountBlock.to) {
         source += address.getAddrFromHexAddr(accountBlock.to);
         source += getRawTokenid(accountBlock.tokenId) || '';
@@ -49,9 +51,9 @@ function getSource(accountBlock) {
     } else {
         source += accountBlock.fromHash || '';
     }
-    // timestamp: The Magic Number
+
     source += 'EFBFBD';
-    source += accountBlock.data ? libUtils.strToHex(JSON.stringify(accountBlock.data)) : '';
+    source += accountBlock.data ? libUtils.strToHex(accountBlock.data) : '';
     source += accountBlock.snapshotTimestamp || '';
     source += accountBlock.nonce || '';
     source += accountBlock.difficulty || '';
@@ -64,5 +66,5 @@ function getRawTokenid(tokenId) {
     if (tokenId.indexOf('tti_') !== 0) {
         return null;
     }
-    return tokenId.slice(4, tokenId.length - 2);
+    return tokenId.slice(4, tokenId.length - 4);
 }

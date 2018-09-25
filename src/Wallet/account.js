@@ -21,7 +21,7 @@ class Account {
         this.scryptKeyLen = 32;
     }
 
-    getunLockAddrList () {
+    getUnLockAddrList () {
         return this.addrList;
     }
 
@@ -55,29 +55,70 @@ class Account {
             }, loopTime);
         };
 
-        this.Vite.Ledger.getReceiveBlock(address).then((accountBlock)=>{
-            if (this.addrList.indexOf(address) < 0) {
-                return;
-            }
-            
-            if (!accountBlock) {
-                loop();
-                return;
-            }
-
-            let { hash, signature } = this.Vite.Account.signTX(accountBlock, privKey);
-            accountBlock.hash = hash;
-            accountBlock.signature = signature;
-
-            this.Vite.Ledger.sendTx(accountBlock).then((data)=>{
-                console.log(data);
-            }).catch((err)=>{
-                console.log(err);
-            });
+        this.receiveTx(address, privKey).then(()=>{
             loop();
         }).catch((err)=>{
-            console.error(err);
+            console.warn(err);
             loop();
+        });
+    }
+
+    receiveTx(address, privKey) {
+        return new Promise((res, rej) => {
+            this.Vite.Ledger.getReceiveBlock(address).then((accountBlock)=>{
+                if (!accountBlock) {
+                    return res();
+                }
+    
+                let { hash, signature, pubKey } = this.Vite.Account.signTX(accountBlock, privKey);
+                accountBlock.publicKey = pubKey;
+                accountBlock.hash = hash;
+                accountBlock.signature = signature;
+
+                this.Vite.Ledger.sendTx(accountBlock).then((data)=>{
+                    if (data && data.error) {
+                        return rej(data.error);
+                    }
+                    return res(data);
+                }).catch((err)=>{
+                    return rej(err);
+                });
+            }).catch((err)=>{
+                return rej(err);
+            });
+        });
+    }
+
+    sendTx({
+        fromAddr, toAddr, tokenId, amount, message
+    }, privKey) {
+        if ( !this.Vite.Types.isValidHexAddr(fromAddr) ) {
+            return Promise.reject('fromAddr fail');
+        }
+        if ( !this.Vite.Types.isValidHexAddr(toAddr) ) {
+            return Promise.reject('toAddr fail');
+        }
+        if (!amount) {
+            return Promise.reject('amount fail');
+        }
+
+        return new Promise((res, rej) => {
+            this.Vite.Ledger.getSendBlock({
+                fromAddr, toAddr, tokenId, amount, message
+            }).then((accountBlock)=>{
+                let { hash, signature, pubKey } = this.Vite.Account.signTX(accountBlock, privKey);
+                accountBlock.publicKey = pubKey;
+                accountBlock.hash = hash;
+                accountBlock.signature = signature;
+  
+                this.Vite.Ledger.sendTx(accountBlock).then((data)=>{
+                    return res(data);
+                }).catch((err)=>{
+                    return rej(err);
+                });
+            }).catch((err)=>{
+                return rej(err);
+            });
         });
     }
 

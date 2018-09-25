@@ -77,6 +77,7 @@ class Ledger extends basicStruct {
             if (!data) {
                 return null;
             }
+
             let blocks = data[0].result;
             let latestBlock = data[1].result;
             let latestSnapshotChainHash = data[2].result;
@@ -84,28 +85,66 @@ class Ledger extends basicStruct {
             if (!blocks || !blocks.length) {
                 return null;
             }
+
             let block = blocks[0];
+            let baseTx = getBaseTx(addr, latestBlock, latestSnapshotChainHash);
+            baseTx.fromHash = block.hash;
+            baseTx.tokenId = block.tokenId;
+            block.data && (baseTx.data = block.data);
 
-            let height = latestBlock.meta.height ? new BigNumber(latestBlock.meta.height).plus(1).toFormat() : 1;
-            let timestamp = new BigNumber(new Date().getTime()).dividedToIntegerBy(1000).toFormat();
+            return baseTx;
+        });
+    }
 
-            return {
-                meta: {
-                    height
-                },
-                accountAddress: addr,
-                fromHash: block.hash,
-                prevHash: latestBlock.hash,
-                timestamp,
-                tokenId: block.tokenId,
-                data: block.data,
-                snapshotTimestamp: latestSnapshotChainHash,
-                nonce: '0000000000',
-                difficulty: '0000000000',
-                fAmount: '0'
-            };
+    getSendBlock({
+        fromAddr, toAddr, tokenId, amount, message
+    }) {
+        return this.provider.batch([{
+            type: 'request',
+            methodName: 'ledger_getLatestBlock',
+            params: [ fromAddr ]
+        }, {
+            type: 'request',
+            methodName: 'ledger_getLatestSnapshotChainHash'
+        }]).then((data)=>{
+            if (!data) {
+                return null;
+            }
+
+            let latestBlock = data[0].result;
+            let latestSnapshotChainHash = data[1].result;
+            let baseTx = getBaseTx(fromAddr, latestBlock, latestSnapshotChainHash);
+
+            message && (baseTx.data = message);
+            baseTx.tokenId = tokenId;
+            baseTx.to = toAddr;
+            baseTx.amount = amount;
+
+            return baseTx;
         });
     }
 }
 
 export default Ledger;
+
+function getBaseTx(accountAddress, latestBlock, snapshotTimestamp) {
+    let height = latestBlock && latestBlock.meta && latestBlock.meta.height ? 
+        new BigNumber(latestBlock.meta.height).plus(1).toFormat() : '1';
+    let timestamp = new BigNumber(new Date().getTime()).dividedToIntegerBy(1000).toNumber();
+
+    let baseTx = {
+        accountAddress,
+        meta: { height },
+        timestamp,
+        snapshotTimestamp,
+        nonce: '0000000000',
+        difficulty: '0000000000',
+        fAmount: '0'
+    };
+
+    if (latestBlock && latestBlock.hash) {
+        baseTx.prevHash = latestBlock.hash;
+    }
+    
+    return baseTx;
+}
