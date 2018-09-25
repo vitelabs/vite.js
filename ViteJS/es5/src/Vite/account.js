@@ -71,7 +71,6 @@ function (_basicStruct) {
       var signatureHex = _utils.default.bytesToHex(signature);
 
       return {
-        sourceHex: sourceHex,
         pubKey: pubKey,
         hash: hashString,
         signature: signatureHex
