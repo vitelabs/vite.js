@@ -140,17 +140,18 @@ function () {
           message = _ref.message;
 
       if (!this.Vite.Types.isValidHexAddr(fromAddr)) {
-        return Promise.reject('fromAddr fail');
+        return Promise.reject('FromAddr error');
       }
 
       if (!this.Vite.Types.isValidHexAddr(toAddr)) {
-        return Promise.reject('toAddr fail');
+        return Promise.reject('ToAddr error');
       }
 
       if (!amount) {
-        return Promise.reject('amount fail');
+        return Promise.reject('Amount error');
       }
 
+      message = message ? _utils.default.strToHex(message) : '';
       return new Promise(function (res, rej) {
         _this3.Vite.Ledger.getSendBlock({
           fromAddr: fromAddr,

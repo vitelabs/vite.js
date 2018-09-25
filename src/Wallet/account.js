@@ -93,14 +93,16 @@ class Account {
         fromAddr, toAddr, tokenId, amount, message
     }, privKey) {
         if ( !this.Vite.Types.isValidHexAddr(fromAddr) ) {
-            return Promise.reject('fromAddr fail');
+            return Promise.reject('FromAddr error');
         }
         if ( !this.Vite.Types.isValidHexAddr(toAddr) ) {
-            return Promise.reject('toAddr fail');
+            return Promise.reject('ToAddr error');
         }
-        if (!amount) {
-            return Promise.reject('amount fail');
+        if ( !amount ) {
+            return Promise.reject('Amount error');
         }
+
+        message = message ? libUtils.strToHex(message) : '';
 
         return new Promise((res, rej) => {
             this.Vite.Ledger.getSendBlock({
