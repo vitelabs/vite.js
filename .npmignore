@@ -2,9 +2,7 @@
 .nyc_output
 coverage
 example
-./libs
 node_modules
-./src
 test
 .babelrc
 .eslintcache
