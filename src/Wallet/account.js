@@ -103,7 +103,7 @@ class Account {
         }
 
         let utf8Bytes = libUtils.strToUtf8Bytes(message);
-        message = utf8Bytes ? libUtils.strToHex(utf8Bytes) : '';
+        message = utf8Bytes ? libUtils.bytesToHex(utf8Bytes) : '';
 
         return new Promise((res, rej) => {
             this.Vite.Ledger.getSendBlock({
