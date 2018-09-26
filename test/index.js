@@ -23,3 +23,7 @@ describe('Wallet Test: src/Wallet', function () {
     require('./Wallet/address');
     require('./Wallet/account');
 });
+
+describe('Utils Test: libs/utils', function () {
+    require('./utils');
+});
