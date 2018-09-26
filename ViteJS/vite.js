@@ -3205,6 +3205,37 @@ var _default = {
     }
 
     return string;
+  },
+  strToUtf8Bytes: function strToUtf8Bytes(str) {
+    if (!str) {
+      return null;
+    }
+
+    var back = []; // var byteSize = 0;
+
+    for (var i = 0; i < str.length; i++) {
+      var code = str.charCodeAt(i);
+
+      if (0x00 <= code && code <= 0x7f) {
+        // byteSize += 1;
+        back.push(code);
+      } else if (0x80 <= code && code <= 0x7ff) {
+        // byteSize += 2;
+        back.push(192 | 31 & code >> 6);
+        back.push(128 | 63 & code);
+      } else if (0x800 <= code && code <= 0xd7ff || 0xe000 <= code && code <= 0xffff) {
+        // byteSize += 3;
+        back.push(224 | 15 & code >> 12);
+        back.push(128 | 63 & code >> 6);
+        back.push(128 | 63 & code);
+      }
+    }
+
+    for (i = 0; i < back.length; i++) {
+      back[i] &= 0xff;
+    }
+
+    return new Uint8Array(back);
   }
 };
 exports.default = _default;
@@ -49374,7 +49405,9 @@ function () {
         return Promise.reject('Amount error');
       }
 
-      message = message ? _utils.default.strToHex(message) : '';
+      var utf8Bytes = _utils.default.strToUtf8Bytes(message);
+
+      message = utf8Bytes ? _utils.default.strToHex(utf8Bytes) : '';
       return new Promise(function (res, rej) {
         _this3.Vite.Ledger.getSendBlock({
           fromAddr: fromAddr,

@@ -151,7 +151,9 @@ function () {
         return Promise.reject('Amount error');
       }
 
-      message = message ? _utils.default.strToHex(message) : '';
+      var utf8Bytes = _utils.default.strToUtf8Bytes(message);
+
+      message = utf8Bytes ? _utils.default.strToHex(utf8Bytes) : '';
       return new Promise(function (res, rej) {
         _this3.Vite.Ledger.getSendBlock({
           fromAddr: fromAddr,
