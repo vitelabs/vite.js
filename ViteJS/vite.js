@@ -49405,9 +49405,6 @@ function () {
         return Promise.reject('Amount error');
       }
 
-      var utf8Bytes = _utils.default.strToUtf8Bytes(message);
-
-      message = utf8Bytes ? _utils.default.bytesToHex(utf8Bytes) : '';
       return new Promise(function (res, rej) {
         _this3.Vite.Ledger.getSendBlock({
           fromAddr: fromAddr,
