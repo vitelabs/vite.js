@@ -102,9 +102,6 @@ class Account {
             return Promise.reject('Amount error');
         }
 
-        let utf8Bytes = libUtils.strToUtf8Bytes(message);
-        message = utf8Bytes ? libUtils.bytesToHex(utf8Bytes) : '';
-
         return new Promise((res, rej) => {
             this.Vite.Ledger.getSendBlock({
                 fromAddr, toAddr, tokenId, amount, message
