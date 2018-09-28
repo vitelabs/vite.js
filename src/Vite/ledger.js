@@ -24,9 +24,9 @@ class Ledger extends basicStruct {
     getBlocksByAccAddr ({
         accAddr, index, count = 20, needTokenInfo = false
     }) {
-        return this.provider.request('ledger_getBlocksByAccAddr', {
+        return this.provider.request('ledger_getBlocksByAccAddr', [
             accAddr, index, count, needTokenInfo
-        });
+        ]);
     }
 
     getAccountByAccAddr (accAddr) {
