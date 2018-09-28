@@ -65,12 +65,7 @@ function (_basicStruct) {
           count = _ref$count === void 0 ? 20 : _ref$count,
           _ref$needTokenInfo = _ref.needTokenInfo,
           needTokenInfo = _ref$needTokenInfo === void 0 ? false : _ref$needTokenInfo;
-      return this.provider.request('ledger_getBlocksByAccAddr', {
-        accAddr: accAddr,
-        index: index,
-        count: count,
-        needTokenInfo: needTokenInfo
-      });
+      return this.provider.request('ledger_getBlocksByAccAddr', [accAddr, index, count, needTokenInfo]);
     }
   }, {
     key: "getAccountByAccAddr",
