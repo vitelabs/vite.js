@@ -9,13 +9,7 @@ var _index = _interopRequireDefault(require("./Vite/index.js"));
 
 var _index2 = _interopRequireDefault(require("./Wallet/index.js"));
 
-var _HTTP = _interopRequireDefault(require("../libs/HTTP.js"));
-
-var _WS = _interopRequireDefault(require("../libs/WS.js"));
-
 var _bignumber = _interopRequireDefault(require("bignumber.js"));
-
-var _utils = _interopRequireDefault(require("../libs/utils.js"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -25,6 +19,7 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
+// import utils from '../libs/utils.js';
 var ViteJS =
 /*#__PURE__*/
 function () {
@@ -50,13 +45,13 @@ function () {
   }]);
 
   return ViteJS;
-}();
+}(); // ViteJS.HTTP_RPC = HTTP_RPC;
+// ViteJS.IPC_RPC = IPC_RPC;
+// ViteJS.WS_RPC = WS_RPC;
+// Libs
 
-ViteJS.HTTP_RPC = _HTTP.default; // ViteJS.IPC_RPC = IPC_RPC;
 
-ViteJS.WS_RPC = _WS.default; // Libs
+ViteJS.BigNumber = _bignumber.default; // ViteJS.utils = utils;
 
-ViteJS.BigNumber = _bignumber.default;
-ViteJS.utils = _utils.default;
 var _default = ViteJS;
 exports.default = _default;
