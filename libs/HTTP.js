@@ -1,9 +1,6 @@
 import Communication from './Communication/index.js';
 const XMLHttpRequest = typeof window !== 'undefined' && window.XMLHttpRequest ?
     window.XMLHttpRequest : require('xhr2');
-const Promise = typeof window !== 'undefined' && window.Promise ?
-    window.Promise :
-    typeof Promise !== 'undefined' ? Promise : require('es6-promise');
 
 class HTTP_RPC extends Communication {
     constructor({ 

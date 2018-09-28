@@ -28,7 +28,6 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
 var XMLHttpRequest = typeof window !== 'undefined' && window.XMLHttpRequest ? window.XMLHttpRequest : require('xhr2');
-var Promise = typeof window !== 'undefined' && window.Promise ? window.Promise : typeof Promise !== 'undefined' ? Promise : require('es6-promise');
 
 var HTTP_RPC =
 /*#__PURE__*/
