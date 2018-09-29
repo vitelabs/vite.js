@@ -53,7 +53,13 @@ function getSource(accountBlock) {
     }
 
     source += 'EFBFBD';
-    source += accountBlock.data ? libUtils.strToHex(accountBlock.data) : '';
+    
+    if ( accountBlock.data ) {
+        let byte = libUtils.strToUtf8Bytes(accountBlock.data);
+        let hex = libUtils.bytesToHex(byte);
+        source += hex;
+    }
+
     source += accountBlock.snapshotTimestamp || '';
     source += accountBlock.nonce || '';
     source += accountBlock.difficulty || '';
