@@ -99,7 +99,15 @@ function getSource(accountBlock) {
   }
 
   source += 'EFBFBD';
-  source += accountBlock.data ? _utils.default.strToHex(accountBlock.data) : '';
+
+  if (accountBlock.data) {
+    var byte = _utils.default.strToUtf8Bytes(accountBlock.data);
+
+    var hex = _utils.default.bytesToHex(byte);
+
+    source += hex;
+  }
+
   source += accountBlock.snapshotTimestamp || '';
   source += accountBlock.nonce || '';
   source += accountBlock.difficulty || '';
