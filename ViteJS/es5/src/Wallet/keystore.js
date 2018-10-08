@@ -58,15 +58,7 @@ function () {
         keylen: this.scryptKeyLen,
         salt: _utils.default.bytesToHex(nacl.randomBytes(32))
       };
-      var encryptPwd = encryptKey(pwd, scryptParams); // TestData
-      // cipherText({
-      //     hexData: '313132323333343435353636373738383939414141424243434243', 
-      //     pwd: libUtils.hexToBytes('3131313132323232333333333434343435353535363636363737373738383838'), 
-      //     nonce: libUtils.hexToBytes('95c9fc5de8a48943cdc96bd0'),
-      //     algorithm: 'aes-256-gcm'
-      // });
-      // 'c47a0f805282c664df34f0c32e5cc43331362585cf090734850001d32cb91f62971277056c222f0c904ee8'
-
+      var encryptPwd = encryptKey(pwd, scryptParams);
       var nonce = nacl.randomBytes(12);
       var text = cipherText({
         hexData: key.privKey,

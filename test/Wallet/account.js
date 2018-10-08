@@ -18,7 +18,7 @@ describe('Wallet_Account', function () {
         let entropy = 'e92a9e90900908185e6c041b21be5602bc515357d60504b1f10d65ae445af516';
         let encrypt = Account.encrypt(entropy, '1');
         let encryptEntropy = Account.decrypt(encrypt, '1');
-        console.log(encrypt);
+        // console.log(encrypt);
         assert.equal(encryptEntropy, entropy);
     });
 });

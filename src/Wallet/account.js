@@ -1,4 +1,5 @@
 import libUtils from '../../libs/utils';
+import utils from '../../libs/utils';
 
 const nacl = require('../../libs/nacl_blake2b');
 const scryptsy = require('scryptsy');
@@ -15,7 +16,7 @@ class Account {
         this.Vite = Vite;
         this.addrList = [];
 
-        this.version = 1;
+        this.version = 2;
         // LightScryptN is the N parameter of Scrypt encryption algorithm, using 4MB
         // memory and taking approximately 100ms CPU time on a modern processor.
         this.n = 4096;
@@ -129,18 +130,18 @@ class Account {
         });
     }
 
-    encrypt(key, pwd) {
-        let scryptParams = {
-            n: this.n,
-            r: this.scryptR,
-            p: this.p,
-            keylen: this.scryptKeyLen,
-            salt: libUtils.bytesToHex(nacl.randomBytes(32)),
+    encrypt(key, pwd, scryptP) {
+        let scryptParams = scryptP && scryptP.scryptParams ? scryptP.scryptParams : {
+            n: scryptP && scryptP.n ? scryptP.n : this.n,
+            r: scryptP && scryptP.r ? scryptP.r : this.scryptR,
+            p: scryptP && scryptP.p ? scryptP.p : this.p,
+            keylen: scryptP && scryptP.keylen ? scryptP.keylen : this.scryptKeyLen,
+            salt: scryptP && scryptP.salt ? scryptP.salt : libUtils.bytesToHex(nacl.randomBytes(32)),
         };
-        let encryptPwd = encryptKey(pwd, scryptParams);
+        let encryptPwd = scryptP && scryptP.encryptPwd ? utils.hexToBytes(scryptP.encryptPwd) : encryptKey(pwd, scryptParams);
 
         let nonce = nacl.randomBytes(12);
-        let text = cipherText({
+        let encryptEntropy = cipherText({
             hexData: key,
             pwd: encryptPwd, 
             nonce, 
@@ -151,11 +152,11 @@ class Account {
             cipherName: this.algorithm,
             KDF: scryptName,
             salt: scryptParams.salt,
-            CipherText: text,
             Nonce: libUtils.bytesToHex(nonce)
         };
     
         let encryptedKeyJSON = {
+            encryptEntropy,
             crypto: cryptoJSON,
             version: this.version,
             timestamp: new Date().getTime()
@@ -170,16 +171,16 @@ class Account {
         }
 
         let scryptParams = {
-            n: this.n,
-            r: this.scryptR,
-            p: this.p,
-            keylen: this.scryptKeyLen,
+            n: keystore.scryptParams ? keystore.scryptParams.n || this.n : this.n,
+            r: keystore.scryptParams ? keystore.scryptParams.scryptR || this.scryptR : this.scryptR,
+            p: keystore.scryptParams ? keystore.scryptParams.p || this.p : this.p,
+            keylen: keystore.scryptParams ? keystore.scryptParams.scryptKeyLen || this.scryptKeyLen : this.scryptKeyLen,
             salt: keyJson.crypto.salt,
         };
         let encryptPwd = encryptKey(pwd, scryptParams);
 
-        let ciphertext = keyJson.crypto.ciphertext.slice(0, len);
-        let tag = keyJson.crypto.ciphertext.slice(len);
+        let ciphertext = keyJson.encryptentropy.slice(0, len);
+        let tag = keyJson.encryptentropy.slice(len);
 
         let entropy;
         try {
@@ -258,6 +259,7 @@ function isValid(keystore) {
 
     // Required parameter
     if (!keyJson.crypto || 
+        !keyJson.encryptentropy ||
         !keyJson.version) {
         return false;
     }
@@ -275,7 +277,7 @@ function isValid(keystore) {
             return false;
         }
 
-        libUtils.hexToBytes(crypto.ciphertext);
+        libUtils.hexToBytes(keyJson.encryptentropy);
         libUtils.hexToBytes(crypto.nonce);
         libUtils.hexToBytes(crypto.salt);
     } catch(err) {

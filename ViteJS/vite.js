@@ -48091,7 +48091,12 @@ var nacl = require('../../libs/nacl_blake2b');
 
 var scryptsy = require('scryptsy');
 
+var crypto = typeof window !== 'undefined' ? require('browserify-aes') : require('crypto');
 var loopTime = 2000;
+var scryptName = 'scrypt';
+var len = 64;
+var versions = [1, 2];
+var algorithms = ['aes-256-gcm'];
 
 var Account =
 /*#__PURE__*/
@@ -48101,7 +48106,7 @@ function () {
 
     this.Vite = Vite;
     this.addrList = [];
-    this.version = 1; // LightScryptN is the N parameter of Scrypt encryption algorithm, using 4MB
+    this.version = 2; // LightScryptN is the N parameter of Scrypt encryption algorithm, using 4MB
     // memory and taking approximately 100ms CPU time on a modern processor.
 
     this.n = 4096; // LightScryptP is the P parameter of Scrypt encryption algorithm, using 4MB
@@ -48110,6 +48115,7 @@ function () {
     this.p = 6;
     this.scryptR = 8;
     this.scryptKeyLen = 32;
+    this.algorithm = 'aes-256-gcm';
   }
 
   _createClass(Account, [{
@@ -48252,25 +48258,74 @@ function () {
     }
   }, {
     key: "encrypt",
-    value: function encrypt(str) {
+    value: function encrypt(key, pwd, scryptP) {
+      console.log(scryptP);
+      var scryptParams = scryptP && scryptP.scryptParams ? scryptP.scryptParams : {
+        n: scryptP && scryptP.n ? scryptP.n : this.n,
+        r: scryptP && scryptP.r ? scryptP.r : this.scryptR,
+        p: scryptP && scryptP.p ? scryptP.p : this.p,
+        keylen: scryptP && scryptP.keylen ? scryptP.keylen : this.scryptKeyLen,
+        salt: scryptP && scryptP.salt ? scryptP.salt : _utils.default.bytesToHex(nacl.randomBytes(32))
+      };
+      var encryptPwd = scryptP && scryptP.encryptPwd ? _utils.default.hexToBytes(scryptP.encryptPwd) : encryptKey(pwd, scryptParams);
+      var nonce = nacl.randomBytes(12);
+      var encryptEntropy = cipherText({
+        hexData: key,
+        pwd: encryptPwd,
+        nonce: nonce,
+        algorithm: this.algorithm
+      });
+      var cryptoJSON = {
+        cipherName: this.algorithm,
+        KDF: scryptName,
+        salt: scryptParams.salt,
+        Nonce: _utils.default.bytesToHex(nonce)
+      };
+      var encryptedKeyJSON = {
+        encryptEntropy: encryptEntropy,
+        crypto: cryptoJSON,
+        version: this.version,
+        timestamp: new Date().getTime()
+      };
+      return JSON.stringify(encryptedKeyJSON).toLocaleLowerCase();
+    }
+  }, {
+    key: "decrypt",
+    value: function decrypt(keystore, pwd) {
+      var keyJson = isValid(keystore);
+
+      if (!keyJson) {
+        return false;
+      }
+
       var scryptParams = {
-        n: this.n,
-        r: this.scryptR,
-        p: this.p,
-        keylen: this.scryptKeyLen,
-        salt: _utils.default.bytesToHex(nacl.randomBytes(32))
+        n: keystore.scryptParams ? keystore.scryptParams.n || this.n : this.n,
+        r: keystore.scryptParams ? keystore.scryptParams.scryptR || this.scryptR : this.scryptR,
+        p: keystore.scryptParams ? keystore.scryptParams.p || this.p : this.p,
+        keylen: keystore.scryptParams ? keystore.scryptParams.scryptKeyLen || this.scryptKeyLen : this.scryptKeyLen,
+        salt: keyJson.crypto.salt
       };
-      var encryptP = encryptKey(str, scryptParams);
-      return {
-        encryptP: encryptP.toString('hex'),
-        scryptParams: scryptParams,
-        version: this.version
-      };
+      var encryptPwd = encryptKey(pwd, scryptParams);
+      var ciphertext = keyJson.encryptentropy.slice(0, len);
+      var tag = keyJson.encryptentropy.slice(len);
+      var entropy;
+
+      try {
+        var decipher = crypto.createDecipheriv(keyJson.crypto.ciphername, encryptPwd, _utils.default.hexToBytes(keyJson.crypto.nonce));
+        decipher.setAuthTag(_utils.default.hexToBytes(tag));
+        entropy = decipher.update(_utils.default.hexToBytes(ciphertext), 'utf8', 'hex');
+        entropy += decipher.final('hex');
+      } catch (err) {
+        console.warn(err);
+        return false;
+      }
+
+      return entropy;
     }
   }, {
     key: "verify",
     value: function verify(scryptP, str) {
-      if (!isValid.call(this, scryptP)) {
+      if (!isValidVersion1.call(this, scryptP)) {
         return false;
       }
 
@@ -48294,7 +48349,7 @@ function encryptKey(pwd, scryptParams) {
   return scryptsy(pwdBuff, salt, +scryptParams.n, +scryptParams.r, +scryptParams.p, +scryptParams.keylen);
 }
 
-function isValid(scryptP) {
+function isValidVersion1(scryptP) {
   if (!scryptP.scryptParams || !scryptP.encryptP || !scryptP.version || scryptP.version !== 1) {
     return false;
   }
@@ -48314,9 +48369,67 @@ function isValid(scryptP) {
   return true;
 }
 
+function isValid(keystore) {
+  // Out keystore file size is about 500 so if a file is very large it must not be a keystore file
+  if (_utils.default.getBytesSize(keystore) > 2 * 1024) {
+    return false;
+  } // Must be a JSON-string
+
+
+  var keyJson = {};
+
+  try {
+    keyJson = JSON.parse(keystore.toLowerCase());
+  } catch (err) {
+    console.warn(err);
+    return false;
+  } // Required parameter
+
+
+  if (!keyJson.crypto || !keyJson.encryptentropy || !keyJson.version) {
+    return false;
+  }
+
+  if (versions.indexOf(+keyJson.version) === -1) {
+    return false;
+  } // Check cryptoJSON
+
+
+  var crypto = keyJson.crypto;
+
+  try {
+    if (algorithms.indexOf(crypto.ciphername) === -1 || crypto.kdf !== scryptName || !crypto.salt) {
+      return false;
+    }
+
+    _utils.default.hexToBytes(keyJson.encryptentropy);
+
+    _utils.default.hexToBytes(crypto.nonce);
+
+    _utils.default.hexToBytes(crypto.salt);
+  } catch (err) {
+    console.warn(err);
+    return false;
+  }
+
+  return keyJson;
+}
+
+function cipherText(_ref2) {
+  var hexData = _ref2.hexData,
+      pwd = _ref2.pwd,
+      nonce = _ref2.nonce,
+      algorithm = _ref2.algorithm;
+  var cipher = crypto.createCipheriv(algorithm, pwd, nonce);
+  var ciphertext = cipher.update(_utils.default.hexToBytes(hexData), 'utf8', 'hex');
+  ciphertext += cipher.final('hex');
+  var tag = cipher.getAuthTag().toString('hex');
+  return ciphertext + tag;
+}
+
 }).call(this,require("buffer").Buffer)
 
-},{"../../libs/nacl_blake2b":7,"../../libs/utils":8,"buffer":67,"scryptsy":163}],190:[function(require,module,exports){
+},{"../../libs/nacl_blake2b":7,"../../libs/utils":8,"browserify-aes":41,"buffer":67,"crypto":75,"scryptsy":163}],190:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -48541,15 +48654,7 @@ function () {
         keylen: this.scryptKeyLen,
         salt: _utils.default.bytesToHex(nacl.randomBytes(32))
       };
-      var encryptPwd = encryptKey(pwd, scryptParams); // TestData
-      // cipherText({
-      //     hexData: '313132323333343435353636373738383939414141424243434243', 
-      //     pwd: libUtils.hexToBytes('3131313132323232333333333434343435353535363636363737373738383838'), 
-      //     nonce: libUtils.hexToBytes('95c9fc5de8a48943cdc96bd0'),
-      //     algorithm: 'aes-256-gcm'
-      // });
-      // 'c47a0f805282c664df34f0c32e5cc43331362585cf090734850001d32cb91f62971277056c222f0c904ee8'
-
+      var encryptPwd = encryptKey(pwd, scryptParams);
       var nonce = nacl.randomBytes(12);
       var text = cipherText({
         hexData: key.privKey,
