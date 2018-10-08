@@ -187,7 +187,6 @@ function () {
   }, {
     key: "encrypt",
     value: function encrypt(key, pwd, scryptP) {
-      console.log(scryptP);
       var scryptParams = scryptP && scryptP.scryptParams ? scryptP.scryptParams : {
         n: scryptP && scryptP.n ? scryptP.n : this.n,
         r: scryptP && scryptP.r ? scryptP.r : this.scryptR,
