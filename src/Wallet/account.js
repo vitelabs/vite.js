@@ -1,9 +1,14 @@
-const nacl = require('../../libs/nacl_blake2b');
-const scryptsy = require('scryptsy');
-
 import libUtils from '../../libs/utils';
 
+const nacl = require('../../libs/nacl_blake2b');
+const scryptsy = require('scryptsy');
+const crypto = typeof window !== 'undefined' ? require('browserify-aes') : require('crypto');
+
 const loopTime = 2000;
+const scryptName = 'scrypt';
+const len = 64;
+const versions = [1, 2];
+const algorithms = ['aes-256-gcm'];
 
 class Account {
     constructor(Vite) {
@@ -19,6 +24,8 @@ class Account {
         this.p = 6;
         this.scryptR = 8;
         this.scryptKeyLen = 32;
+
+        this.algorithm = 'aes-256-gcm';
     }
 
     getUnLockAddrList () {
@@ -122,7 +129,7 @@ class Account {
         });
     }
 
-    encrypt(str) {
+    encrypt(key, pwd) {
         let scryptParams = {
             n: this.n,
             r: this.scryptR,
@@ -130,17 +137,67 @@ class Account {
             keylen: this.scryptKeyLen,
             salt: libUtils.bytesToHex(nacl.randomBytes(32)),
         };
-        let encryptP = encryptKey(str, scryptParams);
+        let encryptPwd = encryptKey(pwd, scryptParams);
 
-        return {
-            encryptP: encryptP.toString('hex'),
-            scryptParams,
-            version: this.version
+        let nonce = nacl.randomBytes(12);
+        let text = cipherText({
+            hexData: key,
+            pwd: encryptPwd, 
+            nonce, 
+            algorithm: this.algorithm
+        });
+
+        let cryptoJSON = {
+            cipherName: this.algorithm,
+            KDF: scryptName,
+            salt: scryptParams.salt,
+            CipherText: text,
+            Nonce: libUtils.bytesToHex(nonce)
         };
+    
+        let encryptedKeyJSON = {
+            crypto: cryptoJSON,
+            version: this.version,
+            timestamp: new Date().getTime()
+        };
+        return JSON.stringify(encryptedKeyJSON).toLocaleLowerCase();
+    }
+
+    decrypt(keystore, pwd) {
+        let keyJson = isValid(keystore);
+        if (!keyJson) {
+            return false;
+        }
+
+        let scryptParams = {
+            n: this.n,
+            r: this.scryptR,
+            p: this.p,
+            keylen: this.scryptKeyLen,
+            salt: keyJson.crypto.salt,
+        };
+        let encryptPwd = encryptKey(pwd, scryptParams);
+
+        let ciphertext = keyJson.crypto.ciphertext.slice(0, len);
+        let tag = keyJson.crypto.ciphertext.slice(len);
+
+        let entropy;
+        try {
+            const decipher = crypto.createDecipheriv(keyJson.crypto.ciphername, encryptPwd, libUtils.hexToBytes(keyJson.crypto.nonce));
+            decipher.setAuthTag( libUtils.hexToBytes(tag) );
+    
+            entropy = decipher.update(libUtils.hexToBytes(ciphertext), 'utf8', 'hex');
+            entropy += decipher.final('hex');
+        } catch(err) {
+            console.warn(err);
+            return false;
+        }
+
+        return entropy;
     }
 
     verify(scryptP, str) {
-        if ( !isValid.call(this, scryptP) ) {
+        if ( !isValidVersion1.call(this, scryptP) ) {
             return false;
         }
 
@@ -158,7 +215,7 @@ function encryptKey(pwd, scryptParams) {
     return scryptsy(pwdBuff, salt, +scryptParams.n, +scryptParams.r, +scryptParams.p, +scryptParams.keylen);
 }
 
-function isValid(scryptP) {
+function isValidVersion1(scryptP) {
     if (!scryptP.scryptParams || 
         !scryptP.encryptP || 
         !scryptP.version || 
@@ -182,4 +239,59 @@ function isValid(scryptP) {
     }
 
     return true;
+}
+
+function isValid(keystore) {
+    // Out keystore file size is about 500 so if a file is very large it must not be a keystore file
+    if (libUtils.getBytesSize(keystore) > 2 * 1024) {
+        return false;
+    }
+
+    // Must be a JSON-string
+    let keyJson = {};
+    try {
+        keyJson = JSON.parse(keystore.toLowerCase());
+    } catch(err) {
+        console.warn(err);
+        return false;
+    }
+
+    // Required parameter
+    if (!keyJson.crypto || 
+        !keyJson.version) {
+        return false;
+    }
+
+    if (versions.indexOf(+keyJson.version) === -1) {
+        return false;
+    }
+
+    // Check cryptoJSON
+    let crypto = keyJson.crypto;
+    try {
+        if (algorithms.indexOf(crypto.ciphername) === -1 ||
+            crypto.kdf !== scryptName ||
+            !crypto.salt) {
+            return false;
+        }
+
+        libUtils.hexToBytes(crypto.ciphertext);
+        libUtils.hexToBytes(crypto.nonce);
+        libUtils.hexToBytes(crypto.salt);
+    } catch(err) {
+        console.warn(err);
+        return false;
+    }
+
+    return keyJson;
+}
+
+function cipherText({ hexData, pwd, nonce, algorithm }) {
+    let cipher = crypto.createCipheriv(algorithm, pwd, nonce);
+
+    let ciphertext = cipher.update(libUtils.hexToBytes(hexData), 'utf8', 'hex');
+    ciphertext += cipher.final('hex');
+    let tag = cipher.getAuthTag().toString('hex');
+
+    return ciphertext + tag;
 }
