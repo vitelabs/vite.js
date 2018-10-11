@@ -17,6 +17,51 @@ class Ledger extends basicStruct {
         super(provider);
     }
 
+    getBlocks({
+        addr, index, pageCount = 50, needTokenInfo = false
+    }) {
+        return this.provider.batch([{
+            type: 'request',                    
+            methodName: 'ledger_getBlocksByAccAddr',
+            params: [addr, index, pageCount, needTokenInfo]
+        }, {
+            type: 'request',
+            methodName: 'ledger_getAccountByAccAddr',
+            params: [addr]
+        }]).then((data) => {
+            if (!data || data.length < 2) {
+                return null;
+            }
+            let account = data[1].result;
+            return {
+                list: data[0].result || [],
+                totalNum: account && account.blockHeight ? account.blockHeight : 0
+            };
+        });
+    }
+
+    getBalance(addr) {
+        return this.provider.batch([{
+            type: 'request',
+            methodName: 'ledger_getAccountByAccAddr',
+            params: [ addr ]
+        },{
+            type: 'request',
+            methodName: 'ledger_getUnconfirmedInfo',
+            params: [ addr ]
+        }]).then((data)=>{
+            if (!data || !data.length || data.length < 2) {
+                return null;
+            }
+
+            let result = {
+                balance: data[0].result, 
+                unconfirm: data[1].result
+            };
+            return result;
+        });
+    }
+
     sendTx(accountBlock) {
         return this.provider.request('ledger_sendTx', [ accountBlock ]);
     }

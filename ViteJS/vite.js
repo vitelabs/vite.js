@@ -47727,19 +47727,71 @@ function (_basicStruct) {
   }
 
   _createClass(Ledger, [{
+    key: "getBlocks",
+    value: function getBlocks(_ref) {
+      var addr = _ref.addr,
+          index = _ref.index,
+          _ref$pageCount = _ref.pageCount,
+          pageCount = _ref$pageCount === void 0 ? 50 : _ref$pageCount,
+          _ref$needTokenInfo = _ref.needTokenInfo,
+          needTokenInfo = _ref$needTokenInfo === void 0 ? false : _ref$needTokenInfo;
+      return this.provider.batch([{
+        type: 'request',
+        methodName: 'ledger_getBlocksByAccAddr',
+        params: [addr, index, pageCount, needTokenInfo]
+      }, {
+        type: 'request',
+        methodName: 'ledger_getAccountByAccAddr',
+        params: [addr]
+      }]).then(function (data) {
+        if (!data || data.length < 2) {
+          return null;
+        }
+
+        var account = data[1].result;
+        return {
+          list: data[0].result || [],
+          totalNum: account && account.blockHeight ? account.blockHeight : 0
+        };
+      });
+    }
+  }, {
+    key: "getBalance",
+    value: function getBalance(addr) {
+      return this.provider.batch([{
+        type: 'request',
+        methodName: 'ledger_getAccountByAccAddr',
+        params: [addr]
+      }, {
+        type: 'request',
+        methodName: 'ledger_getUnconfirmedInfo',
+        params: [addr]
+      }]).then(function (data) {
+        if (!data || !data.length || data.length < 2) {
+          return null;
+        }
+
+        var result = {
+          balance: data[0].result,
+          unconfirm: data[1].result
+        };
+        return result;
+      });
+    }
+  }, {
     key: "sendTx",
     value: function sendTx(accountBlock) {
       return this.provider.request('ledger_sendTx', [accountBlock]);
     }
   }, {
     key: "getBlocksByAccAddr",
-    value: function getBlocksByAccAddr(_ref) {
-      var accAddr = _ref.accAddr,
-          index = _ref.index,
-          _ref$count = _ref.count,
-          count = _ref$count === void 0 ? 20 : _ref$count,
-          _ref$needTokenInfo = _ref.needTokenInfo,
-          needTokenInfo = _ref$needTokenInfo === void 0 ? false : _ref$needTokenInfo;
+    value: function getBlocksByAccAddr(_ref2) {
+      var accAddr = _ref2.accAddr,
+          index = _ref2.index,
+          _ref2$count = _ref2.count,
+          count = _ref2$count === void 0 ? 20 : _ref2$count,
+          _ref2$needTokenInfo = _ref2.needTokenInfo,
+          needTokenInfo = _ref2$needTokenInfo === void 0 ? false : _ref2$needTokenInfo;
       return this.provider.request('ledger_getBlocksByAccAddr', [accAddr, index, count, needTokenInfo]);
     }
   }, {
@@ -47819,12 +47871,12 @@ function (_basicStruct) {
     }
   }, {
     key: "getSendBlock",
-    value: function getSendBlock(_ref2) {
-      var fromAddr = _ref2.fromAddr,
-          toAddr = _ref2.toAddr,
-          tokenId = _ref2.tokenId,
-          amount = _ref2.amount,
-          message = _ref2.message;
+    value: function getSendBlock(_ref3) {
+      var fromAddr = _ref3.fromAddr,
+          toAddr = _ref3.toAddr,
+          tokenId = _ref3.tokenId,
+          amount = _ref3.amount,
+          message = _ref3.message;
       return this.provider.batch([{
         type: 'request',
         methodName: 'ledger_getLatestBlock',
