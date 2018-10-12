@@ -47,6 +47,11 @@ function (_basicStruct) {
   }
 
   _createClass(Account, [{
+    key: "isValidHexAddr",
+    value: function isValidHexAddr(hexAddr) {
+      return _address.default.isValidHexAddr(hexAddr);
+    }
+  }, {
     key: "newHexAddr",
     value: function newHexAddr(privKey) {
       return _address.default.newHexAddr(privKey);

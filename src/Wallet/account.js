@@ -100,10 +100,10 @@ class Account {
     sendTx({
         fromAddr, toAddr, tokenId, amount, message
     }, privKey) {
-        if ( !this.Vite.Types.isValidHexAddr(fromAddr) ) {
+        if ( !this.Vite.Account.isValidHexAddr(fromAddr) ) {
             return Promise.reject('FromAddr error');
         }
-        if ( !this.Vite.Types.isValidHexAddr(toAddr) ) {
+        if ( !this.Vite.Account.isValidHexAddr(toAddr) ) {
             return Promise.reject('ToAddr error');
         }
         if ( !amount ) {

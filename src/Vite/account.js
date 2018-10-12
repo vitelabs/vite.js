@@ -9,6 +9,10 @@ class Account extends basicStruct {
     constructor(provider) {
         super(provider);
     }
+    
+    isValidHexAddr(hexAddr) {
+        return address.isValidHexAddr(hexAddr);
+    }
 
     newHexAddr(privKey) {
         return address.newHexAddr(privKey);

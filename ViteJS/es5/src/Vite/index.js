@@ -13,8 +13,6 @@ var _ledger = _interopRequireDefault(require("./ledger.js"));
 
 var _p2p = _interopRequireDefault(require("./p2p.js"));
 
-var _types = _interopRequireDefault(require("./types.js"));
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -34,7 +32,6 @@ function () {
     this.Account = new _account.default(provider);
     this.Ledger = new _ledger.default(provider);
     this.P2P = new _p2p.default(provider);
-    this.Types = new _types.default(provider);
   }
 
   _createClass(Vite, [{
