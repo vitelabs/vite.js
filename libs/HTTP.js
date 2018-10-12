@@ -70,6 +70,9 @@ class HTTP_RPC extends Communication {
 
                 try {
                     result = result ? JSON.parse(result) : null;
+                    if (result && result.error) {
+                        return rej(result);
+                    }
                 } catch (e) {
                     return rej( this.ERRORS.INVAILID_RESPONSE(result) );
                 }

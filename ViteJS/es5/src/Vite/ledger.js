@@ -76,7 +76,7 @@ function (_basicStruct) {
         var account = data[1].result;
         return {
           list: data[0].result || [],
-          totalNum: account && account.blockHeight ? account.blockHeight : 0
+          totalNum: account && account.totalNumber ? account.totalNumber : 0
         };
       });
     }

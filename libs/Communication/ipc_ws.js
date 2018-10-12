@@ -109,6 +109,9 @@ class IPC_WS extends Communication {
 
             this.responseCbs[id] = (data)=>{
                 clearRequestAndTimeout();
+                if (data && data.error) {
+                    return rej(data);
+                }
                 res(data);
             };
             let _request = this._addReq({

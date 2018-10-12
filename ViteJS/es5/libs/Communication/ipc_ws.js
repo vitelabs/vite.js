@@ -156,6 +156,11 @@ function (_Communication) {
 
         _this3.responseCbs[id] = function (data) {
           clearRequestAndTimeout();
+
+          if (data && data.error) {
+            return _rej(data);
+          }
+
           res(data);
         };
 

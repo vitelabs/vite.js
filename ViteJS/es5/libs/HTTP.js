@@ -112,6 +112,10 @@ function (_Communication) {
 
           try {
             result = result ? JSON.parse(result) : null;
+
+            if (result && result.error) {
+              return _rej(result);
+            }
           } catch (e) {
             return _rej(_this2.ERRORS.INVAILID_RESPONSE(result));
           }

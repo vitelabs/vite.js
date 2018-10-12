@@ -322,6 +322,11 @@ function (_Communication) {
 
         _this3.responseCbs[id] = function (data) {
           clearRequestAndTimeout();
+
+          if (data && data.error) {
+            return _rej(data);
+          }
+
           res(data);
         };
 
@@ -520,6 +525,10 @@ function (_Communication) {
 
           try {
             result = result ? JSON.parse(result) : null;
+
+            if (result && result.error) {
+              return _rej(result);
+            }
           } catch (e) {
             return _rej(_this2.ERRORS.INVAILID_RESPONSE(result));
           }
@@ -47753,7 +47762,7 @@ function (_basicStruct) {
         var account = data[1].result;
         return {
           list: data[0].result || [],
-          totalNum: account && account.blockHeight ? account.blockHeight : 0
+          totalNum: account && account.totalNumber ? account.totalNumber : 0
         };
       });
     }
