@@ -75,9 +75,11 @@ gulp.task('build-otto', function () {
                     targets: {
                         browsers: ['>0.001%']
                     },
-                    include: ['es6.typed.uint32-array']
+                    include: ['es6.typed.uint32-array'],
+                    forceAllTransforms:true
                 }]
-            ]
+            ],
+            global: true
         })
         .bundle()
         .pipe(source(APP_NAME + '.js'))

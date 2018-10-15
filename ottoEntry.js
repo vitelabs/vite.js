@@ -1,4 +1,4 @@
-import '@babel/polyfill';
+
 import Vite from './src/Vite/index.js';
 
 if (b_vite) {
