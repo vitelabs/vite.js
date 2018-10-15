@@ -15,7 +15,8 @@ module.exports = {
         "window": true,
         "describe": true,
         "it": true,
-        "beforeEach": true
+        "beforeEach": true,
+        "b_vite":true
     },
     "extends": "eslint:recommended",
     "rules": {
