@@ -17,14 +17,14 @@ const ENTRY_PATH = path.join(__dirname, 'index.js');
 const APP_NAME = 'vite';
 
 const otto_BUILD_PATH = path.join(__dirname, 'ottoDist/');
-const otto_ENTRY_PATH = path.join(__dirname, 'index.js');
+const otto_ENTRY_PATH = path.join(__dirname, 'ottoEntry.js');
 
 const version = require('./package.json').version;
 
 console.log(`Build ViteJS: ${version}`);
 
 const otto_browserifyOptions = {
-    entries: path.join(__dirname, 'ottoEntry.js'),
+    entries: otto_ENTRY_PATH,
     bundleExternal: true
 };
 const browserifyOptions = {
@@ -70,14 +70,14 @@ gulp.task('build-otto', function () {
         .transform(babelify, {
             presets: [
                 ['@babel/preset-env', {
-                    'useBuiltIns': 'usage',
+                    debug:true,
+                    'useBuiltIns': 'entry',
                     targets: {
                         browsers: ['>0.001%']
                     },
-                    include: ['es6.typed.*']
+                    include: ['es6.typed.uint32-array']
                 }]
-            ],
-            global: true
+            ]
         })
         .bundle()
         .pipe(source(APP_NAME + '.js'))

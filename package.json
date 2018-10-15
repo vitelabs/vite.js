@@ -55,6 +55,7 @@
         "mocha": "^5.2.0",
         "nyc": "^13.0.1",
         "pre-commit": "~1.2.2",
+        "regenerator-runtime": "^0.12.1",
         "vinyl-source-stream": "~2.0.0"
     },
     "dependencies": {
