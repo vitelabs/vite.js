@@ -11,8 +11,6 @@ var _account = _interopRequireDefault(require("./account.js"));
 
 var _ledger = _interopRequireDefault(require("./ledger.js"));
 
-var _p2p = _interopRequireDefault(require("./p2p.js"));
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -21,17 +19,46 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
+var Methods = {
+  wallet: ['listAddress', 'newAddress', 'status', 'unlockAddress', 'lockAddress', 'reloadAndFixAddressFile', 'isMayValidKeystoreFile', 'getDataDir', 'createTxWithPassphrase'],
+  p2p: ['networkAvailable', 'peersCount'],
+  ledger: ['getBlocksByAccAddr', 'getAccountByAccAddr', 'getLatestSnapshotChainHash', 'getLatestBlock', 'getTokenMintage', 'getBlocksByHash', 'getSnapshotChainHeight', 'sendTx'],
+  onroad: ['getOnroadBlocksByAddress', 'getAccountOnroadInfo', 'listWorkingAutoReceiveWorker', 'startAutoReceive', 'stopAutoReceive'],
+  contracts: ['getPledgeData', 'getCancelPledgeData', 'getMintageData', 'getMintageCancelPledgeData', 'getCreateContractToAddress', 'getRegisterData', 'getCancelRegisterData', 'getRewardData', 'getUpdateRegistrationData', 'getVoteData', 'getCancelVoteData', 'getConditionRegisterOfPledge', 'getConditionVoteOfDefault', 'getConditionVoteOfKeepToken', 'getCreateConsensusGroupData', 'getCancelConsensusGroupData', 'getReCreateConsensusGroupData'],
+  pow: ['getPowNonce']
+};
+
 var Vite =
 /*#__PURE__*/
 function () {
   function Vite(provider) {
+    var _this = this;
+
     _classCallCheck(this, Vite);
 
     this._currentProvider = provider;
+
+    var _loop = function _loop(namespace) {
+      Methods[namespace].forEach(function (name) {
+        var methodName = "".concat(namespace, "_").concat(name);
+
+        _this[methodName] = function () {
+          for (var _len = arguments.length, params = new Array(_len), _key = 0; _key < _len; _key++) {
+            params[_key] = arguments[_key];
+          }
+
+          return _this._currentProvider.request(methodName, params);
+        };
+      });
+    };
+
+    for (var namespace in Methods) {
+      _loop(namespace);
+    }
+
     this.Version = new _version.default(provider);
     this.Account = new _account.default(provider);
     this.Ledger = new _ledger.default(provider);
-    this.P2P = new _p2p.default(provider);
   }
 
   _createClass(Vite, [{

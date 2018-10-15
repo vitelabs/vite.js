@@ -53,7 +53,7 @@ class WS_RPC extends IPC_WS {
 
     request(methodName, params) {
         let requestObj = this._getRequestPayload(methodName, params);
-
+        
         if (requestObj instanceof Error) {
             return Promise.reject(requestObj);
         }

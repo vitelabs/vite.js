@@ -1,16 +1,9 @@
-import basicStruct from './basicStruct.js';
-import BigNumber from 'bignumber.js';
+let blake = require('blakejs/blake2b');
 
-BigNumber.config({ 
-    FORMAT: {
-        decimalSeparator: '.',
-        groupSeparator: '',
-        groupSize: 0,
-        secondaryGroupSize: 0,
-        fractionGroupSeparator: ' ',
-        fractionGroupSize: 0
-    }
-});
+import basicStruct from './basicStruct.js';
+import BigNumber from 'bn.js';
+import address from '../address';
+import libUtils from '../../libs/utils';
 
 class Ledger extends basicStruct {
     constructor(provider) {
@@ -62,50 +55,6 @@ class Ledger extends basicStruct {
         });
     }
 
-    sendTx(accountBlock) {
-        return this.provider.request('ledger_sendTx', [ accountBlock ]);
-    }
-
-    getBlocksByAccAddr ({
-        accAddr, index, count = 20, needTokenInfo = false
-    }) {
-        return this.provider.request('ledger_getBlocksByAccAddr', [
-            accAddr, index, count, needTokenInfo
-        ]);
-    }
-
-    getAccountByAccAddr (accAddr) {
-        return this.provider.request('ledger_getAccountByAccAddr', accAddr);
-    }
-
-    getAccountOnroadInfo (accAddr) {
-        return this.provider.request('onroad_getAccountOnroadInfo', accAddr);
-    }
-
-    getOnroadBlocksByAddress (accAddr) {
-        return this.provider.request('onroad_getOnroadBlocksByAddress', accAddr);
-    }
-    
-    getLatestBlock (accAddr) {
-        return this.provider.request('ledger_getLatestBlock', accAddr);
-    }
-    
-    getTokenMintage () {
-        return this.provider.request('ledger_getTokenMintage');
-    }
-
-    getBlocksByHash (accAddr) {
-        return this.provider.request('ledger_getBlocksByHash', accAddr);
-    }
-
-    getInitSyncInfo() {
-        return this.provider.request('ledger_getInitSyncInfo');
-    }
-
-    getSnapshotChainHeight() {
-        return this.provider.request('ledger_getSnapshotChainHeight');
-    }
-
     getReceiveBlock(addr) {
         return this.provider.batch([{
             type: 'request',                    
@@ -133,11 +82,22 @@ class Ledger extends basicStruct {
 
             let block = blocks[0];
             let baseTx = getBaseTx(addr, latestBlock, latestSnapshotChainHash);
-            baseTx.fromHash = block.hash;
+            baseTx.blockType = block.blockType;
+            baseTx.fromBlockHash = block.fromBlockHash;
             baseTx.tokenId = block.tokenId;
+            block.nonce && (baseTx.nonce = block.nonce);
             block.data && (baseTx.data = block.data);
 
-            return baseTx;
+            return new Promise((res, rej) => {
+                let hash = getPowHash(addr, baseTx.prevHash);
+                console.log(hash);
+                return this.provider.request('pow_getPowNonce', ['', hash]).then((data) => {
+                    baseTx.nonce = data.result;
+                    return res(baseTx);
+                }).catch((err) => {
+                    return rej(err);
+                });
+            });
         });
     }
 
@@ -162,29 +122,37 @@ class Ledger extends basicStruct {
 
             message && (baseTx.data = message);
             baseTx.tokenId = tokenId;
-            baseTx.to = toAddr;
+            baseTx.toAddress = toAddr;
             baseTx.amount = amount;
+            baseTx.blockType = 2;
 
-            return baseTx;
+            return new Promise((res, rej) => {
+                let hash = getPowHash(fromAddr, baseTx.prevHash);
+                return this.provider.request('pow_getPowNonce', ['', hash]).then((data) => {
+                    console.log(data);
+                    // baseTx.nonce = ''; 
+                    return res(baseTx);
+                }).catch((err) => {
+                    return rej(err);
+                });
+            });
         });
     }
 }
 
 export default Ledger;
 
-function getBaseTx(accountAddress, latestBlock, snapshotTimestamp) {
+function getBaseTx(accountAddress, latestBlock, snapshotHash) {
     let height = latestBlock && latestBlock.meta && latestBlock.meta.height ? 
-        new BigNumber(latestBlock.meta.height).plus(1).toFormat() : '1';
-    let timestamp = new BigNumber(new Date().getTime()).dividedToIntegerBy(1000).toNumber();
+        new BigNumber(latestBlock.meta.height).add( new BigNumber(1) ).toString() : '1';
+    let timestamp = new BigNumber(new Date().getTime()).div( new BigNumber(1000) ).toNumber();
 
     let baseTx = {
         accountAddress,
         meta: { height },
         timestamp,
-        snapshotTimestamp,
-        nonce: '0000000000',
-        difficulty: '0000000000',
-        fAmount: '0'
+        snapshotHash,
+        fee: '0'    // [TODO]
     };
 
     if (latestBlock && latestBlock.hash) {
@@ -192,4 +160,11 @@ function getBaseTx(accountAddress, latestBlock, snapshotTimestamp) {
     }
     
     return baseTx;
+}
+
+function getPowHash(addr, prevHash) {
+    let prev = prevHash || libUtils.bytesToHex(blake.blake2b('0', null, 32));
+    let realAddr = address.getAddrFromHexAddr(addr);
+
+    return libUtils.bytesToHex(blake.blake2b(realAddr + prev, null, 32));
 }

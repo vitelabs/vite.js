@@ -25,7 +25,6 @@ class Account {
         this.p = 6;
         this.scryptR = 8;
         this.scryptKeyLen = 32;
-
         this.algorithm = 'aes-256-gcm';
     }
 
@@ -33,42 +32,21 @@ class Account {
         return this.addrList;
     }
 
-    unlock(address, privKey) {
+    autoReceiveTX(address, privKey) {
         this.addrList = this.addrList || [];
         if (this.addrList.indexOf(address) >= 0) {
             return;
         }
         this.addrList.push(address);
-        this._loopAddr(address, privKey);
+        loopAddr.call(this, address, privKey);
     }
 
-    lock(address) {
+    stopAutoReceiveTX(address) {
         let i = this.addrList.indexOf(address);
         if (i < 0) {
             return;
         }
         this.addrList.splice(i, 1);
-    }
-
-    _loopAddr(address, privKey) {
-        if (this.addrList.indexOf(address) < 0) {
-            return;
-        }
-
-        let loop = ()=>{
-            let loopTimeout = setTimeout(()=>{
-                clearTimeout(loopTimeout);
-                loopTimeout = null;
-                this._loopAddr(address, privKey);
-            }, loopTime);
-        };
-
-        this.receiveTx(address, privKey).then(()=>{
-            loop();
-        }).catch((err)=>{
-            console.warn(err);
-            loop();
-        });
     }
 
     receiveTx(address, privKey) {
@@ -83,7 +61,9 @@ class Account {
                 accountBlock.hash = hash;
                 accountBlock.signature = signature;
 
-                this.Vite.Ledger.sendTx(accountBlock).then((data)=>{
+                console.log(accountBlock);
+
+                this.Vite['ledger_sendTx'](accountBlock).then((data)=>{
                     if (data && data.error) {
                         return rej(data.error);
                     }
@@ -119,7 +99,7 @@ class Account {
                 accountBlock.hash = hash;
                 accountBlock.signature = signature;
   
-                this.Vite.Ledger.sendTx(accountBlock).then((data)=>{
+                this.Vite['ledger_sendTx'](accountBlock).then((data)=>{
                     return res(data);
                 }).catch((err)=>{
                     return rej(err);
@@ -208,6 +188,27 @@ class Account {
 }
 
 export default Account;
+
+function loopAddr(address, privKey) {
+    if (this.addrList.indexOf(address) < 0) {
+        return;
+    }
+
+    let loop = ()=>{
+        let loopTimeout = setTimeout(()=>{
+            clearTimeout(loopTimeout);
+            loopTimeout = null;
+            loopAddr.call(this, address, privKey);
+        }, loopTime);
+    };
+
+    this.receiveTx(address, privKey).then(()=>{
+        loop();
+    }).catch((err)=>{
+        console.warn(err);
+        loop();
+    });
+}
 
 function encryptKey(pwd, scryptParams) {
     let pwdBuff = Buffer.from(pwd);
