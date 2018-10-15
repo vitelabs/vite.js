@@ -9,6 +9,10 @@ class Account extends basicStruct {
     constructor(provider) {
         super(provider);
     }
+    
+    isValidHexAddr(hexAddr) {
+        return address.isValidHexAddr(hexAddr);
+    }
 
     newHexAddr(privKey) {
         return address.newHexAddr(privKey);
@@ -37,33 +41,39 @@ class Account extends basicStruct {
 
 export default Account;
 
+// 1.sendBlock
+// hash = HashFunction(BlockType + PrevHash  + Height + AccountAddress + ToAddress + Amount + TokenId  + Fee + SnapshotHash + Data + Timestamp + LogHash + Nonce）
+// 2.receiveBlock
+// hash = HashFunction(BlockType + PrevHash  + Height + AccountAddress + FromBlockHash + Fee + SnapshotHash + Data + Timestamp + LogHash + Nonce）
+
 function getSource(accountBlock) {
     let source = '';
 
+    source += accountBlock.blockType ? libUtils.strToHex(''+accountBlock.blockType) : '';
     source += accountBlock.prevHash || '';
     source += (accountBlock.meta && accountBlock.meta.height) ? libUtils.strToHex(accountBlock.meta.height) : '';
     source += accountBlock.accountAddress ? address.getAddrFromHexAddr(accountBlock.accountAddress) : '';
 
-    if (accountBlock.to) {
-        source += address.getAddrFromHexAddr(accountBlock.to);
-        source += getRawTokenid(accountBlock.tokenId) || '';
+    if (accountBlock.toAddress) {
+        source += address.getAddrFromHexAddr(accountBlock.toAddress);
         source += libUtils.strToHex(accountBlock.amount) || '';
+        source += getRawTokenid(accountBlock.tokenId) || '';
     } else {
-        source += accountBlock.fromHash || '';
+        source += accountBlock.fromBlockHash || '';
     }
 
-    source += 'EFBFBD';
-    
+    source += accountBlock.fee ? libUtils.strToHex(accountBlock.fee) : '';
+    source += accountBlock.snapshotHash || '';
+
     if ( accountBlock.data ) {
         let byte = libUtils.strToUtf8Bytes(accountBlock.data);
         let hex = libUtils.bytesToHex(byte);
         source += hex;
     }
 
-    source += accountBlock.snapshotTimestamp || '';
+    source += accountBlock.timestamp ? libUtils.strToHex(''+accountBlock.timestamp) : '';
+    // source += accountBlock.logHash || '';
     source += accountBlock.nonce || '';
-    source += accountBlock.difficulty || '';
-    source += accountBlock.fAmount ? libUtils.strToHex(accountBlock.fAmount) : '';
 
     return source;
 }

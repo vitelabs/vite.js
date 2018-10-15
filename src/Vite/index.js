@@ -1,18 +1,53 @@
 import Version from './version.js';
 import Account from './account.js';
 import Ledger from './ledger.js';
-import P2P from './p2p.js';
-import Types from './types.js';
+
+const Methods = {
+    wallet: [
+        'listAddress', 'newAddress', 'status', 'unlockAddress', 'lockAddress', 
+        'reloadAndFixAddressFile', 'isMayValidKeystoreFile', 'getDataDir', 'createTxWithPassphrase'
+    ],
+    p2p: [
+        'networkAvailable', 'peersCount'
+    ],
+    ledger: [
+        'getBlocksByAccAddr', 'getAccountByAccAddr', 'getLatestSnapshotChainHash', 
+        'getLatestBlock', 'getTokenMintage', 'getBlocksByHash', 'getSnapshotChainHeight',
+        'sendTx'
+    ],
+    onroad: [
+        'getOnroadBlocksByAddress', 'getAccountOnroadInfo', 'listWorkingAutoReceiveWorker', 
+        'startAutoReceive', 'stopAutoReceive'
+    ],
+    contracts: [
+        'getPledgeData', 'getCancelPledgeData', 'getMintageData', 
+        'getMintageCancelPledgeData', 'getCreateContractToAddress', 'getRegisterData', 
+        'getCancelRegisterData', 'getRewardData', 'getUpdateRegistrationData',
+        'getVoteData', 'getCancelVoteData', 'getConditionRegisterOfPledge',
+        'getConditionVoteOfDefault', 'getConditionVoteOfKeepToken', 'getCreateConsensusGroupData',
+        'getCancelConsensusGroupData', 'getReCreateConsensusGroupData'
+    ],
+    pow: [
+        'getPowNonce'
+    ]
+};
 
 class Vite {
     constructor(provider) {
         this._currentProvider = provider;
 
+        for (let namespace in Methods) {
+            Methods[namespace].forEach(name => {
+                let methodName = `${namespace}_${name}`;
+                this[methodName] = (...params) => {
+                    return this._currentProvider.request(methodName, params);
+                };
+            });
+        }
+
         this.Version = new Version(provider);
         this.Account = new Account(provider);
         this.Ledger = new Ledger(provider);
-        this.P2P = new P2P(provider);
-        this.Types = new Types(provider);
     }
 
     setProvider(provider, abort = true) {

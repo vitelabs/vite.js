@@ -52,8 +52,8 @@ function () {
       return this.addrList;
     }
   }, {
-    key: "unlock",
-    value: function unlock(address, privKey) {
+    key: "autoReceiveTX",
+    value: function autoReceiveTX(address, privKey) {
       this.addrList = this.addrList || [];
 
       if (this.addrList.indexOf(address) >= 0) {
@@ -61,12 +61,11 @@ function () {
       }
 
       this.addrList.push(address);
-
-      this._loopAddr(address, privKey);
+      loopAddr.call(this, address, privKey);
     }
   }, {
-    key: "lock",
-    value: function lock(address) {
+    key: "stopAutoReceiveTX",
+    value: function stopAutoReceiveTX(address) {
       var i = this.addrList.indexOf(address);
 
       if (i < 0) {
@@ -76,51 +75,27 @@ function () {
       this.addrList.splice(i, 1);
     }
   }, {
-    key: "_loopAddr",
-    value: function _loopAddr(address, privKey) {
-      var _this = this;
-
-      if (this.addrList.indexOf(address) < 0) {
-        return;
-      }
-
-      var loop = function loop() {
-        var loopTimeout = setTimeout(function () {
-          clearTimeout(loopTimeout);
-          loopTimeout = null;
-
-          _this._loopAddr(address, privKey);
-        }, loopTime);
-      };
-
-      this.receiveTx(address, privKey).then(function () {
-        loop();
-      }).catch(function (err) {
-        console.warn(err);
-        loop();
-      });
-    }
-  }, {
     key: "receiveTx",
     value: function receiveTx(address, privKey) {
-      var _this2 = this;
+      var _this = this;
 
       return new Promise(function (res, rej) {
-        _this2.Vite.Ledger.getReceiveBlock(address).then(function (accountBlock) {
+        _this.Vite.Ledger.getReceiveBlock(address).then(function (accountBlock) {
           if (!accountBlock) {
             return res();
           }
 
-          var _this2$Vite$Account$s = _this2.Vite.Account.signTX(accountBlock, privKey),
-              hash = _this2$Vite$Account$s.hash,
-              signature = _this2$Vite$Account$s.signature,
-              pubKey = _this2$Vite$Account$s.pubKey;
+          var _this$Vite$Account$si = _this.Vite.Account.signTX(accountBlock, privKey),
+              hash = _this$Vite$Account$si.hash,
+              signature = _this$Vite$Account$si.signature,
+              pubKey = _this$Vite$Account$si.pubKey;
 
           accountBlock.publicKey = pubKey;
           accountBlock.hash = hash;
           accountBlock.signature = signature;
+          console.log(accountBlock);
 
-          _this2.Vite.Ledger.sendTx(accountBlock).then(function (data) {
+          _this.Vite['ledger_sendTx'](accountBlock).then(function (data) {
             if (data && data.error) {
               return rej(data.error);
             }
@@ -137,7 +112,7 @@ function () {
   }, {
     key: "sendTx",
     value: function sendTx(_ref, privKey) {
-      var _this3 = this;
+      var _this2 = this;
 
       var fromAddr = _ref.fromAddr,
           toAddr = _ref.toAddr,
@@ -145,11 +120,11 @@ function () {
           amount = _ref.amount,
           message = _ref.message;
 
-      if (!this.Vite.Types.isValidHexAddr(fromAddr)) {
+      if (!this.Vite.Account.isValidHexAddr(fromAddr)) {
         return Promise.reject('FromAddr error');
       }
 
-      if (!this.Vite.Types.isValidHexAddr(toAddr)) {
+      if (!this.Vite.Account.isValidHexAddr(toAddr)) {
         return Promise.reject('ToAddr error');
       }
 
@@ -158,23 +133,23 @@ function () {
       }
 
       return new Promise(function (res, rej) {
-        _this3.Vite.Ledger.getSendBlock({
+        _this2.Vite.Ledger.getSendBlock({
           fromAddr: fromAddr,
           toAddr: toAddr,
           tokenId: tokenId,
           amount: amount,
           message: message
         }).then(function (accountBlock) {
-          var _this3$Vite$Account$s = _this3.Vite.Account.signTX(accountBlock, privKey),
-              hash = _this3$Vite$Account$s.hash,
-              signature = _this3$Vite$Account$s.signature,
-              pubKey = _this3$Vite$Account$s.pubKey;
+          var _this2$Vite$Account$s = _this2.Vite.Account.signTX(accountBlock, privKey),
+              hash = _this2$Vite$Account$s.hash,
+              signature = _this2$Vite$Account$s.signature,
+              pubKey = _this2$Vite$Account$s.pubKey;
 
           accountBlock.publicKey = pubKey;
           accountBlock.hash = hash;
           accountBlock.signature = signature;
 
-          _this3.Vite.Ledger.sendTx(accountBlock).then(function (data) {
+          _this2.Vite['ledger_sendTx'](accountBlock).then(function (data) {
             return res(data);
           }).catch(function (err) {
             return rej(err);
@@ -266,6 +241,29 @@ function () {
 
 var _default = Account;
 exports.default = _default;
+
+function loopAddr(address, privKey) {
+  var _this3 = this;
+
+  if (this.addrList.indexOf(address) < 0) {
+    return;
+  }
+
+  var loop = function loop() {
+    var loopTimeout = setTimeout(function () {
+      clearTimeout(loopTimeout);
+      loopTimeout = null;
+      loopAddr.call(_this3, address, privKey);
+    }, loopTime);
+  };
+
+  this.receiveTx(address, privKey).then(function () {
+    loop();
+  }).catch(function (err) {
+    console.warn(err);
+    loop();
+  });
+}
 
 function encryptKey(pwd, scryptParams) {
   var pwdBuff = Buffer.from(pwd);

@@ -47,6 +47,11 @@ function (_basicStruct) {
   }
 
   _createClass(Account, [{
+    key: "isValidHexAddr",
+    value: function isValidHexAddr(hexAddr) {
+      return _address.default.isValidHexAddr(hexAddr);
+    }
+  }, {
     key: "newHexAddr",
     value: function newHexAddr(privKey) {
       return _address.default.newHexAddr(privKey);
@@ -81,24 +86,30 @@ function (_basicStruct) {
   return Account;
 }(_basicStruct2.default);
 
-var _default = Account;
+var _default = Account; // 1.sendBlock
+// hash = HashFunction(BlockType + PrevHash  + Height + AccountAddress + ToAddress + Amount + TokenId  + Fee + SnapshotHash + Data + Timestamp + LogHash + Nonce）
+// 2.receiveBlock
+// hash = HashFunction(BlockType + PrevHash  + Height + AccountAddress + FromBlockHash + Fee + SnapshotHash + Data + Timestamp + LogHash + Nonce）
+
 exports.default = _default;
 
 function getSource(accountBlock) {
   var source = '';
+  source += accountBlock.blockType ? _utils.default.strToHex('' + accountBlock.blockType) : '';
   source += accountBlock.prevHash || '';
   source += accountBlock.meta && accountBlock.meta.height ? _utils.default.strToHex(accountBlock.meta.height) : '';
   source += accountBlock.accountAddress ? _address.default.getAddrFromHexAddr(accountBlock.accountAddress) : '';
 
-  if (accountBlock.to) {
-    source += _address.default.getAddrFromHexAddr(accountBlock.to);
-    source += getRawTokenid(accountBlock.tokenId) || '';
+  if (accountBlock.toAddress) {
+    source += _address.default.getAddrFromHexAddr(accountBlock.toAddress);
     source += _utils.default.strToHex(accountBlock.amount) || '';
+    source += getRawTokenid(accountBlock.tokenId) || '';
   } else {
-    source += accountBlock.fromHash || '';
+    source += accountBlock.fromBlockHash || '';
   }
 
-  source += 'EFBFBD';
+  source += accountBlock.fee ? _utils.default.strToHex(accountBlock.fee) : '';
+  source += accountBlock.snapshotHash || '';
 
   if (accountBlock.data) {
     var byte = _utils.default.strToUtf8Bytes(accountBlock.data);
@@ -108,10 +119,9 @@ function getSource(accountBlock) {
     source += hex;
   }
 
-  source += accountBlock.snapshotTimestamp || '';
+  source += accountBlock.timestamp ? _utils.default.strToHex('' + accountBlock.timestamp) : ''; // source += accountBlock.logHash || '';
+
   source += accountBlock.nonce || '';
-  source += accountBlock.difficulty || '';
-  source += accountBlock.fAmount ? _utils.default.strToHex(accountBlock.fAmount) : '';
   return source;
 }
 
