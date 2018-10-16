@@ -5,6 +5,8 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
+var _bn = _interopRequireDefault(require("bn.js"));
+
 var _basicStruct2 = _interopRequireDefault(require("./basicStruct"));
 
 var _utils = _interopRequireDefault(require("../../libs/utils"));
@@ -35,6 +37,8 @@ var nacl = require('../../libs/nacl_blake2b');
 
 var blake = require('blakejs/blake2b');
 
+var defaultHash = _utils.default.bytesToHex(new _bn.default(0).toArray('big', 32));
+
 var Account =
 /*#__PURE__*/
 function (_basicStruct) {
@@ -59,6 +63,7 @@ function (_basicStruct) {
   }, {
     key: "signTX",
     value: function signTX(accountBlock, privKey) {
+      var type = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'byte';
       var sourceHex = getSource(accountBlock);
 
       var source = _utils.default.hexToBytes(sourceHex);
@@ -76,9 +81,9 @@ function (_basicStruct) {
       var signatureHex = _utils.default.bytesToHex(signature);
 
       return {
-        pubKey: pubKey,
         hash: hashString,
-        signature: signatureHex
+        pubKey: type === 'byte' ? _utils.default.hexToBytes(pubKey) : pubKey,
+        signature: type === 'byte' ? signature : signatureHex
       };
     }
   }]);
@@ -95,33 +100,33 @@ exports.default = _default;
 
 function getSource(accountBlock) {
   var source = '';
-  source += accountBlock.blockType ? _utils.default.strToHex('' + accountBlock.blockType) : '';
-  source += accountBlock.prevHash || '';
-  source += accountBlock.meta && accountBlock.meta.height ? _utils.default.strToHex(accountBlock.meta.height) : '';
+  var blockType = Buffer.from('' + accountBlock.blockType).toString();
+  source += blockType ? _utils.default.bytesToHex(blockType) : '';
+  source += accountBlock.prevHash || defaultHash;
+  source += accountBlock.height ? _utils.default.bytesToHex(new _bn.default(accountBlock.height).toArray('big', 8)) : '';
   source += accountBlock.accountAddress ? _address.default.getAddrFromHexAddr(accountBlock.accountAddress) : '';
 
   if (accountBlock.toAddress) {
     source += _address.default.getAddrFromHexAddr(accountBlock.toAddress);
-    source += _utils.default.strToHex(accountBlock.amount) || '';
+    var amount = new _bn.default(accountBlock.amount);
+    source += accountBlock.amount && !amount.isZero() ? _utils.default.bytesToHex(amount.toArray('big')) : '';
     source += getRawTokenid(accountBlock.tokenId) || '';
   } else {
-    source += accountBlock.fromBlockHash || '';
+    source += accountBlock.fromBlockHash || defaultHash;
   }
 
-  source += accountBlock.fee ? _utils.default.strToHex(accountBlock.fee) : '';
+  var fee = new _bn.default(accountBlock.fee);
+  source += accountBlock.fee && !fee.isZero() ? _utils.default.bytesToHex(fee.toArray('big')) : '';
   source += accountBlock.snapshotHash || '';
 
   if (accountBlock.data) {
-    var byte = _utils.default.strToUtf8Bytes(accountBlock.data);
-
-    var hex = _utils.default.bytesToHex(byte);
-
+    var hex = Buffer.from(accountBlock.data, 'base64').toString('hex');
     source += hex;
   }
 
-  source += accountBlock.timestamp ? _utils.default.strToHex('' + accountBlock.timestamp) : ''; // source += accountBlock.logHash || '';
-
-  source += accountBlock.nonce || '';
+  source += accountBlock.timestamp ? _utils.default.bytesToHex(new _bn.default(accountBlock.timestamp).toArray('big', 8)) : '';
+  source += accountBlock.logHash || '';
+  source += accountBlock.nonce ? Buffer.from(accountBlock.nonce, 'base64').toString('hex') : '';
   return source;
 }
 

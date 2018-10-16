@@ -1,9 +1,12 @@
 let blake = require('blakejs/blake2b');
 
-import basicStruct from './basicStruct.js';
 import BigNumber from 'bn.js';
 import address from '../address';
 import libUtils from '../../libs/utils';
+import basicStruct from './basicStruct.js';
+
+const defaultHash = libUtils.bytesToHex(new BigNumber(0).toArray('big', 32));
+
 
 class Ledger extends basicStruct {
     constructor(provider) {
@@ -82,22 +85,11 @@ class Ledger extends basicStruct {
 
             let block = blocks[0];
             let baseTx = getBaseTx(addr, latestBlock, latestSnapshotChainHash);
-            baseTx.blockType = block.blockType;
-            baseTx.fromBlockHash = block.fromBlockHash;
-            baseTx.tokenId = block.tokenId;
-            block.nonce && (baseTx.nonce = block.nonce);
+            baseTx.blockType = 4;
             block.data && (baseTx.data = block.data);
+            baseTx.fromBlockHash = block.hash || '';
 
-            return new Promise((res, rej) => {
-                let hash = getPowHash(addr, baseTx.prevHash);
-                console.log(hash);
-                return this.provider.request('pow_getPowNonce', ['', hash]).then((data) => {
-                    baseTx.nonce = data.result;
-                    return res(baseTx);
-                }).catch((err) => {
-                    return rej(err);
-                });
-            });
+            return getNonce.call(this, addr, baseTx.prevHash, baseTx);
         });
     }
 
@@ -120,22 +112,18 @@ class Ledger extends basicStruct {
             let latestSnapshotChainHash = data[1].result;
             let baseTx = getBaseTx(fromAddr, latestBlock, latestSnapshotChainHash);
 
-            message && (baseTx.data = message);
+            if (message) {
+                let utf8bytes = libUtils.strToUtf8Bytes(message);
+                let base64Str = Buffer.from(utf8bytes).toString('base64');
+                baseTx.data = base64Str;
+            }
+
             baseTx.tokenId = tokenId;
             baseTx.toAddress = toAddr;
             baseTx.amount = amount;
             baseTx.blockType = 2;
 
-            return new Promise((res, rej) => {
-                let hash = getPowHash(fromAddr, baseTx.prevHash);
-                return this.provider.request('pow_getPowNonce', ['', hash]).then((data) => {
-                    console.log(data);
-                    // baseTx.nonce = ''; 
-                    return res(baseTx);
-                }).catch((err) => {
-                    return rej(err);
-                });
-            });
+            return getNonce.call(this, fromAddr, baseTx.prevHash, baseTx);
         });
     }
 }
@@ -143,28 +131,38 @@ class Ledger extends basicStruct {
 export default Ledger;
 
 function getBaseTx(accountAddress, latestBlock, snapshotHash) {
-    let height = latestBlock && latestBlock.meta && latestBlock.meta.height ? 
-        new BigNumber(latestBlock.meta.height).add( new BigNumber(1) ).toString() : '1';
+    let height = latestBlock && latestBlock.height ? 
+        new BigNumber(latestBlock.height).add( new BigNumber(1) ).toString() : '1';
     let timestamp = new BigNumber(new Date().getTime()).div( new BigNumber(1000) ).toNumber();
 
     let baseTx = {
         accountAddress,
-        meta: { height },
+        height,
         timestamp,
         snapshotHash,
-        fee: '0'    // [TODO]
+        // logHash: '',
+        // quota: '',
+        fee: '0'
     };
-
-    if (latestBlock && latestBlock.hash) {
-        baseTx.prevHash = latestBlock.hash;
-    }
+    baseTx.prevHash = latestBlock && latestBlock.hash ? latestBlock.hash : defaultHash;
     
     return baseTx;
 }
 
 function getPowHash(addr, prevHash) {
-    let prev = prevHash || libUtils.bytesToHex(blake.blake2b('0', null, 32));
+    let prev = prevHash || defaultHash;
     let realAddr = address.getAddrFromHexAddr(addr);
-
     return libUtils.bytesToHex(blake.blake2b(realAddr + prev, null, 32));
+}
+
+function getNonce(addr, prevHash, baseTx) {
+    let hash = getPowHash(addr, prevHash);
+    return new Promise((res, rej) => {
+        return this.provider.request('pow_getPowNonce', ['', hash]).then((data) => {
+            baseTx.nonce = data.result;
+            return res(baseTx);
+        }).catch((err) => {
+            return rej(err);
+        });
+    });
 }

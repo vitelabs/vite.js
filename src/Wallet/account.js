@@ -57,16 +57,11 @@ class Account {
                 }
     
                 let { hash, signature, pubKey } = this.Vite.Account.signTX(accountBlock, privKey);
-                accountBlock.publicKey = pubKey;
                 accountBlock.hash = hash;
-                accountBlock.signature = signature;
+                accountBlock.publicKey = Buffer.from(pubKey).toString('base64');
+                accountBlock.signature = Buffer.from(signature).toString('base64');
 
-                console.log(accountBlock);
-
-                this.Vite['ledger_sendTx'](accountBlock).then((data)=>{
-                    if (data && data.error) {
-                        return rej(data.error);
-                    }
+                this.Vite['tx_sendRawTx'](accountBlock).then((data)=>{
                     return res(data);
                 }).catch((err)=>{
                     return rej(err);
@@ -95,11 +90,11 @@ class Account {
                 fromAddr, toAddr, tokenId, amount, message
             }).then((accountBlock)=>{
                 let { hash, signature, pubKey } = this.Vite.Account.signTX(accountBlock, privKey);
-                accountBlock.publicKey = pubKey;
                 accountBlock.hash = hash;
-                accountBlock.signature = signature;
-  
-                this.Vite['ledger_sendTx'](accountBlock).then((data)=>{
+                accountBlock.publicKey = Buffer.from(pubKey).toString('base64');
+                accountBlock.signature = Buffer.from(signature).toString('base64');
+
+                this.Vite['tx_sendRawTx'](accountBlock).then((data)=>{
                     return res(data);
                 }).catch((err)=>{
                     return rej(err);

@@ -90,16 +90,11 @@ function () {
               signature = _this$Vite$Account$si.signature,
               pubKey = _this$Vite$Account$si.pubKey;
 
-          accountBlock.publicKey = pubKey;
           accountBlock.hash = hash;
-          accountBlock.signature = signature;
-          console.log(accountBlock);
+          accountBlock.publicKey = Buffer.from(pubKey).toString('base64');
+          accountBlock.signature = Buffer.from(signature).toString('base64');
 
-          _this.Vite['ledger_sendTx'](accountBlock).then(function (data) {
-            if (data && data.error) {
-              return rej(data.error);
-            }
-
+          _this.Vite['tx_sendRawTx'](accountBlock).then(function (data) {
             return res(data);
           }).catch(function (err) {
             return rej(err);
@@ -145,11 +140,11 @@ function () {
               signature = _this2$Vite$Account$s.signature,
               pubKey = _this2$Vite$Account$s.pubKey;
 
-          accountBlock.publicKey = pubKey;
           accountBlock.hash = hash;
-          accountBlock.signature = signature;
+          accountBlock.publicKey = Buffer.from(pubKey).toString('base64');
+          accountBlock.signature = Buffer.from(signature).toString('base64');
 
-          _this2.Vite['ledger_sendTx'](accountBlock).then(function (data) {
+          _this2.Vite['tx_sendRawTx'](accountBlock).then(function (data) {
             return res(data);
           }).catch(function (err) {
             return rej(err);
