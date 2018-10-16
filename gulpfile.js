@@ -16,17 +16,10 @@ const BUILD_PATH = path.join(__dirname, 'ViteJS/');
 const ENTRY_PATH = path.join(__dirname, 'index.js');
 const APP_NAME = 'vite';
 
-const otto_BUILD_PATH = path.join(__dirname, 'ottoDist/');
-const otto_ENTRY_PATH = path.join(__dirname, 'ottoEntry.js');
 
 const version = require('./package.json').version;
 
 console.log(`Build ViteJS: ${version}`);
-
-const otto_browserifyOptions = {
-    entries: otto_ENTRY_PATH,
-    bundleExternal: true
-};
 const browserifyOptions = {
     entries: ENTRY_PATH,
     debug: true,
@@ -55,39 +48,6 @@ gulp.task('build-js', function () {
         .pipe(gulp.dest(BUILD_PATH));
 });
 
-gulp.task('build-otto', function () {
-    console.log('standard build');
-    return browserify(otto_browserifyOptions)
-        .require(otto_ENTRY_PATH, {
-            expose: 'ViteJS'
-        })
-        .transform('browserify-replace', {
-            replace: [{
-                from: /\~ViteJS.version/,
-                to: version
-            }]
-        })
-        .transform(babelify, {
-            presets: [
-                ['@babel/preset-env', {
-                    debug:true,
-                    'useBuiltIns': 'entry',
-                    targets: {
-                        browsers: ['>0.001%']
-                    },
-                    include: ['es6.typed.uint32-array'],
-                    forceAllTransforms:true
-                }]
-            ],
-            global: true
-        })
-        .bundle()
-        .pipe(source(APP_NAME + '.js'))
-        .pipe(gulp.dest(otto_BUILD_PATH))
-        .pipe(streamify(uglify()))
-        .pipe(rename(APP_NAME + '.min.js'))
-        .pipe(gulp.dest(otto_BUILD_PATH));
-});
 
 const BUILD_ES5_PATH = path.join(BUILD_PATH, 'es5/');
 gulp.task('es5-src', function () {
@@ -107,5 +67,74 @@ gulp.task('es5-libs', function () {
 });
 
 gulp.task('default', ['build-js', 'es5-src', 'es5-libs'], function (done) {
+    done();
+});
+
+
+
+
+//-------------------- build to otto
+const builtins = require('browserify/lib/builtins');
+
+const builtinsUse = Object.assign({}, builtins, { buffer: null });
+const otto_BUILD_PATH = path.join(__dirname, 'ottoDist/');
+const otto_ENTRY_PATH = path.join(__dirname, 'otto/ottoEntry.js');
+const otto_POLYFILL_PATH = path.join(__dirname, 'otto/polyfill.js');
+const otto_browserifyOptions = {
+    entries: [otto_ENTRY_PATH],
+    bundleExternal: true,
+    builtins: builtinsUse
+};
+
+
+gulp.task('build-polyfill', function () {
+    return browserify({
+        entries: [otto_POLYFILL_PATH],
+        bundleExternal: true,
+        builtins:[]
+    })
+        .require(otto_POLYFILL_PATH, {
+            expose: 'polyfill'
+        })
+        .transform(babelify, {
+            presets: [
+                ['@babel/preset-env', {
+                    debug:true,
+                    'useBuiltIns': 'entry',
+                    targets: {
+                        browsers: ['>0.001%']
+                    }
+                }]
+            ]
+        })
+        .bundle()
+        .pipe(source('polyfill.js'))
+        .pipe(gulp.dest(otto_BUILD_PATH))
+        .pipe(streamify(uglify()))
+        .pipe(rename('polyfill.min.js'))
+        .pipe(gulp.dest(otto_BUILD_PATH));
+});
+gulp.task('build-otto', function () {
+    return browserify(otto_browserifyOptions)
+        .require(otto_ENTRY_PATH, {
+            expose: 'ViteJS'
+        }).
+        require('./otto/fix_modules/parse-asn1', {expose: 'parse-asn1'})
+        .transform('browserify-replace', {
+            replace: [{
+                from: /\~ViteJS.version/,
+                to: version
+            }]
+        })
+        .transform(babelify)
+        .bundle()
+        .pipe(source(APP_NAME + '.js'))
+        .pipe(gulp.dest(otto_BUILD_PATH))
+        .pipe(streamify(uglify()))
+        .pipe(rename(APP_NAME + '.min.js'))
+        .pipe(gulp.dest(otto_BUILD_PATH));
+});
+
+gulp.task('otto', ['build-polyfill', 'build-otto'], function (done) {
     done();
 });

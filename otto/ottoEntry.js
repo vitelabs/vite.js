@@ -1,5 +1,5 @@
 
-import Vite from './src/Vite/index.js';
+import Vite from '../src/Vite/index.js';
 
 if (b_vite) {
     var provider = {

@@ -6,3 +6,4 @@ coverage/*
 libs/nacl_blake2b.js
 ViteJS/*
 ottoDist/*
+otto/fix_modules

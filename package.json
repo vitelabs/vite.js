@@ -37,6 +37,7 @@
         "@babel/register": "^7.0.0",
         "babel-plugin-istanbul": "^5.0.1",
         "babelify": "^10.0.0-beta.1",
+        "browser-builtins": "^3.3.1",
         "browserify": "~16.2.2",
         "browserify-replace": "^0.9.3",
         "chai": "^4.1.2",
