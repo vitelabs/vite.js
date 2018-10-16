@@ -16,32 +16,28 @@ const BUILD_PATH = path.join(__dirname, 'ViteJS/');
 const ENTRY_PATH = path.join(__dirname, 'index.js');
 const APP_NAME = 'vite';
 
-
 const version = require('./package.json').version;
 
 console.log(`Build ViteJS: ${version}`);
+
 const browserifyOptions = {
     entries: ENTRY_PATH,
+    debug: true,
     bundleExternal: true
 };
 gulp.task('build-js', function () {
     console.log('standard build');
     return browserify(browserifyOptions)
-        .require(ENTRY_PATH, {
-            expose: 'ViteJS'
-        })
+        .require(ENTRY_PATH, { expose: 'ViteJS' })
         .transform('browserify-replace', {
-            replace: [{
-                from: /\~ViteJS.version/,
-                to: version
-            }]
+            replace: [{ from: /\~ViteJS.version/, to: version }]
         })
         .transform(babelify)
         .bundle()
         .pipe(exorcist(path.join(BUILD_PATH, APP_NAME + '.js.map')))
         .pipe(source(APP_NAME + '.js'))
         .pipe(gulp.dest(BUILD_PATH))
-        .pipe(streamify(uglify()))
+        .pipe(streamify(uglify())) 
         // .on('error', function (err) { console.log(err); })
         .pipe(rename(APP_NAME + '.min.js'))
         .pipe(gulp.dest(BUILD_PATH));
@@ -55,14 +51,14 @@ gulp.task('es5-src', function () {
         .pipe(babel({
             presets: ['@babel/env']
         }))
-        .pipe(gulp.dest(path.join(BUILD_ES5_PATH, 'src')));
+        .pipe(gulp.dest( path.join(BUILD_ES5_PATH, 'src') ));
 });
 gulp.task('es5-libs', function () {
     return gulp.src('libs/**/*.js')
         .pipe(babel({
             presets: ['@babel/env']
         }))
-        .pipe(gulp.dest(path.join(BUILD_ES5_PATH, 'libs')));
+        .pipe(gulp.dest( path.join(BUILD_ES5_PATH, 'libs') ));
 });
 
 gulp.task('default', ['build-js', 'es5-src', 'es5-libs'], function (done) {
