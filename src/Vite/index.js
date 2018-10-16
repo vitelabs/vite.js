@@ -12,8 +12,7 @@ const Methods = {
     ],
     ledger: [
         'getBlocksByAccAddr', 'getAccountByAccAddr', 'getLatestSnapshotChainHash', 
-        'getLatestBlock', 'getTokenMintage', 'getBlocksByHash', 'getSnapshotChainHeight',
-        'sendTx'
+        'getLatestBlock', 'getTokenMintage', 'getBlocksByHash', 'getSnapshotChainHeight'
     ],
     onroad: [
         'getOnroadBlocksByAddress', 'getAccountOnroadInfo', 'listWorkingAutoReceiveWorker', 
@@ -29,6 +28,9 @@ const Methods = {
     ],
     pow: [
         'getPowNonce'
+    ],
+    tx: [
+        'sendRawTx'
     ]
 };
 

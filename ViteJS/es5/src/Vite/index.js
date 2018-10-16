@@ -22,10 +22,11 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 var Methods = {
   wallet: ['listAddress', 'newAddress', 'status', 'unlockAddress', 'lockAddress', 'reloadAndFixAddressFile', 'isMayValidKeystoreFile', 'getDataDir', 'createTxWithPassphrase'],
   p2p: ['networkAvailable', 'peersCount'],
-  ledger: ['getBlocksByAccAddr', 'getAccountByAccAddr', 'getLatestSnapshotChainHash', 'getLatestBlock', 'getTokenMintage', 'getBlocksByHash', 'getSnapshotChainHeight', 'sendTx'],
+  ledger: ['getBlocksByAccAddr', 'getAccountByAccAddr', 'getLatestSnapshotChainHash', 'getLatestBlock', 'getTokenMintage', 'getBlocksByHash', 'getSnapshotChainHeight'],
   onroad: ['getOnroadBlocksByAddress', 'getAccountOnroadInfo', 'listWorkingAutoReceiveWorker', 'startAutoReceive', 'stopAutoReceive'],
   contracts: ['getPledgeData', 'getCancelPledgeData', 'getMintageData', 'getMintageCancelPledgeData', 'getCreateContractToAddress', 'getRegisterData', 'getCancelRegisterData', 'getRewardData', 'getUpdateRegistrationData', 'getVoteData', 'getCancelVoteData', 'getConditionRegisterOfPledge', 'getConditionVoteOfDefault', 'getConditionVoteOfKeepToken', 'getCreateConsensusGroupData', 'getCancelConsensusGroupData', 'getReCreateConsensusGroupData'],
-  pow: ['getPowNonce']
+  pow: ['getPowNonce'],
+  tx: ['sendRawTx']
 };
 
 var Vite =

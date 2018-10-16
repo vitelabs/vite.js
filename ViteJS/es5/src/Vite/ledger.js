@@ -5,13 +5,13 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-var _basicStruct2 = _interopRequireDefault(require("./basicStruct.js"));
-
 var _bn = _interopRequireDefault(require("bn.js"));
 
 var _address = _interopRequireDefault(require("../address"));
 
 var _utils = _interopRequireDefault(require("../../libs/utils"));
+
+var _basicStruct2 = _interopRequireDefault(require("./basicStruct.js"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -34,6 +34,8 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
 var blake = require('blakejs/blake2b');
+
+var defaultHash = _utils.default.bytesToHex(new _bn.default(0).toArray('big', 32));
 
 var Ledger =
 /*#__PURE__*/
@@ -129,21 +131,10 @@ function (_basicStruct) {
 
         var block = blocks[0];
         var baseTx = getBaseTx(addr, latestBlock, latestSnapshotChainHash);
-        baseTx.blockType = block.blockType;
-        baseTx.fromBlockHash = block.fromBlockHash;
-        baseTx.tokenId = block.tokenId;
-        block.nonce && (baseTx.nonce = block.nonce);
+        baseTx.blockType = 4;
         block.data && (baseTx.data = block.data);
-        return new Promise(function (res, rej) {
-          var hash = getPowHash(addr, baseTx.prevHash);
-          console.log(hash);
-          return _this.provider.request('pow_getPowNonce', ['', hash]).then(function (data) {
-            baseTx.nonce = data.result;
-            return res(baseTx);
-          }).catch(function (err) {
-            return rej(err);
-          });
-        });
+        baseTx.fromBlockHash = block.hash || '';
+        return getNonce.call(_this, addr, baseTx.prevHash, baseTx);
       });
     }
   }, {
@@ -171,21 +162,19 @@ function (_basicStruct) {
         var latestBlock = data[0].result;
         var latestSnapshotChainHash = data[1].result;
         var baseTx = getBaseTx(fromAddr, latestBlock, latestSnapshotChainHash);
-        message && (baseTx.data = message);
+
+        if (message) {
+          var utf8bytes = _utils.default.strToUtf8Bytes(message);
+
+          var base64Str = Buffer.from(utf8bytes).toString('base64');
+          baseTx.data = base64Str;
+        }
+
         baseTx.tokenId = tokenId;
         baseTx.toAddress = toAddr;
         baseTx.amount = amount;
         baseTx.blockType = 2;
-        return new Promise(function (res, rej) {
-          var hash = getPowHash(fromAddr, baseTx.prevHash);
-          return _this2.provider.request('pow_getPowNonce', ['', hash]).then(function (data) {
-            console.log(data); // baseTx.nonce = ''; 
-
-            return res(baseTx);
-          }).catch(function (err) {
-            return rej(err);
-          });
-        });
+        return getNonce.call(_this2, fromAddr, baseTx.prevHash, baseTx);
       });
     }
   }]);
@@ -197,30 +186,39 @@ var _default = Ledger;
 exports.default = _default;
 
 function getBaseTx(accountAddress, latestBlock, snapshotHash) {
-  var height = latestBlock && latestBlock.meta && latestBlock.meta.height ? new _bn.default(latestBlock.meta.height).add(new _bn.default(1)).toString() : '1';
+  var height = latestBlock && latestBlock.height ? new _bn.default(latestBlock.height).add(new _bn.default(1)).toString() : '1';
   var timestamp = new _bn.default(new Date().getTime()).div(new _bn.default(1000)).toNumber();
   var baseTx = {
     accountAddress: accountAddress,
-    meta: {
-      height: height
-    },
+    height: height,
     timestamp: timestamp,
     snapshotHash: snapshotHash,
-    fee: '0' // [TODO]
-
+    // logHash: '',
+    // quota: '',
+    fee: '0'
   };
-
-  if (latestBlock && latestBlock.hash) {
-    baseTx.prevHash = latestBlock.hash;
-  }
-
+  baseTx.prevHash = latestBlock && latestBlock.hash ? latestBlock.hash : defaultHash;
   return baseTx;
 }
 
 function getPowHash(addr, prevHash) {
-  var prev = prevHash || _utils.default.bytesToHex(blake.blake2b('0', null, 32));
+  var prev = prevHash || defaultHash;
 
   var realAddr = _address.default.getAddrFromHexAddr(addr);
 
   return _utils.default.bytesToHex(blake.blake2b(realAddr + prev, null, 32));
+}
+
+function getNonce(addr, prevHash, baseTx) {
+  var _this3 = this;
+
+  var hash = getPowHash(addr, prevHash);
+  return new Promise(function (res, rej) {
+    return _this3.provider.request('pow_getPowNonce', ['', hash]).then(function (data) {
+      baseTx.nonce = data.result;
+      return res(baseTx);
+    }).catch(function (err) {
+      return rej(err);
+    });
+  });
 }
