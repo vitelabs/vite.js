@@ -22,7 +22,6 @@ const version = require('./package.json').version;
 console.log(`Build ViteJS: ${version}`);
 const browserifyOptions = {
     entries: ENTRY_PATH,
-    debug: true,
     bundleExternal: true
 };
 gulp.task('build-js', function () {
@@ -99,7 +98,6 @@ gulp.task('build-polyfill', function () {
         .transform(babelify, {
             presets: [
                 ['@babel/preset-env', {
-                    debug:true,
                     'useBuiltIns': 'entry',
                     targets: {
                         browsers: ['>0.001%']

@@ -26549,12 +26549,15 @@ module.exports = function (okey, password) {
 
 }).call(this,require("buffer").Buffer)
 },{"browserify-aes":4,"buffer":60,"evp_bytestokey":97}],168:[function(require,module,exports){
+(function (Buffer){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
+
+var _bn = _interopRequireDefault(require("bn.js"));
 
 var _basicStruct2 = _interopRequireDefault(require("./basicStruct"));
 
@@ -26586,6 +26589,8 @@ var nacl = require('../../libs/nacl_blake2b');
 
 var blake = require('blakejs/blake2b');
 
+var defaultHash = _utils.default.bytesToHex(new _bn.default(0).toArray('big', 32));
+
 var Account =
 /*#__PURE__*/
 function (_basicStruct) {
@@ -26610,6 +26615,7 @@ function (_basicStruct) {
   }, {
     key: "signTX",
     value: function signTX(accountBlock, privKey) {
+      var type = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'byte';
       var sourceHex = getSource(accountBlock);
 
       var source = _utils.default.hexToBytes(sourceHex);
@@ -26627,9 +26633,9 @@ function (_basicStruct) {
       var signatureHex = _utils.default.bytesToHex(signature);
 
       return {
-        pubKey: pubKey,
         hash: hashString,
-        signature: signatureHex
+        pubKey: type === 'byte' ? _utils.default.hexToBytes(pubKey) : pubKey,
+        signature: type === 'byte' ? signature : signatureHex
       };
     }
   }]);
@@ -26646,33 +26652,33 @@ exports.default = _default;
 
 function getSource(accountBlock) {
   var source = '';
-  source += accountBlock.blockType ? _utils.default.strToHex('' + accountBlock.blockType) : '';
-  source += accountBlock.prevHash || '';
-  source += accountBlock.meta && accountBlock.meta.height ? _utils.default.strToHex(accountBlock.meta.height) : '';
+  var blockType = Buffer.from('' + accountBlock.blockType).toString();
+  source += blockType ? _utils.default.bytesToHex(blockType) : '';
+  source += accountBlock.prevHash || defaultHash;
+  source += accountBlock.height ? _utils.default.bytesToHex(new _bn.default(accountBlock.height).toArray('big', 8)) : '';
   source += accountBlock.accountAddress ? _address.default.getAddrFromHexAddr(accountBlock.accountAddress) : '';
 
   if (accountBlock.toAddress) {
     source += _address.default.getAddrFromHexAddr(accountBlock.toAddress);
-    source += _utils.default.strToHex(accountBlock.amount) || '';
+    var amount = new _bn.default(accountBlock.amount);
+    source += accountBlock.amount && !amount.isZero() ? _utils.default.bytesToHex(amount.toArray('big')) : '';
     source += getRawTokenid(accountBlock.tokenId) || '';
   } else {
-    source += accountBlock.fromBlockHash || '';
+    source += accountBlock.fromBlockHash || defaultHash;
   }
 
-  source += accountBlock.fee ? _utils.default.strToHex(accountBlock.fee) : '';
+  var fee = new _bn.default(accountBlock.fee);
+  source += accountBlock.fee && !fee.isZero() ? _utils.default.bytesToHex(fee.toArray('big')) : '';
   source += accountBlock.snapshotHash || '';
 
   if (accountBlock.data) {
-    var byte = _utils.default.strToUtf8Bytes(accountBlock.data);
-
-    var hex = _utils.default.bytesToHex(byte);
-
+    var hex = Buffer.from(accountBlock.data, 'base64').toString('hex');
     source += hex;
   }
 
-  source += accountBlock.timestamp ? _utils.default.strToHex('' + accountBlock.timestamp) : ''; // source += accountBlock.logHash || '';
-
-  source += accountBlock.nonce || '';
+  source += accountBlock.timestamp ? _utils.default.bytesToHex(new _bn.default(accountBlock.timestamp).toArray('big', 8)) : '';
+  source += accountBlock.logHash || '';
+  source += accountBlock.nonce ? Buffer.from(accountBlock.nonce, 'base64').toString('hex') : '';
   return source;
 }
 
@@ -26684,7 +26690,8 @@ function getRawTokenid(tokenId) {
   return tokenId.slice(4, tokenId.length - 4);
 }
 
-},{"../../libs/nacl_blake2b":29,"../../libs/utils":30,"../address":173,"./basicStruct":169,"blakejs/blake2b":45}],169:[function(require,module,exports){
+}).call(this,require("buffer").Buffer)
+},{"../../libs/nacl_blake2b":29,"../../libs/utils":30,"../address":173,"./basicStruct":169,"blakejs/blake2b":45,"bn.js":47,"buffer":60}],169:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -26745,10 +26752,11 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 var Methods = {
   wallet: ['listAddress', 'newAddress', 'status', 'unlockAddress', 'lockAddress', 'reloadAndFixAddressFile', 'isMayValidKeystoreFile', 'getDataDir', 'createTxWithPassphrase'],
   p2p: ['networkAvailable', 'peersCount'],
-  ledger: ['getBlocksByAccAddr', 'getAccountByAccAddr', 'getLatestSnapshotChainHash', 'getLatestBlock', 'getTokenMintage', 'getBlocksByHash', 'getSnapshotChainHeight', 'sendTx'],
+  ledger: ['getBlocksByAccAddr', 'getAccountByAccAddr', 'getLatestSnapshotChainHash', 'getLatestBlock', 'getTokenMintage', 'getBlocksByHash', 'getSnapshotChainHeight'],
   onroad: ['getOnroadBlocksByAddress', 'getAccountOnroadInfo', 'listWorkingAutoReceiveWorker', 'startAutoReceive', 'stopAutoReceive'],
   contracts: ['getPledgeData', 'getCancelPledgeData', 'getMintageData', 'getMintageCancelPledgeData', 'getCreateContractToAddress', 'getRegisterData', 'getCancelRegisterData', 'getRewardData', 'getUpdateRegistrationData', 'getVoteData', 'getCancelVoteData', 'getConditionRegisterOfPledge', 'getConditionVoteOfDefault', 'getConditionVoteOfKeepToken', 'getCreateConsensusGroupData', 'getCancelConsensusGroupData', 'getReCreateConsensusGroupData'],
-  pow: ['getPowNonce']
+  pow: ['getPowNonce'],
+  tx: ['sendRawTx']
 };
 
 var Vite =
@@ -26802,6 +26810,7 @@ var _default = Vite;
 exports.default = _default;
 
 },{"./account.js":168,"./ledger.js":171,"./version.js":172}],171:[function(require,module,exports){
+(function (Buffer){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -26809,13 +26818,13 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-var _basicStruct2 = _interopRequireDefault(require("./basicStruct.js"));
-
 var _bn = _interopRequireDefault(require("bn.js"));
 
 var _address = _interopRequireDefault(require("../address"));
 
 var _utils = _interopRequireDefault(require("../../libs/utils"));
+
+var _basicStruct2 = _interopRequireDefault(require("./basicStruct.js"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -26838,6 +26847,8 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
 var blake = require('blakejs/blake2b');
+
+var defaultHash = _utils.default.bytesToHex(new _bn.default(0).toArray('big', 32));
 
 var Ledger =
 /*#__PURE__*/
@@ -26933,21 +26944,10 @@ function (_basicStruct) {
 
         var block = blocks[0];
         var baseTx = getBaseTx(addr, latestBlock, latestSnapshotChainHash);
-        baseTx.blockType = block.blockType;
-        baseTx.fromBlockHash = block.fromBlockHash;
-        baseTx.tokenId = block.tokenId;
-        block.nonce && (baseTx.nonce = block.nonce);
+        baseTx.blockType = 4;
         block.data && (baseTx.data = block.data);
-        return new Promise(function (res, rej) {
-          var hash = getPowHash(addr, baseTx.prevHash);
-          console.log(hash);
-          return _this.provider.request('pow_getPowNonce', ['', hash]).then(function (data) {
-            baseTx.nonce = data.result;
-            return res(baseTx);
-          }).catch(function (err) {
-            return rej(err);
-          });
-        });
+        baseTx.fromBlockHash = block.hash || '';
+        return getNonce.call(_this, addr, baseTx.prevHash, baseTx);
       });
     }
   }, {
@@ -26975,21 +26975,19 @@ function (_basicStruct) {
         var latestBlock = data[0].result;
         var latestSnapshotChainHash = data[1].result;
         var baseTx = getBaseTx(fromAddr, latestBlock, latestSnapshotChainHash);
-        message && (baseTx.data = message);
+
+        if (message) {
+          var utf8bytes = _utils.default.strToUtf8Bytes(message);
+
+          var base64Str = Buffer.from(utf8bytes).toString('base64');
+          baseTx.data = base64Str;
+        }
+
         baseTx.tokenId = tokenId;
         baseTx.toAddress = toAddr;
         baseTx.amount = amount;
         baseTx.blockType = 2;
-        return new Promise(function (res, rej) {
-          var hash = getPowHash(fromAddr, baseTx.prevHash);
-          return _this2.provider.request('pow_getPowNonce', ['', hash]).then(function (data) {
-            console.log(data); // baseTx.nonce = ''; 
-
-            return res(baseTx);
-          }).catch(function (err) {
-            return rej(err);
-          });
-        });
+        return getNonce.call(_this2, fromAddr, baseTx.prevHash, baseTx);
       });
     }
   }]);
@@ -27001,35 +26999,45 @@ var _default = Ledger;
 exports.default = _default;
 
 function getBaseTx(accountAddress, latestBlock, snapshotHash) {
-  var height = latestBlock && latestBlock.meta && latestBlock.meta.height ? new _bn.default(latestBlock.meta.height).add(new _bn.default(1)).toString() : '1';
+  var height = latestBlock && latestBlock.height ? new _bn.default(latestBlock.height).add(new _bn.default(1)).toString() : '1';
   var timestamp = new _bn.default(new Date().getTime()).div(new _bn.default(1000)).toNumber();
   var baseTx = {
     accountAddress: accountAddress,
-    meta: {
-      height: height
-    },
+    height: height,
     timestamp: timestamp,
     snapshotHash: snapshotHash,
-    fee: '0' // [TODO]
-
+    // logHash: '',
+    // quota: '',
+    fee: '0'
   };
-
-  if (latestBlock && latestBlock.hash) {
-    baseTx.prevHash = latestBlock.hash;
-  }
-
+  baseTx.prevHash = latestBlock && latestBlock.hash ? latestBlock.hash : defaultHash;
   return baseTx;
 }
 
 function getPowHash(addr, prevHash) {
-  var prev = prevHash || _utils.default.bytesToHex(blake.blake2b('0', null, 32));
+  var prev = prevHash || defaultHash;
 
   var realAddr = _address.default.getAddrFromHexAddr(addr);
 
   return _utils.default.bytesToHex(blake.blake2b(realAddr + prev, null, 32));
 }
 
-},{"../../libs/utils":30,"../address":173,"./basicStruct.js":169,"blakejs/blake2b":45,"bn.js":47}],172:[function(require,module,exports){
+function getNonce(addr, prevHash, baseTx) {
+  var _this3 = this;
+
+  var hash = getPowHash(addr, prevHash);
+  return new Promise(function (res, rej) {
+    return _this3.provider.request('pow_getPowNonce', ['', hash]).then(function (data) {
+      baseTx.nonce = data.result;
+      return res(baseTx);
+    }).catch(function (err) {
+      return rej(err);
+    });
+  });
+}
+
+}).call(this,require("buffer").Buffer)
+},{"../../libs/utils":30,"../address":173,"./basicStruct.js":169,"blakejs/blake2b":45,"bn.js":47,"buffer":60}],172:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
