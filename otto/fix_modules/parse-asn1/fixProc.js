@@ -16,10 +16,10 @@ module.exports = function (okey, password) {
     var match2 = key.match(fullRegex)
 
 //----------- yz-fix add
-    if(match&&match[1]===match[3]){// add
-        match.pop()
+    if(match2&&match2[1]===match2[3]){// add
+        match2.pop()
     }else{
-        match=null
+        match2=null
     }
 //------------
 
