@@ -27239,6 +27239,8 @@ if (b_vite) {
       return Promise.resolve(res);
     }
   };
+} else {
+  throw new Error('no global var "b_vite"');
 }
 
 var vite = new _index.default(provider);
