@@ -1,5 +1,5 @@
 {
-    "name": "vite.js",
+    "name": "@vitelabs/vite.js",
     "version": "0.0.1-alpha1",
     "description": "",
     "main": "ViteJS/es5/src/index.js",

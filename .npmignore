@@ -11,3 +11,9 @@ test
 .gitignore
 .travis.yml
 gulpfile.js
+otto
+ottoDist
+src
+test
+.travis.yml
+gulpfile.js
