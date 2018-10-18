@@ -54,13 +54,11 @@ function (_basicStruct) {
       var addr = _ref.addr,
           index = _ref.index,
           _ref$pageCount = _ref.pageCount,
-          pageCount = _ref$pageCount === void 0 ? 50 : _ref$pageCount,
-          _ref$needTokenInfo = _ref.needTokenInfo,
-          needTokenInfo = _ref$needTokenInfo === void 0 ? false : _ref$needTokenInfo;
+          pageCount = _ref$pageCount === void 0 ? 50 : _ref$pageCount;
       return this.provider.batch([{
         type: 'request',
         methodName: 'ledger_getBlocksByAccAddr',
-        params: [addr, index, pageCount, needTokenInfo]
+        params: [addr, index, pageCount]
       }, {
         type: 'request',
         methodName: 'ledger_getAccountByAccAddr',
