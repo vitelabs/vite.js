@@ -7,19 +7,18 @@ import basicStruct from './basicStruct.js';
 
 const defaultHash = libUtils.bytesToHex(new BigNumber(0).toArray('big', 32));
 
-
 class Ledger extends basicStruct {
     constructor(provider) {
         super(provider);
     }
 
     getBlocks({
-        addr, index, pageCount = 50, needTokenInfo = false
+        addr, index, pageCount = 50
     }) {
         return this.provider.batch([{
             type: 'request',                    
             methodName: 'ledger_getBlocksByAccAddr',
-            params: [addr, index, pageCount, needTokenInfo]
+            params: [addr, index, pageCount]
         }, {
             type: 'request',
             methodName: 'ledger_getAccountByAccAddr',
