@@ -26519,11 +26519,11 @@ module.exports = function (okey, password) {
   if (!match) {
     var match2 = key.match(fullRegex); //----------- yz-fix add
 
-    if (match && match[1] === match[3]) {
+    if (match2 && match2[1] === match2[3]) {
       // add
-      match.pop();
+      match2.pop();
     } else {
-      match = null;
+      match2 = null;
     } //------------
 
 
@@ -26867,13 +26867,11 @@ function (_basicStruct) {
       var addr = _ref.addr,
           index = _ref.index,
           _ref$pageCount = _ref.pageCount,
-          pageCount = _ref$pageCount === void 0 ? 50 : _ref$pageCount,
-          _ref$needTokenInfo = _ref.needTokenInfo,
-          needTokenInfo = _ref$needTokenInfo === void 0 ? false : _ref$needTokenInfo;
+          pageCount = _ref$pageCount === void 0 ? 50 : _ref$pageCount;
       return this.provider.batch([{
         type: 'request',
         methodName: 'ledger_getBlocksByAccAddr',
-        params: [addr, index, pageCount, needTokenInfo]
+        params: [addr, index, pageCount]
       }, {
         type: 'request',
         methodName: 'ledger_getAccountByAccAddr',
