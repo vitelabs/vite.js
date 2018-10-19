@@ -163,7 +163,7 @@ function () {
 var _default = Communication;
 exports.default = _default;
 
-},{"./errors":1,"jsonrpc-lite":121}],3:[function(require,module,exports){
+},{"./errors":1,"jsonrpc-lite":122}],3:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -630,7 +630,7 @@ function (_Communication) {
 var _default = HTTP_RPC;
 exports.default = _default;
 
-},{"./Communication/index.js":2,"xhr2":180}],5:[function(require,module,exports){
+},{"./Communication/index.js":2,"xhr2":181}],5:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -779,2393 +779,7 @@ function (_IPC_WS) {
 var _default = WS_RPC;
 exports.default = _default;
 
-},{"./Communication/ipc_ws":3,"websocket":177}],6:[function(require,module,exports){
-(function (Buffer){
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-var _createHmac = _interopRequireDefault(require("create-hmac"));
-
-var _nacl_blake2b = _interopRequireDefault(require("./nacl_blake2b"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-// [TODO] Fork and publish
-// Copy from https://github.com/alepop/ed25519-hd-key
-// Convert to ed25519-blake2b
-var ED25519_CURVE = 'ed25519 blake2b seed';
-var HARDENED_OFFSET = 0x80000000;
-var pathRegex = new RegExp('^m(\\/[0-9]+\')+$');
-
-var replaceDerive = function replaceDerive(val) {
-  return val.replace('\'', '');
-};
-
-var _default = {
-  getMasterKeyFromSeed: getMasterKeyFromSeed,
-  getPublicKey: function getPublicKey(seed) {
-    var _nacl$sign$keyPair$fr = _nacl_blake2b.default.sign.keyPair.fromSeed(seed),
-        secretKey = _nacl$sign$keyPair$fr.secretKey,
-        publicKey = _nacl$sign$keyPair$fr.publicKey;
-
-    return {
-      publicKey: publicKey,
-      privateKey: secretKey
-    };
-  },
-  derivePath: function derivePath(path, seed) {
-    if (!isValidPath(path)) {
-      throw new Error('Invalid derivation path');
-    }
-
-    var _getMasterKeyFromSeed = getMasterKeyFromSeed(seed),
-        key = _getMasterKeyFromSeed.key,
-        chainCode = _getMasterKeyFromSeed.chainCode;
-
-    var segments = path.split('/').slice(1).map(replaceDerive).map(function (el) {
-      return parseInt(el, 10);
-    });
-    return segments.reduce(function (parentKeys, segment) {
-      return CKDPriv(parentKeys, segment + HARDENED_OFFSET);
-    }, {
-      key: key,
-      chainCode: chainCode
-    });
-  }
-};
-exports.default = _default;
-
-function getMasterKeyFromSeed(seed) {
-  var hmac = (0, _createHmac.default)('sha512', ED25519_CURVE);
-  var I = hmac.update(Buffer.from(seed, 'hex')).digest();
-  var IL = I.slice(0, 32);
-  var IR = I.slice(32);
-  return {
-    key: IL,
-    chainCode: IR
-  };
-}
-
-function CKDPriv(_ref, index) {
-  var key = _ref.key,
-      chainCode = _ref.chainCode;
-  var indexBuffer = Buffer.allocUnsafe(4);
-  indexBuffer.writeUInt32BE(index, 0);
-  var data = Buffer.concat([Buffer.alloc(1, 0), key, indexBuffer]);
-  var I = (0, _createHmac.default)('sha512', chainCode).update(data).digest();
-  var IL = I.slice(0, 32);
-  var IR = I.slice(32);
-  return {
-    key: IL,
-    chainCode: IR
-  };
-}
-
-function isValidPath(path) {
-  if (!pathRegex.test(path)) {
-    return false;
-  }
-
-  return !path.split('/').slice(1).map(replaceDerive).some(isNaN);
-}
-
-}).call(this,require("buffer").Buffer)
-
-},{"./nacl_blake2b":7,"buffer":66,"create-hmac":72}],7:[function(require,module,exports){
-"use strict";
-
-// Copy from https://github.com/dvdbng/tweetnacl-blake2b-js
-// const to var
-var blake2b = require('blakejs/blake2b');
-
-(function (nacl) {
-  'use strict'; // Ported in 2014 by Dmitry Chestnykh and Devi Mandiri.
-  // Public domain.
-  //
-  // Implementation derived from TweetNaCl version 20140427.
-  // See for details: http://tweetnacl.cr.yp.to/
-
-  var gf = function gf(init) {
-    var i,
-        r = new Float64Array(16);
-    if (init) for (i = 0; i < init.length; i++) {
-      r[i] = init[i];
-    }
-    return r;
-  }; //  Pluggable, initialized in high-level API below.
-
-
-  var randombytes = function randombytes()
-  /* x, n */
-  {
-    throw new Error('no PRNG');
-  };
-
-  var _0 = new Uint8Array(16);
-
-  var _9 = new Uint8Array(32);
-
-  _9[0] = 9;
-
-  var gf0 = gf(),
-      gf1 = gf([1]),
-      _121665 = gf([0xdb41, 1]),
-      D = gf([0x78a3, 0x1359, 0x4dca, 0x75eb, 0xd8ab, 0x4141, 0x0a4d, 0x0070, 0xe898, 0x7779, 0x4079, 0x8cc7, 0xfe73, 0x2b6f, 0x6cee, 0x5203]),
-      D2 = gf([0xf159, 0x26b2, 0x9b94, 0xebd6, 0xb156, 0x8283, 0x149a, 0x00e0, 0xd130, 0xeef3, 0x80f2, 0x198e, 0xfce7, 0x56df, 0xd9dc, 0x2406]),
-      X = gf([0xd51a, 0x8f25, 0x2d60, 0xc956, 0xa7b2, 0x9525, 0xc760, 0x692c, 0xdc5c, 0xfdd6, 0xe231, 0xc0a4, 0x53fe, 0xcd6e, 0x36d3, 0x2169]),
-      Y = gf([0x6658, 0x6666, 0x6666, 0x6666, 0x6666, 0x6666, 0x6666, 0x6666, 0x6666, 0x6666, 0x6666, 0x6666, 0x6666, 0x6666, 0x6666, 0x6666]),
-      I = gf([0xa0b0, 0x4a0e, 0x1b27, 0xc4ee, 0xe478, 0xad2f, 0x1806, 0x2f43, 0xd7a7, 0x3dfb, 0x0099, 0x2b4d, 0xdf0b, 0x4fc1, 0x2480, 0x2b83]);
-
-  function ts64(x, i, h, l) {
-    x[i] = h >> 24 & 0xff;
-    x[i + 1] = h >> 16 & 0xff;
-    x[i + 2] = h >> 8 & 0xff;
-    x[i + 3] = h & 0xff;
-    x[i + 4] = l >> 24 & 0xff;
-    x[i + 5] = l >> 16 & 0xff;
-    x[i + 6] = l >> 8 & 0xff;
-    x[i + 7] = l & 0xff;
-  }
-
-  function vn(x, xi, y, yi, n) {
-    var i,
-        d = 0;
-
-    for (i = 0; i < n; i++) {
-      d |= x[xi + i] ^ y[yi + i];
-    }
-
-    return (1 & d - 1 >>> 8) - 1;
-  }
-
-  function crypto_verify_16(x, xi, y, yi) {
-    return vn(x, xi, y, yi, 16);
-  }
-
-  function crypto_verify_32(x, xi, y, yi) {
-    return vn(x, xi, y, yi, 32);
-  }
-
-  function core_salsa20(o, p, k, c) {
-    var j0 = c[0] & 0xff | (c[1] & 0xff) << 8 | (c[2] & 0xff) << 16 | (c[3] & 0xff) << 24,
-        j1 = k[0] & 0xff | (k[1] & 0xff) << 8 | (k[2] & 0xff) << 16 | (k[3] & 0xff) << 24,
-        j2 = k[4] & 0xff | (k[5] & 0xff) << 8 | (k[6] & 0xff) << 16 | (k[7] & 0xff) << 24,
-        j3 = k[8] & 0xff | (k[9] & 0xff) << 8 | (k[10] & 0xff) << 16 | (k[11] & 0xff) << 24,
-        j4 = k[12] & 0xff | (k[13] & 0xff) << 8 | (k[14] & 0xff) << 16 | (k[15] & 0xff) << 24,
-        j5 = c[4] & 0xff | (c[5] & 0xff) << 8 | (c[6] & 0xff) << 16 | (c[7] & 0xff) << 24,
-        j6 = p[0] & 0xff | (p[1] & 0xff) << 8 | (p[2] & 0xff) << 16 | (p[3] & 0xff) << 24,
-        j7 = p[4] & 0xff | (p[5] & 0xff) << 8 | (p[6] & 0xff) << 16 | (p[7] & 0xff) << 24,
-        j8 = p[8] & 0xff | (p[9] & 0xff) << 8 | (p[10] & 0xff) << 16 | (p[11] & 0xff) << 24,
-        j9 = p[12] & 0xff | (p[13] & 0xff) << 8 | (p[14] & 0xff) << 16 | (p[15] & 0xff) << 24,
-        j10 = c[8] & 0xff | (c[9] & 0xff) << 8 | (c[10] & 0xff) << 16 | (c[11] & 0xff) << 24,
-        j11 = k[16] & 0xff | (k[17] & 0xff) << 8 | (k[18] & 0xff) << 16 | (k[19] & 0xff) << 24,
-        j12 = k[20] & 0xff | (k[21] & 0xff) << 8 | (k[22] & 0xff) << 16 | (k[23] & 0xff) << 24,
-        j13 = k[24] & 0xff | (k[25] & 0xff) << 8 | (k[26] & 0xff) << 16 | (k[27] & 0xff) << 24,
-        j14 = k[28] & 0xff | (k[29] & 0xff) << 8 | (k[30] & 0xff) << 16 | (k[31] & 0xff) << 24,
-        j15 = c[12] & 0xff | (c[13] & 0xff) << 8 | (c[14] & 0xff) << 16 | (c[15] & 0xff) << 24;
-    var x0 = j0,
-        x1 = j1,
-        x2 = j2,
-        x3 = j3,
-        x4 = j4,
-        x5 = j5,
-        x6 = j6,
-        x7 = j7,
-        x8 = j8,
-        x9 = j9,
-        x10 = j10,
-        x11 = j11,
-        x12 = j12,
-        x13 = j13,
-        x14 = j14,
-        x15 = j15,
-        u;
-
-    for (var i = 0; i < 20; i += 2) {
-      u = x0 + x12 | 0;
-      x4 ^= u << 7 | u >>> 32 - 7;
-      u = x4 + x0 | 0;
-      x8 ^= u << 9 | u >>> 32 - 9;
-      u = x8 + x4 | 0;
-      x12 ^= u << 13 | u >>> 32 - 13;
-      u = x12 + x8 | 0;
-      x0 ^= u << 18 | u >>> 32 - 18;
-      u = x5 + x1 | 0;
-      x9 ^= u << 7 | u >>> 32 - 7;
-      u = x9 + x5 | 0;
-      x13 ^= u << 9 | u >>> 32 - 9;
-      u = x13 + x9 | 0;
-      x1 ^= u << 13 | u >>> 32 - 13;
-      u = x1 + x13 | 0;
-      x5 ^= u << 18 | u >>> 32 - 18;
-      u = x10 + x6 | 0;
-      x14 ^= u << 7 | u >>> 32 - 7;
-      u = x14 + x10 | 0;
-      x2 ^= u << 9 | u >>> 32 - 9;
-      u = x2 + x14 | 0;
-      x6 ^= u << 13 | u >>> 32 - 13;
-      u = x6 + x2 | 0;
-      x10 ^= u << 18 | u >>> 32 - 18;
-      u = x15 + x11 | 0;
-      x3 ^= u << 7 | u >>> 32 - 7;
-      u = x3 + x15 | 0;
-      x7 ^= u << 9 | u >>> 32 - 9;
-      u = x7 + x3 | 0;
-      x11 ^= u << 13 | u >>> 32 - 13;
-      u = x11 + x7 | 0;
-      x15 ^= u << 18 | u >>> 32 - 18;
-      u = x0 + x3 | 0;
-      x1 ^= u << 7 | u >>> 32 - 7;
-      u = x1 + x0 | 0;
-      x2 ^= u << 9 | u >>> 32 - 9;
-      u = x2 + x1 | 0;
-      x3 ^= u << 13 | u >>> 32 - 13;
-      u = x3 + x2 | 0;
-      x0 ^= u << 18 | u >>> 32 - 18;
-      u = x5 + x4 | 0;
-      x6 ^= u << 7 | u >>> 32 - 7;
-      u = x6 + x5 | 0;
-      x7 ^= u << 9 | u >>> 32 - 9;
-      u = x7 + x6 | 0;
-      x4 ^= u << 13 | u >>> 32 - 13;
-      u = x4 + x7 | 0;
-      x5 ^= u << 18 | u >>> 32 - 18;
-      u = x10 + x9 | 0;
-      x11 ^= u << 7 | u >>> 32 - 7;
-      u = x11 + x10 | 0;
-      x8 ^= u << 9 | u >>> 32 - 9;
-      u = x8 + x11 | 0;
-      x9 ^= u << 13 | u >>> 32 - 13;
-      u = x9 + x8 | 0;
-      x10 ^= u << 18 | u >>> 32 - 18;
-      u = x15 + x14 | 0;
-      x12 ^= u << 7 | u >>> 32 - 7;
-      u = x12 + x15 | 0;
-      x13 ^= u << 9 | u >>> 32 - 9;
-      u = x13 + x12 | 0;
-      x14 ^= u << 13 | u >>> 32 - 13;
-      u = x14 + x13 | 0;
-      x15 ^= u << 18 | u >>> 32 - 18;
-    }
-
-    x0 = x0 + j0 | 0;
-    x1 = x1 + j1 | 0;
-    x2 = x2 + j2 | 0;
-    x3 = x3 + j3 | 0;
-    x4 = x4 + j4 | 0;
-    x5 = x5 + j5 | 0;
-    x6 = x6 + j6 | 0;
-    x7 = x7 + j7 | 0;
-    x8 = x8 + j8 | 0;
-    x9 = x9 + j9 | 0;
-    x10 = x10 + j10 | 0;
-    x11 = x11 + j11 | 0;
-    x12 = x12 + j12 | 0;
-    x13 = x13 + j13 | 0;
-    x14 = x14 + j14 | 0;
-    x15 = x15 + j15 | 0;
-    o[0] = x0 >>> 0 & 0xff;
-    o[1] = x0 >>> 8 & 0xff;
-    o[2] = x0 >>> 16 & 0xff;
-    o[3] = x0 >>> 24 & 0xff;
-    o[4] = x1 >>> 0 & 0xff;
-    o[5] = x1 >>> 8 & 0xff;
-    o[6] = x1 >>> 16 & 0xff;
-    o[7] = x1 >>> 24 & 0xff;
-    o[8] = x2 >>> 0 & 0xff;
-    o[9] = x2 >>> 8 & 0xff;
-    o[10] = x2 >>> 16 & 0xff;
-    o[11] = x2 >>> 24 & 0xff;
-    o[12] = x3 >>> 0 & 0xff;
-    o[13] = x3 >>> 8 & 0xff;
-    o[14] = x3 >>> 16 & 0xff;
-    o[15] = x3 >>> 24 & 0xff;
-    o[16] = x4 >>> 0 & 0xff;
-    o[17] = x4 >>> 8 & 0xff;
-    o[18] = x4 >>> 16 & 0xff;
-    o[19] = x4 >>> 24 & 0xff;
-    o[20] = x5 >>> 0 & 0xff;
-    o[21] = x5 >>> 8 & 0xff;
-    o[22] = x5 >>> 16 & 0xff;
-    o[23] = x5 >>> 24 & 0xff;
-    o[24] = x6 >>> 0 & 0xff;
-    o[25] = x6 >>> 8 & 0xff;
-    o[26] = x6 >>> 16 & 0xff;
-    o[27] = x6 >>> 24 & 0xff;
-    o[28] = x7 >>> 0 & 0xff;
-    o[29] = x7 >>> 8 & 0xff;
-    o[30] = x7 >>> 16 & 0xff;
-    o[31] = x7 >>> 24 & 0xff;
-    o[32] = x8 >>> 0 & 0xff;
-    o[33] = x8 >>> 8 & 0xff;
-    o[34] = x8 >>> 16 & 0xff;
-    o[35] = x8 >>> 24 & 0xff;
-    o[36] = x9 >>> 0 & 0xff;
-    o[37] = x9 >>> 8 & 0xff;
-    o[38] = x9 >>> 16 & 0xff;
-    o[39] = x9 >>> 24 & 0xff;
-    o[40] = x10 >>> 0 & 0xff;
-    o[41] = x10 >>> 8 & 0xff;
-    o[42] = x10 >>> 16 & 0xff;
-    o[43] = x10 >>> 24 & 0xff;
-    o[44] = x11 >>> 0 & 0xff;
-    o[45] = x11 >>> 8 & 0xff;
-    o[46] = x11 >>> 16 & 0xff;
-    o[47] = x11 >>> 24 & 0xff;
-    o[48] = x12 >>> 0 & 0xff;
-    o[49] = x12 >>> 8 & 0xff;
-    o[50] = x12 >>> 16 & 0xff;
-    o[51] = x12 >>> 24 & 0xff;
-    o[52] = x13 >>> 0 & 0xff;
-    o[53] = x13 >>> 8 & 0xff;
-    o[54] = x13 >>> 16 & 0xff;
-    o[55] = x13 >>> 24 & 0xff;
-    o[56] = x14 >>> 0 & 0xff;
-    o[57] = x14 >>> 8 & 0xff;
-    o[58] = x14 >>> 16 & 0xff;
-    o[59] = x14 >>> 24 & 0xff;
-    o[60] = x15 >>> 0 & 0xff;
-    o[61] = x15 >>> 8 & 0xff;
-    o[62] = x15 >>> 16 & 0xff;
-    o[63] = x15 >>> 24 & 0xff;
-  }
-
-  function core_hsalsa20(o, p, k, c) {
-    var j0 = c[0] & 0xff | (c[1] & 0xff) << 8 | (c[2] & 0xff) << 16 | (c[3] & 0xff) << 24,
-        j1 = k[0] & 0xff | (k[1] & 0xff) << 8 | (k[2] & 0xff) << 16 | (k[3] & 0xff) << 24,
-        j2 = k[4] & 0xff | (k[5] & 0xff) << 8 | (k[6] & 0xff) << 16 | (k[7] & 0xff) << 24,
-        j3 = k[8] & 0xff | (k[9] & 0xff) << 8 | (k[10] & 0xff) << 16 | (k[11] & 0xff) << 24,
-        j4 = k[12] & 0xff | (k[13] & 0xff) << 8 | (k[14] & 0xff) << 16 | (k[15] & 0xff) << 24,
-        j5 = c[4] & 0xff | (c[5] & 0xff) << 8 | (c[6] & 0xff) << 16 | (c[7] & 0xff) << 24,
-        j6 = p[0] & 0xff | (p[1] & 0xff) << 8 | (p[2] & 0xff) << 16 | (p[3] & 0xff) << 24,
-        j7 = p[4] & 0xff | (p[5] & 0xff) << 8 | (p[6] & 0xff) << 16 | (p[7] & 0xff) << 24,
-        j8 = p[8] & 0xff | (p[9] & 0xff) << 8 | (p[10] & 0xff) << 16 | (p[11] & 0xff) << 24,
-        j9 = p[12] & 0xff | (p[13] & 0xff) << 8 | (p[14] & 0xff) << 16 | (p[15] & 0xff) << 24,
-        j10 = c[8] & 0xff | (c[9] & 0xff) << 8 | (c[10] & 0xff) << 16 | (c[11] & 0xff) << 24,
-        j11 = k[16] & 0xff | (k[17] & 0xff) << 8 | (k[18] & 0xff) << 16 | (k[19] & 0xff) << 24,
-        j12 = k[20] & 0xff | (k[21] & 0xff) << 8 | (k[22] & 0xff) << 16 | (k[23] & 0xff) << 24,
-        j13 = k[24] & 0xff | (k[25] & 0xff) << 8 | (k[26] & 0xff) << 16 | (k[27] & 0xff) << 24,
-        j14 = k[28] & 0xff | (k[29] & 0xff) << 8 | (k[30] & 0xff) << 16 | (k[31] & 0xff) << 24,
-        j15 = c[12] & 0xff | (c[13] & 0xff) << 8 | (c[14] & 0xff) << 16 | (c[15] & 0xff) << 24;
-    var x0 = j0,
-        x1 = j1,
-        x2 = j2,
-        x3 = j3,
-        x4 = j4,
-        x5 = j5,
-        x6 = j6,
-        x7 = j7,
-        x8 = j8,
-        x9 = j9,
-        x10 = j10,
-        x11 = j11,
-        x12 = j12,
-        x13 = j13,
-        x14 = j14,
-        x15 = j15,
-        u;
-
-    for (var i = 0; i < 20; i += 2) {
-      u = x0 + x12 | 0;
-      x4 ^= u << 7 | u >>> 32 - 7;
-      u = x4 + x0 | 0;
-      x8 ^= u << 9 | u >>> 32 - 9;
-      u = x8 + x4 | 0;
-      x12 ^= u << 13 | u >>> 32 - 13;
-      u = x12 + x8 | 0;
-      x0 ^= u << 18 | u >>> 32 - 18;
-      u = x5 + x1 | 0;
-      x9 ^= u << 7 | u >>> 32 - 7;
-      u = x9 + x5 | 0;
-      x13 ^= u << 9 | u >>> 32 - 9;
-      u = x13 + x9 | 0;
-      x1 ^= u << 13 | u >>> 32 - 13;
-      u = x1 + x13 | 0;
-      x5 ^= u << 18 | u >>> 32 - 18;
-      u = x10 + x6 | 0;
-      x14 ^= u << 7 | u >>> 32 - 7;
-      u = x14 + x10 | 0;
-      x2 ^= u << 9 | u >>> 32 - 9;
-      u = x2 + x14 | 0;
-      x6 ^= u << 13 | u >>> 32 - 13;
-      u = x6 + x2 | 0;
-      x10 ^= u << 18 | u >>> 32 - 18;
-      u = x15 + x11 | 0;
-      x3 ^= u << 7 | u >>> 32 - 7;
-      u = x3 + x15 | 0;
-      x7 ^= u << 9 | u >>> 32 - 9;
-      u = x7 + x3 | 0;
-      x11 ^= u << 13 | u >>> 32 - 13;
-      u = x11 + x7 | 0;
-      x15 ^= u << 18 | u >>> 32 - 18;
-      u = x0 + x3 | 0;
-      x1 ^= u << 7 | u >>> 32 - 7;
-      u = x1 + x0 | 0;
-      x2 ^= u << 9 | u >>> 32 - 9;
-      u = x2 + x1 | 0;
-      x3 ^= u << 13 | u >>> 32 - 13;
-      u = x3 + x2 | 0;
-      x0 ^= u << 18 | u >>> 32 - 18;
-      u = x5 + x4 | 0;
-      x6 ^= u << 7 | u >>> 32 - 7;
-      u = x6 + x5 | 0;
-      x7 ^= u << 9 | u >>> 32 - 9;
-      u = x7 + x6 | 0;
-      x4 ^= u << 13 | u >>> 32 - 13;
-      u = x4 + x7 | 0;
-      x5 ^= u << 18 | u >>> 32 - 18;
-      u = x10 + x9 | 0;
-      x11 ^= u << 7 | u >>> 32 - 7;
-      u = x11 + x10 | 0;
-      x8 ^= u << 9 | u >>> 32 - 9;
-      u = x8 + x11 | 0;
-      x9 ^= u << 13 | u >>> 32 - 13;
-      u = x9 + x8 | 0;
-      x10 ^= u << 18 | u >>> 32 - 18;
-      u = x15 + x14 | 0;
-      x12 ^= u << 7 | u >>> 32 - 7;
-      u = x12 + x15 | 0;
-      x13 ^= u << 9 | u >>> 32 - 9;
-      u = x13 + x12 | 0;
-      x14 ^= u << 13 | u >>> 32 - 13;
-      u = x14 + x13 | 0;
-      x15 ^= u << 18 | u >>> 32 - 18;
-    }
-
-    o[0] = x0 >>> 0 & 0xff;
-    o[1] = x0 >>> 8 & 0xff;
-    o[2] = x0 >>> 16 & 0xff;
-    o[3] = x0 >>> 24 & 0xff;
-    o[4] = x5 >>> 0 & 0xff;
-    o[5] = x5 >>> 8 & 0xff;
-    o[6] = x5 >>> 16 & 0xff;
-    o[7] = x5 >>> 24 & 0xff;
-    o[8] = x10 >>> 0 & 0xff;
-    o[9] = x10 >>> 8 & 0xff;
-    o[10] = x10 >>> 16 & 0xff;
-    o[11] = x10 >>> 24 & 0xff;
-    o[12] = x15 >>> 0 & 0xff;
-    o[13] = x15 >>> 8 & 0xff;
-    o[14] = x15 >>> 16 & 0xff;
-    o[15] = x15 >>> 24 & 0xff;
-    o[16] = x6 >>> 0 & 0xff;
-    o[17] = x6 >>> 8 & 0xff;
-    o[18] = x6 >>> 16 & 0xff;
-    o[19] = x6 >>> 24 & 0xff;
-    o[20] = x7 >>> 0 & 0xff;
-    o[21] = x7 >>> 8 & 0xff;
-    o[22] = x7 >>> 16 & 0xff;
-    o[23] = x7 >>> 24 & 0xff;
-    o[24] = x8 >>> 0 & 0xff;
-    o[25] = x8 >>> 8 & 0xff;
-    o[26] = x8 >>> 16 & 0xff;
-    o[27] = x8 >>> 24 & 0xff;
-    o[28] = x9 >>> 0 & 0xff;
-    o[29] = x9 >>> 8 & 0xff;
-    o[30] = x9 >>> 16 & 0xff;
-    o[31] = x9 >>> 24 & 0xff;
-  }
-
-  function crypto_core_salsa20(out, inp, k, c) {
-    core_salsa20(out, inp, k, c);
-  }
-
-  function crypto_core_hsalsa20(out, inp, k, c) {
-    core_hsalsa20(out, inp, k, c);
-  }
-
-  var sigma = new Uint8Array([101, 120, 112, 97, 110, 100, 32, 51, 50, 45, 98, 121, 116, 101, 32, 107]); // "expand 32-byte k"
-
-  function crypto_stream_salsa20_xor(c, cpos, m, mpos, b, n, k) {
-    var z = new Uint8Array(16),
-        x = new Uint8Array(64);
-    var u, i;
-
-    for (i = 0; i < 16; i++) {
-      z[i] = 0;
-    }
-
-    for (i = 0; i < 8; i++) {
-      z[i] = n[i];
-    }
-
-    while (b >= 64) {
-      crypto_core_salsa20(x, z, k, sigma);
-
-      for (i = 0; i < 64; i++) {
-        c[cpos + i] = m[mpos + i] ^ x[i];
-      }
-
-      u = 1;
-
-      for (i = 8; i < 16; i++) {
-        u = u + (z[i] & 0xff) | 0;
-        z[i] = u & 0xff;
-        u >>>= 8;
-      }
-
-      b -= 64;
-      cpos += 64;
-      mpos += 64;
-    }
-
-    if (b > 0) {
-      crypto_core_salsa20(x, z, k, sigma);
-
-      for (i = 0; i < b; i++) {
-        c[cpos + i] = m[mpos + i] ^ x[i];
-      }
-    }
-
-    return 0;
-  }
-
-  function crypto_stream_salsa20(c, cpos, b, n, k) {
-    var z = new Uint8Array(16),
-        x = new Uint8Array(64);
-    var u, i;
-
-    for (i = 0; i < 16; i++) {
-      z[i] = 0;
-    }
-
-    for (i = 0; i < 8; i++) {
-      z[i] = n[i];
-    }
-
-    while (b >= 64) {
-      crypto_core_salsa20(x, z, k, sigma);
-
-      for (i = 0; i < 64; i++) {
-        c[cpos + i] = x[i];
-      }
-
-      u = 1;
-
-      for (i = 8; i < 16; i++) {
-        u = u + (z[i] & 0xff) | 0;
-        z[i] = u & 0xff;
-        u >>>= 8;
-      }
-
-      b -= 64;
-      cpos += 64;
-    }
-
-    if (b > 0) {
-      crypto_core_salsa20(x, z, k, sigma);
-
-      for (i = 0; i < b; i++) {
-        c[cpos + i] = x[i];
-      }
-    }
-
-    return 0;
-  }
-
-  function crypto_stream(c, cpos, d, n, k) {
-    var s = new Uint8Array(32);
-    crypto_core_hsalsa20(s, n, k, sigma);
-    var sn = new Uint8Array(8);
-
-    for (var i = 0; i < 8; i++) {
-      sn[i] = n[i + 16];
-    }
-
-    return crypto_stream_salsa20(c, cpos, d, sn, s);
-  }
-
-  function crypto_stream_xor(c, cpos, m, mpos, d, n, k) {
-    var s = new Uint8Array(32);
-    crypto_core_hsalsa20(s, n, k, sigma);
-    var sn = new Uint8Array(8);
-
-    for (var i = 0; i < 8; i++) {
-      sn[i] = n[i + 16];
-    }
-
-    return crypto_stream_salsa20_xor(c, cpos, m, mpos, d, sn, s);
-  }
-  /*
-  * Port of Andrew Moon's Poly1305-donna-16. Public domain.
-  * https://github.com/floodyberry/poly1305-donna
-  */
-
-
-  var poly1305 = function poly1305(key) {
-    this.buffer = new Uint8Array(16);
-    this.r = new Uint16Array(10);
-    this.h = new Uint16Array(10);
-    this.pad = new Uint16Array(8);
-    this.leftover = 0;
-    this.fin = 0;
-    var t0, t1, t2, t3, t4, t5, t6, t7;
-    t0 = key[0] & 0xff | (key[1] & 0xff) << 8;
-    this.r[0] = t0 & 0x1fff;
-    t1 = key[2] & 0xff | (key[3] & 0xff) << 8;
-    this.r[1] = (t0 >>> 13 | t1 << 3) & 0x1fff;
-    t2 = key[4] & 0xff | (key[5] & 0xff) << 8;
-    this.r[2] = (t1 >>> 10 | t2 << 6) & 0x1f03;
-    t3 = key[6] & 0xff | (key[7] & 0xff) << 8;
-    this.r[3] = (t2 >>> 7 | t3 << 9) & 0x1fff;
-    t4 = key[8] & 0xff | (key[9] & 0xff) << 8;
-    this.r[4] = (t3 >>> 4 | t4 << 12) & 0x00ff;
-    this.r[5] = t4 >>> 1 & 0x1ffe;
-    t5 = key[10] & 0xff | (key[11] & 0xff) << 8;
-    this.r[6] = (t4 >>> 14 | t5 << 2) & 0x1fff;
-    t6 = key[12] & 0xff | (key[13] & 0xff) << 8;
-    this.r[7] = (t5 >>> 11 | t6 << 5) & 0x1f81;
-    t7 = key[14] & 0xff | (key[15] & 0xff) << 8;
-    this.r[8] = (t6 >>> 8 | t7 << 8) & 0x1fff;
-    this.r[9] = t7 >>> 5 & 0x007f;
-    this.pad[0] = key[16] & 0xff | (key[17] & 0xff) << 8;
-    this.pad[1] = key[18] & 0xff | (key[19] & 0xff) << 8;
-    this.pad[2] = key[20] & 0xff | (key[21] & 0xff) << 8;
-    this.pad[3] = key[22] & 0xff | (key[23] & 0xff) << 8;
-    this.pad[4] = key[24] & 0xff | (key[25] & 0xff) << 8;
-    this.pad[5] = key[26] & 0xff | (key[27] & 0xff) << 8;
-    this.pad[6] = key[28] & 0xff | (key[29] & 0xff) << 8;
-    this.pad[7] = key[30] & 0xff | (key[31] & 0xff) << 8;
-  };
-
-  poly1305.prototype.blocks = function (m, mpos, bytes) {
-    var hibit = this.fin ? 0 : 1 << 11;
-    var t0, t1, t2, t3, t4, t5, t6, t7, c;
-    var d0, d1, d2, d3, d4, d5, d6, d7, d8, d9;
-    var h0 = this.h[0],
-        h1 = this.h[1],
-        h2 = this.h[2],
-        h3 = this.h[3],
-        h4 = this.h[4],
-        h5 = this.h[5],
-        h6 = this.h[6],
-        h7 = this.h[7],
-        h8 = this.h[8],
-        h9 = this.h[9];
-    var r0 = this.r[0],
-        r1 = this.r[1],
-        r2 = this.r[2],
-        r3 = this.r[3],
-        r4 = this.r[4],
-        r5 = this.r[5],
-        r6 = this.r[6],
-        r7 = this.r[7],
-        r8 = this.r[8],
-        r9 = this.r[9];
-
-    while (bytes >= 16) {
-      t0 = m[mpos + 0] & 0xff | (m[mpos + 1] & 0xff) << 8;
-      h0 += t0 & 0x1fff;
-      t1 = m[mpos + 2] & 0xff | (m[mpos + 3] & 0xff) << 8;
-      h1 += (t0 >>> 13 | t1 << 3) & 0x1fff;
-      t2 = m[mpos + 4] & 0xff | (m[mpos + 5] & 0xff) << 8;
-      h2 += (t1 >>> 10 | t2 << 6) & 0x1fff;
-      t3 = m[mpos + 6] & 0xff | (m[mpos + 7] & 0xff) << 8;
-      h3 += (t2 >>> 7 | t3 << 9) & 0x1fff;
-      t4 = m[mpos + 8] & 0xff | (m[mpos + 9] & 0xff) << 8;
-      h4 += (t3 >>> 4 | t4 << 12) & 0x1fff;
-      h5 += t4 >>> 1 & 0x1fff;
-      t5 = m[mpos + 10] & 0xff | (m[mpos + 11] & 0xff) << 8;
-      h6 += (t4 >>> 14 | t5 << 2) & 0x1fff;
-      t6 = m[mpos + 12] & 0xff | (m[mpos + 13] & 0xff) << 8;
-      h7 += (t5 >>> 11 | t6 << 5) & 0x1fff;
-      t7 = m[mpos + 14] & 0xff | (m[mpos + 15] & 0xff) << 8;
-      h8 += (t6 >>> 8 | t7 << 8) & 0x1fff;
-      h9 += t7 >>> 5 | hibit;
-      c = 0;
-      d0 = c;
-      d0 += h0 * r0;
-      d0 += h1 * (5 * r9);
-      d0 += h2 * (5 * r8);
-      d0 += h3 * (5 * r7);
-      d0 += h4 * (5 * r6);
-      c = d0 >>> 13;
-      d0 &= 0x1fff;
-      d0 += h5 * (5 * r5);
-      d0 += h6 * (5 * r4);
-      d0 += h7 * (5 * r3);
-      d0 += h8 * (5 * r2);
-      d0 += h9 * (5 * r1);
-      c += d0 >>> 13;
-      d0 &= 0x1fff;
-      d1 = c;
-      d1 += h0 * r1;
-      d1 += h1 * r0;
-      d1 += h2 * (5 * r9);
-      d1 += h3 * (5 * r8);
-      d1 += h4 * (5 * r7);
-      c = d1 >>> 13;
-      d1 &= 0x1fff;
-      d1 += h5 * (5 * r6);
-      d1 += h6 * (5 * r5);
-      d1 += h7 * (5 * r4);
-      d1 += h8 * (5 * r3);
-      d1 += h9 * (5 * r2);
-      c += d1 >>> 13;
-      d1 &= 0x1fff;
-      d2 = c;
-      d2 += h0 * r2;
-      d2 += h1 * r1;
-      d2 += h2 * r0;
-      d2 += h3 * (5 * r9);
-      d2 += h4 * (5 * r8);
-      c = d2 >>> 13;
-      d2 &= 0x1fff;
-      d2 += h5 * (5 * r7);
-      d2 += h6 * (5 * r6);
-      d2 += h7 * (5 * r5);
-      d2 += h8 * (5 * r4);
-      d2 += h9 * (5 * r3);
-      c += d2 >>> 13;
-      d2 &= 0x1fff;
-      d3 = c;
-      d3 += h0 * r3;
-      d3 += h1 * r2;
-      d3 += h2 * r1;
-      d3 += h3 * r0;
-      d3 += h4 * (5 * r9);
-      c = d3 >>> 13;
-      d3 &= 0x1fff;
-      d3 += h5 * (5 * r8);
-      d3 += h6 * (5 * r7);
-      d3 += h7 * (5 * r6);
-      d3 += h8 * (5 * r5);
-      d3 += h9 * (5 * r4);
-      c += d3 >>> 13;
-      d3 &= 0x1fff;
-      d4 = c;
-      d4 += h0 * r4;
-      d4 += h1 * r3;
-      d4 += h2 * r2;
-      d4 += h3 * r1;
-      d4 += h4 * r0;
-      c = d4 >>> 13;
-      d4 &= 0x1fff;
-      d4 += h5 * (5 * r9);
-      d4 += h6 * (5 * r8);
-      d4 += h7 * (5 * r7);
-      d4 += h8 * (5 * r6);
-      d4 += h9 * (5 * r5);
-      c += d4 >>> 13;
-      d4 &= 0x1fff;
-      d5 = c;
-      d5 += h0 * r5;
-      d5 += h1 * r4;
-      d5 += h2 * r3;
-      d5 += h3 * r2;
-      d5 += h4 * r1;
-      c = d5 >>> 13;
-      d5 &= 0x1fff;
-      d5 += h5 * r0;
-      d5 += h6 * (5 * r9);
-      d5 += h7 * (5 * r8);
-      d5 += h8 * (5 * r7);
-      d5 += h9 * (5 * r6);
-      c += d5 >>> 13;
-      d5 &= 0x1fff;
-      d6 = c;
-      d6 += h0 * r6;
-      d6 += h1 * r5;
-      d6 += h2 * r4;
-      d6 += h3 * r3;
-      d6 += h4 * r2;
-      c = d6 >>> 13;
-      d6 &= 0x1fff;
-      d6 += h5 * r1;
-      d6 += h6 * r0;
-      d6 += h7 * (5 * r9);
-      d6 += h8 * (5 * r8);
-      d6 += h9 * (5 * r7);
-      c += d6 >>> 13;
-      d6 &= 0x1fff;
-      d7 = c;
-      d7 += h0 * r7;
-      d7 += h1 * r6;
-      d7 += h2 * r5;
-      d7 += h3 * r4;
-      d7 += h4 * r3;
-      c = d7 >>> 13;
-      d7 &= 0x1fff;
-      d7 += h5 * r2;
-      d7 += h6 * r1;
-      d7 += h7 * r0;
-      d7 += h8 * (5 * r9);
-      d7 += h9 * (5 * r8);
-      c += d7 >>> 13;
-      d7 &= 0x1fff;
-      d8 = c;
-      d8 += h0 * r8;
-      d8 += h1 * r7;
-      d8 += h2 * r6;
-      d8 += h3 * r5;
-      d8 += h4 * r4;
-      c = d8 >>> 13;
-      d8 &= 0x1fff;
-      d8 += h5 * r3;
-      d8 += h6 * r2;
-      d8 += h7 * r1;
-      d8 += h8 * r0;
-      d8 += h9 * (5 * r9);
-      c += d8 >>> 13;
-      d8 &= 0x1fff;
-      d9 = c;
-      d9 += h0 * r9;
-      d9 += h1 * r8;
-      d9 += h2 * r7;
-      d9 += h3 * r6;
-      d9 += h4 * r5;
-      c = d9 >>> 13;
-      d9 &= 0x1fff;
-      d9 += h5 * r4;
-      d9 += h6 * r3;
-      d9 += h7 * r2;
-      d9 += h8 * r1;
-      d9 += h9 * r0;
-      c += d9 >>> 13;
-      d9 &= 0x1fff;
-      c = (c << 2) + c | 0;
-      c = c + d0 | 0;
-      d0 = c & 0x1fff;
-      c = c >>> 13;
-      d1 += c;
-      h0 = d0;
-      h1 = d1;
-      h2 = d2;
-      h3 = d3;
-      h4 = d4;
-      h5 = d5;
-      h6 = d6;
-      h7 = d7;
-      h8 = d8;
-      h9 = d9;
-      mpos += 16;
-      bytes -= 16;
-    }
-
-    this.h[0] = h0;
-    this.h[1] = h1;
-    this.h[2] = h2;
-    this.h[3] = h3;
-    this.h[4] = h4;
-    this.h[5] = h5;
-    this.h[6] = h6;
-    this.h[7] = h7;
-    this.h[8] = h8;
-    this.h[9] = h9;
-  };
-
-  poly1305.prototype.finish = function (mac, macpos) {
-    var g = new Uint16Array(10);
-    var c, mask, f, i;
-
-    if (this.leftover) {
-      i = this.leftover;
-      this.buffer[i++] = 1;
-
-      for (; i < 16; i++) {
-        this.buffer[i] = 0;
-      }
-
-      this.fin = 1;
-      this.blocks(this.buffer, 0, 16);
-    }
-
-    c = this.h[1] >>> 13;
-    this.h[1] &= 0x1fff;
-
-    for (i = 2; i < 10; i++) {
-      this.h[i] += c;
-      c = this.h[i] >>> 13;
-      this.h[i] &= 0x1fff;
-    }
-
-    this.h[0] += c * 5;
-    c = this.h[0] >>> 13;
-    this.h[0] &= 0x1fff;
-    this.h[1] += c;
-    c = this.h[1] >>> 13;
-    this.h[1] &= 0x1fff;
-    this.h[2] += c;
-    g[0] = this.h[0] + 5;
-    c = g[0] >>> 13;
-    g[0] &= 0x1fff;
-
-    for (i = 1; i < 10; i++) {
-      g[i] = this.h[i] + c;
-      c = g[i] >>> 13;
-      g[i] &= 0x1fff;
-    }
-
-    g[9] -= 1 << 13;
-    mask = (c ^ 1) - 1;
-
-    for (i = 0; i < 10; i++) {
-      g[i] &= mask;
-    }
-
-    mask = ~mask;
-
-    for (i = 0; i < 10; i++) {
-      this.h[i] = this.h[i] & mask | g[i];
-    }
-
-    this.h[0] = (this.h[0] | this.h[1] << 13) & 0xffff;
-    this.h[1] = (this.h[1] >>> 3 | this.h[2] << 10) & 0xffff;
-    this.h[2] = (this.h[2] >>> 6 | this.h[3] << 7) & 0xffff;
-    this.h[3] = (this.h[3] >>> 9 | this.h[4] << 4) & 0xffff;
-    this.h[4] = (this.h[4] >>> 12 | this.h[5] << 1 | this.h[6] << 14) & 0xffff;
-    this.h[5] = (this.h[6] >>> 2 | this.h[7] << 11) & 0xffff;
-    this.h[6] = (this.h[7] >>> 5 | this.h[8] << 8) & 0xffff;
-    this.h[7] = (this.h[8] >>> 8 | this.h[9] << 5) & 0xffff;
-    f = this.h[0] + this.pad[0];
-    this.h[0] = f & 0xffff;
-
-    for (i = 1; i < 8; i++) {
-      f = (this.h[i] + this.pad[i] | 0) + (f >>> 16) | 0;
-      this.h[i] = f & 0xffff;
-    }
-
-    mac[macpos + 0] = this.h[0] >>> 0 & 0xff;
-    mac[macpos + 1] = this.h[0] >>> 8 & 0xff;
-    mac[macpos + 2] = this.h[1] >>> 0 & 0xff;
-    mac[macpos + 3] = this.h[1] >>> 8 & 0xff;
-    mac[macpos + 4] = this.h[2] >>> 0 & 0xff;
-    mac[macpos + 5] = this.h[2] >>> 8 & 0xff;
-    mac[macpos + 6] = this.h[3] >>> 0 & 0xff;
-    mac[macpos + 7] = this.h[3] >>> 8 & 0xff;
-    mac[macpos + 8] = this.h[4] >>> 0 & 0xff;
-    mac[macpos + 9] = this.h[4] >>> 8 & 0xff;
-    mac[macpos + 10] = this.h[5] >>> 0 & 0xff;
-    mac[macpos + 11] = this.h[5] >>> 8 & 0xff;
-    mac[macpos + 12] = this.h[6] >>> 0 & 0xff;
-    mac[macpos + 13] = this.h[6] >>> 8 & 0xff;
-    mac[macpos + 14] = this.h[7] >>> 0 & 0xff;
-    mac[macpos + 15] = this.h[7] >>> 8 & 0xff;
-  };
-
-  poly1305.prototype.update = function (m, mpos, bytes) {
-    var i, want;
-
-    if (this.leftover) {
-      want = 16 - this.leftover;
-      if (want > bytes) want = bytes;
-
-      for (i = 0; i < want; i++) {
-        this.buffer[this.leftover + i] = m[mpos + i];
-      }
-
-      bytes -= want;
-      mpos += want;
-      this.leftover += want;
-      if (this.leftover < 16) return;
-      this.blocks(this.buffer, 0, 16);
-      this.leftover = 0;
-    }
-
-    if (bytes >= 16) {
-      want = bytes - bytes % 16;
-      this.blocks(m, mpos, want);
-      mpos += want;
-      bytes -= want;
-    }
-
-    if (bytes) {
-      for (i = 0; i < bytes; i++) {
-        this.buffer[this.leftover + i] = m[mpos + i];
-      }
-
-      this.leftover += bytes;
-    }
-  };
-
-  function crypto_onetimeauth(out, outpos, m, mpos, n, k) {
-    var s = new poly1305(k);
-    s.update(m, mpos, n);
-    s.finish(out, outpos);
-    return 0;
-  }
-
-  function crypto_onetimeauth_verify(h, hpos, m, mpos, n, k) {
-    var x = new Uint8Array(16);
-    crypto_onetimeauth(x, 0, m, mpos, n, k);
-    return crypto_verify_16(h, hpos, x, 0);
-  }
-
-  function crypto_secretbox(c, m, d, n, k) {
-    var i;
-    if (d < 32) return -1;
-    crypto_stream_xor(c, 0, m, 0, d, n, k);
-    crypto_onetimeauth(c, 16, c, 32, d - 32, c);
-
-    for (i = 0; i < 16; i++) {
-      c[i] = 0;
-    }
-
-    return 0;
-  }
-
-  function crypto_secretbox_open(m, c, d, n, k) {
-    var i;
-    var x = new Uint8Array(32);
-    if (d < 32) return -1;
-    crypto_stream(x, 0, 32, n, k);
-    if (crypto_onetimeauth_verify(c, 16, c, 32, d - 32, x) !== 0) return -1;
-    crypto_stream_xor(m, 0, c, 0, d, n, k);
-
-    for (i = 0; i < 32; i++) {
-      m[i] = 0;
-    }
-
-    return 0;
-  }
-
-  function set25519(r, a) {
-    var i;
-
-    for (i = 0; i < 16; i++) {
-      r[i] = a[i] | 0;
-    }
-  }
-
-  function car25519(o) {
-    var i,
-        v,
-        c = 1;
-
-    for (i = 0; i < 16; i++) {
-      v = o[i] + c + 65535;
-      c = Math.floor(v / 65536);
-      o[i] = v - c * 65536;
-    }
-
-    o[0] += c - 1 + 37 * (c - 1);
-  }
-
-  function sel25519(p, q, b) {
-    var t,
-        c = ~(b - 1);
-
-    for (var i = 0; i < 16; i++) {
-      t = c & (p[i] ^ q[i]);
-      p[i] ^= t;
-      q[i] ^= t;
-    }
-  }
-
-  function pack25519(o, n) {
-    var i, j, b;
-    var m = gf(),
-        t = gf();
-
-    for (i = 0; i < 16; i++) {
-      t[i] = n[i];
-    }
-
-    car25519(t);
-    car25519(t);
-    car25519(t);
-
-    for (j = 0; j < 2; j++) {
-      m[0] = t[0] - 0xffed;
-
-      for (i = 1; i < 15; i++) {
-        m[i] = t[i] - 0xffff - (m[i - 1] >> 16 & 1);
-        m[i - 1] &= 0xffff;
-      }
-
-      m[15] = t[15] - 0x7fff - (m[14] >> 16 & 1);
-      b = m[15] >> 16 & 1;
-      m[14] &= 0xffff;
-      sel25519(t, m, 1 - b);
-    }
-
-    for (i = 0; i < 16; i++) {
-      o[2 * i] = t[i] & 0xff;
-      o[2 * i + 1] = t[i] >> 8;
-    }
-  }
-
-  function neq25519(a, b) {
-    var c = new Uint8Array(32),
-        d = new Uint8Array(32);
-    pack25519(c, a);
-    pack25519(d, b);
-    return crypto_verify_32(c, 0, d, 0);
-  }
-
-  function par25519(a) {
-    var d = new Uint8Array(32);
-    pack25519(d, a);
-    return d[0] & 1;
-  }
-
-  function unpack25519(o, n) {
-    var i;
-
-    for (i = 0; i < 16; i++) {
-      o[i] = n[2 * i] + (n[2 * i + 1] << 8);
-    }
-
-    o[15] &= 0x7fff;
-  }
-
-  function A(o, a, b) {
-    for (var i = 0; i < 16; i++) {
-      o[i] = a[i] + b[i];
-    }
-  }
-
-  function Z(o, a, b) {
-    for (var i = 0; i < 16; i++) {
-      o[i] = a[i] - b[i];
-    }
-  }
-
-  function M(o, a, b) {
-    var v,
-        c,
-        t0 = 0,
-        t1 = 0,
-        t2 = 0,
-        t3 = 0,
-        t4 = 0,
-        t5 = 0,
-        t6 = 0,
-        t7 = 0,
-        t8 = 0,
-        t9 = 0,
-        t10 = 0,
-        t11 = 0,
-        t12 = 0,
-        t13 = 0,
-        t14 = 0,
-        t15 = 0,
-        t16 = 0,
-        t17 = 0,
-        t18 = 0,
-        t19 = 0,
-        t20 = 0,
-        t21 = 0,
-        t22 = 0,
-        t23 = 0,
-        t24 = 0,
-        t25 = 0,
-        t26 = 0,
-        t27 = 0,
-        t28 = 0,
-        t29 = 0,
-        t30 = 0,
-        b0 = b[0],
-        b1 = b[1],
-        b2 = b[2],
-        b3 = b[3],
-        b4 = b[4],
-        b5 = b[5],
-        b6 = b[6],
-        b7 = b[7],
-        b8 = b[8],
-        b9 = b[9],
-        b10 = b[10],
-        b11 = b[11],
-        b12 = b[12],
-        b13 = b[13],
-        b14 = b[14],
-        b15 = b[15];
-    v = a[0];
-    t0 += v * b0;
-    t1 += v * b1;
-    t2 += v * b2;
-    t3 += v * b3;
-    t4 += v * b4;
-    t5 += v * b5;
-    t6 += v * b6;
-    t7 += v * b7;
-    t8 += v * b8;
-    t9 += v * b9;
-    t10 += v * b10;
-    t11 += v * b11;
-    t12 += v * b12;
-    t13 += v * b13;
-    t14 += v * b14;
-    t15 += v * b15;
-    v = a[1];
-    t1 += v * b0;
-    t2 += v * b1;
-    t3 += v * b2;
-    t4 += v * b3;
-    t5 += v * b4;
-    t6 += v * b5;
-    t7 += v * b6;
-    t8 += v * b7;
-    t9 += v * b8;
-    t10 += v * b9;
-    t11 += v * b10;
-    t12 += v * b11;
-    t13 += v * b12;
-    t14 += v * b13;
-    t15 += v * b14;
-    t16 += v * b15;
-    v = a[2];
-    t2 += v * b0;
-    t3 += v * b1;
-    t4 += v * b2;
-    t5 += v * b3;
-    t6 += v * b4;
-    t7 += v * b5;
-    t8 += v * b6;
-    t9 += v * b7;
-    t10 += v * b8;
-    t11 += v * b9;
-    t12 += v * b10;
-    t13 += v * b11;
-    t14 += v * b12;
-    t15 += v * b13;
-    t16 += v * b14;
-    t17 += v * b15;
-    v = a[3];
-    t3 += v * b0;
-    t4 += v * b1;
-    t5 += v * b2;
-    t6 += v * b3;
-    t7 += v * b4;
-    t8 += v * b5;
-    t9 += v * b6;
-    t10 += v * b7;
-    t11 += v * b8;
-    t12 += v * b9;
-    t13 += v * b10;
-    t14 += v * b11;
-    t15 += v * b12;
-    t16 += v * b13;
-    t17 += v * b14;
-    t18 += v * b15;
-    v = a[4];
-    t4 += v * b0;
-    t5 += v * b1;
-    t6 += v * b2;
-    t7 += v * b3;
-    t8 += v * b4;
-    t9 += v * b5;
-    t10 += v * b6;
-    t11 += v * b7;
-    t12 += v * b8;
-    t13 += v * b9;
-    t14 += v * b10;
-    t15 += v * b11;
-    t16 += v * b12;
-    t17 += v * b13;
-    t18 += v * b14;
-    t19 += v * b15;
-    v = a[5];
-    t5 += v * b0;
-    t6 += v * b1;
-    t7 += v * b2;
-    t8 += v * b3;
-    t9 += v * b4;
-    t10 += v * b5;
-    t11 += v * b6;
-    t12 += v * b7;
-    t13 += v * b8;
-    t14 += v * b9;
-    t15 += v * b10;
-    t16 += v * b11;
-    t17 += v * b12;
-    t18 += v * b13;
-    t19 += v * b14;
-    t20 += v * b15;
-    v = a[6];
-    t6 += v * b0;
-    t7 += v * b1;
-    t8 += v * b2;
-    t9 += v * b3;
-    t10 += v * b4;
-    t11 += v * b5;
-    t12 += v * b6;
-    t13 += v * b7;
-    t14 += v * b8;
-    t15 += v * b9;
-    t16 += v * b10;
-    t17 += v * b11;
-    t18 += v * b12;
-    t19 += v * b13;
-    t20 += v * b14;
-    t21 += v * b15;
-    v = a[7];
-    t7 += v * b0;
-    t8 += v * b1;
-    t9 += v * b2;
-    t10 += v * b3;
-    t11 += v * b4;
-    t12 += v * b5;
-    t13 += v * b6;
-    t14 += v * b7;
-    t15 += v * b8;
-    t16 += v * b9;
-    t17 += v * b10;
-    t18 += v * b11;
-    t19 += v * b12;
-    t20 += v * b13;
-    t21 += v * b14;
-    t22 += v * b15;
-    v = a[8];
-    t8 += v * b0;
-    t9 += v * b1;
-    t10 += v * b2;
-    t11 += v * b3;
-    t12 += v * b4;
-    t13 += v * b5;
-    t14 += v * b6;
-    t15 += v * b7;
-    t16 += v * b8;
-    t17 += v * b9;
-    t18 += v * b10;
-    t19 += v * b11;
-    t20 += v * b12;
-    t21 += v * b13;
-    t22 += v * b14;
-    t23 += v * b15;
-    v = a[9];
-    t9 += v * b0;
-    t10 += v * b1;
-    t11 += v * b2;
-    t12 += v * b3;
-    t13 += v * b4;
-    t14 += v * b5;
-    t15 += v * b6;
-    t16 += v * b7;
-    t17 += v * b8;
-    t18 += v * b9;
-    t19 += v * b10;
-    t20 += v * b11;
-    t21 += v * b12;
-    t22 += v * b13;
-    t23 += v * b14;
-    t24 += v * b15;
-    v = a[10];
-    t10 += v * b0;
-    t11 += v * b1;
-    t12 += v * b2;
-    t13 += v * b3;
-    t14 += v * b4;
-    t15 += v * b5;
-    t16 += v * b6;
-    t17 += v * b7;
-    t18 += v * b8;
-    t19 += v * b9;
-    t20 += v * b10;
-    t21 += v * b11;
-    t22 += v * b12;
-    t23 += v * b13;
-    t24 += v * b14;
-    t25 += v * b15;
-    v = a[11];
-    t11 += v * b0;
-    t12 += v * b1;
-    t13 += v * b2;
-    t14 += v * b3;
-    t15 += v * b4;
-    t16 += v * b5;
-    t17 += v * b6;
-    t18 += v * b7;
-    t19 += v * b8;
-    t20 += v * b9;
-    t21 += v * b10;
-    t22 += v * b11;
-    t23 += v * b12;
-    t24 += v * b13;
-    t25 += v * b14;
-    t26 += v * b15;
-    v = a[12];
-    t12 += v * b0;
-    t13 += v * b1;
-    t14 += v * b2;
-    t15 += v * b3;
-    t16 += v * b4;
-    t17 += v * b5;
-    t18 += v * b6;
-    t19 += v * b7;
-    t20 += v * b8;
-    t21 += v * b9;
-    t22 += v * b10;
-    t23 += v * b11;
-    t24 += v * b12;
-    t25 += v * b13;
-    t26 += v * b14;
-    t27 += v * b15;
-    v = a[13];
-    t13 += v * b0;
-    t14 += v * b1;
-    t15 += v * b2;
-    t16 += v * b3;
-    t17 += v * b4;
-    t18 += v * b5;
-    t19 += v * b6;
-    t20 += v * b7;
-    t21 += v * b8;
-    t22 += v * b9;
-    t23 += v * b10;
-    t24 += v * b11;
-    t25 += v * b12;
-    t26 += v * b13;
-    t27 += v * b14;
-    t28 += v * b15;
-    v = a[14];
-    t14 += v * b0;
-    t15 += v * b1;
-    t16 += v * b2;
-    t17 += v * b3;
-    t18 += v * b4;
-    t19 += v * b5;
-    t20 += v * b6;
-    t21 += v * b7;
-    t22 += v * b8;
-    t23 += v * b9;
-    t24 += v * b10;
-    t25 += v * b11;
-    t26 += v * b12;
-    t27 += v * b13;
-    t28 += v * b14;
-    t29 += v * b15;
-    v = a[15];
-    t15 += v * b0;
-    t16 += v * b1;
-    t17 += v * b2;
-    t18 += v * b3;
-    t19 += v * b4;
-    t20 += v * b5;
-    t21 += v * b6;
-    t22 += v * b7;
-    t23 += v * b8;
-    t24 += v * b9;
-    t25 += v * b10;
-    t26 += v * b11;
-    t27 += v * b12;
-    t28 += v * b13;
-    t29 += v * b14;
-    t30 += v * b15;
-    t0 += 38 * t16;
-    t1 += 38 * t17;
-    t2 += 38 * t18;
-    t3 += 38 * t19;
-    t4 += 38 * t20;
-    t5 += 38 * t21;
-    t6 += 38 * t22;
-    t7 += 38 * t23;
-    t8 += 38 * t24;
-    t9 += 38 * t25;
-    t10 += 38 * t26;
-    t11 += 38 * t27;
-    t12 += 38 * t28;
-    t13 += 38 * t29;
-    t14 += 38 * t30; // t15 left as is
-    // first car
-
-    c = 1;
-    v = t0 + c + 65535;
-    c = Math.floor(v / 65536);
-    t0 = v - c * 65536;
-    v = t1 + c + 65535;
-    c = Math.floor(v / 65536);
-    t1 = v - c * 65536;
-    v = t2 + c + 65535;
-    c = Math.floor(v / 65536);
-    t2 = v - c * 65536;
-    v = t3 + c + 65535;
-    c = Math.floor(v / 65536);
-    t3 = v - c * 65536;
-    v = t4 + c + 65535;
-    c = Math.floor(v / 65536);
-    t4 = v - c * 65536;
-    v = t5 + c + 65535;
-    c = Math.floor(v / 65536);
-    t5 = v - c * 65536;
-    v = t6 + c + 65535;
-    c = Math.floor(v / 65536);
-    t6 = v - c * 65536;
-    v = t7 + c + 65535;
-    c = Math.floor(v / 65536);
-    t7 = v - c * 65536;
-    v = t8 + c + 65535;
-    c = Math.floor(v / 65536);
-    t8 = v - c * 65536;
-    v = t9 + c + 65535;
-    c = Math.floor(v / 65536);
-    t9 = v - c * 65536;
-    v = t10 + c + 65535;
-    c = Math.floor(v / 65536);
-    t10 = v - c * 65536;
-    v = t11 + c + 65535;
-    c = Math.floor(v / 65536);
-    t11 = v - c * 65536;
-    v = t12 + c + 65535;
-    c = Math.floor(v / 65536);
-    t12 = v - c * 65536;
-    v = t13 + c + 65535;
-    c = Math.floor(v / 65536);
-    t13 = v - c * 65536;
-    v = t14 + c + 65535;
-    c = Math.floor(v / 65536);
-    t14 = v - c * 65536;
-    v = t15 + c + 65535;
-    c = Math.floor(v / 65536);
-    t15 = v - c * 65536;
-    t0 += c - 1 + 37 * (c - 1); // second car
-
-    c = 1;
-    v = t0 + c + 65535;
-    c = Math.floor(v / 65536);
-    t0 = v - c * 65536;
-    v = t1 + c + 65535;
-    c = Math.floor(v / 65536);
-    t1 = v - c * 65536;
-    v = t2 + c + 65535;
-    c = Math.floor(v / 65536);
-    t2 = v - c * 65536;
-    v = t3 + c + 65535;
-    c = Math.floor(v / 65536);
-    t3 = v - c * 65536;
-    v = t4 + c + 65535;
-    c = Math.floor(v / 65536);
-    t4 = v - c * 65536;
-    v = t5 + c + 65535;
-    c = Math.floor(v / 65536);
-    t5 = v - c * 65536;
-    v = t6 + c + 65535;
-    c = Math.floor(v / 65536);
-    t6 = v - c * 65536;
-    v = t7 + c + 65535;
-    c = Math.floor(v / 65536);
-    t7 = v - c * 65536;
-    v = t8 + c + 65535;
-    c = Math.floor(v / 65536);
-    t8 = v - c * 65536;
-    v = t9 + c + 65535;
-    c = Math.floor(v / 65536);
-    t9 = v - c * 65536;
-    v = t10 + c + 65535;
-    c = Math.floor(v / 65536);
-    t10 = v - c * 65536;
-    v = t11 + c + 65535;
-    c = Math.floor(v / 65536);
-    t11 = v - c * 65536;
-    v = t12 + c + 65535;
-    c = Math.floor(v / 65536);
-    t12 = v - c * 65536;
-    v = t13 + c + 65535;
-    c = Math.floor(v / 65536);
-    t13 = v - c * 65536;
-    v = t14 + c + 65535;
-    c = Math.floor(v / 65536);
-    t14 = v - c * 65536;
-    v = t15 + c + 65535;
-    c = Math.floor(v / 65536);
-    t15 = v - c * 65536;
-    t0 += c - 1 + 37 * (c - 1);
-    o[0] = t0;
-    o[1] = t1;
-    o[2] = t2;
-    o[3] = t3;
-    o[4] = t4;
-    o[5] = t5;
-    o[6] = t6;
-    o[7] = t7;
-    o[8] = t8;
-    o[9] = t9;
-    o[10] = t10;
-    o[11] = t11;
-    o[12] = t12;
-    o[13] = t13;
-    o[14] = t14;
-    o[15] = t15;
-  }
-
-  function S(o, a) {
-    M(o, a, a);
-  }
-
-  function inv25519(o, i) {
-    var c = gf();
-    var a;
-
-    for (a = 0; a < 16; a++) {
-      c[a] = i[a];
-    }
-
-    for (a = 253; a >= 0; a--) {
-      S(c, c);
-      if (a !== 2 && a !== 4) M(c, c, i);
-    }
-
-    for (a = 0; a < 16; a++) {
-      o[a] = c[a];
-    }
-  }
-
-  function pow2523(o, i) {
-    var c = gf();
-    var a;
-
-    for (a = 0; a < 16; a++) {
-      c[a] = i[a];
-    }
-
-    for (a = 250; a >= 0; a--) {
-      S(c, c);
-      if (a !== 1) M(c, c, i);
-    }
-
-    for (a = 0; a < 16; a++) {
-      o[a] = c[a];
-    }
-  }
-
-  function crypto_scalarmult(q, n, p) {
-    var z = new Uint8Array(32);
-    var x = new Float64Array(80),
-        r,
-        i;
-    var a = gf(),
-        b = gf(),
-        c = gf(),
-        d = gf(),
-        e = gf(),
-        f = gf();
-
-    for (i = 0; i < 31; i++) {
-      z[i] = n[i];
-    }
-
-    z[31] = n[31] & 127 | 64;
-    z[0] &= 248;
-    unpack25519(x, p);
-
-    for (i = 0; i < 16; i++) {
-      b[i] = x[i];
-      d[i] = a[i] = c[i] = 0;
-    }
-
-    a[0] = d[0] = 1;
-
-    for (i = 254; i >= 0; --i) {
-      r = z[i >>> 3] >>> (i & 7) & 1;
-      sel25519(a, b, r);
-      sel25519(c, d, r);
-      A(e, a, c);
-      Z(a, a, c);
-      A(c, b, d);
-      Z(b, b, d);
-      S(d, e);
-      S(f, a);
-      M(a, c, a);
-      M(c, b, e);
-      A(e, a, c);
-      Z(a, a, c);
-      S(b, a);
-      Z(c, d, f);
-      M(a, c, _121665);
-      A(a, a, d);
-      M(c, c, a);
-      M(a, d, f);
-      M(d, b, x);
-      S(b, e);
-      sel25519(a, b, r);
-      sel25519(c, d, r);
-    }
-
-    for (i = 0; i < 16; i++) {
-      x[i + 16] = a[i];
-      x[i + 32] = c[i];
-      x[i + 48] = b[i];
-      x[i + 64] = d[i];
-    }
-
-    var x32 = x.subarray(32);
-    var x16 = x.subarray(16);
-    inv25519(x32, x32);
-    M(x16, x16, x32);
-    pack25519(q, x16);
-    return 0;
-  }
-
-  function crypto_scalarmult_base(q, n) {
-    return crypto_scalarmult(q, n, _9);
-  }
-
-  function crypto_box_keypair(y, x) {
-    randombytes(x, 32);
-    return crypto_scalarmult_base(y, x);
-  }
-
-  function crypto_box_beforenm(k, y, x) {
-    var s = new Uint8Array(32);
-    crypto_scalarmult(s, x, y);
-    return crypto_core_hsalsa20(k, _0, s, sigma);
-  }
-
-  var crypto_box_afternm = crypto_secretbox;
-  var crypto_box_open_afternm = crypto_secretbox_open;
-
-  function crypto_box(c, m, d, n, y, x) {
-    var k = new Uint8Array(32);
-    crypto_box_beforenm(k, y, x);
-    return crypto_box_afternm(c, m, d, n, k);
-  }
-
-  function crypto_box_open(m, c, d, n, y, x) {
-    var k = new Uint8Array(32);
-    crypto_box_beforenm(k, y, x);
-    return crypto_box_open_afternm(m, c, d, n, k);
-  }
-
-  function crypto_hash(out, m, n) {
-    var input = new Uint8Array(n),
-        i;
-
-    for (i = 0; i < n; ++i) {
-      input[i] = m[i];
-    }
-
-    var hash = blake2b.blake2b(input);
-
-    for (i = 0; i < crypto_hash_BYTES; ++i) {
-      out[i] = hash[i];
-    }
-
-    return 0;
-  }
-
-  function add(p, q) {
-    var a = gf(),
-        b = gf(),
-        c = gf(),
-        d = gf(),
-        e = gf(),
-        f = gf(),
-        g = gf(),
-        h = gf(),
-        t = gf();
-    Z(a, p[1], p[0]);
-    Z(t, q[1], q[0]);
-    M(a, a, t);
-    A(b, p[0], p[1]);
-    A(t, q[0], q[1]);
-    M(b, b, t);
-    M(c, p[3], q[3]);
-    M(c, c, D2);
-    M(d, p[2], q[2]);
-    A(d, d, d);
-    Z(e, b, a);
-    Z(f, d, c);
-    A(g, d, c);
-    A(h, b, a);
-    M(p[0], e, f);
-    M(p[1], h, g);
-    M(p[2], g, f);
-    M(p[3], e, h);
-  }
-
-  function cswap(p, q, b) {
-    var i;
-
-    for (i = 0; i < 4; i++) {
-      sel25519(p[i], q[i], b);
-    }
-  }
-
-  function pack(r, p) {
-    var tx = gf(),
-        ty = gf(),
-        zi = gf();
-    inv25519(zi, p[2]);
-    M(tx, p[0], zi);
-    M(ty, p[1], zi);
-    pack25519(r, ty);
-    r[31] ^= par25519(tx) << 7;
-  }
-
-  function scalarmult(p, q, s) {
-    var b, i;
-    set25519(p[0], gf0);
-    set25519(p[1], gf1);
-    set25519(p[2], gf1);
-    set25519(p[3], gf0);
-
-    for (i = 255; i >= 0; --i) {
-      b = s[i / 8 | 0] >> (i & 7) & 1;
-      cswap(p, q, b);
-      add(q, p);
-      add(p, p);
-      cswap(p, q, b);
-    }
-  }
-
-  function scalarbase(p, s) {
-    var q = [gf(), gf(), gf(), gf()];
-    set25519(q[0], X);
-    set25519(q[1], Y);
-    set25519(q[2], gf1);
-    M(q[3], X, Y);
-    scalarmult(p, q, s);
-  }
-
-  function crypto_sign_keypair(pk, sk, seeded) {
-    var d = new Uint8Array(64);
-    var p = [gf(), gf(), gf(), gf()];
-    var i;
-    if (!seeded) randombytes(sk, 32);
-    crypto_hash(d, sk, 32);
-    d[0] &= 248;
-    d[31] &= 127;
-    d[31] |= 64;
-    scalarbase(p, d);
-    pack(pk, p);
-
-    for (i = 0; i < 32; i++) {
-      sk[i + 32] = pk[i];
-    }
-
-    return 0;
-  }
-
-  var L = new Float64Array([0xed, 0xd3, 0xf5, 0x5c, 0x1a, 0x63, 0x12, 0x58, 0xd6, 0x9c, 0xf7, 0xa2, 0xde, 0xf9, 0xde, 0x14, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0x10]);
-
-  function modL(r, x) {
-    var carry, i, j, k;
-
-    for (i = 63; i >= 32; --i) {
-      carry = 0;
-
-      for (j = i - 32, k = i - 12; j < k; ++j) {
-        x[j] += carry - 16 * x[i] * L[j - (i - 32)];
-        carry = x[j] + 128 >> 8;
-        x[j] -= carry * 256;
-      }
-
-      x[j] += carry;
-      x[i] = 0;
-    }
-
-    carry = 0;
-
-    for (j = 0; j < 32; j++) {
-      x[j] += carry - (x[31] >> 4) * L[j];
-      carry = x[j] >> 8;
-      x[j] &= 255;
-    }
-
-    for (j = 0; j < 32; j++) {
-      x[j] -= carry * L[j];
-    }
-
-    for (i = 0; i < 32; i++) {
-      x[i + 1] += x[i] >> 8;
-      r[i] = x[i] & 255;
-    }
-  }
-
-  function reduce(r) {
-    var x = new Float64Array(64),
-        i;
-
-    for (i = 0; i < 64; i++) {
-      x[i] = r[i];
-    }
-
-    for (i = 0; i < 64; i++) {
-      r[i] = 0;
-    }
-
-    modL(r, x);
-  } // Note: difference from C - smlen returned, not passed as argument.
-
-
-  function crypto_sign(sm, m, n, sk) {
-    var d = new Uint8Array(64),
-        h = new Uint8Array(64),
-        r = new Uint8Array(64);
-    var i,
-        j,
-        x = new Float64Array(64);
-    var p = [gf(), gf(), gf(), gf()];
-    crypto_hash(d, sk, 32);
-    d[0] &= 248;
-    d[31] &= 127;
-    d[31] |= 64;
-    var smlen = n + 64;
-
-    for (i = 0; i < n; i++) {
-      sm[64 + i] = m[i];
-    }
-
-    for (i = 0; i < 32; i++) {
-      sm[32 + i] = d[32 + i];
-    }
-
-    crypto_hash(r, sm.subarray(32), n + 32);
-    reduce(r);
-    scalarbase(p, r);
-    pack(sm, p);
-
-    for (i = 32; i < 64; i++) {
-      sm[i] = sk[i];
-    }
-
-    crypto_hash(h, sm, n + 64);
-    reduce(h);
-
-    for (i = 0; i < 64; i++) {
-      x[i] = 0;
-    }
-
-    for (i = 0; i < 32; i++) {
-      x[i] = r[i];
-    }
-
-    for (i = 0; i < 32; i++) {
-      for (j = 0; j < 32; j++) {
-        x[i + j] += h[i] * d[j];
-      }
-    }
-
-    modL(sm.subarray(32), x);
-    return smlen;
-  }
-
-  function unpackneg(r, p) {
-    var t = gf(),
-        chk = gf(),
-        num = gf(),
-        den = gf(),
-        den2 = gf(),
-        den4 = gf(),
-        den6 = gf();
-    set25519(r[2], gf1);
-    unpack25519(r[1], p);
-    S(num, r[1]);
-    M(den, num, D);
-    Z(num, num, r[2]);
-    A(den, r[2], den);
-    S(den2, den);
-    S(den4, den2);
-    M(den6, den4, den2);
-    M(t, den6, num);
-    M(t, t, den);
-    pow2523(t, t);
-    M(t, t, num);
-    M(t, t, den);
-    M(t, t, den);
-    M(r[0], t, den);
-    S(chk, r[0]);
-    M(chk, chk, den);
-    if (neq25519(chk, num)) M(r[0], r[0], I);
-    S(chk, r[0]);
-    M(chk, chk, den);
-    if (neq25519(chk, num)) return -1;
-    if (par25519(r[0]) === p[31] >> 7) Z(r[0], gf0, r[0]);
-    M(r[3], r[0], r[1]);
-    return 0;
-  }
-
-  function crypto_sign_open(m, sm, n, pk) {
-    var i, mlen;
-    var t = new Uint8Array(32),
-        h = new Uint8Array(64);
-    var p = [gf(), gf(), gf(), gf()],
-        q = [gf(), gf(), gf(), gf()];
-    mlen = -1;
-    if (n < 64) return -1;
-    if (unpackneg(q, pk)) return -1;
-
-    for (i = 0; i < n; i++) {
-      m[i] = sm[i];
-    }
-
-    for (i = 0; i < 32; i++) {
-      m[i + 32] = pk[i];
-    }
-
-    crypto_hash(h, m, n);
-    reduce(h);
-    scalarmult(p, q, h);
-    scalarbase(q, sm.subarray(32));
-    add(p, q);
-    pack(t, p);
-    n -= 64;
-
-    if (crypto_verify_32(sm, 0, t, 0)) {
-      for (i = 0; i < n; i++) {
-        m[i] = 0;
-      }
-
-      return -1;
-    }
-
-    for (i = 0; i < n; i++) {
-      m[i] = sm[i + 64];
-    }
-
-    mlen = n;
-    return mlen;
-  }
-
-  var crypto_secretbox_KEYBYTES = 32,
-      crypto_secretbox_NONCEBYTES = 24,
-      crypto_secretbox_ZEROBYTES = 32,
-      crypto_secretbox_BOXZEROBYTES = 16,
-      crypto_scalarmult_BYTES = 32,
-      crypto_scalarmult_SCALARBYTES = 32,
-      crypto_box_PUBLICKEYBYTES = 32,
-      crypto_box_SECRETKEYBYTES = 32,
-      crypto_box_BEFORENMBYTES = 32,
-      crypto_box_NONCEBYTES = crypto_secretbox_NONCEBYTES,
-      crypto_box_ZEROBYTES = crypto_secretbox_ZEROBYTES,
-      crypto_box_BOXZEROBYTES = crypto_secretbox_BOXZEROBYTES,
-      crypto_sign_BYTES = 64,
-      crypto_sign_PUBLICKEYBYTES = 32,
-      crypto_sign_SECRETKEYBYTES = 64,
-      crypto_sign_SEEDBYTES = 32,
-      crypto_hash_BYTES = 64;
-  nacl.lowlevel = {
-    crypto_core_hsalsa20: crypto_core_hsalsa20,
-    crypto_stream_xor: crypto_stream_xor,
-    crypto_stream: crypto_stream,
-    crypto_stream_salsa20_xor: crypto_stream_salsa20_xor,
-    crypto_stream_salsa20: crypto_stream_salsa20,
-    crypto_onetimeauth: crypto_onetimeauth,
-    crypto_onetimeauth_verify: crypto_onetimeauth_verify,
-    crypto_verify_16: crypto_verify_16,
-    crypto_verify_32: crypto_verify_32,
-    crypto_secretbox: crypto_secretbox,
-    crypto_secretbox_open: crypto_secretbox_open,
-    crypto_scalarmult: crypto_scalarmult,
-    crypto_scalarmult_base: crypto_scalarmult_base,
-    crypto_box_beforenm: crypto_box_beforenm,
-    crypto_box_afternm: crypto_box_afternm,
-    crypto_box: crypto_box,
-    crypto_box_open: crypto_box_open,
-    crypto_box_keypair: crypto_box_keypair,
-    crypto_hash: crypto_hash,
-    crypto_sign: crypto_sign,
-    crypto_sign_keypair: crypto_sign_keypair,
-    crypto_sign_open: crypto_sign_open,
-    crypto_secretbox_KEYBYTES: crypto_secretbox_KEYBYTES,
-    crypto_secretbox_NONCEBYTES: crypto_secretbox_NONCEBYTES,
-    crypto_secretbox_ZEROBYTES: crypto_secretbox_ZEROBYTES,
-    crypto_secretbox_BOXZEROBYTES: crypto_secretbox_BOXZEROBYTES,
-    crypto_scalarmult_BYTES: crypto_scalarmult_BYTES,
-    crypto_scalarmult_SCALARBYTES: crypto_scalarmult_SCALARBYTES,
-    crypto_box_PUBLICKEYBYTES: crypto_box_PUBLICKEYBYTES,
-    crypto_box_SECRETKEYBYTES: crypto_box_SECRETKEYBYTES,
-    crypto_box_BEFORENMBYTES: crypto_box_BEFORENMBYTES,
-    crypto_box_NONCEBYTES: crypto_box_NONCEBYTES,
-    crypto_box_ZEROBYTES: crypto_box_ZEROBYTES,
-    crypto_box_BOXZEROBYTES: crypto_box_BOXZEROBYTES,
-    crypto_sign_BYTES: crypto_sign_BYTES,
-    crypto_sign_PUBLICKEYBYTES: crypto_sign_PUBLICKEYBYTES,
-    crypto_sign_SECRETKEYBYTES: crypto_sign_SECRETKEYBYTES,
-    crypto_sign_SEEDBYTES: crypto_sign_SEEDBYTES,
-    crypto_hash_BYTES: crypto_hash_BYTES
-  };
-  /* High-level API */
-
-  function checkLengths(k, n) {
-    if (k.length !== crypto_secretbox_KEYBYTES) throw new Error('bad key size');
-    if (n.length !== crypto_secretbox_NONCEBYTES) throw new Error('bad nonce size');
-  }
-
-  function checkBoxLengths(pk, sk) {
-    if (pk.length !== crypto_box_PUBLICKEYBYTES) throw new Error('bad public key size');
-    if (sk.length !== crypto_box_SECRETKEYBYTES) throw new Error('bad secret key size');
-  }
-
-  function checkArrayTypes() {
-    for (var i = 0; i < arguments.length; i++) {
-      if (!(arguments[i] instanceof Uint8Array)) throw new TypeError('unexpected type, use Uint8Array');
-    }
-  }
-
-  function cleanup(arr) {
-    for (var i = 0; i < arr.length; i++) {
-      arr[i] = 0;
-    }
-  }
-
-  nacl.randomBytes = function (n) {
-    var b = new Uint8Array(n);
-    randombytes(b, n);
-    return b;
-  };
-
-  nacl.secretbox = function (msg, nonce, key) {
-    checkArrayTypes(msg, nonce, key);
-    checkLengths(key, nonce);
-    var m = new Uint8Array(crypto_secretbox_ZEROBYTES + msg.length);
-    var c = new Uint8Array(m.length);
-
-    for (var i = 0; i < msg.length; i++) {
-      m[i + crypto_secretbox_ZEROBYTES] = msg[i];
-    }
-
-    crypto_secretbox(c, m, m.length, nonce, key);
-    return c.subarray(crypto_secretbox_BOXZEROBYTES);
-  };
-
-  nacl.secretbox.open = function (box, nonce, key) {
-    checkArrayTypes(box, nonce, key);
-    checkLengths(key, nonce);
-    var c = new Uint8Array(crypto_secretbox_BOXZEROBYTES + box.length);
-    var m = new Uint8Array(c.length);
-
-    for (var i = 0; i < box.length; i++) {
-      c[i + crypto_secretbox_BOXZEROBYTES] = box[i];
-    }
-
-    if (c.length < 32) return null;
-    if (crypto_secretbox_open(m, c, c.length, nonce, key) !== 0) return null;
-    return m.subarray(crypto_secretbox_ZEROBYTES);
-  };
-
-  nacl.secretbox.keyLength = crypto_secretbox_KEYBYTES;
-  nacl.secretbox.nonceLength = crypto_secretbox_NONCEBYTES;
-  nacl.secretbox.overheadLength = crypto_secretbox_BOXZEROBYTES;
-
-  nacl.scalarMult = function (n, p) {
-    checkArrayTypes(n, p);
-    if (n.length !== crypto_scalarmult_SCALARBYTES) throw new Error('bad n size');
-    if (p.length !== crypto_scalarmult_BYTES) throw new Error('bad p size');
-    var q = new Uint8Array(crypto_scalarmult_BYTES);
-    crypto_scalarmult(q, n, p);
-    return q;
-  };
-
-  nacl.scalarMult.base = function (n) {
-    checkArrayTypes(n);
-    if (n.length !== crypto_scalarmult_SCALARBYTES) throw new Error('bad n size');
-    var q = new Uint8Array(crypto_scalarmult_BYTES);
-    crypto_scalarmult_base(q, n);
-    return q;
-  };
-
-  nacl.scalarMult.scalarLength = crypto_scalarmult_SCALARBYTES;
-  nacl.scalarMult.groupElementLength = crypto_scalarmult_BYTES;
-
-  nacl.box = function (msg, nonce, publicKey, secretKey) {
-    var k = nacl.box.before(publicKey, secretKey);
-    return nacl.secretbox(msg, nonce, k);
-  };
-
-  nacl.box.before = function (publicKey, secretKey) {
-    checkArrayTypes(publicKey, secretKey);
-    checkBoxLengths(publicKey, secretKey);
-    var k = new Uint8Array(crypto_box_BEFORENMBYTES);
-    crypto_box_beforenm(k, publicKey, secretKey);
-    return k;
-  };
-
-  nacl.box.after = nacl.secretbox;
-
-  nacl.box.open = function (msg, nonce, publicKey, secretKey) {
-    var k = nacl.box.before(publicKey, secretKey);
-    return nacl.secretbox.open(msg, nonce, k);
-  };
-
-  nacl.box.open.after = nacl.secretbox.open;
-
-  nacl.box.keyPair = function () {
-    var pk = new Uint8Array(crypto_box_PUBLICKEYBYTES);
-    var sk = new Uint8Array(crypto_box_SECRETKEYBYTES);
-    crypto_box_keypair(pk, sk);
-    return {
-      publicKey: pk,
-      secretKey: sk
-    };
-  };
-
-  nacl.box.keyPair.fromSecretKey = function (secretKey) {
-    checkArrayTypes(secretKey);
-    if (secretKey.length !== crypto_box_SECRETKEYBYTES) throw new Error('bad secret key size');
-    var pk = new Uint8Array(crypto_box_PUBLICKEYBYTES);
-    crypto_scalarmult_base(pk, secretKey);
-    return {
-      publicKey: pk,
-      secretKey: new Uint8Array(secretKey)
-    };
-  };
-
-  nacl.box.publicKeyLength = crypto_box_PUBLICKEYBYTES;
-  nacl.box.secretKeyLength = crypto_box_SECRETKEYBYTES;
-  nacl.box.sharedKeyLength = crypto_box_BEFORENMBYTES;
-  nacl.box.nonceLength = crypto_box_NONCEBYTES;
-  nacl.box.overheadLength = nacl.secretbox.overheadLength;
-
-  nacl.sign = function (msg, secretKey) {
-    checkArrayTypes(msg, secretKey);
-    if (secretKey.length !== crypto_sign_SECRETKEYBYTES) throw new Error('bad secret key size');
-    var signedMsg = new Uint8Array(crypto_sign_BYTES + msg.length);
-    crypto_sign(signedMsg, msg, msg.length, secretKey);
-    return signedMsg;
-  };
-
-  nacl.sign.open = function (signedMsg, publicKey) {
-    checkArrayTypes(signedMsg, publicKey);
-    if (publicKey.length !== crypto_sign_PUBLICKEYBYTES) throw new Error('bad public key size');
-    var tmp = new Uint8Array(signedMsg.length);
-    var mlen = crypto_sign_open(tmp, signedMsg, signedMsg.length, publicKey);
-    if (mlen < 0) return null;
-    var m = new Uint8Array(mlen);
-
-    for (var i = 0; i < m.length; i++) {
-      m[i] = tmp[i];
-    }
-
-    return m;
-  };
-
-  nacl.sign.detached = function (msg, secretKey) {
-    var signedMsg = nacl.sign(msg, secretKey);
-    var sig = new Uint8Array(crypto_sign_BYTES);
-
-    for (var i = 0; i < sig.length; i++) {
-      sig[i] = signedMsg[i];
-    }
-
-    return sig;
-  };
-
-  nacl.sign.detached.verify = function (msg, sig, publicKey) {
-    checkArrayTypes(msg, sig, publicKey);
-    if (sig.length !== crypto_sign_BYTES) throw new Error('bad signature size');
-    if (publicKey.length !== crypto_sign_PUBLICKEYBYTES) throw new Error('bad public key size');
-    var sm = new Uint8Array(crypto_sign_BYTES + msg.length);
-    var m = new Uint8Array(crypto_sign_BYTES + msg.length);
-    var i;
-
-    for (i = 0; i < crypto_sign_BYTES; i++) {
-      sm[i] = sig[i];
-    }
-
-    for (i = 0; i < msg.length; i++) {
-      sm[i + crypto_sign_BYTES] = msg[i];
-    }
-
-    return crypto_sign_open(m, sm, sm.length, publicKey) >= 0;
-  };
-
-  nacl.sign.keyPair = function () {
-    var pk = new Uint8Array(crypto_sign_PUBLICKEYBYTES);
-    var sk = new Uint8Array(crypto_sign_SECRETKEYBYTES);
-    crypto_sign_keypair(pk, sk);
-    return {
-      publicKey: pk,
-      secretKey: sk
-    };
-  };
-
-  nacl.sign.keyPair.fromSecretKey = function (secretKey) {
-    checkArrayTypes(secretKey);
-    if (secretKey.length !== crypto_sign_SECRETKEYBYTES) throw new Error('bad secret key size');
-    var pk = new Uint8Array(crypto_sign_PUBLICKEYBYTES);
-
-    for (var i = 0; i < pk.length; i++) {
-      pk[i] = secretKey[32 + i];
-    }
-
-    return {
-      publicKey: pk,
-      secretKey: new Uint8Array(secretKey)
-    };
-  };
-
-  nacl.sign.keyPair.fromSeed = function (seed) {
-    checkArrayTypes(seed);
-    if (seed.length !== crypto_sign_SEEDBYTES) throw new Error('bad seed size');
-    var pk = new Uint8Array(crypto_sign_PUBLICKEYBYTES);
-    var sk = new Uint8Array(crypto_sign_SECRETKEYBYTES);
-
-    for (var i = 0; i < 32; i++) {
-      sk[i] = seed[i];
-    }
-
-    crypto_sign_keypair(pk, sk, true);
-    return {
-      publicKey: pk,
-      secretKey: sk
-    };
-  };
-
-  nacl.sign.publicKeyLength = crypto_sign_PUBLICKEYBYTES;
-  nacl.sign.secretKeyLength = crypto_sign_SECRETKEYBYTES;
-  nacl.sign.seedLength = crypto_sign_SEEDBYTES;
-  nacl.sign.signatureLength = crypto_sign_BYTES;
-
-  nacl.hash = function (msg) {
-    checkArrayTypes(msg);
-    var h = new Uint8Array(crypto_hash_BYTES);
-    crypto_hash(h, msg, msg.length);
-    return h;
-  };
-
-  nacl.hash.hashLength = crypto_hash_BYTES;
-
-  nacl.verify = function (x, y) {
-    checkArrayTypes(x, y); // Zero length arguments are considered not equal.
-
-    if (x.length === 0 || y.length === 0) return false;
-    if (x.length !== y.length) return false;
-    return vn(x, 0, y, 0, x.length) === 0 ? true : false;
-  };
-
-  nacl.setPRNG = function (fn) {
-    randombytes = fn;
-  };
-
-  (function () {
-    // Initialize PRNG if environment provides CSPRNG.
-    // If not, methods calling randombytes will throw.
-    var crypto = typeof self !== 'undefined' ? self.crypto || self.msCrypto : null;
-
-    if (crypto && crypto.getRandomValues) {
-      // Browsers.
-      var QUOTA = 65536;
-      nacl.setPRNG(function (x, n) {
-        var i,
-            v = new Uint8Array(n);
-
-        for (i = 0; i < n; i += QUOTA) {
-          crypto.getRandomValues(v.subarray(i, i + Math.min(n - i, QUOTA)));
-        }
-
-        for (i = 0; i < n; i++) {
-          x[i] = v[i];
-        }
-
-        cleanup(v);
-      });
-    } else if (typeof require !== 'undefined') {
-      // Node.js.
-      crypto = require('crypto');
-
-      if (crypto && crypto.randomBytes) {
-        nacl.setPRNG(function (x, n) {
-          var i,
-              v = crypto.randomBytes(n);
-
-          for (i = 0; i < n; i++) {
-            x[i] = v[i];
-          }
-
-          cleanup(v);
-        });
-      }
-    }
-  })();
-})(typeof module !== 'undefined' && module.exports ? module.exports : self.nacl = self.nacl || {});
-
-},{"blakejs/blake2b":33,"crypto":74}],8:[function(require,module,exports){
+},{"./Communication/ipc_ws":3,"websocket":178}],6:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -3248,7 +862,2028 @@ var _default = {
 };
 exports.default = _default;
 
+},{}],7:[function(require,module,exports){
+(function (Buffer){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var createHmac = require("create-hmac");
+var naclFactory = require("@sisi/tweetnacl-blake2b");
+var utils_1 = require("./utils");
+var ED25519_CURVE = 'ed25519 blake2b seed';
+var HARDENED_OFFSET = 0x80000000;
+exports.getMasterKeyFromSeed = function (seed) {
+    var hmac = createHmac('sha512', ED25519_CURVE);
+    var I = hmac.update(Buffer.from(seed, 'hex')).digest();
+    var IL = I.slice(0, 32);
+    var IR = I.slice(32);
+    return {
+        key: IL,
+        chainCode: IR,
+    };
+};
+var CKDPriv = function (_a, index) {
+    var key = _a.key, chainCode = _a.chainCode;
+    var indexBuffer = Buffer.allocUnsafe(4);
+    indexBuffer.writeUInt32BE(index, 0);
+    var data = Buffer.concat([Buffer.alloc(1, 0), key, indexBuffer]);
+    var I = createHmac('sha512', chainCode)
+        .update(data)
+        .digest();
+    var IL = I.slice(0, 32);
+    var IR = I.slice(32);
+    return {
+        key: IL,
+        chainCode: IR,
+    };
+};
+exports.getPublicKey = function (seed) {
+    var _a = naclFactory.sign.keyPair.fromSeed(seed), secretKey = _a.secretKey, publicKey = _a.publicKey;
+    return {
+        publicKey: publicKey,
+        privateKey: secretKey
+    };
+};
+exports.isValidPath = function (path) {
+    if (!utils_1.pathRegex.test(path)) {
+        return false;
+    }
+    return !path
+        .split('/')
+        .slice(1)
+        .map(utils_1.replaceDerive)
+        .some(isNaN);
+};
+exports.derivePath = function (path, seed) {
+    if (!exports.isValidPath(path)) {
+        throw new Error('Invalid derivation path');
+    }
+    var _a = exports.getMasterKeyFromSeed(seed), key = _a.key, chainCode = _a.chainCode;
+    var segments = path
+        .split('/')
+        .slice(1)
+        .map(utils_1.replaceDerive)
+        .map(function (el) { return parseInt(el, 10); });
+    return segments.reduce(function (parentKeys, segment) { return CKDPriv(parentKeys, segment + HARDENED_OFFSET); }, { key: key, chainCode: chainCode });
+};
+
+}).call(this,require("buffer").Buffer)
+
+},{"./utils":8,"@sisi/tweetnacl-blake2b":9,"buffer":66,"create-hmac":73}],8:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.pathRegex = new RegExp("^m(\\/[0-9]+')+$");
+exports.replaceDerive = function (val) { return val.replace("'", ''); };
+
 },{}],9:[function(require,module,exports){
+var blake2b = require('blakejs/blake2b');
+
+(function(nacl) {
+'use strict';
+
+// Ported in 2014 by Dmitry Chestnykh and Devi Mandiri.
+// Public domain.
+//
+// Implementation derived from TweetNaCl version 20140427.
+// See for details: http://tweetnacl.cr.yp.to/
+
+var gf = function(init) {
+  var i, r = new Float64Array(16);
+  if (init) for (i = 0; i < init.length; i++) r[i] = init[i];
+  return r;
+};
+
+//  Pluggable, initialized in high-level API below.
+var randombytes = function(/* x, n */) { throw new Error('no PRNG'); };
+
+var _0 = new Uint8Array(16);
+var _9 = new Uint8Array(32); _9[0] = 9;
+
+var gf0 = gf(),
+    gf1 = gf([1]),
+    _121665 = gf([0xdb41, 1]),
+    D = gf([0x78a3, 0x1359, 0x4dca, 0x75eb, 0xd8ab, 0x4141, 0x0a4d, 0x0070, 0xe898, 0x7779, 0x4079, 0x8cc7, 0xfe73, 0x2b6f, 0x6cee, 0x5203]),
+    D2 = gf([0xf159, 0x26b2, 0x9b94, 0xebd6, 0xb156, 0x8283, 0x149a, 0x00e0, 0xd130, 0xeef3, 0x80f2, 0x198e, 0xfce7, 0x56df, 0xd9dc, 0x2406]),
+    X = gf([0xd51a, 0x8f25, 0x2d60, 0xc956, 0xa7b2, 0x9525, 0xc760, 0x692c, 0xdc5c, 0xfdd6, 0xe231, 0xc0a4, 0x53fe, 0xcd6e, 0x36d3, 0x2169]),
+    Y = gf([0x6658, 0x6666, 0x6666, 0x6666, 0x6666, 0x6666, 0x6666, 0x6666, 0x6666, 0x6666, 0x6666, 0x6666, 0x6666, 0x6666, 0x6666, 0x6666]),
+    I = gf([0xa0b0, 0x4a0e, 0x1b27, 0xc4ee, 0xe478, 0xad2f, 0x1806, 0x2f43, 0xd7a7, 0x3dfb, 0x0099, 0x2b4d, 0xdf0b, 0x4fc1, 0x2480, 0x2b83]);
+
+function ts64(x, i, h, l) {
+  x[i]   = (h >> 24) & 0xff;
+  x[i+1] = (h >> 16) & 0xff;
+  x[i+2] = (h >>  8) & 0xff;
+  x[i+3] = h & 0xff;
+  x[i+4] = (l >> 24)  & 0xff;
+  x[i+5] = (l >> 16)  & 0xff;
+  x[i+6] = (l >>  8)  & 0xff;
+  x[i+7] = l & 0xff;
+}
+
+function vn(x, xi, y, yi, n) {
+  var i,d = 0;
+  for (i = 0; i < n; i++) d |= x[xi+i]^y[yi+i];
+  return (1 & ((d - 1) >>> 8)) - 1;
+}
+
+function crypto_verify_16(x, xi, y, yi) {
+  return vn(x,xi,y,yi,16);
+}
+
+function crypto_verify_32(x, xi, y, yi) {
+  return vn(x,xi,y,yi,32);
+}
+
+function core_salsa20(o, p, k, c) {
+  var j0  = c[ 0] & 0xff | (c[ 1] & 0xff)<<8 | (c[ 2] & 0xff)<<16 | (c[ 3] & 0xff)<<24,
+      j1  = k[ 0] & 0xff | (k[ 1] & 0xff)<<8 | (k[ 2] & 0xff)<<16 | (k[ 3] & 0xff)<<24,
+      j2  = k[ 4] & 0xff | (k[ 5] & 0xff)<<8 | (k[ 6] & 0xff)<<16 | (k[ 7] & 0xff)<<24,
+      j3  = k[ 8] & 0xff | (k[ 9] & 0xff)<<8 | (k[10] & 0xff)<<16 | (k[11] & 0xff)<<24,
+      j4  = k[12] & 0xff | (k[13] & 0xff)<<8 | (k[14] & 0xff)<<16 | (k[15] & 0xff)<<24,
+      j5  = c[ 4] & 0xff | (c[ 5] & 0xff)<<8 | (c[ 6] & 0xff)<<16 | (c[ 7] & 0xff)<<24,
+      j6  = p[ 0] & 0xff | (p[ 1] & 0xff)<<8 | (p[ 2] & 0xff)<<16 | (p[ 3] & 0xff)<<24,
+      j7  = p[ 4] & 0xff | (p[ 5] & 0xff)<<8 | (p[ 6] & 0xff)<<16 | (p[ 7] & 0xff)<<24,
+      j8  = p[ 8] & 0xff | (p[ 9] & 0xff)<<8 | (p[10] & 0xff)<<16 | (p[11] & 0xff)<<24,
+      j9  = p[12] & 0xff | (p[13] & 0xff)<<8 | (p[14] & 0xff)<<16 | (p[15] & 0xff)<<24,
+      j10 = c[ 8] & 0xff | (c[ 9] & 0xff)<<8 | (c[10] & 0xff)<<16 | (c[11] & 0xff)<<24,
+      j11 = k[16] & 0xff | (k[17] & 0xff)<<8 | (k[18] & 0xff)<<16 | (k[19] & 0xff)<<24,
+      j12 = k[20] & 0xff | (k[21] & 0xff)<<8 | (k[22] & 0xff)<<16 | (k[23] & 0xff)<<24,
+      j13 = k[24] & 0xff | (k[25] & 0xff)<<8 | (k[26] & 0xff)<<16 | (k[27] & 0xff)<<24,
+      j14 = k[28] & 0xff | (k[29] & 0xff)<<8 | (k[30] & 0xff)<<16 | (k[31] & 0xff)<<24,
+      j15 = c[12] & 0xff | (c[13] & 0xff)<<8 | (c[14] & 0xff)<<16 | (c[15] & 0xff)<<24;
+
+  var x0 = j0, x1 = j1, x2 = j2, x3 = j3, x4 = j4, x5 = j5, x6 = j6, x7 = j7,
+      x8 = j8, x9 = j9, x10 = j10, x11 = j11, x12 = j12, x13 = j13, x14 = j14,
+      x15 = j15, u;
+
+  for (var i = 0; i < 20; i += 2) {
+    u = x0 + x12 | 0;
+    x4 ^= u<<7 | u>>>(32-7);
+    u = x4 + x0 | 0;
+    x8 ^= u<<9 | u>>>(32-9);
+    u = x8 + x4 | 0;
+    x12 ^= u<<13 | u>>>(32-13);
+    u = x12 + x8 | 0;
+    x0 ^= u<<18 | u>>>(32-18);
+
+    u = x5 + x1 | 0;
+    x9 ^= u<<7 | u>>>(32-7);
+    u = x9 + x5 | 0;
+    x13 ^= u<<9 | u>>>(32-9);
+    u = x13 + x9 | 0;
+    x1 ^= u<<13 | u>>>(32-13);
+    u = x1 + x13 | 0;
+    x5 ^= u<<18 | u>>>(32-18);
+
+    u = x10 + x6 | 0;
+    x14 ^= u<<7 | u>>>(32-7);
+    u = x14 + x10 | 0;
+    x2 ^= u<<9 | u>>>(32-9);
+    u = x2 + x14 | 0;
+    x6 ^= u<<13 | u>>>(32-13);
+    u = x6 + x2 | 0;
+    x10 ^= u<<18 | u>>>(32-18);
+
+    u = x15 + x11 | 0;
+    x3 ^= u<<7 | u>>>(32-7);
+    u = x3 + x15 | 0;
+    x7 ^= u<<9 | u>>>(32-9);
+    u = x7 + x3 | 0;
+    x11 ^= u<<13 | u>>>(32-13);
+    u = x11 + x7 | 0;
+    x15 ^= u<<18 | u>>>(32-18);
+
+    u = x0 + x3 | 0;
+    x1 ^= u<<7 | u>>>(32-7);
+    u = x1 + x0 | 0;
+    x2 ^= u<<9 | u>>>(32-9);
+    u = x2 + x1 | 0;
+    x3 ^= u<<13 | u>>>(32-13);
+    u = x3 + x2 | 0;
+    x0 ^= u<<18 | u>>>(32-18);
+
+    u = x5 + x4 | 0;
+    x6 ^= u<<7 | u>>>(32-7);
+    u = x6 + x5 | 0;
+    x7 ^= u<<9 | u>>>(32-9);
+    u = x7 + x6 | 0;
+    x4 ^= u<<13 | u>>>(32-13);
+    u = x4 + x7 | 0;
+    x5 ^= u<<18 | u>>>(32-18);
+
+    u = x10 + x9 | 0;
+    x11 ^= u<<7 | u>>>(32-7);
+    u = x11 + x10 | 0;
+    x8 ^= u<<9 | u>>>(32-9);
+    u = x8 + x11 | 0;
+    x9 ^= u<<13 | u>>>(32-13);
+    u = x9 + x8 | 0;
+    x10 ^= u<<18 | u>>>(32-18);
+
+    u = x15 + x14 | 0;
+    x12 ^= u<<7 | u>>>(32-7);
+    u = x12 + x15 | 0;
+    x13 ^= u<<9 | u>>>(32-9);
+    u = x13 + x12 | 0;
+    x14 ^= u<<13 | u>>>(32-13);
+    u = x14 + x13 | 0;
+    x15 ^= u<<18 | u>>>(32-18);
+  }
+   x0 =  x0 +  j0 | 0;
+   x1 =  x1 +  j1 | 0;
+   x2 =  x2 +  j2 | 0;
+   x3 =  x3 +  j3 | 0;
+   x4 =  x4 +  j4 | 0;
+   x5 =  x5 +  j5 | 0;
+   x6 =  x6 +  j6 | 0;
+   x7 =  x7 +  j7 | 0;
+   x8 =  x8 +  j8 | 0;
+   x9 =  x9 +  j9 | 0;
+  x10 = x10 + j10 | 0;
+  x11 = x11 + j11 | 0;
+  x12 = x12 + j12 | 0;
+  x13 = x13 + j13 | 0;
+  x14 = x14 + j14 | 0;
+  x15 = x15 + j15 | 0;
+
+  o[ 0] = x0 >>>  0 & 0xff;
+  o[ 1] = x0 >>>  8 & 0xff;
+  o[ 2] = x0 >>> 16 & 0xff;
+  o[ 3] = x0 >>> 24 & 0xff;
+
+  o[ 4] = x1 >>>  0 & 0xff;
+  o[ 5] = x1 >>>  8 & 0xff;
+  o[ 6] = x1 >>> 16 & 0xff;
+  o[ 7] = x1 >>> 24 & 0xff;
+
+  o[ 8] = x2 >>>  0 & 0xff;
+  o[ 9] = x2 >>>  8 & 0xff;
+  o[10] = x2 >>> 16 & 0xff;
+  o[11] = x2 >>> 24 & 0xff;
+
+  o[12] = x3 >>>  0 & 0xff;
+  o[13] = x3 >>>  8 & 0xff;
+  o[14] = x3 >>> 16 & 0xff;
+  o[15] = x3 >>> 24 & 0xff;
+
+  o[16] = x4 >>>  0 & 0xff;
+  o[17] = x4 >>>  8 & 0xff;
+  o[18] = x4 >>> 16 & 0xff;
+  o[19] = x4 >>> 24 & 0xff;
+
+  o[20] = x5 >>>  0 & 0xff;
+  o[21] = x5 >>>  8 & 0xff;
+  o[22] = x5 >>> 16 & 0xff;
+  o[23] = x5 >>> 24 & 0xff;
+
+  o[24] = x6 >>>  0 & 0xff;
+  o[25] = x6 >>>  8 & 0xff;
+  o[26] = x6 >>> 16 & 0xff;
+  o[27] = x6 >>> 24 & 0xff;
+
+  o[28] = x7 >>>  0 & 0xff;
+  o[29] = x7 >>>  8 & 0xff;
+  o[30] = x7 >>> 16 & 0xff;
+  o[31] = x7 >>> 24 & 0xff;
+
+  o[32] = x8 >>>  0 & 0xff;
+  o[33] = x8 >>>  8 & 0xff;
+  o[34] = x8 >>> 16 & 0xff;
+  o[35] = x8 >>> 24 & 0xff;
+
+  o[36] = x9 >>>  0 & 0xff;
+  o[37] = x9 >>>  8 & 0xff;
+  o[38] = x9 >>> 16 & 0xff;
+  o[39] = x9 >>> 24 & 0xff;
+
+  o[40] = x10 >>>  0 & 0xff;
+  o[41] = x10 >>>  8 & 0xff;
+  o[42] = x10 >>> 16 & 0xff;
+  o[43] = x10 >>> 24 & 0xff;
+
+  o[44] = x11 >>>  0 & 0xff;
+  o[45] = x11 >>>  8 & 0xff;
+  o[46] = x11 >>> 16 & 0xff;
+  o[47] = x11 >>> 24 & 0xff;
+
+  o[48] = x12 >>>  0 & 0xff;
+  o[49] = x12 >>>  8 & 0xff;
+  o[50] = x12 >>> 16 & 0xff;
+  o[51] = x12 >>> 24 & 0xff;
+
+  o[52] = x13 >>>  0 & 0xff;
+  o[53] = x13 >>>  8 & 0xff;
+  o[54] = x13 >>> 16 & 0xff;
+  o[55] = x13 >>> 24 & 0xff;
+
+  o[56] = x14 >>>  0 & 0xff;
+  o[57] = x14 >>>  8 & 0xff;
+  o[58] = x14 >>> 16 & 0xff;
+  o[59] = x14 >>> 24 & 0xff;
+
+  o[60] = x15 >>>  0 & 0xff;
+  o[61] = x15 >>>  8 & 0xff;
+  o[62] = x15 >>> 16 & 0xff;
+  o[63] = x15 >>> 24 & 0xff;
+}
+
+function core_hsalsa20(o,p,k,c) {
+  var j0  = c[ 0] & 0xff | (c[ 1] & 0xff)<<8 | (c[ 2] & 0xff)<<16 | (c[ 3] & 0xff)<<24,
+      j1  = k[ 0] & 0xff | (k[ 1] & 0xff)<<8 | (k[ 2] & 0xff)<<16 | (k[ 3] & 0xff)<<24,
+      j2  = k[ 4] & 0xff | (k[ 5] & 0xff)<<8 | (k[ 6] & 0xff)<<16 | (k[ 7] & 0xff)<<24,
+      j3  = k[ 8] & 0xff | (k[ 9] & 0xff)<<8 | (k[10] & 0xff)<<16 | (k[11] & 0xff)<<24,
+      j4  = k[12] & 0xff | (k[13] & 0xff)<<8 | (k[14] & 0xff)<<16 | (k[15] & 0xff)<<24,
+      j5  = c[ 4] & 0xff | (c[ 5] & 0xff)<<8 | (c[ 6] & 0xff)<<16 | (c[ 7] & 0xff)<<24,
+      j6  = p[ 0] & 0xff | (p[ 1] & 0xff)<<8 | (p[ 2] & 0xff)<<16 | (p[ 3] & 0xff)<<24,
+      j7  = p[ 4] & 0xff | (p[ 5] & 0xff)<<8 | (p[ 6] & 0xff)<<16 | (p[ 7] & 0xff)<<24,
+      j8  = p[ 8] & 0xff | (p[ 9] & 0xff)<<8 | (p[10] & 0xff)<<16 | (p[11] & 0xff)<<24,
+      j9  = p[12] & 0xff | (p[13] & 0xff)<<8 | (p[14] & 0xff)<<16 | (p[15] & 0xff)<<24,
+      j10 = c[ 8] & 0xff | (c[ 9] & 0xff)<<8 | (c[10] & 0xff)<<16 | (c[11] & 0xff)<<24,
+      j11 = k[16] & 0xff | (k[17] & 0xff)<<8 | (k[18] & 0xff)<<16 | (k[19] & 0xff)<<24,
+      j12 = k[20] & 0xff | (k[21] & 0xff)<<8 | (k[22] & 0xff)<<16 | (k[23] & 0xff)<<24,
+      j13 = k[24] & 0xff | (k[25] & 0xff)<<8 | (k[26] & 0xff)<<16 | (k[27] & 0xff)<<24,
+      j14 = k[28] & 0xff | (k[29] & 0xff)<<8 | (k[30] & 0xff)<<16 | (k[31] & 0xff)<<24,
+      j15 = c[12] & 0xff | (c[13] & 0xff)<<8 | (c[14] & 0xff)<<16 | (c[15] & 0xff)<<24;
+
+  var x0 = j0, x1 = j1, x2 = j2, x3 = j3, x4 = j4, x5 = j5, x6 = j6, x7 = j7,
+      x8 = j8, x9 = j9, x10 = j10, x11 = j11, x12 = j12, x13 = j13, x14 = j14,
+      x15 = j15, u;
+
+  for (var i = 0; i < 20; i += 2) {
+    u = x0 + x12 | 0;
+    x4 ^= u<<7 | u>>>(32-7);
+    u = x4 + x0 | 0;
+    x8 ^= u<<9 | u>>>(32-9);
+    u = x8 + x4 | 0;
+    x12 ^= u<<13 | u>>>(32-13);
+    u = x12 + x8 | 0;
+    x0 ^= u<<18 | u>>>(32-18);
+
+    u = x5 + x1 | 0;
+    x9 ^= u<<7 | u>>>(32-7);
+    u = x9 + x5 | 0;
+    x13 ^= u<<9 | u>>>(32-9);
+    u = x13 + x9 | 0;
+    x1 ^= u<<13 | u>>>(32-13);
+    u = x1 + x13 | 0;
+    x5 ^= u<<18 | u>>>(32-18);
+
+    u = x10 + x6 | 0;
+    x14 ^= u<<7 | u>>>(32-7);
+    u = x14 + x10 | 0;
+    x2 ^= u<<9 | u>>>(32-9);
+    u = x2 + x14 | 0;
+    x6 ^= u<<13 | u>>>(32-13);
+    u = x6 + x2 | 0;
+    x10 ^= u<<18 | u>>>(32-18);
+
+    u = x15 + x11 | 0;
+    x3 ^= u<<7 | u>>>(32-7);
+    u = x3 + x15 | 0;
+    x7 ^= u<<9 | u>>>(32-9);
+    u = x7 + x3 | 0;
+    x11 ^= u<<13 | u>>>(32-13);
+    u = x11 + x7 | 0;
+    x15 ^= u<<18 | u>>>(32-18);
+
+    u = x0 + x3 | 0;
+    x1 ^= u<<7 | u>>>(32-7);
+    u = x1 + x0 | 0;
+    x2 ^= u<<9 | u>>>(32-9);
+    u = x2 + x1 | 0;
+    x3 ^= u<<13 | u>>>(32-13);
+    u = x3 + x2 | 0;
+    x0 ^= u<<18 | u>>>(32-18);
+
+    u = x5 + x4 | 0;
+    x6 ^= u<<7 | u>>>(32-7);
+    u = x6 + x5 | 0;
+    x7 ^= u<<9 | u>>>(32-9);
+    u = x7 + x6 | 0;
+    x4 ^= u<<13 | u>>>(32-13);
+    u = x4 + x7 | 0;
+    x5 ^= u<<18 | u>>>(32-18);
+
+    u = x10 + x9 | 0;
+    x11 ^= u<<7 | u>>>(32-7);
+    u = x11 + x10 | 0;
+    x8 ^= u<<9 | u>>>(32-9);
+    u = x8 + x11 | 0;
+    x9 ^= u<<13 | u>>>(32-13);
+    u = x9 + x8 | 0;
+    x10 ^= u<<18 | u>>>(32-18);
+
+    u = x15 + x14 | 0;
+    x12 ^= u<<7 | u>>>(32-7);
+    u = x12 + x15 | 0;
+    x13 ^= u<<9 | u>>>(32-9);
+    u = x13 + x12 | 0;
+    x14 ^= u<<13 | u>>>(32-13);
+    u = x14 + x13 | 0;
+    x15 ^= u<<18 | u>>>(32-18);
+  }
+
+  o[ 0] = x0 >>>  0 & 0xff;
+  o[ 1] = x0 >>>  8 & 0xff;
+  o[ 2] = x0 >>> 16 & 0xff;
+  o[ 3] = x0 >>> 24 & 0xff;
+
+  o[ 4] = x5 >>>  0 & 0xff;
+  o[ 5] = x5 >>>  8 & 0xff;
+  o[ 6] = x5 >>> 16 & 0xff;
+  o[ 7] = x5 >>> 24 & 0xff;
+
+  o[ 8] = x10 >>>  0 & 0xff;
+  o[ 9] = x10 >>>  8 & 0xff;
+  o[10] = x10 >>> 16 & 0xff;
+  o[11] = x10 >>> 24 & 0xff;
+
+  o[12] = x15 >>>  0 & 0xff;
+  o[13] = x15 >>>  8 & 0xff;
+  o[14] = x15 >>> 16 & 0xff;
+  o[15] = x15 >>> 24 & 0xff;
+
+  o[16] = x6 >>>  0 & 0xff;
+  o[17] = x6 >>>  8 & 0xff;
+  o[18] = x6 >>> 16 & 0xff;
+  o[19] = x6 >>> 24 & 0xff;
+
+  o[20] = x7 >>>  0 & 0xff;
+  o[21] = x7 >>>  8 & 0xff;
+  o[22] = x7 >>> 16 & 0xff;
+  o[23] = x7 >>> 24 & 0xff;
+
+  o[24] = x8 >>>  0 & 0xff;
+  o[25] = x8 >>>  8 & 0xff;
+  o[26] = x8 >>> 16 & 0xff;
+  o[27] = x8 >>> 24 & 0xff;
+
+  o[28] = x9 >>>  0 & 0xff;
+  o[29] = x9 >>>  8 & 0xff;
+  o[30] = x9 >>> 16 & 0xff;
+  o[31] = x9 >>> 24 & 0xff;
+}
+
+function crypto_core_salsa20(out,inp,k,c) {
+  core_salsa20(out,inp,k,c);
+}
+
+function crypto_core_hsalsa20(out,inp,k,c) {
+  core_hsalsa20(out,inp,k,c);
+}
+
+var sigma = new Uint8Array([101, 120, 112, 97, 110, 100, 32, 51, 50, 45, 98, 121, 116, 101, 32, 107]);
+            // "expand 32-byte k"
+
+function crypto_stream_salsa20_xor(c,cpos,m,mpos,b,n,k) {
+  var z = new Uint8Array(16), x = new Uint8Array(64);
+  var u, i;
+  for (i = 0; i < 16; i++) z[i] = 0;
+  for (i = 0; i < 8; i++) z[i] = n[i];
+  while (b >= 64) {
+    crypto_core_salsa20(x,z,k,sigma);
+    for (i = 0; i < 64; i++) c[cpos+i] = m[mpos+i] ^ x[i];
+    u = 1;
+    for (i = 8; i < 16; i++) {
+      u = u + (z[i] & 0xff) | 0;
+      z[i] = u & 0xff;
+      u >>>= 8;
+    }
+    b -= 64;
+    cpos += 64;
+    mpos += 64;
+  }
+  if (b > 0) {
+    crypto_core_salsa20(x,z,k,sigma);
+    for (i = 0; i < b; i++) c[cpos+i] = m[mpos+i] ^ x[i];
+  }
+  return 0;
+}
+
+function crypto_stream_salsa20(c,cpos,b,n,k) {
+  var z = new Uint8Array(16), x = new Uint8Array(64);
+  var u, i;
+  for (i = 0; i < 16; i++) z[i] = 0;
+  for (i = 0; i < 8; i++) z[i] = n[i];
+  while (b >= 64) {
+    crypto_core_salsa20(x,z,k,sigma);
+    for (i = 0; i < 64; i++) c[cpos+i] = x[i];
+    u = 1;
+    for (i = 8; i < 16; i++) {
+      u = u + (z[i] & 0xff) | 0;
+      z[i] = u & 0xff;
+      u >>>= 8;
+    }
+    b -= 64;
+    cpos += 64;
+  }
+  if (b > 0) {
+    crypto_core_salsa20(x,z,k,sigma);
+    for (i = 0; i < b; i++) c[cpos+i] = x[i];
+  }
+  return 0;
+}
+
+function crypto_stream(c,cpos,d,n,k) {
+  var s = new Uint8Array(32);
+  crypto_core_hsalsa20(s,n,k,sigma);
+  var sn = new Uint8Array(8);
+  for (var i = 0; i < 8; i++) sn[i] = n[i+16];
+  return crypto_stream_salsa20(c,cpos,d,sn,s);
+}
+
+function crypto_stream_xor(c,cpos,m,mpos,d,n,k) {
+  var s = new Uint8Array(32);
+  crypto_core_hsalsa20(s,n,k,sigma);
+  var sn = new Uint8Array(8);
+  for (var i = 0; i < 8; i++) sn[i] = n[i+16];
+  return crypto_stream_salsa20_xor(c,cpos,m,mpos,d,sn,s);
+}
+
+/*
+* Port of Andrew Moon's Poly1305-donna-16. Public domain.
+* https://github.com/floodyberry/poly1305-donna
+*/
+
+var poly1305 = function(key) {
+  this.buffer = new Uint8Array(16);
+  this.r = new Uint16Array(10);
+  this.h = new Uint16Array(10);
+  this.pad = new Uint16Array(8);
+  this.leftover = 0;
+  this.fin = 0;
+
+  var t0, t1, t2, t3, t4, t5, t6, t7;
+
+  t0 = key[ 0] & 0xff | (key[ 1] & 0xff) << 8; this.r[0] = ( t0                     ) & 0x1fff;
+  t1 = key[ 2] & 0xff | (key[ 3] & 0xff) << 8; this.r[1] = ((t0 >>> 13) | (t1 <<  3)) & 0x1fff;
+  t2 = key[ 4] & 0xff | (key[ 5] & 0xff) << 8; this.r[2] = ((t1 >>> 10) | (t2 <<  6)) & 0x1f03;
+  t3 = key[ 6] & 0xff | (key[ 7] & 0xff) << 8; this.r[3] = ((t2 >>>  7) | (t3 <<  9)) & 0x1fff;
+  t4 = key[ 8] & 0xff | (key[ 9] & 0xff) << 8; this.r[4] = ((t3 >>>  4) | (t4 << 12)) & 0x00ff;
+  this.r[5] = ((t4 >>>  1)) & 0x1ffe;
+  t5 = key[10] & 0xff | (key[11] & 0xff) << 8; this.r[6] = ((t4 >>> 14) | (t5 <<  2)) & 0x1fff;
+  t6 = key[12] & 0xff | (key[13] & 0xff) << 8; this.r[7] = ((t5 >>> 11) | (t6 <<  5)) & 0x1f81;
+  t7 = key[14] & 0xff | (key[15] & 0xff) << 8; this.r[8] = ((t6 >>>  8) | (t7 <<  8)) & 0x1fff;
+  this.r[9] = ((t7 >>>  5)) & 0x007f;
+
+  this.pad[0] = key[16] & 0xff | (key[17] & 0xff) << 8;
+  this.pad[1] = key[18] & 0xff | (key[19] & 0xff) << 8;
+  this.pad[2] = key[20] & 0xff | (key[21] & 0xff) << 8;
+  this.pad[3] = key[22] & 0xff | (key[23] & 0xff) << 8;
+  this.pad[4] = key[24] & 0xff | (key[25] & 0xff) << 8;
+  this.pad[5] = key[26] & 0xff | (key[27] & 0xff) << 8;
+  this.pad[6] = key[28] & 0xff | (key[29] & 0xff) << 8;
+  this.pad[7] = key[30] & 0xff | (key[31] & 0xff) << 8;
+};
+
+poly1305.prototype.blocks = function(m, mpos, bytes) {
+  var hibit = this.fin ? 0 : (1 << 11);
+  var t0, t1, t2, t3, t4, t5, t6, t7, c;
+  var d0, d1, d2, d3, d4, d5, d6, d7, d8, d9;
+
+  var h0 = this.h[0],
+      h1 = this.h[1],
+      h2 = this.h[2],
+      h3 = this.h[3],
+      h4 = this.h[4],
+      h5 = this.h[5],
+      h6 = this.h[6],
+      h7 = this.h[7],
+      h8 = this.h[8],
+      h9 = this.h[9];
+
+  var r0 = this.r[0],
+      r1 = this.r[1],
+      r2 = this.r[2],
+      r3 = this.r[3],
+      r4 = this.r[4],
+      r5 = this.r[5],
+      r6 = this.r[6],
+      r7 = this.r[7],
+      r8 = this.r[8],
+      r9 = this.r[9];
+
+  while (bytes >= 16) {
+    t0 = m[mpos+ 0] & 0xff | (m[mpos+ 1] & 0xff) << 8; h0 += ( t0                     ) & 0x1fff;
+    t1 = m[mpos+ 2] & 0xff | (m[mpos+ 3] & 0xff) << 8; h1 += ((t0 >>> 13) | (t1 <<  3)) & 0x1fff;
+    t2 = m[mpos+ 4] & 0xff | (m[mpos+ 5] & 0xff) << 8; h2 += ((t1 >>> 10) | (t2 <<  6)) & 0x1fff;
+    t3 = m[mpos+ 6] & 0xff | (m[mpos+ 7] & 0xff) << 8; h3 += ((t2 >>>  7) | (t3 <<  9)) & 0x1fff;
+    t4 = m[mpos+ 8] & 0xff | (m[mpos+ 9] & 0xff) << 8; h4 += ((t3 >>>  4) | (t4 << 12)) & 0x1fff;
+    h5 += ((t4 >>>  1)) & 0x1fff;
+    t5 = m[mpos+10] & 0xff | (m[mpos+11] & 0xff) << 8; h6 += ((t4 >>> 14) | (t5 <<  2)) & 0x1fff;
+    t6 = m[mpos+12] & 0xff | (m[mpos+13] & 0xff) << 8; h7 += ((t5 >>> 11) | (t6 <<  5)) & 0x1fff;
+    t7 = m[mpos+14] & 0xff | (m[mpos+15] & 0xff) << 8; h8 += ((t6 >>>  8) | (t7 <<  8)) & 0x1fff;
+    h9 += ((t7 >>> 5)) | hibit;
+
+    c = 0;
+
+    d0 = c;
+    d0 += h0 * r0;
+    d0 += h1 * (5 * r9);
+    d0 += h2 * (5 * r8);
+    d0 += h3 * (5 * r7);
+    d0 += h4 * (5 * r6);
+    c = (d0 >>> 13); d0 &= 0x1fff;
+    d0 += h5 * (5 * r5);
+    d0 += h6 * (5 * r4);
+    d0 += h7 * (5 * r3);
+    d0 += h8 * (5 * r2);
+    d0 += h9 * (5 * r1);
+    c += (d0 >>> 13); d0 &= 0x1fff;
+
+    d1 = c;
+    d1 += h0 * r1;
+    d1 += h1 * r0;
+    d1 += h2 * (5 * r9);
+    d1 += h3 * (5 * r8);
+    d1 += h4 * (5 * r7);
+    c = (d1 >>> 13); d1 &= 0x1fff;
+    d1 += h5 * (5 * r6);
+    d1 += h6 * (5 * r5);
+    d1 += h7 * (5 * r4);
+    d1 += h8 * (5 * r3);
+    d1 += h9 * (5 * r2);
+    c += (d1 >>> 13); d1 &= 0x1fff;
+
+    d2 = c;
+    d2 += h0 * r2;
+    d2 += h1 * r1;
+    d2 += h2 * r0;
+    d2 += h3 * (5 * r9);
+    d2 += h4 * (5 * r8);
+    c = (d2 >>> 13); d2 &= 0x1fff;
+    d2 += h5 * (5 * r7);
+    d2 += h6 * (5 * r6);
+    d2 += h7 * (5 * r5);
+    d2 += h8 * (5 * r4);
+    d2 += h9 * (5 * r3);
+    c += (d2 >>> 13); d2 &= 0x1fff;
+
+    d3 = c;
+    d3 += h0 * r3;
+    d3 += h1 * r2;
+    d3 += h2 * r1;
+    d3 += h3 * r0;
+    d3 += h4 * (5 * r9);
+    c = (d3 >>> 13); d3 &= 0x1fff;
+    d3 += h5 * (5 * r8);
+    d3 += h6 * (5 * r7);
+    d3 += h7 * (5 * r6);
+    d3 += h8 * (5 * r5);
+    d3 += h9 * (5 * r4);
+    c += (d3 >>> 13); d3 &= 0x1fff;
+
+    d4 = c;
+    d4 += h0 * r4;
+    d4 += h1 * r3;
+    d4 += h2 * r2;
+    d4 += h3 * r1;
+    d4 += h4 * r0;
+    c = (d4 >>> 13); d4 &= 0x1fff;
+    d4 += h5 * (5 * r9);
+    d4 += h6 * (5 * r8);
+    d4 += h7 * (5 * r7);
+    d4 += h8 * (5 * r6);
+    d4 += h9 * (5 * r5);
+    c += (d4 >>> 13); d4 &= 0x1fff;
+
+    d5 = c;
+    d5 += h0 * r5;
+    d5 += h1 * r4;
+    d5 += h2 * r3;
+    d5 += h3 * r2;
+    d5 += h4 * r1;
+    c = (d5 >>> 13); d5 &= 0x1fff;
+    d5 += h5 * r0;
+    d5 += h6 * (5 * r9);
+    d5 += h7 * (5 * r8);
+    d5 += h8 * (5 * r7);
+    d5 += h9 * (5 * r6);
+    c += (d5 >>> 13); d5 &= 0x1fff;
+
+    d6 = c;
+    d6 += h0 * r6;
+    d6 += h1 * r5;
+    d6 += h2 * r4;
+    d6 += h3 * r3;
+    d6 += h4 * r2;
+    c = (d6 >>> 13); d6 &= 0x1fff;
+    d6 += h5 * r1;
+    d6 += h6 * r0;
+    d6 += h7 * (5 * r9);
+    d6 += h8 * (5 * r8);
+    d6 += h9 * (5 * r7);
+    c += (d6 >>> 13); d6 &= 0x1fff;
+
+    d7 = c;
+    d7 += h0 * r7;
+    d7 += h1 * r6;
+    d7 += h2 * r5;
+    d7 += h3 * r4;
+    d7 += h4 * r3;
+    c = (d7 >>> 13); d7 &= 0x1fff;
+    d7 += h5 * r2;
+    d7 += h6 * r1;
+    d7 += h7 * r0;
+    d7 += h8 * (5 * r9);
+    d7 += h9 * (5 * r8);
+    c += (d7 >>> 13); d7 &= 0x1fff;
+
+    d8 = c;
+    d8 += h0 * r8;
+    d8 += h1 * r7;
+    d8 += h2 * r6;
+    d8 += h3 * r5;
+    d8 += h4 * r4;
+    c = (d8 >>> 13); d8 &= 0x1fff;
+    d8 += h5 * r3;
+    d8 += h6 * r2;
+    d8 += h7 * r1;
+    d8 += h8 * r0;
+    d8 += h9 * (5 * r9);
+    c += (d8 >>> 13); d8 &= 0x1fff;
+
+    d9 = c;
+    d9 += h0 * r9;
+    d9 += h1 * r8;
+    d9 += h2 * r7;
+    d9 += h3 * r6;
+    d9 += h4 * r5;
+    c = (d9 >>> 13); d9 &= 0x1fff;
+    d9 += h5 * r4;
+    d9 += h6 * r3;
+    d9 += h7 * r2;
+    d9 += h8 * r1;
+    d9 += h9 * r0;
+    c += (d9 >>> 13); d9 &= 0x1fff;
+
+    c = (((c << 2) + c)) | 0;
+    c = (c + d0) | 0;
+    d0 = c & 0x1fff;
+    c = (c >>> 13);
+    d1 += c;
+
+    h0 = d0;
+    h1 = d1;
+    h2 = d2;
+    h3 = d3;
+    h4 = d4;
+    h5 = d5;
+    h6 = d6;
+    h7 = d7;
+    h8 = d8;
+    h9 = d9;
+
+    mpos += 16;
+    bytes -= 16;
+  }
+  this.h[0] = h0;
+  this.h[1] = h1;
+  this.h[2] = h2;
+  this.h[3] = h3;
+  this.h[4] = h4;
+  this.h[5] = h5;
+  this.h[6] = h6;
+  this.h[7] = h7;
+  this.h[8] = h8;
+  this.h[9] = h9;
+};
+
+poly1305.prototype.finish = function(mac, macpos) {
+  var g = new Uint16Array(10);
+  var c, mask, f, i;
+
+  if (this.leftover) {
+    i = this.leftover;
+    this.buffer[i++] = 1;
+    for (; i < 16; i++) this.buffer[i] = 0;
+    this.fin = 1;
+    this.blocks(this.buffer, 0, 16);
+  }
+
+  c = this.h[1] >>> 13;
+  this.h[1] &= 0x1fff;
+  for (i = 2; i < 10; i++) {
+    this.h[i] += c;
+    c = this.h[i] >>> 13;
+    this.h[i] &= 0x1fff;
+  }
+  this.h[0] += (c * 5);
+  c = this.h[0] >>> 13;
+  this.h[0] &= 0x1fff;
+  this.h[1] += c;
+  c = this.h[1] >>> 13;
+  this.h[1] &= 0x1fff;
+  this.h[2] += c;
+
+  g[0] = this.h[0] + 5;
+  c = g[0] >>> 13;
+  g[0] &= 0x1fff;
+  for (i = 1; i < 10; i++) {
+    g[i] = this.h[i] + c;
+    c = g[i] >>> 13;
+    g[i] &= 0x1fff;
+  }
+  g[9] -= (1 << 13);
+
+  mask = (c ^ 1) - 1;
+  for (i = 0; i < 10; i++) g[i] &= mask;
+  mask = ~mask;
+  for (i = 0; i < 10; i++) this.h[i] = (this.h[i] & mask) | g[i];
+
+  this.h[0] = ((this.h[0]       ) | (this.h[1] << 13)                    ) & 0xffff;
+  this.h[1] = ((this.h[1] >>>  3) | (this.h[2] << 10)                    ) & 0xffff;
+  this.h[2] = ((this.h[2] >>>  6) | (this.h[3] <<  7)                    ) & 0xffff;
+  this.h[3] = ((this.h[3] >>>  9) | (this.h[4] <<  4)                    ) & 0xffff;
+  this.h[4] = ((this.h[4] >>> 12) | (this.h[5] <<  1) | (this.h[6] << 14)) & 0xffff;
+  this.h[5] = ((this.h[6] >>>  2) | (this.h[7] << 11)                    ) & 0xffff;
+  this.h[6] = ((this.h[7] >>>  5) | (this.h[8] <<  8)                    ) & 0xffff;
+  this.h[7] = ((this.h[8] >>>  8) | (this.h[9] <<  5)                    ) & 0xffff;
+
+  f = this.h[0] + this.pad[0];
+  this.h[0] = f & 0xffff;
+  for (i = 1; i < 8; i++) {
+    f = (((this.h[i] + this.pad[i]) | 0) + (f >>> 16)) | 0;
+    this.h[i] = f & 0xffff;
+  }
+
+  mac[macpos+ 0] = (this.h[0] >>> 0) & 0xff;
+  mac[macpos+ 1] = (this.h[0] >>> 8) & 0xff;
+  mac[macpos+ 2] = (this.h[1] >>> 0) & 0xff;
+  mac[macpos+ 3] = (this.h[1] >>> 8) & 0xff;
+  mac[macpos+ 4] = (this.h[2] >>> 0) & 0xff;
+  mac[macpos+ 5] = (this.h[2] >>> 8) & 0xff;
+  mac[macpos+ 6] = (this.h[3] >>> 0) & 0xff;
+  mac[macpos+ 7] = (this.h[3] >>> 8) & 0xff;
+  mac[macpos+ 8] = (this.h[4] >>> 0) & 0xff;
+  mac[macpos+ 9] = (this.h[4] >>> 8) & 0xff;
+  mac[macpos+10] = (this.h[5] >>> 0) & 0xff;
+  mac[macpos+11] = (this.h[5] >>> 8) & 0xff;
+  mac[macpos+12] = (this.h[6] >>> 0) & 0xff;
+  mac[macpos+13] = (this.h[6] >>> 8) & 0xff;
+  mac[macpos+14] = (this.h[7] >>> 0) & 0xff;
+  mac[macpos+15] = (this.h[7] >>> 8) & 0xff;
+};
+
+poly1305.prototype.update = function(m, mpos, bytes) {
+  var i, want;
+
+  if (this.leftover) {
+    want = (16 - this.leftover);
+    if (want > bytes)
+      want = bytes;
+    for (i = 0; i < want; i++)
+      this.buffer[this.leftover + i] = m[mpos+i];
+    bytes -= want;
+    mpos += want;
+    this.leftover += want;
+    if (this.leftover < 16)
+      return;
+    this.blocks(this.buffer, 0, 16);
+    this.leftover = 0;
+  }
+
+  if (bytes >= 16) {
+    want = bytes - (bytes % 16);
+    this.blocks(m, mpos, want);
+    mpos += want;
+    bytes -= want;
+  }
+
+  if (bytes) {
+    for (i = 0; i < bytes; i++)
+      this.buffer[this.leftover + i] = m[mpos+i];
+    this.leftover += bytes;
+  }
+};
+
+function crypto_onetimeauth(out, outpos, m, mpos, n, k) {
+  var s = new poly1305(k);
+  s.update(m, mpos, n);
+  s.finish(out, outpos);
+  return 0;
+}
+
+function crypto_onetimeauth_verify(h, hpos, m, mpos, n, k) {
+  var x = new Uint8Array(16);
+  crypto_onetimeauth(x,0,m,mpos,n,k);
+  return crypto_verify_16(h,hpos,x,0);
+}
+
+function crypto_secretbox(c,m,d,n,k) {
+  var i;
+  if (d < 32) return -1;
+  crypto_stream_xor(c,0,m,0,d,n,k);
+  crypto_onetimeauth(c, 16, c, 32, d - 32, c);
+  for (i = 0; i < 16; i++) c[i] = 0;
+  return 0;
+}
+
+function crypto_secretbox_open(m,c,d,n,k) {
+  var i;
+  var x = new Uint8Array(32);
+  if (d < 32) return -1;
+  crypto_stream(x,0,32,n,k);
+  if (crypto_onetimeauth_verify(c, 16,c, 32,d - 32,x) !== 0) return -1;
+  crypto_stream_xor(m,0,c,0,d,n,k);
+  for (i = 0; i < 32; i++) m[i] = 0;
+  return 0;
+}
+
+function set25519(r, a) {
+  var i;
+  for (i = 0; i < 16; i++) r[i] = a[i]|0;
+}
+
+function car25519(o) {
+  var i, v, c = 1;
+  for (i = 0; i < 16; i++) {
+    v = o[i] + c + 65535;
+    c = Math.floor(v / 65536);
+    o[i] = v - c * 65536;
+  }
+  o[0] += c-1 + 37 * (c-1);
+}
+
+function sel25519(p, q, b) {
+  var t, c = ~(b-1);
+  for (var i = 0; i < 16; i++) {
+    t = c & (p[i] ^ q[i]);
+    p[i] ^= t;
+    q[i] ^= t;
+  }
+}
+
+function pack25519(o, n) {
+  var i, j, b;
+  var m = gf(), t = gf();
+  for (i = 0; i < 16; i++) t[i] = n[i];
+  car25519(t);
+  car25519(t);
+  car25519(t);
+  for (j = 0; j < 2; j++) {
+    m[0] = t[0] - 0xffed;
+    for (i = 1; i < 15; i++) {
+      m[i] = t[i] - 0xffff - ((m[i-1]>>16) & 1);
+      m[i-1] &= 0xffff;
+    }
+    m[15] = t[15] - 0x7fff - ((m[14]>>16) & 1);
+    b = (m[15]>>16) & 1;
+    m[14] &= 0xffff;
+    sel25519(t, m, 1-b);
+  }
+  for (i = 0; i < 16; i++) {
+    o[2*i] = t[i] & 0xff;
+    o[2*i+1] = t[i]>>8;
+  }
+}
+
+function neq25519(a, b) {
+  var c = new Uint8Array(32), d = new Uint8Array(32);
+  pack25519(c, a);
+  pack25519(d, b);
+  return crypto_verify_32(c, 0, d, 0);
+}
+
+function par25519(a) {
+  var d = new Uint8Array(32);
+  pack25519(d, a);
+  return d[0] & 1;
+}
+
+function unpack25519(o, n) {
+  var i;
+  for (i = 0; i < 16; i++) o[i] = n[2*i] + (n[2*i+1] << 8);
+  o[15] &= 0x7fff;
+}
+
+function A(o, a, b) {
+  for (var i = 0; i < 16; i++) o[i] = a[i] + b[i];
+}
+
+function Z(o, a, b) {
+  for (var i = 0; i < 16; i++) o[i] = a[i] - b[i];
+}
+
+function M(o, a, b) {
+  var v, c,
+     t0 = 0,  t1 = 0,  t2 = 0,  t3 = 0,  t4 = 0,  t5 = 0,  t6 = 0,  t7 = 0,
+     t8 = 0,  t9 = 0, t10 = 0, t11 = 0, t12 = 0, t13 = 0, t14 = 0, t15 = 0,
+    t16 = 0, t17 = 0, t18 = 0, t19 = 0, t20 = 0, t21 = 0, t22 = 0, t23 = 0,
+    t24 = 0, t25 = 0, t26 = 0, t27 = 0, t28 = 0, t29 = 0, t30 = 0,
+    b0 = b[0],
+    b1 = b[1],
+    b2 = b[2],
+    b3 = b[3],
+    b4 = b[4],
+    b5 = b[5],
+    b6 = b[6],
+    b7 = b[7],
+    b8 = b[8],
+    b9 = b[9],
+    b10 = b[10],
+    b11 = b[11],
+    b12 = b[12],
+    b13 = b[13],
+    b14 = b[14],
+    b15 = b[15];
+
+  v = a[0];
+  t0 += v * b0;
+  t1 += v * b1;
+  t2 += v * b2;
+  t3 += v * b3;
+  t4 += v * b4;
+  t5 += v * b5;
+  t6 += v * b6;
+  t7 += v * b7;
+  t8 += v * b8;
+  t9 += v * b9;
+  t10 += v * b10;
+  t11 += v * b11;
+  t12 += v * b12;
+  t13 += v * b13;
+  t14 += v * b14;
+  t15 += v * b15;
+  v = a[1];
+  t1 += v * b0;
+  t2 += v * b1;
+  t3 += v * b2;
+  t4 += v * b3;
+  t5 += v * b4;
+  t6 += v * b5;
+  t7 += v * b6;
+  t8 += v * b7;
+  t9 += v * b8;
+  t10 += v * b9;
+  t11 += v * b10;
+  t12 += v * b11;
+  t13 += v * b12;
+  t14 += v * b13;
+  t15 += v * b14;
+  t16 += v * b15;
+  v = a[2];
+  t2 += v * b0;
+  t3 += v * b1;
+  t4 += v * b2;
+  t5 += v * b3;
+  t6 += v * b4;
+  t7 += v * b5;
+  t8 += v * b6;
+  t9 += v * b7;
+  t10 += v * b8;
+  t11 += v * b9;
+  t12 += v * b10;
+  t13 += v * b11;
+  t14 += v * b12;
+  t15 += v * b13;
+  t16 += v * b14;
+  t17 += v * b15;
+  v = a[3];
+  t3 += v * b0;
+  t4 += v * b1;
+  t5 += v * b2;
+  t6 += v * b3;
+  t7 += v * b4;
+  t8 += v * b5;
+  t9 += v * b6;
+  t10 += v * b7;
+  t11 += v * b8;
+  t12 += v * b9;
+  t13 += v * b10;
+  t14 += v * b11;
+  t15 += v * b12;
+  t16 += v * b13;
+  t17 += v * b14;
+  t18 += v * b15;
+  v = a[4];
+  t4 += v * b0;
+  t5 += v * b1;
+  t6 += v * b2;
+  t7 += v * b3;
+  t8 += v * b4;
+  t9 += v * b5;
+  t10 += v * b6;
+  t11 += v * b7;
+  t12 += v * b8;
+  t13 += v * b9;
+  t14 += v * b10;
+  t15 += v * b11;
+  t16 += v * b12;
+  t17 += v * b13;
+  t18 += v * b14;
+  t19 += v * b15;
+  v = a[5];
+  t5 += v * b0;
+  t6 += v * b1;
+  t7 += v * b2;
+  t8 += v * b3;
+  t9 += v * b4;
+  t10 += v * b5;
+  t11 += v * b6;
+  t12 += v * b7;
+  t13 += v * b8;
+  t14 += v * b9;
+  t15 += v * b10;
+  t16 += v * b11;
+  t17 += v * b12;
+  t18 += v * b13;
+  t19 += v * b14;
+  t20 += v * b15;
+  v = a[6];
+  t6 += v * b0;
+  t7 += v * b1;
+  t8 += v * b2;
+  t9 += v * b3;
+  t10 += v * b4;
+  t11 += v * b5;
+  t12 += v * b6;
+  t13 += v * b7;
+  t14 += v * b8;
+  t15 += v * b9;
+  t16 += v * b10;
+  t17 += v * b11;
+  t18 += v * b12;
+  t19 += v * b13;
+  t20 += v * b14;
+  t21 += v * b15;
+  v = a[7];
+  t7 += v * b0;
+  t8 += v * b1;
+  t9 += v * b2;
+  t10 += v * b3;
+  t11 += v * b4;
+  t12 += v * b5;
+  t13 += v * b6;
+  t14 += v * b7;
+  t15 += v * b8;
+  t16 += v * b9;
+  t17 += v * b10;
+  t18 += v * b11;
+  t19 += v * b12;
+  t20 += v * b13;
+  t21 += v * b14;
+  t22 += v * b15;
+  v = a[8];
+  t8 += v * b0;
+  t9 += v * b1;
+  t10 += v * b2;
+  t11 += v * b3;
+  t12 += v * b4;
+  t13 += v * b5;
+  t14 += v * b6;
+  t15 += v * b7;
+  t16 += v * b8;
+  t17 += v * b9;
+  t18 += v * b10;
+  t19 += v * b11;
+  t20 += v * b12;
+  t21 += v * b13;
+  t22 += v * b14;
+  t23 += v * b15;
+  v = a[9];
+  t9 += v * b0;
+  t10 += v * b1;
+  t11 += v * b2;
+  t12 += v * b3;
+  t13 += v * b4;
+  t14 += v * b5;
+  t15 += v * b6;
+  t16 += v * b7;
+  t17 += v * b8;
+  t18 += v * b9;
+  t19 += v * b10;
+  t20 += v * b11;
+  t21 += v * b12;
+  t22 += v * b13;
+  t23 += v * b14;
+  t24 += v * b15;
+  v = a[10];
+  t10 += v * b0;
+  t11 += v * b1;
+  t12 += v * b2;
+  t13 += v * b3;
+  t14 += v * b4;
+  t15 += v * b5;
+  t16 += v * b6;
+  t17 += v * b7;
+  t18 += v * b8;
+  t19 += v * b9;
+  t20 += v * b10;
+  t21 += v * b11;
+  t22 += v * b12;
+  t23 += v * b13;
+  t24 += v * b14;
+  t25 += v * b15;
+  v = a[11];
+  t11 += v * b0;
+  t12 += v * b1;
+  t13 += v * b2;
+  t14 += v * b3;
+  t15 += v * b4;
+  t16 += v * b5;
+  t17 += v * b6;
+  t18 += v * b7;
+  t19 += v * b8;
+  t20 += v * b9;
+  t21 += v * b10;
+  t22 += v * b11;
+  t23 += v * b12;
+  t24 += v * b13;
+  t25 += v * b14;
+  t26 += v * b15;
+  v = a[12];
+  t12 += v * b0;
+  t13 += v * b1;
+  t14 += v * b2;
+  t15 += v * b3;
+  t16 += v * b4;
+  t17 += v * b5;
+  t18 += v * b6;
+  t19 += v * b7;
+  t20 += v * b8;
+  t21 += v * b9;
+  t22 += v * b10;
+  t23 += v * b11;
+  t24 += v * b12;
+  t25 += v * b13;
+  t26 += v * b14;
+  t27 += v * b15;
+  v = a[13];
+  t13 += v * b0;
+  t14 += v * b1;
+  t15 += v * b2;
+  t16 += v * b3;
+  t17 += v * b4;
+  t18 += v * b5;
+  t19 += v * b6;
+  t20 += v * b7;
+  t21 += v * b8;
+  t22 += v * b9;
+  t23 += v * b10;
+  t24 += v * b11;
+  t25 += v * b12;
+  t26 += v * b13;
+  t27 += v * b14;
+  t28 += v * b15;
+  v = a[14];
+  t14 += v * b0;
+  t15 += v * b1;
+  t16 += v * b2;
+  t17 += v * b3;
+  t18 += v * b4;
+  t19 += v * b5;
+  t20 += v * b6;
+  t21 += v * b7;
+  t22 += v * b8;
+  t23 += v * b9;
+  t24 += v * b10;
+  t25 += v * b11;
+  t26 += v * b12;
+  t27 += v * b13;
+  t28 += v * b14;
+  t29 += v * b15;
+  v = a[15];
+  t15 += v * b0;
+  t16 += v * b1;
+  t17 += v * b2;
+  t18 += v * b3;
+  t19 += v * b4;
+  t20 += v * b5;
+  t21 += v * b6;
+  t22 += v * b7;
+  t23 += v * b8;
+  t24 += v * b9;
+  t25 += v * b10;
+  t26 += v * b11;
+  t27 += v * b12;
+  t28 += v * b13;
+  t29 += v * b14;
+  t30 += v * b15;
+
+  t0  += 38 * t16;
+  t1  += 38 * t17;
+  t2  += 38 * t18;
+  t3  += 38 * t19;
+  t4  += 38 * t20;
+  t5  += 38 * t21;
+  t6  += 38 * t22;
+  t7  += 38 * t23;
+  t8  += 38 * t24;
+  t9  += 38 * t25;
+  t10 += 38 * t26;
+  t11 += 38 * t27;
+  t12 += 38 * t28;
+  t13 += 38 * t29;
+  t14 += 38 * t30;
+  // t15 left as is
+
+  // first car
+  c = 1;
+  v =  t0 + c + 65535; c = Math.floor(v / 65536);  t0 = v - c * 65536;
+  v =  t1 + c + 65535; c = Math.floor(v / 65536);  t1 = v - c * 65536;
+  v =  t2 + c + 65535; c = Math.floor(v / 65536);  t2 = v - c * 65536;
+  v =  t3 + c + 65535; c = Math.floor(v / 65536);  t3 = v - c * 65536;
+  v =  t4 + c + 65535; c = Math.floor(v / 65536);  t4 = v - c * 65536;
+  v =  t5 + c + 65535; c = Math.floor(v / 65536);  t5 = v - c * 65536;
+  v =  t6 + c + 65535; c = Math.floor(v / 65536);  t6 = v - c * 65536;
+  v =  t7 + c + 65535; c = Math.floor(v / 65536);  t7 = v - c * 65536;
+  v =  t8 + c + 65535; c = Math.floor(v / 65536);  t8 = v - c * 65536;
+  v =  t9 + c + 65535; c = Math.floor(v / 65536);  t9 = v - c * 65536;
+  v = t10 + c + 65535; c = Math.floor(v / 65536); t10 = v - c * 65536;
+  v = t11 + c + 65535; c = Math.floor(v / 65536); t11 = v - c * 65536;
+  v = t12 + c + 65535; c = Math.floor(v / 65536); t12 = v - c * 65536;
+  v = t13 + c + 65535; c = Math.floor(v / 65536); t13 = v - c * 65536;
+  v = t14 + c + 65535; c = Math.floor(v / 65536); t14 = v - c * 65536;
+  v = t15 + c + 65535; c = Math.floor(v / 65536); t15 = v - c * 65536;
+  t0 += c-1 + 37 * (c-1);
+
+  // second car
+  c = 1;
+  v =  t0 + c + 65535; c = Math.floor(v / 65536);  t0 = v - c * 65536;
+  v =  t1 + c + 65535; c = Math.floor(v / 65536);  t1 = v - c * 65536;
+  v =  t2 + c + 65535; c = Math.floor(v / 65536);  t2 = v - c * 65536;
+  v =  t3 + c + 65535; c = Math.floor(v / 65536);  t3 = v - c * 65536;
+  v =  t4 + c + 65535; c = Math.floor(v / 65536);  t4 = v - c * 65536;
+  v =  t5 + c + 65535; c = Math.floor(v / 65536);  t5 = v - c * 65536;
+  v =  t6 + c + 65535; c = Math.floor(v / 65536);  t6 = v - c * 65536;
+  v =  t7 + c + 65535; c = Math.floor(v / 65536);  t7 = v - c * 65536;
+  v =  t8 + c + 65535; c = Math.floor(v / 65536);  t8 = v - c * 65536;
+  v =  t9 + c + 65535; c = Math.floor(v / 65536);  t9 = v - c * 65536;
+  v = t10 + c + 65535; c = Math.floor(v / 65536); t10 = v - c * 65536;
+  v = t11 + c + 65535; c = Math.floor(v / 65536); t11 = v - c * 65536;
+  v = t12 + c + 65535; c = Math.floor(v / 65536); t12 = v - c * 65536;
+  v = t13 + c + 65535; c = Math.floor(v / 65536); t13 = v - c * 65536;
+  v = t14 + c + 65535; c = Math.floor(v / 65536); t14 = v - c * 65536;
+  v = t15 + c + 65535; c = Math.floor(v / 65536); t15 = v - c * 65536;
+  t0 += c-1 + 37 * (c-1);
+
+  o[ 0] = t0;
+  o[ 1] = t1;
+  o[ 2] = t2;
+  o[ 3] = t3;
+  o[ 4] = t4;
+  o[ 5] = t5;
+  o[ 6] = t6;
+  o[ 7] = t7;
+  o[ 8] = t8;
+  o[ 9] = t9;
+  o[10] = t10;
+  o[11] = t11;
+  o[12] = t12;
+  o[13] = t13;
+  o[14] = t14;
+  o[15] = t15;
+}
+
+function S(o, a) {
+  M(o, a, a);
+}
+
+function inv25519(o, i) {
+  var c = gf();
+  var a;
+  for (a = 0; a < 16; a++) c[a] = i[a];
+  for (a = 253; a >= 0; a--) {
+    S(c, c);
+    if(a !== 2 && a !== 4) M(c, c, i);
+  }
+  for (a = 0; a < 16; a++) o[a] = c[a];
+}
+
+function pow2523(o, i) {
+  var c = gf();
+  var a;
+  for (a = 0; a < 16; a++) c[a] = i[a];
+  for (a = 250; a >= 0; a--) {
+      S(c, c);
+      if(a !== 1) M(c, c, i);
+  }
+  for (a = 0; a < 16; a++) o[a] = c[a];
+}
+
+function crypto_scalarmult(q, n, p) {
+  var z = new Uint8Array(32);
+  var x = new Float64Array(80), r, i;
+  var a = gf(), b = gf(), c = gf(),
+      d = gf(), e = gf(), f = gf();
+  for (i = 0; i < 31; i++) z[i] = n[i];
+  z[31]=(n[31]&127)|64;
+  z[0]&=248;
+  unpack25519(x,p);
+  for (i = 0; i < 16; i++) {
+    b[i]=x[i];
+    d[i]=a[i]=c[i]=0;
+  }
+  a[0]=d[0]=1;
+  for (i=254; i>=0; --i) {
+    r=(z[i>>>3]>>>(i&7))&1;
+    sel25519(a,b,r);
+    sel25519(c,d,r);
+    A(e,a,c);
+    Z(a,a,c);
+    A(c,b,d);
+    Z(b,b,d);
+    S(d,e);
+    S(f,a);
+    M(a,c,a);
+    M(c,b,e);
+    A(e,a,c);
+    Z(a,a,c);
+    S(b,a);
+    Z(c,d,f);
+    M(a,c,_121665);
+    A(a,a,d);
+    M(c,c,a);
+    M(a,d,f);
+    M(d,b,x);
+    S(b,e);
+    sel25519(a,b,r);
+    sel25519(c,d,r);
+  }
+  for (i = 0; i < 16; i++) {
+    x[i+16]=a[i];
+    x[i+32]=c[i];
+    x[i+48]=b[i];
+    x[i+64]=d[i];
+  }
+  var x32 = x.subarray(32);
+  var x16 = x.subarray(16);
+  inv25519(x32,x32);
+  M(x16,x16,x32);
+  pack25519(q,x16);
+  return 0;
+}
+
+function crypto_scalarmult_base(q, n) {
+  return crypto_scalarmult(q, n, _9);
+}
+
+function crypto_box_keypair(y, x) {
+  randombytes(x, 32);
+  return crypto_scalarmult_base(y, x);
+}
+
+function crypto_box_beforenm(k, y, x) {
+  var s = new Uint8Array(32);
+  crypto_scalarmult(s, x, y);
+  return crypto_core_hsalsa20(k, _0, s, sigma);
+}
+
+var crypto_box_afternm = crypto_secretbox;
+var crypto_box_open_afternm = crypto_secretbox_open;
+
+function crypto_box(c, m, d, n, y, x) {
+  var k = new Uint8Array(32);
+  crypto_box_beforenm(k, y, x);
+  return crypto_box_afternm(c, m, d, n, k);
+}
+
+function crypto_box_open(m, c, d, n, y, x) {
+  var k = new Uint8Array(32);
+  crypto_box_beforenm(k, y, x);
+  return crypto_box_open_afternm(m, c, d, n, k);
+}
+
+function crypto_hash(out, m, n) {
+  var input = new Uint8Array(n), i;
+  for (i = 0; i < n; ++i) {
+    input[i] = m[i];
+  }
+  var hash = blake2b.blake2b(input);
+  for (i = 0; i < crypto_hash_BYTES; ++i) {
+    out[i] = hash[i];
+  }
+  return 0;
+}
+
+function add(p, q) {
+  var a = gf(), b = gf(), c = gf(),
+      d = gf(), e = gf(), f = gf(),
+      g = gf(), h = gf(), t = gf();
+
+  Z(a, p[1], p[0]);
+  Z(t, q[1], q[0]);
+  M(a, a, t);
+  A(b, p[0], p[1]);
+  A(t, q[0], q[1]);
+  M(b, b, t);
+  M(c, p[3], q[3]);
+  M(c, c, D2);
+  M(d, p[2], q[2]);
+  A(d, d, d);
+  Z(e, b, a);
+  Z(f, d, c);
+  A(g, d, c);
+  A(h, b, a);
+
+  M(p[0], e, f);
+  M(p[1], h, g);
+  M(p[2], g, f);
+  M(p[3], e, h);
+}
+
+function cswap(p, q, b) {
+  var i;
+  for (i = 0; i < 4; i++) {
+    sel25519(p[i], q[i], b);
+  }
+}
+
+function pack(r, p) {
+  var tx = gf(), ty = gf(), zi = gf();
+  inv25519(zi, p[2]);
+  M(tx, p[0], zi);
+  M(ty, p[1], zi);
+  pack25519(r, ty);
+  r[31] ^= par25519(tx) << 7;
+}
+
+function scalarmult(p, q, s) {
+  var b, i;
+  set25519(p[0], gf0);
+  set25519(p[1], gf1);
+  set25519(p[2], gf1);
+  set25519(p[3], gf0);
+  for (i = 255; i >= 0; --i) {
+    b = (s[(i/8)|0] >> (i&7)) & 1;
+    cswap(p, q, b);
+    add(q, p);
+    add(p, p);
+    cswap(p, q, b);
+  }
+}
+
+function scalarbase(p, s) {
+  var q = [gf(), gf(), gf(), gf()];
+  set25519(q[0], X);
+  set25519(q[1], Y);
+  set25519(q[2], gf1);
+  M(q[3], X, Y);
+  scalarmult(p, q, s);
+}
+
+function crypto_sign_keypair(pk, sk, seeded) {
+  var d = new Uint8Array(64);
+  var p = [gf(), gf(), gf(), gf()];
+  var i;
+
+  if (!seeded) randombytes(sk, 32);
+  crypto_hash(d, sk, 32);
+  d[0] &= 248;
+  d[31] &= 127;
+  d[31] |= 64;
+
+  scalarbase(p, d);
+  pack(pk, p);
+
+  for (i = 0; i < 32; i++) sk[i+32] = pk[i];
+  return 0;
+}
+
+var L = new Float64Array([0xed, 0xd3, 0xf5, 0x5c, 0x1a, 0x63, 0x12, 0x58, 0xd6, 0x9c, 0xf7, 0xa2, 0xde, 0xf9, 0xde, 0x14, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0x10]);
+
+function modL(r, x) {
+  var carry, i, j, k;
+  for (i = 63; i >= 32; --i) {
+    carry = 0;
+    for (j = i - 32, k = i - 12; j < k; ++j) {
+      x[j] += carry - 16 * x[i] * L[j - (i - 32)];
+      carry = (x[j] + 128) >> 8;
+      x[j] -= carry * 256;
+    }
+    x[j] += carry;
+    x[i] = 0;
+  }
+  carry = 0;
+  for (j = 0; j < 32; j++) {
+    x[j] += carry - (x[31] >> 4) * L[j];
+    carry = x[j] >> 8;
+    x[j] &= 255;
+  }
+  for (j = 0; j < 32; j++) x[j] -= carry * L[j];
+  for (i = 0; i < 32; i++) {
+    x[i+1] += x[i] >> 8;
+    r[i] = x[i] & 255;
+  }
+}
+
+function reduce(r) {
+  var x = new Float64Array(64), i;
+  for (i = 0; i < 64; i++) x[i] = r[i];
+  for (i = 0; i < 64; i++) r[i] = 0;
+  modL(r, x);
+}
+
+// Note: difference from C - smlen returned, not passed as argument.
+function crypto_sign(sm, m, n, sk) {
+  var d = new Uint8Array(64), h = new Uint8Array(64), r = new Uint8Array(64);
+  var i, j, x = new Float64Array(64);
+  var p = [gf(), gf(), gf(), gf()];
+
+  crypto_hash(d, sk, 32);
+  d[0] &= 248;
+  d[31] &= 127;
+  d[31] |= 64;
+
+  var smlen = n + 64;
+  for (i = 0; i < n; i++) sm[64 + i] = m[i];
+  for (i = 0; i < 32; i++) sm[32 + i] = d[32 + i];
+
+  crypto_hash(r, sm.subarray(32), n+32);
+  reduce(r);
+  scalarbase(p, r);
+  pack(sm, p);
+
+  for (i = 32; i < 64; i++) sm[i] = sk[i];
+  crypto_hash(h, sm, n + 64);
+  reduce(h);
+
+  for (i = 0; i < 64; i++) x[i] = 0;
+  for (i = 0; i < 32; i++) x[i] = r[i];
+  for (i = 0; i < 32; i++) {
+    for (j = 0; j < 32; j++) {
+      x[i+j] += h[i] * d[j];
+    }
+  }
+
+  modL(sm.subarray(32), x);
+  return smlen;
+}
+
+function unpackneg(r, p) {
+  var t = gf(), chk = gf(), num = gf(),
+      den = gf(), den2 = gf(), den4 = gf(),
+      den6 = gf();
+
+  set25519(r[2], gf1);
+  unpack25519(r[1], p);
+  S(num, r[1]);
+  M(den, num, D);
+  Z(num, num, r[2]);
+  A(den, r[2], den);
+
+  S(den2, den);
+  S(den4, den2);
+  M(den6, den4, den2);
+  M(t, den6, num);
+  M(t, t, den);
+
+  pow2523(t, t);
+  M(t, t, num);
+  M(t, t, den);
+  M(t, t, den);
+  M(r[0], t, den);
+
+  S(chk, r[0]);
+  M(chk, chk, den);
+  if (neq25519(chk, num)) M(r[0], r[0], I);
+
+  S(chk, r[0]);
+  M(chk, chk, den);
+  if (neq25519(chk, num)) return -1;
+
+  if (par25519(r[0]) === (p[31]>>7)) Z(r[0], gf0, r[0]);
+
+  M(r[3], r[0], r[1]);
+  return 0;
+}
+
+function crypto_sign_open(m, sm, n, pk) {
+  var i, mlen;
+  var t = new Uint8Array(32), h = new Uint8Array(64);
+  var p = [gf(), gf(), gf(), gf()],
+      q = [gf(), gf(), gf(), gf()];
+
+  mlen = -1;
+  if (n < 64) return -1;
+
+  if (unpackneg(q, pk)) return -1;
+
+  for (i = 0; i < n; i++) m[i] = sm[i];
+  for (i = 0; i < 32; i++) m[i+32] = pk[i];
+  crypto_hash(h, m, n);
+  reduce(h);
+  scalarmult(p, q, h);
+
+  scalarbase(q, sm.subarray(32));
+  add(p, q);
+  pack(t, p);
+
+  n -= 64;
+  if (crypto_verify_32(sm, 0, t, 0)) {
+    for (i = 0; i < n; i++) m[i] = 0;
+    return -1;
+  }
+
+  for (i = 0; i < n; i++) m[i] = sm[i + 64];
+  mlen = n;
+  return mlen;
+}
+
+var crypto_secretbox_KEYBYTES = 32,
+    crypto_secretbox_NONCEBYTES = 24,
+    crypto_secretbox_ZEROBYTES = 32,
+    crypto_secretbox_BOXZEROBYTES = 16,
+    crypto_scalarmult_BYTES = 32,
+    crypto_scalarmult_SCALARBYTES = 32,
+    crypto_box_PUBLICKEYBYTES = 32,
+    crypto_box_SECRETKEYBYTES = 32,
+    crypto_box_BEFORENMBYTES = 32,
+    crypto_box_NONCEBYTES = crypto_secretbox_NONCEBYTES,
+    crypto_box_ZEROBYTES = crypto_secretbox_ZEROBYTES,
+    crypto_box_BOXZEROBYTES = crypto_secretbox_BOXZEROBYTES,
+    crypto_sign_BYTES = 64,
+    crypto_sign_PUBLICKEYBYTES = 32,
+    crypto_sign_SECRETKEYBYTES = 64,
+    crypto_sign_SEEDBYTES = 32,
+    crypto_hash_BYTES = 64;
+
+nacl.lowlevel = {
+  crypto_core_hsalsa20: crypto_core_hsalsa20,
+  crypto_stream_xor: crypto_stream_xor,
+  crypto_stream: crypto_stream,
+  crypto_stream_salsa20_xor: crypto_stream_salsa20_xor,
+  crypto_stream_salsa20: crypto_stream_salsa20,
+  crypto_onetimeauth: crypto_onetimeauth,
+  crypto_onetimeauth_verify: crypto_onetimeauth_verify,
+  crypto_verify_16: crypto_verify_16,
+  crypto_verify_32: crypto_verify_32,
+  crypto_secretbox: crypto_secretbox,
+  crypto_secretbox_open: crypto_secretbox_open,
+  crypto_scalarmult: crypto_scalarmult,
+  crypto_scalarmult_base: crypto_scalarmult_base,
+  crypto_box_beforenm: crypto_box_beforenm,
+  crypto_box_afternm: crypto_box_afternm,
+  crypto_box: crypto_box,
+  crypto_box_open: crypto_box_open,
+  crypto_box_keypair: crypto_box_keypair,
+  crypto_hash: crypto_hash,
+  crypto_sign: crypto_sign,
+  crypto_sign_keypair: crypto_sign_keypair,
+  crypto_sign_open: crypto_sign_open,
+
+  crypto_secretbox_KEYBYTES: crypto_secretbox_KEYBYTES,
+  crypto_secretbox_NONCEBYTES: crypto_secretbox_NONCEBYTES,
+  crypto_secretbox_ZEROBYTES: crypto_secretbox_ZEROBYTES,
+  crypto_secretbox_BOXZEROBYTES: crypto_secretbox_BOXZEROBYTES,
+  crypto_scalarmult_BYTES: crypto_scalarmult_BYTES,
+  crypto_scalarmult_SCALARBYTES: crypto_scalarmult_SCALARBYTES,
+  crypto_box_PUBLICKEYBYTES: crypto_box_PUBLICKEYBYTES,
+  crypto_box_SECRETKEYBYTES: crypto_box_SECRETKEYBYTES,
+  crypto_box_BEFORENMBYTES: crypto_box_BEFORENMBYTES,
+  crypto_box_NONCEBYTES: crypto_box_NONCEBYTES,
+  crypto_box_ZEROBYTES: crypto_box_ZEROBYTES,
+  crypto_box_BOXZEROBYTES: crypto_box_BOXZEROBYTES,
+  crypto_sign_BYTES: crypto_sign_BYTES,
+  crypto_sign_PUBLICKEYBYTES: crypto_sign_PUBLICKEYBYTES,
+  crypto_sign_SECRETKEYBYTES: crypto_sign_SECRETKEYBYTES,
+  crypto_sign_SEEDBYTES: crypto_sign_SEEDBYTES,
+  crypto_hash_BYTES: crypto_hash_BYTES
+};
+
+/* High-level API */
+
+function checkLengths(k, n) {
+  if (k.length !== crypto_secretbox_KEYBYTES) throw new Error('bad key size');
+  if (n.length !== crypto_secretbox_NONCEBYTES) throw new Error('bad nonce size');
+}
+
+function checkBoxLengths(pk, sk) {
+  if (pk.length !== crypto_box_PUBLICKEYBYTES) throw new Error('bad public key size');
+  if (sk.length !== crypto_box_SECRETKEYBYTES) throw new Error('bad secret key size');
+}
+
+function checkArrayTypes() {
+  for (var i = 0; i < arguments.length; i++) {
+    if (!(arguments[i] instanceof Uint8Array))
+      throw new TypeError('unexpected type, use Uint8Array');
+  }
+}
+
+function cleanup(arr) {
+  for (var i = 0; i < arr.length; i++) arr[i] = 0;
+}
+
+nacl.randomBytes = function(n) {
+  var b = new Uint8Array(n);
+  randombytes(b, n);
+  return b;
+};
+
+nacl.secretbox = function(msg, nonce, key) {
+  checkArrayTypes(msg, nonce, key);
+  checkLengths(key, nonce);
+  var m = new Uint8Array(crypto_secretbox_ZEROBYTES + msg.length);
+  var c = new Uint8Array(m.length);
+  for (var i = 0; i < msg.length; i++) m[i+crypto_secretbox_ZEROBYTES] = msg[i];
+  crypto_secretbox(c, m, m.length, nonce, key);
+  return c.subarray(crypto_secretbox_BOXZEROBYTES);
+};
+
+nacl.secretbox.open = function(box, nonce, key) {
+  checkArrayTypes(box, nonce, key);
+  checkLengths(key, nonce);
+  var c = new Uint8Array(crypto_secretbox_BOXZEROBYTES + box.length);
+  var m = new Uint8Array(c.length);
+  for (var i = 0; i < box.length; i++) c[i+crypto_secretbox_BOXZEROBYTES] = box[i];
+  if (c.length < 32) return null;
+  if (crypto_secretbox_open(m, c, c.length, nonce, key) !== 0) return null;
+  return m.subarray(crypto_secretbox_ZEROBYTES);
+};
+
+nacl.secretbox.keyLength = crypto_secretbox_KEYBYTES;
+nacl.secretbox.nonceLength = crypto_secretbox_NONCEBYTES;
+nacl.secretbox.overheadLength = crypto_secretbox_BOXZEROBYTES;
+
+nacl.scalarMult = function(n, p) {
+  checkArrayTypes(n, p);
+  if (n.length !== crypto_scalarmult_SCALARBYTES) throw new Error('bad n size');
+  if (p.length !== crypto_scalarmult_BYTES) throw new Error('bad p size');
+  var q = new Uint8Array(crypto_scalarmult_BYTES);
+  crypto_scalarmult(q, n, p);
+  return q;
+};
+
+nacl.scalarMult.base = function(n) {
+  checkArrayTypes(n);
+  if (n.length !== crypto_scalarmult_SCALARBYTES) throw new Error('bad n size');
+  var q = new Uint8Array(crypto_scalarmult_BYTES);
+  crypto_scalarmult_base(q, n);
+  return q;
+};
+
+nacl.scalarMult.scalarLength = crypto_scalarmult_SCALARBYTES;
+nacl.scalarMult.groupElementLength = crypto_scalarmult_BYTES;
+
+nacl.box = function(msg, nonce, publicKey, secretKey) {
+  var k = nacl.box.before(publicKey, secretKey);
+  return nacl.secretbox(msg, nonce, k);
+};
+
+nacl.box.before = function(publicKey, secretKey) {
+  checkArrayTypes(publicKey, secretKey);
+  checkBoxLengths(publicKey, secretKey);
+  var k = new Uint8Array(crypto_box_BEFORENMBYTES);
+  crypto_box_beforenm(k, publicKey, secretKey);
+  return k;
+};
+
+nacl.box.after = nacl.secretbox;
+
+nacl.box.open = function(msg, nonce, publicKey, secretKey) {
+  var k = nacl.box.before(publicKey, secretKey);
+  return nacl.secretbox.open(msg, nonce, k);
+};
+
+nacl.box.open.after = nacl.secretbox.open;
+
+nacl.box.keyPair = function() {
+  var pk = new Uint8Array(crypto_box_PUBLICKEYBYTES);
+  var sk = new Uint8Array(crypto_box_SECRETKEYBYTES);
+  crypto_box_keypair(pk, sk);
+  return {publicKey: pk, secretKey: sk};
+};
+
+nacl.box.keyPair.fromSecretKey = function(secretKey) {
+  checkArrayTypes(secretKey);
+  if (secretKey.length !== crypto_box_SECRETKEYBYTES)
+    throw new Error('bad secret key size');
+  var pk = new Uint8Array(crypto_box_PUBLICKEYBYTES);
+  crypto_scalarmult_base(pk, secretKey);
+  return {publicKey: pk, secretKey: new Uint8Array(secretKey)};
+};
+
+nacl.box.publicKeyLength = crypto_box_PUBLICKEYBYTES;
+nacl.box.secretKeyLength = crypto_box_SECRETKEYBYTES;
+nacl.box.sharedKeyLength = crypto_box_BEFORENMBYTES;
+nacl.box.nonceLength = crypto_box_NONCEBYTES;
+nacl.box.overheadLength = nacl.secretbox.overheadLength;
+
+nacl.sign = function(msg, secretKey) {
+  checkArrayTypes(msg, secretKey);
+  if (secretKey.length !== crypto_sign_SECRETKEYBYTES)
+    throw new Error('bad secret key size');
+  var signedMsg = new Uint8Array(crypto_sign_BYTES+msg.length);
+  crypto_sign(signedMsg, msg, msg.length, secretKey);
+  return signedMsg;
+};
+
+nacl.sign.open = function(signedMsg, publicKey) {
+  checkArrayTypes(signedMsg, publicKey);
+  if (publicKey.length !== crypto_sign_PUBLICKEYBYTES)
+    throw new Error('bad public key size');
+  var tmp = new Uint8Array(signedMsg.length);
+  var mlen = crypto_sign_open(tmp, signedMsg, signedMsg.length, publicKey);
+  if (mlen < 0) return null;
+  var m = new Uint8Array(mlen);
+  for (var i = 0; i < m.length; i++) m[i] = tmp[i];
+  return m;
+};
+
+nacl.sign.detached = function(msg, secretKey) {
+  var signedMsg = nacl.sign(msg, secretKey);
+  var sig = new Uint8Array(crypto_sign_BYTES);
+  for (var i = 0; i < sig.length; i++) sig[i] = signedMsg[i];
+  return sig;
+};
+
+nacl.sign.detached.verify = function(msg, sig, publicKey) {
+  checkArrayTypes(msg, sig, publicKey);
+  if (sig.length !== crypto_sign_BYTES)
+    throw new Error('bad signature size');
+  if (publicKey.length !== crypto_sign_PUBLICKEYBYTES)
+    throw new Error('bad public key size');
+  var sm = new Uint8Array(crypto_sign_BYTES + msg.length);
+  var m = new Uint8Array(crypto_sign_BYTES + msg.length);
+  var i;
+  for (i = 0; i < crypto_sign_BYTES; i++) sm[i] = sig[i];
+  for (i = 0; i < msg.length; i++) sm[i+crypto_sign_BYTES] = msg[i];
+  return (crypto_sign_open(m, sm, sm.length, publicKey) >= 0);
+};
+
+nacl.sign.keyPair = function() {
+  var pk = new Uint8Array(crypto_sign_PUBLICKEYBYTES);
+  var sk = new Uint8Array(crypto_sign_SECRETKEYBYTES);
+  crypto_sign_keypair(pk, sk);
+  return {publicKey: pk, secretKey: sk};
+};
+
+nacl.sign.keyPair.fromSecretKey = function(secretKey) {
+  checkArrayTypes(secretKey);
+  if (secretKey.length !== crypto_sign_SECRETKEYBYTES)
+    throw new Error('bad secret key size');
+  var pk = new Uint8Array(crypto_sign_PUBLICKEYBYTES);
+  for (var i = 0; i < pk.length; i++) pk[i] = secretKey[32+i];
+  return {publicKey: pk, secretKey: new Uint8Array(secretKey)};
+};
+
+nacl.sign.keyPair.fromSeed = function(seed) {
+  checkArrayTypes(seed);
+  if (seed.length !== crypto_sign_SEEDBYTES)
+    throw new Error('bad seed size');
+  var pk = new Uint8Array(crypto_sign_PUBLICKEYBYTES);
+  var sk = new Uint8Array(crypto_sign_SECRETKEYBYTES);
+  for (var i = 0; i < 32; i++) sk[i] = seed[i];
+  crypto_sign_keypair(pk, sk, true);
+  return {publicKey: pk, secretKey: sk};
+};
+
+nacl.sign.publicKeyLength = crypto_sign_PUBLICKEYBYTES;
+nacl.sign.secretKeyLength = crypto_sign_SECRETKEYBYTES;
+nacl.sign.seedLength = crypto_sign_SEEDBYTES;
+nacl.sign.signatureLength = crypto_sign_BYTES;
+
+nacl.hash = function(msg) {
+  checkArrayTypes(msg);
+  var h = new Uint8Array(crypto_hash_BYTES);
+  crypto_hash(h, msg, msg.length);
+  return h;
+};
+
+nacl.hash.hashLength = crypto_hash_BYTES;
+
+nacl.verify = function(x, y) {
+  checkArrayTypes(x, y);
+  // Zero length arguments are considered not equal.
+  if (x.length === 0 || y.length === 0) return false;
+  if (x.length !== y.length) return false;
+  return (vn(x, 0, y, 0, x.length) === 0) ? true : false;
+};
+
+nacl.setPRNG = function(fn) {
+  randombytes = fn;
+};
+
+(function() {
+  // Initialize PRNG if environment provides CSPRNG.
+  // If not, methods calling randombytes will throw.
+  var crypto = typeof self !== 'undefined' ? (self.crypto || self.msCrypto) : null;
+  if (crypto && crypto.getRandomValues) {
+    // Browsers.
+    var QUOTA = 65536;
+    nacl.setPRNG(function(x, n) {
+      var i, v = new Uint8Array(n);
+      for (i = 0; i < n; i += QUOTA) {
+        crypto.getRandomValues(v.subarray(i, i + Math.min(n - i, QUOTA)));
+      }
+      for (i = 0; i < n; i++) x[i] = v[i];
+      cleanup(v);
+    });
+  } else if (typeof require !== 'undefined') {
+    // Node.js.
+    crypto = require('crypto');
+    if (crypto && crypto.randomBytes) {
+      nacl.setPRNG(function(x, n) {
+        var i, v = crypto.randomBytes(n);
+        for (i = 0; i < n; i++) x[i] = v[i];
+        cleanup(v);
+      });
+    }
+  }
+})();
+
+})(typeof module !== 'undefined' && module.exports ? module.exports : (self.nacl = self.nacl || {}));
+
+},{"blakejs/blake2b":34,"crypto":38}],10:[function(require,module,exports){
 var asn1 = exports;
 
 asn1.bignum = require('bn.js');
@@ -3259,7 +2894,7 @@ asn1.constants = require('./asn1/constants');
 asn1.decoders = require('./asn1/decoders');
 asn1.encoders = require('./asn1/encoders');
 
-},{"./asn1/api":10,"./asn1/base":12,"./asn1/constants":16,"./asn1/decoders":18,"./asn1/encoders":21,"bn.js":35}],10:[function(require,module,exports){
+},{"./asn1/api":11,"./asn1/base":13,"./asn1/constants":17,"./asn1/decoders":19,"./asn1/encoders":22,"bn.js":36}],11:[function(require,module,exports){
 var asn1 = require('../asn1');
 var inherits = require('inherits');
 
@@ -3322,7 +2957,7 @@ Entity.prototype.encode = function encode(data, enc, /* internal */ reporter) {
   return this._getEncoder(enc).encode(data, reporter);
 };
 
-},{"../asn1":9,"inherits":118,"vm":176}],11:[function(require,module,exports){
+},{"../asn1":10,"inherits":119,"vm":177}],12:[function(require,module,exports){
 var inherits = require('inherits');
 var Reporter = require('../base').Reporter;
 var Buffer = require('buffer').Buffer;
@@ -3440,7 +3075,7 @@ EncoderBuffer.prototype.join = function join(out, offset) {
   return out;
 };
 
-},{"../base":12,"buffer":66,"inherits":118}],12:[function(require,module,exports){
+},{"../base":13,"buffer":66,"inherits":119}],13:[function(require,module,exports){
 var base = exports;
 
 base.Reporter = require('./reporter').Reporter;
@@ -3448,7 +3083,7 @@ base.DecoderBuffer = require('./buffer').DecoderBuffer;
 base.EncoderBuffer = require('./buffer').EncoderBuffer;
 base.Node = require('./node');
 
-},{"./buffer":11,"./node":13,"./reporter":14}],13:[function(require,module,exports){
+},{"./buffer":12,"./node":14,"./reporter":15}],14:[function(require,module,exports){
 var Reporter = require('../base').Reporter;
 var EncoderBuffer = require('../base').EncoderBuffer;
 var DecoderBuffer = require('../base').DecoderBuffer;
@@ -4084,7 +3719,7 @@ Node.prototype._isPrintstr = function isPrintstr(str) {
   return /^[A-Za-z0-9 '\(\)\+,\-\.\/:=\?]*$/.test(str);
 };
 
-},{"../base":12,"minimalistic-assert":124}],14:[function(require,module,exports){
+},{"../base":13,"minimalistic-assert":125}],15:[function(require,module,exports){
 var inherits = require('inherits');
 
 function Reporter(options) {
@@ -4207,7 +3842,7 @@ ReporterError.prototype.rethrow = function rethrow(msg) {
   return this;
 };
 
-},{"inherits":118}],15:[function(require,module,exports){
+},{"inherits":119}],16:[function(require,module,exports){
 var constants = require('../constants');
 
 exports.tagClass = {
@@ -4251,7 +3886,7 @@ exports.tag = {
 };
 exports.tagByName = constants._reverse(exports.tag);
 
-},{"../constants":16}],16:[function(require,module,exports){
+},{"../constants":17}],17:[function(require,module,exports){
 var constants = exports;
 
 // Helper
@@ -4272,7 +3907,7 @@ constants._reverse = function reverse(map) {
 
 constants.der = require('./der');
 
-},{"./der":15}],17:[function(require,module,exports){
+},{"./der":16}],18:[function(require,module,exports){
 var inherits = require('inherits');
 
 var asn1 = require('../../asn1');
@@ -4598,13 +4233,13 @@ function derDecodeLen(buf, primitive, fail) {
   return len;
 }
 
-},{"../../asn1":9,"inherits":118}],18:[function(require,module,exports){
+},{"../../asn1":10,"inherits":119}],19:[function(require,module,exports){
 var decoders = exports;
 
 decoders.der = require('./der');
 decoders.pem = require('./pem');
 
-},{"./der":17,"./pem":19}],19:[function(require,module,exports){
+},{"./der":18,"./pem":20}],20:[function(require,module,exports){
 var inherits = require('inherits');
 var Buffer = require('buffer').Buffer;
 
@@ -4655,7 +4290,7 @@ PEMDecoder.prototype.decode = function decode(data, options) {
   return DERDecoder.prototype.decode.call(this, input, options);
 };
 
-},{"./der":17,"buffer":66,"inherits":118}],20:[function(require,module,exports){
+},{"./der":18,"buffer":66,"inherits":119}],21:[function(require,module,exports){
 var inherits = require('inherits');
 var Buffer = require('buffer').Buffer;
 
@@ -4952,13 +4587,13 @@ function encodeTag(tag, primitive, cls, reporter) {
   return res;
 }
 
-},{"../../asn1":9,"buffer":66,"inherits":118}],21:[function(require,module,exports){
+},{"../../asn1":10,"buffer":66,"inherits":119}],22:[function(require,module,exports){
 var encoders = exports;
 
 encoders.der = require('./der');
 encoders.pem = require('./pem');
 
-},{"./der":20,"./pem":22}],22:[function(require,module,exports){
+},{"./der":21,"./pem":23}],23:[function(require,module,exports){
 var inherits = require('inherits');
 
 var DEREncoder = require('./der');
@@ -4981,7 +4616,7 @@ PEMEncoder.prototype.encode = function encode(data, options) {
   return out.join('\n');
 };
 
-},{"./der":20,"inherits":118}],23:[function(require,module,exports){
+},{"./der":21,"inherits":119}],24:[function(require,module,exports){
 'use strict'
 
 exports.byteLength = byteLength
@@ -5134,7 +4769,7 @@ function fromByteArray (uint8) {
   return parts.join('')
 }
 
-},{}],24:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 var Buffer = require('safe-buffer').Buffer
 var createHash = require('create-hash')
 var pbkdf2 = require('pbkdf2').pbkdf2Sync
@@ -5289,7 +4924,7 @@ module.exports = {
   }
 }
 
-},{"./wordlists/chinese_simplified.json":25,"./wordlists/chinese_traditional.json":26,"./wordlists/english.json":27,"./wordlists/french.json":28,"./wordlists/italian.json":29,"./wordlists/japanese.json":30,"./wordlists/korean.json":31,"./wordlists/spanish.json":32,"create-hash":70,"pbkdf2":131,"randombytes":145,"safe-buffer":161,"unorm":174}],25:[function(require,module,exports){
+},{"./wordlists/chinese_simplified.json":26,"./wordlists/chinese_traditional.json":27,"./wordlists/english.json":28,"./wordlists/french.json":29,"./wordlists/italian.json":30,"./wordlists/japanese.json":31,"./wordlists/korean.json":32,"./wordlists/spanish.json":33,"create-hash":71,"pbkdf2":132,"randombytes":146,"safe-buffer":162,"unorm":175}],26:[function(require,module,exports){
 module.exports=[
   "的",
   "一",
@@ -7341,7 +6976,7 @@ module.exports=[
   "歇"
 ]
 
-},{}],26:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 module.exports=[
   "的",
   "一",
@@ -9393,7 +9028,7 @@ module.exports=[
   "歇"
 ]
 
-},{}],27:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 module.exports=[
   "abandon",
   "ability",
@@ -11445,7 +11080,7 @@ module.exports=[
   "zoo"
 ]
 
-},{}],28:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 module.exports=[
   "abaisser",
   "abandon",
@@ -13497,7 +13132,7 @@ module.exports=[
   "zoologie"
 ]
 
-},{}],29:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 module.exports=[
   "abaco",
   "abbaglio",
@@ -15549,7 +15184,7 @@ module.exports=[
   "zuppa"
 ]
 
-},{}],30:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 module.exports=[
   "あいこくしん",
   "あいさつ",
@@ -17601,7 +17236,7 @@ module.exports=[
   "われる"
 ]
 
-},{}],31:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 module.exports=[
   "가격",
   "가끔",
@@ -19653,7 +19288,7 @@ module.exports=[
   "힘껏"
 ]
 
-},{}],32:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 module.exports=[
   "ábaco",
   "abdomen",
@@ -21705,7 +21340,7 @@ module.exports=[
   "zurdo"
 ]
 
-},{}],33:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 // Blake2B in pure Javascript
 // Adapted from the reference implementation in RFC7693
 // Ported to Javascript by DC - https://github.com/dcposch
@@ -21980,7 +21615,7 @@ module.exports = {
   blake2bFinal: blake2bFinal
 }
 
-},{"./util":34}],34:[function(require,module,exports){
+},{"./util":35}],35:[function(require,module,exports){
 (function (Buffer){
 var ERROR_MSG_INPUT = 'Input must be an string, Buffer or Uint8Array'
 
@@ -22066,7 +21701,7 @@ module.exports = {
 
 }).call(this,require("buffer").Buffer)
 
-},{"buffer":66}],35:[function(require,module,exports){
+},{"buffer":66}],36:[function(require,module,exports){
 (function (module, exports) {
   'use strict';
 
@@ -25495,7 +25130,7 @@ module.exports = {
   };
 })(typeof module === 'undefined' || module, this);
 
-},{"buffer":37}],36:[function(require,module,exports){
+},{"buffer":38}],37:[function(require,module,exports){
 var r;
 
 module.exports = function rand(len) {
@@ -25562,9 +25197,9 @@ if (typeof self === 'object') {
   }
 }
 
-},{"crypto":37}],37:[function(require,module,exports){
+},{"crypto":38}],38:[function(require,module,exports){
 
-},{}],38:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 // based on the aes implimentation in triple sec
 // https://github.com/keybase/triplesec
 // which is in turn based on the one from crypto-js
@@ -25794,7 +25429,7 @@ AES.prototype.scrub = function () {
 
 module.exports.AES = AES
 
-},{"safe-buffer":161}],39:[function(require,module,exports){
+},{"safe-buffer":162}],40:[function(require,module,exports){
 var aes = require('./aes')
 var Buffer = require('safe-buffer').Buffer
 var Transform = require('cipher-base')
@@ -25913,7 +25548,7 @@ StreamCipher.prototype.setAAD = function setAAD (buf) {
 
 module.exports = StreamCipher
 
-},{"./aes":38,"./ghash":43,"./incr32":44,"buffer-xor":65,"cipher-base":67,"inherits":118,"safe-buffer":161}],40:[function(require,module,exports){
+},{"./aes":39,"./ghash":44,"./incr32":45,"buffer-xor":67,"cipher-base":68,"inherits":119,"safe-buffer":162}],41:[function(require,module,exports){
 var ciphers = require('./encrypter')
 var deciphers = require('./decrypter')
 var modes = require('./modes/list.json')
@@ -25928,7 +25563,7 @@ exports.createDecipher = exports.Decipher = deciphers.createDecipher
 exports.createDecipheriv = exports.Decipheriv = deciphers.createDecipheriv
 exports.listCiphers = exports.getCiphers = getCiphers
 
-},{"./decrypter":41,"./encrypter":42,"./modes/list.json":52}],41:[function(require,module,exports){
+},{"./decrypter":42,"./encrypter":43,"./modes/list.json":53}],42:[function(require,module,exports){
 var AuthCipher = require('./authCipher')
 var Buffer = require('safe-buffer').Buffer
 var MODES = require('./modes')
@@ -26054,7 +25689,7 @@ function createDecipher (suite, password) {
 exports.createDecipher = createDecipher
 exports.createDecipheriv = createDecipheriv
 
-},{"./aes":38,"./authCipher":39,"./modes":51,"./streamCipher":54,"cipher-base":67,"evp_bytestokey":102,"inherits":118,"safe-buffer":161}],42:[function(require,module,exports){
+},{"./aes":39,"./authCipher":40,"./modes":52,"./streamCipher":55,"cipher-base":68,"evp_bytestokey":103,"inherits":119,"safe-buffer":162}],43:[function(require,module,exports){
 var MODES = require('./modes')
 var AuthCipher = require('./authCipher')
 var Buffer = require('safe-buffer').Buffer
@@ -26170,7 +25805,7 @@ function createCipher (suite, password) {
 exports.createCipheriv = createCipheriv
 exports.createCipher = createCipher
 
-},{"./aes":38,"./authCipher":39,"./modes":51,"./streamCipher":54,"cipher-base":67,"evp_bytestokey":102,"inherits":118,"safe-buffer":161}],43:[function(require,module,exports){
+},{"./aes":39,"./authCipher":40,"./modes":52,"./streamCipher":55,"cipher-base":68,"evp_bytestokey":103,"inherits":119,"safe-buffer":162}],44:[function(require,module,exports){
 var Buffer = require('safe-buffer').Buffer
 var ZEROES = Buffer.alloc(16, 0)
 
@@ -26261,7 +25896,7 @@ GHASH.prototype.final = function (abl, bl) {
 
 module.exports = GHASH
 
-},{"safe-buffer":161}],44:[function(require,module,exports){
+},{"safe-buffer":162}],45:[function(require,module,exports){
 function incr32 (iv) {
   var len = iv.length
   var item
@@ -26278,7 +25913,7 @@ function incr32 (iv) {
 }
 module.exports = incr32
 
-},{}],45:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 var xor = require('buffer-xor')
 
 exports.encrypt = function (self, block) {
@@ -26297,7 +25932,7 @@ exports.decrypt = function (self, block) {
   return xor(out, pad)
 }
 
-},{"buffer-xor":65}],46:[function(require,module,exports){
+},{"buffer-xor":67}],47:[function(require,module,exports){
 var Buffer = require('safe-buffer').Buffer
 var xor = require('buffer-xor')
 
@@ -26332,7 +25967,7 @@ exports.encrypt = function (self, data, decrypt) {
   return out
 }
 
-},{"buffer-xor":65,"safe-buffer":161}],47:[function(require,module,exports){
+},{"buffer-xor":67,"safe-buffer":162}],48:[function(require,module,exports){
 var Buffer = require('safe-buffer').Buffer
 
 function encryptByte (self, byteParam, decrypt) {
@@ -26376,7 +26011,7 @@ exports.encrypt = function (self, chunk, decrypt) {
   return out
 }
 
-},{"safe-buffer":161}],48:[function(require,module,exports){
+},{"safe-buffer":162}],49:[function(require,module,exports){
 var Buffer = require('safe-buffer').Buffer
 
 function encryptByte (self, byteParam, decrypt) {
@@ -26403,7 +26038,7 @@ exports.encrypt = function (self, chunk, decrypt) {
   return out
 }
 
-},{"safe-buffer":161}],49:[function(require,module,exports){
+},{"safe-buffer":162}],50:[function(require,module,exports){
 var xor = require('buffer-xor')
 var Buffer = require('safe-buffer').Buffer
 var incr32 = require('../incr32')
@@ -26435,7 +26070,7 @@ exports.encrypt = function (self, chunk) {
   return xor(chunk, pad)
 }
 
-},{"../incr32":44,"buffer-xor":65,"safe-buffer":161}],50:[function(require,module,exports){
+},{"../incr32":45,"buffer-xor":67,"safe-buffer":162}],51:[function(require,module,exports){
 exports.encrypt = function (self, block) {
   return self._cipher.encryptBlock(block)
 }
@@ -26444,7 +26079,7 @@ exports.decrypt = function (self, block) {
   return self._cipher.decryptBlock(block)
 }
 
-},{}],51:[function(require,module,exports){
+},{}],52:[function(require,module,exports){
 var modeModules = {
   ECB: require('./ecb'),
   CBC: require('./cbc'),
@@ -26464,7 +26099,7 @@ for (var key in modes) {
 
 module.exports = modes
 
-},{"./cbc":45,"./cfb":46,"./cfb1":47,"./cfb8":48,"./ctr":49,"./ecb":50,"./list.json":52,"./ofb":53}],52:[function(require,module,exports){
+},{"./cbc":46,"./cfb":47,"./cfb1":48,"./cfb8":49,"./ctr":50,"./ecb":51,"./list.json":53,"./ofb":54}],53:[function(require,module,exports){
 module.exports={
   "aes-128-ecb": {
     "cipher": "AES",
@@ -26657,7 +26292,7 @@ module.exports={
   }
 }
 
-},{}],53:[function(require,module,exports){
+},{}],54:[function(require,module,exports){
 (function (Buffer){
 var xor = require('buffer-xor')
 
@@ -26678,7 +26313,7 @@ exports.encrypt = function (self, chunk) {
 
 }).call(this,require("buffer").Buffer)
 
-},{"buffer":66,"buffer-xor":65}],54:[function(require,module,exports){
+},{"buffer":66,"buffer-xor":67}],55:[function(require,module,exports){
 var aes = require('./aes')
 var Buffer = require('safe-buffer').Buffer
 var Transform = require('cipher-base')
@@ -26707,7 +26342,7 @@ StreamCipher.prototype._final = function () {
 
 module.exports = StreamCipher
 
-},{"./aes":38,"cipher-base":67,"inherits":118,"safe-buffer":161}],55:[function(require,module,exports){
+},{"./aes":39,"cipher-base":68,"inherits":119,"safe-buffer":162}],56:[function(require,module,exports){
 var DES = require('browserify-des')
 var aes = require('browserify-aes/browser')
 var aesModes = require('browserify-aes/modes')
@@ -26776,7 +26411,7 @@ exports.createDecipher = exports.Decipher = createDecipher
 exports.createDecipheriv = exports.Decipheriv = createDecipheriv
 exports.listCiphers = exports.getCiphers = getCiphers
 
-},{"browserify-aes/browser":40,"browserify-aes/modes":51,"browserify-des":56,"browserify-des/modes":57,"evp_bytestokey":102}],56:[function(require,module,exports){
+},{"browserify-aes/browser":41,"browserify-aes/modes":52,"browserify-des":57,"browserify-des/modes":58,"evp_bytestokey":103}],57:[function(require,module,exports){
 (function (Buffer){
 var CipherBase = require('cipher-base')
 var des = require('des.js')
@@ -26824,7 +26459,7 @@ DES.prototype._final = function () {
 
 }).call(this,require("buffer").Buffer)
 
-},{"buffer":66,"cipher-base":67,"des.js":75,"inherits":118}],57:[function(require,module,exports){
+},{"buffer":66,"cipher-base":68,"des.js":76,"inherits":119}],58:[function(require,module,exports){
 exports['des-ecb'] = {
   key: 8,
   iv: 0
@@ -26850,7 +26485,7 @@ exports['des-ede'] = {
   iv: 0
 }
 
-},{}],58:[function(require,module,exports){
+},{}],59:[function(require,module,exports){
 (function (Buffer){
 var bn = require('bn.js');
 var randomBytes = require('randombytes');
@@ -26895,10 +26530,10 @@ function getr(priv) {
 
 }).call(this,require("buffer").Buffer)
 
-},{"bn.js":35,"buffer":66,"randombytes":145}],59:[function(require,module,exports){
+},{"bn.js":36,"buffer":66,"randombytes":146}],60:[function(require,module,exports){
 module.exports = require('./browser/algorithms.json')
 
-},{"./browser/algorithms.json":60}],60:[function(require,module,exports){
+},{"./browser/algorithms.json":61}],61:[function(require,module,exports){
 module.exports={
   "sha224WithRSAEncryption": {
     "sign": "rsa",
@@ -27052,7 +26687,7 @@ module.exports={
   }
 }
 
-},{}],61:[function(require,module,exports){
+},{}],62:[function(require,module,exports){
 module.exports={
   "1.3.132.0.10": "secp256k1",
   "1.3.132.0.33": "p224",
@@ -27062,7 +26697,7 @@ module.exports={
   "1.3.132.0.35": "p521"
 }
 
-},{}],62:[function(require,module,exports){
+},{}],63:[function(require,module,exports){
 (function (Buffer){
 var createHash = require('create-hash')
 var stream = require('stream')
@@ -27158,7 +26793,7 @@ module.exports = {
 
 }).call(this,require("buffer").Buffer)
 
-},{"./algorithms.json":60,"./sign":63,"./verify":64,"buffer":66,"create-hash":70,"inherits":118,"stream":171}],63:[function(require,module,exports){
+},{"./algorithms.json":61,"./sign":64,"./verify":65,"buffer":66,"create-hash":71,"inherits":119,"stream":172}],64:[function(require,module,exports){
 (function (Buffer){
 // much of this based on https://github.com/indutny/self-signed/blob/gh-pages/lib/rsa.js
 var createHmac = require('create-hmac')
@@ -27308,7 +26943,7 @@ module.exports.makeKey = makeKey
 
 }).call(this,require("buffer").Buffer)
 
-},{"./curves.json":61,"bn.js":35,"browserify-rsa":58,"buffer":66,"create-hmac":72,"elliptic":85,"parse-asn1":130}],64:[function(require,module,exports){
+},{"./curves.json":62,"bn.js":36,"browserify-rsa":59,"buffer":66,"create-hmac":73,"elliptic":86,"parse-asn1":131}],65:[function(require,module,exports){
 (function (Buffer){
 // much of this based on https://github.com/indutny/self-signed/blob/gh-pages/lib/rsa.js
 var BN = require('bn.js')
@@ -27396,22 +27031,7 @@ module.exports = verify
 
 }).call(this,require("buffer").Buffer)
 
-},{"./curves.json":61,"bn.js":35,"buffer":66,"elliptic":85,"parse-asn1":130}],65:[function(require,module,exports){
-(function (Buffer){
-module.exports = function xor (a, b) {
-  var length = Math.min(a.length, b.length)
-  var buffer = new Buffer(length)
-
-  for (var i = 0; i < length; ++i) {
-    buffer[i] = a[i] ^ b[i]
-  }
-
-  return buffer
-}
-
-}).call(this,require("buffer").Buffer)
-
-},{"buffer":66}],66:[function(require,module,exports){
+},{"./curves.json":62,"bn.js":36,"buffer":66,"elliptic":86,"parse-asn1":131}],66:[function(require,module,exports){
 /*!
  * The buffer module from node.js, for the browser.
  *
@@ -29190,7 +28810,22 @@ function numberIsNaN (obj) {
   return obj !== obj // eslint-disable-line no-self-compare
 }
 
-},{"base64-js":23,"ieee754":117}],67:[function(require,module,exports){
+},{"base64-js":24,"ieee754":118}],67:[function(require,module,exports){
+(function (Buffer){
+module.exports = function xor (a, b) {
+  var length = Math.min(a.length, b.length)
+  var buffer = new Buffer(length)
+
+  for (var i = 0; i < length; ++i) {
+    buffer[i] = a[i] ^ b[i]
+  }
+
+  return buffer
+}
+
+}).call(this,require("buffer").Buffer)
+
+},{"buffer":66}],68:[function(require,module,exports){
 var Buffer = require('safe-buffer').Buffer
 var Transform = require('stream').Transform
 var StringDecoder = require('string_decoder').StringDecoder
@@ -29291,7 +28926,7 @@ CipherBase.prototype._toString = function (value, enc, fin) {
 
 module.exports = CipherBase
 
-},{"inherits":118,"safe-buffer":161,"stream":171,"string_decoder":172}],68:[function(require,module,exports){
+},{"inherits":119,"safe-buffer":162,"stream":172,"string_decoder":173}],69:[function(require,module,exports){
 (function (Buffer){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -29403,7 +29038,7 @@ function objectToString(o) {
 
 }).call(this,{"isBuffer":require("../../is-buffer/index.js")})
 
-},{"../../is-buffer/index.js":119}],69:[function(require,module,exports){
+},{"../../is-buffer/index.js":120}],70:[function(require,module,exports){
 (function (Buffer){
 var elliptic = require('elliptic')
 var BN = require('bn.js')
@@ -29532,7 +29167,7 @@ function formatReturnValue (bn, enc, len) {
 
 }).call(this,require("buffer").Buffer)
 
-},{"bn.js":35,"buffer":66,"elliptic":85}],70:[function(require,module,exports){
+},{"bn.js":36,"buffer":66,"elliptic":86}],71:[function(require,module,exports){
 'use strict'
 var inherits = require('inherits')
 var MD5 = require('md5.js')
@@ -29564,14 +29199,14 @@ module.exports = function createHash (alg) {
   return new Hash(sha(alg))
 }
 
-},{"cipher-base":67,"inherits":118,"md5.js":122,"ripemd160":160,"sha.js":164}],71:[function(require,module,exports){
+},{"cipher-base":68,"inherits":119,"md5.js":123,"ripemd160":161,"sha.js":165}],72:[function(require,module,exports){
 var MD5 = require('md5.js')
 
 module.exports = function (buffer) {
   return new MD5().update(buffer).digest()
 }
 
-},{"md5.js":122}],72:[function(require,module,exports){
+},{"md5.js":123}],73:[function(require,module,exports){
 'use strict'
 var inherits = require('inherits')
 var Legacy = require('./legacy')
@@ -29635,7 +29270,7 @@ module.exports = function createHmac (alg, key) {
   return new Hmac(alg, key)
 }
 
-},{"./legacy":73,"cipher-base":67,"create-hash/md5":71,"inherits":118,"ripemd160":160,"safe-buffer":161,"sha.js":164}],73:[function(require,module,exports){
+},{"./legacy":74,"cipher-base":68,"create-hash/md5":72,"inherits":119,"ripemd160":161,"safe-buffer":162,"sha.js":165}],74:[function(require,module,exports){
 'use strict'
 var inherits = require('inherits')
 var Buffer = require('safe-buffer').Buffer
@@ -29683,7 +29318,7 @@ Hmac.prototype._final = function () {
 }
 module.exports = Hmac
 
-},{"cipher-base":67,"inherits":118,"safe-buffer":161}],74:[function(require,module,exports){
+},{"cipher-base":68,"inherits":119,"safe-buffer":162}],75:[function(require,module,exports){
 'use strict'
 
 exports.randomBytes = exports.rng = exports.pseudoRandomBytes = exports.prng = require('randombytes')
@@ -29782,7 +29417,7 @@ exports.constants = {
   'POINT_CONVERSION_HYBRID': 6
 }
 
-},{"browserify-cipher":55,"browserify-sign":62,"browserify-sign/algos":59,"create-ecdh":69,"create-hash":70,"create-hmac":72,"diffie-hellman":81,"pbkdf2":131,"public-encrypt":138,"randombytes":145,"randomfill":146}],75:[function(require,module,exports){
+},{"browserify-cipher":56,"browserify-sign":63,"browserify-sign/algos":60,"create-ecdh":70,"create-hash":71,"create-hmac":73,"diffie-hellman":82,"pbkdf2":132,"public-encrypt":139,"randombytes":146,"randomfill":147}],76:[function(require,module,exports){
 'use strict';
 
 exports.utils = require('./des/utils');
@@ -29791,7 +29426,7 @@ exports.DES = require('./des/des');
 exports.CBC = require('./des/cbc');
 exports.EDE = require('./des/ede');
 
-},{"./des/cbc":76,"./des/cipher":77,"./des/des":78,"./des/ede":79,"./des/utils":80}],76:[function(require,module,exports){
+},{"./des/cbc":77,"./des/cipher":78,"./des/des":79,"./des/ede":80,"./des/utils":81}],77:[function(require,module,exports){
 'use strict';
 
 var assert = require('minimalistic-assert');
@@ -29858,7 +29493,7 @@ proto._update = function _update(inp, inOff, out, outOff) {
   }
 };
 
-},{"inherits":118,"minimalistic-assert":124}],77:[function(require,module,exports){
+},{"inherits":119,"minimalistic-assert":125}],78:[function(require,module,exports){
 'use strict';
 
 var assert = require('minimalistic-assert');
@@ -30001,7 +29636,7 @@ Cipher.prototype._finalDecrypt = function _finalDecrypt() {
   return this._unpad(out);
 };
 
-},{"minimalistic-assert":124}],78:[function(require,module,exports){
+},{"minimalistic-assert":125}],79:[function(require,module,exports){
 'use strict';
 
 var assert = require('minimalistic-assert');
@@ -30146,7 +29781,7 @@ DES.prototype._decrypt = function _decrypt(state, lStart, rStart, out, off) {
   utils.rip(l, r, out, off);
 };
 
-},{"../des":75,"inherits":118,"minimalistic-assert":124}],79:[function(require,module,exports){
+},{"../des":76,"inherits":119,"minimalistic-assert":125}],80:[function(require,module,exports){
 'use strict';
 
 var assert = require('minimalistic-assert');
@@ -30203,7 +29838,7 @@ EDE.prototype._update = function _update(inp, inOff, out, outOff) {
 EDE.prototype._pad = DES.prototype._pad;
 EDE.prototype._unpad = DES.prototype._unpad;
 
-},{"../des":75,"inherits":118,"minimalistic-assert":124}],80:[function(require,module,exports){
+},{"../des":76,"inherits":119,"minimalistic-assert":125}],81:[function(require,module,exports){
 'use strict';
 
 exports.readUInt32BE = function readUInt32BE(bytes, off) {
@@ -30461,7 +30096,7 @@ exports.padSplit = function padSplit(num, size, group) {
   return out.join(' ');
 };
 
-},{}],81:[function(require,module,exports){
+},{}],82:[function(require,module,exports){
 (function (Buffer){
 var generatePrime = require('./lib/generatePrime')
 var primes = require('./lib/primes.json')
@@ -30508,7 +30143,7 @@ exports.createDiffieHellman = exports.DiffieHellman = createDiffieHellman
 
 }).call(this,require("buffer").Buffer)
 
-},{"./lib/dh":82,"./lib/generatePrime":83,"./lib/primes.json":84,"buffer":66}],82:[function(require,module,exports){
+},{"./lib/dh":83,"./lib/generatePrime":84,"./lib/primes.json":85,"buffer":66}],83:[function(require,module,exports){
 (function (Buffer){
 var BN = require('bn.js');
 var MillerRabin = require('miller-rabin');
@@ -30677,7 +30312,7 @@ function formatReturnValue(bn, enc) {
 
 }).call(this,require("buffer").Buffer)
 
-},{"./generatePrime":83,"bn.js":35,"buffer":66,"miller-rabin":123,"randombytes":145}],83:[function(require,module,exports){
+},{"./generatePrime":84,"bn.js":36,"buffer":66,"miller-rabin":124,"randombytes":146}],84:[function(require,module,exports){
 var randomBytes = require('randombytes');
 module.exports = findPrime;
 findPrime.simpleSieve = simpleSieve;
@@ -30784,7 +30419,7 @@ function findPrime(bits, gen) {
 
 }
 
-},{"bn.js":35,"miller-rabin":123,"randombytes":145}],84:[function(require,module,exports){
+},{"bn.js":36,"miller-rabin":124,"randombytes":146}],85:[function(require,module,exports){
 module.exports={
     "modp1": {
         "gen": "02",
@@ -30819,7 +30454,7 @@ module.exports={
         "prime": "ffffffffffffffffc90fdaa22168c234c4c6628b80dc1cd129024e088a67cc74020bbea63b139b22514a08798e3404ddef9519b3cd3a431b302b0a6df25f14374fe1356d6d51c245e485b576625e7ec6f44c42e9a637ed6b0bff5cb6f406b7edee386bfb5a899fa5ae9f24117c4b1fe649286651ece45b3dc2007cb8a163bf0598da48361c55d39a69163fa8fd24cf5f83655d23dca3ad961c62f356208552bb9ed529077096966d670c354e4abc9804f1746c08ca18217c32905e462e36ce3be39e772c180e86039b2783a2ec07a28fb5c55df06f4c52c9de2bcbf6955817183995497cea956ae515d2261898fa051015728e5a8aaac42dad33170d04507a33a85521abdf1cba64ecfb850458dbef0a8aea71575d060c7db3970f85a6e1e4c7abf5ae8cdb0933d71e8c94e04a25619dcee3d2261ad2ee6bf12ffa06d98a0864d87602733ec86a64521f2b18177b200cbbe117577a615d6c770988c0bad946e208e24fa074e5ab3143db5bfce0fd108e4b82d120a92108011a723c12a787e6d788719a10bdba5b2699c327186af4e23c1a946834b6150bda2583e9ca2ad44ce8dbbbc2db04de8ef92e8efc141fbecaa6287c59474e6bc05d99b2964fa090c3a2233ba186515be7ed1f612970cee2d7afb81bdd762170481cd0069127d5b05aa993b4ea988d8fddc186ffb7dc90a6c08f4df435c93402849236c3fab4d27c7026c1d4dcb2602646dec9751e763dba37bdf8ff9406ad9e530ee5db382f413001aeb06a53ed9027d831179727b0865a8918da3edbebcf9b14ed44ce6cbaced4bb1bdb7f1447e6cc254b332051512bd7af426fb8f401378cd2bf5983ca01c64b92ecf032ea15d1721d03f482d7ce6e74fef6d55e702f46980c82b5a84031900b1c9e59e7c97fbec7e8f323a97a7e36cc88be0f1d45b7ff585ac54bd407b22b4154aacc8f6d7ebf48e1d814cc5ed20f8037e0a79715eef29be32806a1d58bb7c5da76f550aa3d8a1fbff0eb19ccb1a313d55cda56c9ec2ef29632387fe8d76e3c0468043e8f663f4860ee12bf2d5b0b7474d6e694f91e6dbe115974a3926f12fee5e438777cb6a932df8cd8bec4d073b931ba3bc832b68d9dd300741fa7bf8afc47ed2576f6936ba424663aab639c5ae4f5683423b4742bf1c978238f16cbe39d652de3fdb8befc848ad922222e04a4037c0713eb57a81a23f0c73473fc646cea306b4bcbc8862f8385ddfa9d4b7fa2c087e879683303ed5bdd3a062b3cf5b3a278a66d2a13f83f44f82ddf310ee074ab6a364597e899a0255dc164f31cc50846851df9ab48195ded7ea1b1d510bd7ee74d73faf36bc31ecfa268359046f4eb879f924009438b481c6cd7889a002ed5ee382bc9190da6fc026e479558e4475677e9aa9e3050e2765694dfc81f56e880b96e7160c980dd98edd3dfffffffffffffffff"
     }
 }
-},{}],85:[function(require,module,exports){
+},{}],86:[function(require,module,exports){
 'use strict';
 
 var elliptic = exports;
@@ -30834,7 +30469,7 @@ elliptic.curves = require('./elliptic/curves');
 elliptic.ec = require('./elliptic/ec');
 elliptic.eddsa = require('./elliptic/eddsa');
 
-},{"../package.json":100,"./elliptic/curve":88,"./elliptic/curves":91,"./elliptic/ec":92,"./elliptic/eddsa":95,"./elliptic/utils":99,"brorand":36}],86:[function(require,module,exports){
+},{"../package.json":101,"./elliptic/curve":89,"./elliptic/curves":92,"./elliptic/ec":93,"./elliptic/eddsa":96,"./elliptic/utils":100,"brorand":37}],87:[function(require,module,exports){
 'use strict';
 
 var BN = require('bn.js');
@@ -31211,7 +30846,7 @@ BasePoint.prototype.dblp = function dblp(k) {
   return r;
 };
 
-},{"../../elliptic":85,"bn.js":35}],87:[function(require,module,exports){
+},{"../../elliptic":86,"bn.js":36}],88:[function(require,module,exports){
 'use strict';
 
 var curve = require('../curve');
@@ -31646,7 +31281,7 @@ Point.prototype.eqXToP = function eqXToP(x) {
 Point.prototype.toP = Point.prototype.normalize;
 Point.prototype.mixedAdd = Point.prototype.add;
 
-},{"../../elliptic":85,"../curve":88,"bn.js":35,"inherits":118}],88:[function(require,module,exports){
+},{"../../elliptic":86,"../curve":89,"bn.js":36,"inherits":119}],89:[function(require,module,exports){
 'use strict';
 
 var curve = exports;
@@ -31656,7 +31291,7 @@ curve.short = require('./short');
 curve.mont = require('./mont');
 curve.edwards = require('./edwards');
 
-},{"./base":86,"./edwards":87,"./mont":89,"./short":90}],89:[function(require,module,exports){
+},{"./base":87,"./edwards":88,"./mont":90,"./short":91}],90:[function(require,module,exports){
 'use strict';
 
 var curve = require('../curve');
@@ -31838,7 +31473,7 @@ Point.prototype.getX = function getX() {
   return this.x.fromRed();
 };
 
-},{"../../elliptic":85,"../curve":88,"bn.js":35,"inherits":118}],90:[function(require,module,exports){
+},{"../../elliptic":86,"../curve":89,"bn.js":36,"inherits":119}],91:[function(require,module,exports){
 'use strict';
 
 var curve = require('../curve');
@@ -32778,7 +32413,7 @@ JPoint.prototype.isInfinity = function isInfinity() {
   return this.z.cmpn(0) === 0;
 };
 
-},{"../../elliptic":85,"../curve":88,"bn.js":35,"inherits":118}],91:[function(require,module,exports){
+},{"../../elliptic":86,"../curve":89,"bn.js":36,"inherits":119}],92:[function(require,module,exports){
 'use strict';
 
 var curves = exports;
@@ -32985,7 +32620,7 @@ defineCurve('secp256k1', {
   ]
 });
 
-},{"../elliptic":85,"./precomputed/secp256k1":98,"hash.js":104}],92:[function(require,module,exports){
+},{"../elliptic":86,"./precomputed/secp256k1":99,"hash.js":105}],93:[function(require,module,exports){
 'use strict';
 
 var BN = require('bn.js');
@@ -33227,7 +32862,7 @@ EC.prototype.getKeyRecoveryParam = function(e, signature, Q, enc) {
   throw new Error('Unable to find valid recovery factor');
 };
 
-},{"../../elliptic":85,"./key":93,"./signature":94,"bn.js":35,"hmac-drbg":116}],93:[function(require,module,exports){
+},{"../../elliptic":86,"./key":94,"./signature":95,"bn.js":36,"hmac-drbg":117}],94:[function(require,module,exports){
 'use strict';
 
 var BN = require('bn.js');
@@ -33348,7 +32983,7 @@ KeyPair.prototype.inspect = function inspect() {
          ' pub: ' + (this.pub && this.pub.inspect()) + ' >';
 };
 
-},{"../../elliptic":85,"bn.js":35}],94:[function(require,module,exports){
+},{"../../elliptic":86,"bn.js":36}],95:[function(require,module,exports){
 'use strict';
 
 var BN = require('bn.js');
@@ -33485,7 +33120,7 @@ Signature.prototype.toDER = function toDER(enc) {
   return utils.encode(res, enc);
 };
 
-},{"../../elliptic":85,"bn.js":35}],95:[function(require,module,exports){
+},{"../../elliptic":86,"bn.js":36}],96:[function(require,module,exports){
 'use strict';
 
 var hash = require('hash.js');
@@ -33605,7 +33240,7 @@ EDDSA.prototype.isPoint = function isPoint(val) {
   return val instanceof this.pointClass;
 };
 
-},{"../../elliptic":85,"./key":96,"./signature":97,"hash.js":104}],96:[function(require,module,exports){
+},{"../../elliptic":86,"./key":97,"./signature":98,"hash.js":105}],97:[function(require,module,exports){
 'use strict';
 
 var elliptic = require('../../elliptic');
@@ -33703,7 +33338,7 @@ KeyPair.prototype.getPublic = function getPublic(enc) {
 
 module.exports = KeyPair;
 
-},{"../../elliptic":85}],97:[function(require,module,exports){
+},{"../../elliptic":86}],98:[function(require,module,exports){
 'use strict';
 
 var BN = require('bn.js');
@@ -33771,7 +33406,7 @@ Signature.prototype.toHex = function toHex() {
 
 module.exports = Signature;
 
-},{"../../elliptic":85,"bn.js":35}],98:[function(require,module,exports){
+},{"../../elliptic":86,"bn.js":36}],99:[function(require,module,exports){
 module.exports = {
   doubles: {
     step: 4,
@@ -34553,7 +34188,7 @@ module.exports = {
   }
 };
 
-},{}],99:[function(require,module,exports){
+},{}],100:[function(require,module,exports){
 'use strict';
 
 var utils = exports;
@@ -34675,7 +34310,7 @@ function intFromLE(bytes) {
 utils.intFromLE = intFromLE;
 
 
-},{"bn.js":35,"minimalistic-assert":124,"minimalistic-crypto-utils":125}],100:[function(require,module,exports){
+},{"bn.js":36,"minimalistic-assert":125,"minimalistic-crypto-utils":126}],101:[function(require,module,exports){
 module.exports={
   "_args": [
     [
@@ -34768,7 +34403,7 @@ module.exports={
   "version": "6.4.0"
 }
 
-},{}],101:[function(require,module,exports){
+},{}],102:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -35293,7 +34928,7 @@ function functionBindPolyfill(context) {
   };
 }
 
-},{}],102:[function(require,module,exports){
+},{}],103:[function(require,module,exports){
 var Buffer = require('safe-buffer').Buffer
 var MD5 = require('md5.js')
 
@@ -35340,7 +34975,7 @@ function EVP_BytesToKey (password, salt, keyBits, ivLen) {
 
 module.exports = EVP_BytesToKey
 
-},{"md5.js":122,"safe-buffer":161}],103:[function(require,module,exports){
+},{"md5.js":123,"safe-buffer":162}],104:[function(require,module,exports){
 'use strict'
 var Buffer = require('safe-buffer').Buffer
 var Transform = require('stream').Transform
@@ -35437,7 +35072,7 @@ HashBase.prototype._digest = function () {
 
 module.exports = HashBase
 
-},{"inherits":118,"safe-buffer":161,"stream":171}],104:[function(require,module,exports){
+},{"inherits":119,"safe-buffer":162,"stream":172}],105:[function(require,module,exports){
 var hash = exports;
 
 hash.utils = require('./hash/utils');
@@ -35454,7 +35089,7 @@ hash.sha384 = hash.sha.sha384;
 hash.sha512 = hash.sha.sha512;
 hash.ripemd160 = hash.ripemd.ripemd160;
 
-},{"./hash/common":105,"./hash/hmac":106,"./hash/ripemd":107,"./hash/sha":108,"./hash/utils":115}],105:[function(require,module,exports){
+},{"./hash/common":106,"./hash/hmac":107,"./hash/ripemd":108,"./hash/sha":109,"./hash/utils":116}],106:[function(require,module,exports){
 'use strict';
 
 var utils = require('./utils');
@@ -35548,7 +35183,7 @@ BlockHash.prototype._pad = function pad() {
   return res;
 };
 
-},{"./utils":115,"minimalistic-assert":124}],106:[function(require,module,exports){
+},{"./utils":116,"minimalistic-assert":125}],107:[function(require,module,exports){
 'use strict';
 
 var utils = require('./utils');
@@ -35597,7 +35232,7 @@ Hmac.prototype.digest = function digest(enc) {
   return this.outer.digest(enc);
 };
 
-},{"./utils":115,"minimalistic-assert":124}],107:[function(require,module,exports){
+},{"./utils":116,"minimalistic-assert":125}],108:[function(require,module,exports){
 'use strict';
 
 var utils = require('./utils');
@@ -35745,7 +35380,7 @@ var sh = [
   8, 5, 12, 9, 12, 5, 14, 6, 8, 13, 6, 5, 15, 13, 11, 11
 ];
 
-},{"./common":105,"./utils":115}],108:[function(require,module,exports){
+},{"./common":106,"./utils":116}],109:[function(require,module,exports){
 'use strict';
 
 exports.sha1 = require('./sha/1');
@@ -35754,7 +35389,7 @@ exports.sha256 = require('./sha/256');
 exports.sha384 = require('./sha/384');
 exports.sha512 = require('./sha/512');
 
-},{"./sha/1":109,"./sha/224":110,"./sha/256":111,"./sha/384":112,"./sha/512":113}],109:[function(require,module,exports){
+},{"./sha/1":110,"./sha/224":111,"./sha/256":112,"./sha/384":113,"./sha/512":114}],110:[function(require,module,exports){
 'use strict';
 
 var utils = require('../utils');
@@ -35830,7 +35465,7 @@ SHA1.prototype._digest = function digest(enc) {
     return utils.split32(this.h, 'big');
 };
 
-},{"../common":105,"../utils":115,"./common":114}],110:[function(require,module,exports){
+},{"../common":106,"../utils":116,"./common":115}],111:[function(require,module,exports){
 'use strict';
 
 var utils = require('../utils');
@@ -35862,7 +35497,7 @@ SHA224.prototype._digest = function digest(enc) {
 };
 
 
-},{"../utils":115,"./256":111}],111:[function(require,module,exports){
+},{"../utils":116,"./256":112}],112:[function(require,module,exports){
 'use strict';
 
 var utils = require('../utils');
@@ -35969,7 +35604,7 @@ SHA256.prototype._digest = function digest(enc) {
     return utils.split32(this.h, 'big');
 };
 
-},{"../common":105,"../utils":115,"./common":114,"minimalistic-assert":124}],112:[function(require,module,exports){
+},{"../common":106,"../utils":116,"./common":115,"minimalistic-assert":125}],113:[function(require,module,exports){
 'use strict';
 
 var utils = require('../utils');
@@ -36006,7 +35641,7 @@ SHA384.prototype._digest = function digest(enc) {
     return utils.split32(this.h.slice(0, 12), 'big');
 };
 
-},{"../utils":115,"./512":113}],113:[function(require,module,exports){
+},{"../utils":116,"./512":114}],114:[function(require,module,exports){
 'use strict';
 
 var utils = require('../utils');
@@ -36338,7 +35973,7 @@ function g1_512_lo(xh, xl) {
   return r;
 }
 
-},{"../common":105,"../utils":115,"minimalistic-assert":124}],114:[function(require,module,exports){
+},{"../common":106,"../utils":116,"minimalistic-assert":125}],115:[function(require,module,exports){
 'use strict';
 
 var utils = require('../utils');
@@ -36389,7 +36024,7 @@ function g1_256(x) {
 }
 exports.g1_256 = g1_256;
 
-},{"../utils":115}],115:[function(require,module,exports){
+},{"../utils":116}],116:[function(require,module,exports){
 'use strict';
 
 var assert = require('minimalistic-assert');
@@ -36644,7 +36279,7 @@ function shr64_lo(ah, al, num) {
 }
 exports.shr64_lo = shr64_lo;
 
-},{"inherits":118,"minimalistic-assert":124}],116:[function(require,module,exports){
+},{"inherits":119,"minimalistic-assert":125}],117:[function(require,module,exports){
 'use strict';
 
 var hash = require('hash.js');
@@ -36759,7 +36394,7 @@ HmacDRBG.prototype.generate = function generate(len, enc, add, addEnc) {
   return utils.encode(res, enc);
 };
 
-},{"hash.js":104,"minimalistic-assert":124,"minimalistic-crypto-utils":125}],117:[function(require,module,exports){
+},{"hash.js":105,"minimalistic-assert":125,"minimalistic-crypto-utils":126}],118:[function(require,module,exports){
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   var e, m
   var eLen = (nBytes * 8) - mLen - 1
@@ -36845,7 +36480,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
   buffer[offset + i - d] |= s * 128
 }
 
-},{}],118:[function(require,module,exports){
+},{}],119:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -36870,7 +36505,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],119:[function(require,module,exports){
+},{}],120:[function(require,module,exports){
 /*!
  * Determine if an object is a Buffer
  *
@@ -36893,14 +36528,14 @@ function isSlowBuffer (obj) {
   return typeof obj.readFloatLE === 'function' && typeof obj.slice === 'function' && isBuffer(obj.slice(0, 0))
 }
 
-},{}],120:[function(require,module,exports){
+},{}],121:[function(require,module,exports){
 var toString = {}.toString;
 
 module.exports = Array.isArray || function (arr) {
   return toString.call(arr) == '[object Array]';
 };
 
-},{}],121:[function(require,module,exports){
+},{}],122:[function(require,module,exports){
 // **Github:** https://github.com/teambition/jsonrpc-lite
 //
 // http://www.jsonrpc.org/specification
@@ -37263,7 +36898,7 @@ module.exports = Array.isArray || function (arr) {
   return jsonrpc
 }))
 
-},{}],122:[function(require,module,exports){
+},{}],123:[function(require,module,exports){
 (function (Buffer){
 'use strict'
 var inherits = require('inherits')
@@ -37413,7 +37048,7 @@ module.exports = MD5
 
 }).call(this,require("buffer").Buffer)
 
-},{"buffer":66,"hash-base":103,"inherits":118}],123:[function(require,module,exports){
+},{"buffer":66,"hash-base":104,"inherits":119}],124:[function(require,module,exports){
 var bn = require('bn.js');
 var brorand = require('brorand');
 
@@ -37530,7 +37165,7 @@ MillerRabin.prototype.getDivisor = function getDivisor(n, k) {
   return false;
 };
 
-},{"bn.js":35,"brorand":36}],124:[function(require,module,exports){
+},{"bn.js":36,"brorand":37}],125:[function(require,module,exports){
 module.exports = assert;
 
 function assert(val, msg) {
@@ -37543,7 +37178,7 @@ assert.equal = function assertEqual(l, r, msg) {
     throw new Error(msg || ('Assertion failed: ' + l + ' != ' + r));
 };
 
-},{}],125:[function(require,module,exports){
+},{}],126:[function(require,module,exports){
 'use strict';
 
 var utils = exports;
@@ -37603,7 +37238,7 @@ utils.encode = function encode(arr, enc) {
     return arr;
 };
 
-},{}],126:[function(require,module,exports){
+},{}],127:[function(require,module,exports){
 module.exports={"2.16.840.1.101.3.4.1.1": "aes-128-ecb",
 "2.16.840.1.101.3.4.1.2": "aes-128-cbc",
 "2.16.840.1.101.3.4.1.3": "aes-128-ofb",
@@ -37617,7 +37252,7 @@ module.exports={"2.16.840.1.101.3.4.1.1": "aes-128-ecb",
 "2.16.840.1.101.3.4.1.43": "aes-256-ofb",
 "2.16.840.1.101.3.4.1.44": "aes-256-cfb"
 }
-},{}],127:[function(require,module,exports){
+},{}],128:[function(require,module,exports){
 // from https://github.com/indutny/self-signed/blob/gh-pages/lib/asn1.js
 // Fedor, you are amazing.
 'use strict'
@@ -37741,7 +37376,7 @@ exports.signature = asn1.define('signature', function () {
   )
 })
 
-},{"./certificate":128,"asn1.js":9}],128:[function(require,module,exports){
+},{"./certificate":129,"asn1.js":10}],129:[function(require,module,exports){
 // from https://github.com/Rantanen/node-dtls/blob/25a7dc861bda38cfeac93a723500eea4f0ac2e86/Certificate.js
 // thanks to @Rantanen
 
@@ -37831,7 +37466,7 @@ var X509Certificate = asn.define('X509Certificate', function () {
 
 module.exports = X509Certificate
 
-},{"asn1.js":9}],129:[function(require,module,exports){
+},{"asn1.js":10}],130:[function(require,module,exports){
 (function (Buffer){
 // adapted from https://github.com/apatil/pemstrip
 var findProc = /Proc-Type: 4,ENCRYPTED[\n\r]+DEK-Info: AES-((?:128)|(?:192)|(?:256))-CBC,([0-9A-H]+)[\n\r]+([0-9A-z\n\r\+\/\=]+)[\n\r]+/m
@@ -37866,7 +37501,7 @@ module.exports = function (okey, password) {
 
 }).call(this,require("buffer").Buffer)
 
-},{"browserify-aes":40,"buffer":66,"evp_bytestokey":102}],130:[function(require,module,exports){
+},{"browserify-aes":41,"buffer":66,"evp_bytestokey":103}],131:[function(require,module,exports){
 (function (Buffer){
 var asn1 = require('./asn1')
 var aesid = require('./aesid.json')
@@ -37977,11 +37612,11 @@ function decrypt (data, password) {
 
 }).call(this,require("buffer").Buffer)
 
-},{"./aesid.json":126,"./asn1":127,"./fixProc":129,"browserify-aes":40,"buffer":66,"pbkdf2":131}],131:[function(require,module,exports){
+},{"./aesid.json":127,"./asn1":128,"./fixProc":130,"browserify-aes":41,"buffer":66,"pbkdf2":132}],132:[function(require,module,exports){
 exports.pbkdf2 = require('./lib/async')
 exports.pbkdf2Sync = require('./lib/sync')
 
-},{"./lib/async":132,"./lib/sync":135}],132:[function(require,module,exports){
+},{"./lib/async":133,"./lib/sync":136}],133:[function(require,module,exports){
 (function (process,global){
 var checkParameters = require('./precondition')
 var defaultEncoding = require('./default-encoding')
@@ -38086,7 +37721,7 @@ module.exports = function (password, salt, iterations, keylen, digest, callback)
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./default-encoding":133,"./precondition":134,"./sync":135,"_process":137,"safe-buffer":161}],133:[function(require,module,exports){
+},{"./default-encoding":134,"./precondition":135,"./sync":136,"_process":138,"safe-buffer":162}],134:[function(require,module,exports){
 (function (process){
 var defaultEncoding
 /* istanbul ignore next */
@@ -38101,7 +37736,7 @@ module.exports = defaultEncoding
 
 }).call(this,require('_process'))
 
-},{"_process":137}],134:[function(require,module,exports){
+},{"_process":138}],135:[function(require,module,exports){
 (function (Buffer){
 var MAX_ALLOC = Math.pow(2, 30) - 1 // default in iojs
 
@@ -38134,7 +37769,7 @@ module.exports = function (password, salt, iterations, keylen) {
 
 }).call(this,{"isBuffer":require("../../is-buffer/index.js")})
 
-},{"../../is-buffer/index.js":119}],135:[function(require,module,exports){
+},{"../../is-buffer/index.js":120}],136:[function(require,module,exports){
 var md5 = require('create-hash/md5')
 var rmd160 = require('ripemd160')
 var sha = require('sha.js')
@@ -38237,7 +37872,7 @@ function pbkdf2 (password, salt, iterations, keylen, digest) {
 
 module.exports = pbkdf2
 
-},{"./default-encoding":133,"./precondition":134,"create-hash/md5":71,"ripemd160":160,"safe-buffer":161,"sha.js":164}],136:[function(require,module,exports){
+},{"./default-encoding":134,"./precondition":135,"create-hash/md5":72,"ripemd160":161,"safe-buffer":162,"sha.js":165}],137:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -38286,7 +37921,7 @@ function nextTick(fn, arg1, arg2, arg3) {
 
 }).call(this,require('_process'))
 
-},{"_process":137}],137:[function(require,module,exports){
+},{"_process":138}],138:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -38472,7 +38107,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],138:[function(require,module,exports){
+},{}],139:[function(require,module,exports){
 exports.publicEncrypt = require('./publicEncrypt');
 exports.privateDecrypt = require('./privateDecrypt');
 
@@ -38483,7 +38118,7 @@ exports.privateEncrypt = function privateEncrypt(key, buf) {
 exports.publicDecrypt = function publicDecrypt(key, buf) {
   return exports.privateDecrypt(key, buf, true);
 };
-},{"./privateDecrypt":140,"./publicEncrypt":141}],139:[function(require,module,exports){
+},{"./privateDecrypt":141,"./publicEncrypt":142}],140:[function(require,module,exports){
 (function (Buffer){
 var createHash = require('create-hash');
 module.exports = function (seed, len) {
@@ -38503,7 +38138,7 @@ function i2ops(c) {
 }
 }).call(this,require("buffer").Buffer)
 
-},{"buffer":66,"create-hash":70}],140:[function(require,module,exports){
+},{"buffer":66,"create-hash":71}],141:[function(require,module,exports){
 (function (Buffer){
 var parseKeys = require('parse-asn1');
 var mgf = require('./mgf');
@@ -38615,7 +38250,7 @@ function compare(a, b){
 }
 }).call(this,require("buffer").Buffer)
 
-},{"./mgf":139,"./withPublic":142,"./xor":143,"bn.js":35,"browserify-rsa":58,"buffer":66,"create-hash":70,"parse-asn1":130}],141:[function(require,module,exports){
+},{"./mgf":140,"./withPublic":143,"./xor":144,"bn.js":36,"browserify-rsa":59,"buffer":66,"create-hash":71,"parse-asn1":131}],142:[function(require,module,exports){
 (function (Buffer){
 var parseKeys = require('parse-asn1');
 var randomBytes = require('randombytes');
@@ -38714,7 +38349,7 @@ function nonZero(len, crypto) {
 }
 }).call(this,require("buffer").Buffer)
 
-},{"./mgf":139,"./withPublic":142,"./xor":143,"bn.js":35,"browserify-rsa":58,"buffer":66,"create-hash":70,"parse-asn1":130,"randombytes":145}],142:[function(require,module,exports){
+},{"./mgf":140,"./withPublic":143,"./xor":144,"bn.js":36,"browserify-rsa":59,"buffer":66,"create-hash":71,"parse-asn1":131,"randombytes":146}],143:[function(require,module,exports){
 (function (Buffer){
 var bn = require('bn.js');
 function withPublic(paddedMsg, key) {
@@ -38728,7 +38363,7 @@ function withPublic(paddedMsg, key) {
 module.exports = withPublic;
 }).call(this,require("buffer").Buffer)
 
-},{"bn.js":35,"buffer":66}],143:[function(require,module,exports){
+},{"bn.js":36,"buffer":66}],144:[function(require,module,exports){
 module.exports = function xor(a, b) {
   var len = a.length;
   var i = -1;
@@ -38737,7 +38372,7 @@ module.exports = function xor(a, b) {
   }
   return a
 };
-},{}],144:[function(require,module,exports){
+},{}],145:[function(require,module,exports){
 (function (Buffer){
 /*!
 **  Pure-UUID -- Pure JavaScript Based Universally Unique Identifier (UUID)
@@ -39656,7 +39291,7 @@ module.exports = function xor(a, b) {
 
 }).call(this,require("buffer").Buffer)
 
-},{"buffer":66}],145:[function(require,module,exports){
+},{"buffer":66}],146:[function(require,module,exports){
 (function (process,global){
 'use strict'
 
@@ -39699,7 +39334,7 @@ function randomBytes (size, cb) {
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"_process":137,"safe-buffer":161}],146:[function(require,module,exports){
+},{"_process":138,"safe-buffer":162}],147:[function(require,module,exports){
 (function (process,global){
 'use strict'
 
@@ -39812,10 +39447,10 @@ function randomFillSync (buf, offset, size) {
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"_process":137,"randombytes":145,"safe-buffer":161}],147:[function(require,module,exports){
+},{"_process":138,"randombytes":146,"safe-buffer":162}],148:[function(require,module,exports){
 module.exports = require('./lib/_stream_duplex.js');
 
-},{"./lib/_stream_duplex.js":148}],148:[function(require,module,exports){
+},{"./lib/_stream_duplex.js":149}],149:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -39947,7 +39582,7 @@ Duplex.prototype._destroy = function (err, cb) {
 
   pna.nextTick(cb, err);
 };
-},{"./_stream_readable":150,"./_stream_writable":152,"core-util-is":68,"inherits":118,"process-nextick-args":136}],149:[function(require,module,exports){
+},{"./_stream_readable":151,"./_stream_writable":153,"core-util-is":69,"inherits":119,"process-nextick-args":137}],150:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -39995,7 +39630,7 @@ function PassThrough(options) {
 PassThrough.prototype._transform = function (chunk, encoding, cb) {
   cb(null, chunk);
 };
-},{"./_stream_transform":151,"core-util-is":68,"inherits":118}],150:[function(require,module,exports){
+},{"./_stream_transform":152,"core-util-is":69,"inherits":119}],151:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -41018,7 +40653,7 @@ function indexOf(xs, x) {
 }
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./_stream_duplex":148,"./internal/streams/BufferList":153,"./internal/streams/destroy":154,"./internal/streams/stream":155,"_process":137,"core-util-is":68,"events":101,"inherits":118,"isarray":120,"process-nextick-args":136,"safe-buffer":161,"string_decoder/":172,"util":37}],151:[function(require,module,exports){
+},{"./_stream_duplex":149,"./internal/streams/BufferList":154,"./internal/streams/destroy":155,"./internal/streams/stream":156,"_process":138,"core-util-is":69,"events":102,"inherits":119,"isarray":121,"process-nextick-args":137,"safe-buffer":162,"string_decoder/":173,"util":38}],152:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -41233,7 +40868,7 @@ function done(stream, er, data) {
 
   return stream.push(null);
 }
-},{"./_stream_duplex":148,"core-util-is":68,"inherits":118}],152:[function(require,module,exports){
+},{"./_stream_duplex":149,"core-util-is":69,"inherits":119}],153:[function(require,module,exports){
 (function (process,global,setImmediate){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -41924,7 +41559,7 @@ Writable.prototype._destroy = function (err, cb) {
 };
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("timers").setImmediate)
 
-},{"./_stream_duplex":148,"./internal/streams/destroy":154,"./internal/streams/stream":155,"_process":137,"core-util-is":68,"inherits":118,"process-nextick-args":136,"safe-buffer":161,"timers":173,"util-deprecate":175}],153:[function(require,module,exports){
+},{"./_stream_duplex":149,"./internal/streams/destroy":155,"./internal/streams/stream":156,"_process":138,"core-util-is":69,"inherits":119,"process-nextick-args":137,"safe-buffer":162,"timers":174,"util-deprecate":176}],154:[function(require,module,exports){
 'use strict';
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -42004,7 +41639,7 @@ if (util && util.inspect && util.inspect.custom) {
     return this.constructor.name + ' ' + obj;
   };
 }
-},{"safe-buffer":161,"util":37}],154:[function(require,module,exports){
+},{"safe-buffer":162,"util":38}],155:[function(require,module,exports){
 'use strict';
 
 /*<replacement>*/
@@ -42079,13 +41714,13 @@ module.exports = {
   destroy: destroy,
   undestroy: undestroy
 };
-},{"process-nextick-args":136}],155:[function(require,module,exports){
+},{"process-nextick-args":137}],156:[function(require,module,exports){
 module.exports = require('events').EventEmitter;
 
-},{"events":101}],156:[function(require,module,exports){
+},{"events":102}],157:[function(require,module,exports){
 module.exports = require('./readable').PassThrough
 
-},{"./readable":157}],157:[function(require,module,exports){
+},{"./readable":158}],158:[function(require,module,exports){
 exports = module.exports = require('./lib/_stream_readable.js');
 exports.Stream = exports;
 exports.Readable = exports;
@@ -42094,13 +41729,13 @@ exports.Duplex = require('./lib/_stream_duplex.js');
 exports.Transform = require('./lib/_stream_transform.js');
 exports.PassThrough = require('./lib/_stream_passthrough.js');
 
-},{"./lib/_stream_duplex.js":148,"./lib/_stream_passthrough.js":149,"./lib/_stream_readable.js":150,"./lib/_stream_transform.js":151,"./lib/_stream_writable.js":152}],158:[function(require,module,exports){
+},{"./lib/_stream_duplex.js":149,"./lib/_stream_passthrough.js":150,"./lib/_stream_readable.js":151,"./lib/_stream_transform.js":152,"./lib/_stream_writable.js":153}],159:[function(require,module,exports){
 module.exports = require('./readable').Transform
 
-},{"./readable":157}],159:[function(require,module,exports){
+},{"./readable":158}],160:[function(require,module,exports){
 module.exports = require('./lib/_stream_writable.js');
 
-},{"./lib/_stream_writable.js":152}],160:[function(require,module,exports){
+},{"./lib/_stream_writable.js":153}],161:[function(require,module,exports){
 'use strict'
 var Buffer = require('buffer').Buffer
 var inherits = require('inherits')
@@ -42265,7 +41900,7 @@ function fn5 (a, b, c, d, e, m, k, s) {
 
 module.exports = RIPEMD160
 
-},{"buffer":66,"hash-base":103,"inherits":118}],161:[function(require,module,exports){
+},{"buffer":66,"hash-base":104,"inherits":119}],162:[function(require,module,exports){
 /* eslint-disable node/no-deprecated-api */
 var buffer = require('buffer')
 var Buffer = buffer.Buffer
@@ -42329,7 +41964,7 @@ SafeBuffer.allocUnsafeSlow = function (size) {
   return buffer.SlowBuffer(size)
 }
 
-},{"buffer":66}],162:[function(require,module,exports){
+},{"buffer":66}],163:[function(require,module,exports){
 (function (Buffer){
 var crypto = require('crypto')
 /* eslint-disable camelcase */
@@ -42514,7 +42149,7 @@ module.exports = scrypt
 
 }).call(this,require("buffer").Buffer)
 
-},{"buffer":66,"crypto":74}],163:[function(require,module,exports){
+},{"buffer":66,"crypto":75}],164:[function(require,module,exports){
 var Buffer = require('safe-buffer').Buffer
 
 // prototype class for hash functions
@@ -42597,7 +42232,7 @@ Hash.prototype._update = function () {
 
 module.exports = Hash
 
-},{"safe-buffer":161}],164:[function(require,module,exports){
+},{"safe-buffer":162}],165:[function(require,module,exports){
 var exports = module.exports = function SHA (algorithm) {
   algorithm = algorithm.toLowerCase()
 
@@ -42614,7 +42249,7 @@ exports.sha256 = require('./sha256')
 exports.sha384 = require('./sha384')
 exports.sha512 = require('./sha512')
 
-},{"./sha":165,"./sha1":166,"./sha224":167,"./sha256":168,"./sha384":169,"./sha512":170}],165:[function(require,module,exports){
+},{"./sha":166,"./sha1":167,"./sha224":168,"./sha256":169,"./sha384":170,"./sha512":171}],166:[function(require,module,exports){
 /*
  * A JavaScript implementation of the Secure Hash Algorithm, SHA-0, as defined
  * in FIPS PUB 180-1
@@ -42710,7 +42345,7 @@ Sha.prototype._hash = function () {
 
 module.exports = Sha
 
-},{"./hash":163,"inherits":118,"safe-buffer":161}],166:[function(require,module,exports){
+},{"./hash":164,"inherits":119,"safe-buffer":162}],167:[function(require,module,exports){
 /*
  * A JavaScript implementation of the Secure Hash Algorithm, SHA-1, as defined
  * in FIPS PUB 180-1
@@ -42811,7 +42446,7 @@ Sha1.prototype._hash = function () {
 
 module.exports = Sha1
 
-},{"./hash":163,"inherits":118,"safe-buffer":161}],167:[function(require,module,exports){
+},{"./hash":164,"inherits":119,"safe-buffer":162}],168:[function(require,module,exports){
 /**
  * A JavaScript implementation of the Secure Hash Algorithm, SHA-256, as defined
  * in FIPS 180-2
@@ -42866,7 +42501,7 @@ Sha224.prototype._hash = function () {
 
 module.exports = Sha224
 
-},{"./hash":163,"./sha256":168,"inherits":118,"safe-buffer":161}],168:[function(require,module,exports){
+},{"./hash":164,"./sha256":169,"inherits":119,"safe-buffer":162}],169:[function(require,module,exports){
 /**
  * A JavaScript implementation of the Secure Hash Algorithm, SHA-256, as defined
  * in FIPS 180-2
@@ -43003,7 +42638,7 @@ Sha256.prototype._hash = function () {
 
 module.exports = Sha256
 
-},{"./hash":163,"inherits":118,"safe-buffer":161}],169:[function(require,module,exports){
+},{"./hash":164,"inherits":119,"safe-buffer":162}],170:[function(require,module,exports){
 var inherits = require('inherits')
 var SHA512 = require('./sha512')
 var Hash = require('./hash')
@@ -43062,7 +42697,7 @@ Sha384.prototype._hash = function () {
 
 module.exports = Sha384
 
-},{"./hash":163,"./sha512":170,"inherits":118,"safe-buffer":161}],170:[function(require,module,exports){
+},{"./hash":164,"./sha512":171,"inherits":119,"safe-buffer":162}],171:[function(require,module,exports){
 var inherits = require('inherits')
 var Hash = require('./hash')
 var Buffer = require('safe-buffer').Buffer
@@ -43324,7 +42959,7 @@ Sha512.prototype._hash = function () {
 
 module.exports = Sha512
 
-},{"./hash":163,"inherits":118,"safe-buffer":161}],171:[function(require,module,exports){
+},{"./hash":164,"inherits":119,"safe-buffer":162}],172:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -43453,7 +43088,7 @@ Stream.prototype.pipe = function(dest, options) {
   return dest;
 };
 
-},{"events":101,"inherits":118,"readable-stream/duplex.js":147,"readable-stream/passthrough.js":156,"readable-stream/readable.js":157,"readable-stream/transform.js":158,"readable-stream/writable.js":159}],172:[function(require,module,exports){
+},{"events":102,"inherits":119,"readable-stream/duplex.js":148,"readable-stream/passthrough.js":157,"readable-stream/readable.js":158,"readable-stream/transform.js":159,"readable-stream/writable.js":160}],173:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -43750,7 +43385,7 @@ function simpleWrite(buf) {
 function simpleEnd(buf) {
   return buf && buf.length ? this.write(buf) : '';
 }
-},{"safe-buffer":161}],173:[function(require,module,exports){
+},{"safe-buffer":162}],174:[function(require,module,exports){
 (function (setImmediate,clearImmediate){
 var nextTick = require('process/browser.js').nextTick;
 var apply = Function.prototype.apply;
@@ -43830,7 +43465,7 @@ exports.clearImmediate = typeof clearImmediate === "function" ? clearImmediate :
 };
 }).call(this,require("timers").setImmediate,require("timers").clearImmediate)
 
-},{"process/browser.js":137,"timers":173}],174:[function(require,module,exports){
+},{"process/browser.js":138,"timers":174}],175:[function(require,module,exports){
 (function (root) {
    "use strict";
 
@@ -44274,7 +43909,7 @@ UChar.udata={
    }
 }(this));
 
-},{}],175:[function(require,module,exports){
+},{}],176:[function(require,module,exports){
 (function (global){
 
 /**
@@ -44346,7 +43981,7 @@ function config (name) {
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],176:[function(require,module,exports){
+},{}],177:[function(require,module,exports){
 var indexOf = function (xs, item) {
     if (xs.indexOf) return xs.indexOf(item);
     else for (var i = 0; i < xs.length; i++) {
@@ -44497,7 +44132,7 @@ exports.createContext = Script.createContext = function (context) {
     return copy;
 };
 
-},{}],177:[function(require,module,exports){
+},{}],178:[function(require,module,exports){
 var _global = (function() { return this; })();
 var NativeWebSocket = _global.WebSocket || _global.MozWebSocket;
 var websocket_version = require('./version');
@@ -44541,10 +44176,10 @@ module.exports = {
     'version'      : websocket_version
 };
 
-},{"./version":178}],178:[function(require,module,exports){
+},{"./version":179}],179:[function(require,module,exports){
 module.exports = require('../package.json').version;
 
-},{"../package.json":179}],179:[function(require,module,exports){
+},{"../package.json":180}],180:[function(require,module,exports){
 module.exports={
   "_args": [
     [
@@ -44643,10 +44278,10 @@ module.exports={
   "version": "1.0.26"
 }
 
-},{}],180:[function(require,module,exports){
+},{}],181:[function(require,module,exports){
 module.exports = XMLHttpRequest;
 
-},{}],181:[function(require,module,exports){
+},{}],182:[function(require,module,exports){
 (function (Buffer){
 "use strict";
 
@@ -44683,7 +44318,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
-var nacl = require('../../libs/nacl_blake2b');
+var nacl = require('@sisi/tweetnacl-blake2b');
 
 var blake = require('blakejs/blake2b');
 
@@ -44790,7 +44425,7 @@ function getRawTokenid(tokenId) {
 
 }).call(this,require("buffer").Buffer)
 
-},{"../../libs/nacl_blake2b":7,"../../libs/utils":8,"../address":190,"./basicStruct":182,"blakejs/blake2b":33,"bn.js":35,"buffer":66}],182:[function(require,module,exports){
+},{"../../libs/utils":6,"../address":191,"./basicStruct":183,"@sisi/tweetnacl-blake2b":9,"blakejs/blake2b":34,"bn.js":36,"buffer":66}],183:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -44826,7 +44461,7 @@ function () {
 var _default = basicStruct;
 exports.default = _default;
 
-},{}],183:[function(require,module,exports){
+},{}],184:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -44908,7 +44543,7 @@ function () {
 var _default = Vite;
 exports.default = _default;
 
-},{"./account.js":181,"./ledger.js":184,"./version.js":185}],184:[function(require,module,exports){
+},{"./account.js":182,"./ledger.js":185,"./version.js":186}],185:[function(require,module,exports){
 (function (Buffer){
 "use strict";
 
@@ -45135,7 +44770,7 @@ function getNonce(addr, prevHash, baseTx) {
 
 }).call(this,require("buffer").Buffer)
 
-},{"../../libs/utils":8,"../address":190,"./basicStruct.js":182,"blakejs/blake2b":33,"bn.js":35,"buffer":66}],185:[function(require,module,exports){
+},{"../../libs/utils":6,"../address":191,"./basicStruct.js":183,"blakejs/blake2b":34,"bn.js":36,"buffer":66}],186:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -45206,7 +44841,7 @@ function (_basicStruct) {
 var _default = Version;
 exports.default = _default;
 
-},{"./basicStruct.js":182}],186:[function(require,module,exports){
+},{"./basicStruct.js":183}],187:[function(require,module,exports){
 (function (Buffer){
 "use strict";
 
@@ -45225,7 +44860,7 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-var nacl = require('../../libs/nacl_blake2b');
+var nacl = require('@sisi/tweetnacl-blake2b');
 
 var scryptsy = require('scryptsy');
 
@@ -45559,7 +45194,7 @@ function cipherText(_ref2) {
 
 }).call(this,require("buffer").Buffer)
 
-},{"../../libs/nacl_blake2b":7,"../../libs/utils":8,"browserify-aes":40,"buffer":66,"crypto":74,"scryptsy":162}],187:[function(require,module,exports){
+},{"../../libs/utils":6,"@sisi/tweetnacl-blake2b":9,"browserify-aes":41,"buffer":66,"crypto":75,"scryptsy":163}],188:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -45568,8 +45203,6 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = void 0;
 
 var _bip = _interopRequireDefault(require("bip39"));
-
-var _hd = _interopRequireDefault(require("../../libs/hd"));
 
 var _utils = _interopRequireDefault(require("../../libs/utils"));
 
@@ -45582,6 +45215,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var hd = require('@sisi/ed25519-blake2b-hd-key');
 
 var rootPath = 'm/44\'/666666\'';
 
@@ -45680,10 +45315,10 @@ var _default = Address;
 exports.default = _default;
 
 function getAddrFromPath(path, seed) {
-  var _hd$derivePath = _hd.default.derivePath(path, seed),
+  var _hd$derivePath = hd.derivePath(path, seed),
       key = _hd$derivePath.key;
 
-  var _hd$getPublicKey = _hd.default.getPublicKey(key),
+  var _hd$getPublicKey = hd.getPublicKey(key),
       privateKey = _hd$getPublicKey.privateKey;
 
   var priv = _utils.default.bytesToHex(privateKey);
@@ -45691,7 +45326,7 @@ function getAddrFromPath(path, seed) {
   return _address.default.newHexAddr(priv);
 }
 
-},{"../../libs/hd":6,"../../libs/utils":8,"../address":190,"bip39":24}],188:[function(require,module,exports){
+},{"../../libs/utils":6,"../address":191,"@sisi/ed25519-blake2b-hd-key":7,"bip39":25}],189:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -45722,7 +45357,7 @@ var Wallet = function Wallet(Vite) {
 var _default = Wallet;
 exports.default = _default;
 
-},{"./account.js":186,"./address.js":187,"./keystore.js":189}],189:[function(require,module,exports){
+},{"./account.js":187,"./address.js":188,"./keystore.js":190}],190:[function(require,module,exports){
 (function (Buffer){
 "use strict";
 
@@ -45747,7 +45382,7 @@ var uuid = require('pure-uuid');
 
 var scryptsy = require('scryptsy');
 
-var nacl = require('../../libs/nacl_blake2b');
+var nacl = require('@sisi/tweetnacl-blake2b');
 
 var crypto = typeof window !== 'undefined' ? require('browserify-aes') : require('crypto');
 var versions = [1];
@@ -45921,7 +45556,7 @@ function cipherText(_ref) {
 
 }).call(this,require("buffer").Buffer)
 
-},{"../../libs/nacl_blake2b":7,"../../libs/utils":8,"../address.js":190,"browserify-aes":40,"buffer":66,"crypto":74,"pure-uuid":144,"scryptsy":162}],190:[function(require,module,exports){
+},{"../../libs/utils":6,"../address.js":191,"@sisi/tweetnacl-blake2b":9,"browserify-aes":41,"buffer":66,"crypto":75,"pure-uuid":145,"scryptsy":163}],191:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -45935,7 +45570,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var blake = require('blakejs/blake2b');
 
-var nacl = require('../libs/nacl_blake2b');
+var nacl = require('@sisi/tweetnacl-blake2b');
 
 var ADDR_PRE = 'vite_';
 var ADDR_SIZE = 20;
@@ -46025,7 +45660,7 @@ function getAddrCheckSum(addr) {
   return res;
 }
 
-},{"../libs/nacl_blake2b":7,"../libs/utils":8,"blakejs/blake2b":33}],191:[function(require,module,exports){
+},{"../libs/utils":6,"@sisi/tweetnacl-blake2b":9,"blakejs/blake2b":34}],192:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -46086,7 +45721,7 @@ ViteJS.utils = _utils.default;
 var _default = ViteJS;
 exports.default = _default;
 
-},{"../libs/HTTP.js":4,"../libs/WS.js":5,"../libs/utils.js":8,"./Vite/index.js":183,"./Wallet/index.js":188}],"ViteJS":[function(require,module,exports){
+},{"../libs/HTTP.js":4,"../libs/WS.js":5,"../libs/utils.js":6,"./Vite/index.js":184,"./Wallet/index.js":189}],"ViteJS":[function(require,module,exports){
 "use strict";
 
 var _index = _interopRequireDefault(require("./src/index.js"));
@@ -46099,5 +45734,5 @@ if (typeof window !== 'undefined' && typeof window.ViteJS === 'undefined') {
 
 module.exports = _index.default;
 
-},{"./src/index.js":191}]},{},["ViteJS"])
+},{"./src/index.js":192}]},{},["ViteJS"])
 //# sourceMappingURL=vite.js.map

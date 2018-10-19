@@ -1,7 +1,7 @@
 import libUtils from '../../libs/utils';
 import utils from '../../libs/utils';
 
-const nacl = require('../../libs/nacl_blake2b');
+const nacl = require('@sisi/tweetnacl-blake2b');
 const scryptsy = require('scryptsy');
 const crypto = typeof window !== 'undefined' ? require('browserify-aes') : require('crypto');
 

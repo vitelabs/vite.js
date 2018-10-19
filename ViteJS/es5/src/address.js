@@ -11,7 +11,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var blake = require('blakejs/blake2b');
 
-var nacl = require('../libs/nacl_blake2b');
+var nacl = require('@sisi/tweetnacl-blake2b');
 
 var ADDR_PRE = 'vite_';
 var ADDR_SIZE = 20;

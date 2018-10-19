@@ -21,7 +21,7 @@ var uuid = require('pure-uuid');
 
 var scryptsy = require('scryptsy');
 
-var nacl = require('../../libs/nacl_blake2b');
+var nacl = require('@sisi/tweetnacl-blake2b');
 
 var crypto = typeof window !== 'undefined' ? require('browserify-aes') : require('crypto');
 var versions = [1];

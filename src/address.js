@@ -1,5 +1,5 @@
 let blake = require('blakejs/blake2b');
-let nacl = require('../libs/nacl_blake2b');
+let nacl = require('@sisi/tweetnacl-blake2b');
 
 import utils from '../libs/utils';
 

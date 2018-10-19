@@ -1,6 +1,7 @@
+const nacl = require('@sisi/tweetnacl-blake2b');
+import utils from '../../libs/utils';
+
 const assert = require('assert');
-const nacl = require('../libs/nacl_blake2b');
-import utils from '../libs/utils';
 
 let testData = [
     {

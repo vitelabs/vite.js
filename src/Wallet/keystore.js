@@ -5,7 +5,7 @@ import address from '../address.js';
 
 const uuid = require('pure-uuid');
 const scryptsy = require('scryptsy');
-const nacl = require('../../libs/nacl_blake2b');
+const nacl = require('@sisi/tweetnacl-blake2b');
 const crypto = typeof window !== 'undefined' ? require('browserify-aes') : require('crypto');
 
 const versions = [1];

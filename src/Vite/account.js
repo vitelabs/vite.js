@@ -1,4 +1,4 @@
-let nacl = require('../../libs/nacl_blake2b');
+let nacl = require('@sisi/tweetnacl-blake2b');
 let blake = require('blakejs/blake2b');
 
 import BigNumber from 'bn.js';

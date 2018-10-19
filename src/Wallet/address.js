@@ -1,5 +1,6 @@
+const hd = require('@sisi/ed25519-blake2b-hd-key');
+
 import bip39 from 'bip39';
-import hd from '../../libs/hd';
 import libUtils from '../../libs/utils';
 import address from '../address';
 

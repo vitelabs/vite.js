@@ -1,6 +1,36 @@
 const bip39 = require('bip39');
 const assert = require('assert');
 
+describe('mnemonic 12 password', function() {
+    let mnemonic = 'banner bar shiver budget window cart snake control venue lonely marine print';
+
+    let entropy = bip39.mnemonicToEntropy(mnemonic);
+    it('entropy', function () {
+        assert.equal(entropy, '12424f188ecfb64633497bf270762055');
+    });
+
+    let passphrase = '123456';
+    let seedHex = bip39.mnemonicToSeedHex(mnemonic, passphrase);
+    it('seed_hex', function () {
+        assert.equal(seedHex, '21a107743295dfec434254374fdbb43ee4701fa699acce6d1810ddae7d356aeeb10bedc09358e5cf8860fc16d225c422f0a44a708267bf0d2bbbbcd3bd299a49');
+    });
+});
+
+describe('mnemonic 24 password', function() {
+    let mnemonic = 'hazard kind issue draw bottom foot net join train elbow census present blind assume suit vague vital crack slab material pill census actress panda';
+
+    let entropy = bip39.mnemonicToEntropy(mnemonic);
+    it('entropy', function () {
+        assert.equal(entropy, '69ef51daa131a4b5e52bc1e708e49555017c1bf64785f5063b2bc47a4c4a80b4');
+    });
+
+    let passphrase = '123456';
+    let seedHex = bip39.mnemonicToSeedHex(mnemonic, passphrase);
+    it('seed_hex', function () {
+        assert.equal(seedHex, '4e0f10e63407ba168ce6c504631b1d405b121406746b50c7d4831b150985641b867a6edccefaf77554221c44f89bbc0e47038114f50de9f1ffaefbd50c3d6b29');
+    });
+});
+
 let entropy = 'e27b674dd7cc3b4ce67ad38d18bae592871dc7e4a7384cdcc07e1a3f9d3dcfca';
 
 describe('english', function() {

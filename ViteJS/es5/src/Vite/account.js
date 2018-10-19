@@ -33,7 +33,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
-var nacl = require('../../libs/nacl_blake2b');
+var nacl = require('@sisi/tweetnacl-blake2b');
 
 var blake = require('blakejs/blake2b');
 

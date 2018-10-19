@@ -7,8 +7,6 @@ exports.default = void 0;
 
 var _bip = _interopRequireDefault(require("bip39"));
 
-var _hd = _interopRequireDefault(require("../../libs/hd"));
-
 var _utils = _interopRequireDefault(require("../../libs/utils"));
 
 var _address = _interopRequireDefault(require("../address"));
@@ -20,6 +18,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var hd = require('@sisi/ed25519-blake2b-hd-key');
 
 var rootPath = 'm/44\'/666666\'';
 
@@ -118,10 +118,10 @@ var _default = Address;
 exports.default = _default;
 
 function getAddrFromPath(path, seed) {
-  var _hd$derivePath = _hd.default.derivePath(path, seed),
+  var _hd$derivePath = hd.derivePath(path, seed),
       key = _hd$derivePath.key;
 
-  var _hd$getPublicKey = _hd.default.getPublicKey(key),
+  var _hd$getPublicKey = hd.getPublicKey(key),
       privateKey = _hd$getPublicKey.privateKey;
 
   var priv = _utils.default.bytesToHex(privateKey);
