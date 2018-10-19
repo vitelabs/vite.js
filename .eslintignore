@@ -1,8 +1,7 @@
 # /node_modules/* and /bower_components/* in the project root are ignored by default
 
 # Ignore built files except build/index.js
-static/*
 coverage/*
-ViteJS/*
+dist/*
 ottoDist/*
 otto/fix_modules

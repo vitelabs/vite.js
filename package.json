@@ -2,9 +2,9 @@
     "name": "@vitelabs/vite.js",
     "version": "0.0.1-alpha1",
     "description": "",
-    "main": "ViteJS/es5/src/index.js",
+    "main": "dist/es5/src/index.js",
     "scripts": {
-        "build": "rm -rf ViteJS && gulp",
+        "build": "rm -rf dist && gulp",
         "test:rpc": "cross-env NODE_ENV=test nyc mocha test/RPC/index.js --no-timeouts",
         "test": "cross-env NODE_ENV=test nyc mocha test/index.js --no-timeouts",
         "test:w": "cross-env NODE_ENV=testWatch mocha test/index.js --require @babel/register -w --no-timeouts",

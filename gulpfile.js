@@ -12,7 +12,7 @@ const replace = require('gulp-replace');
 
 // [TODO] Not building a lightweight package, now. Maybe support in future.
 
-const BUILD_PATH = path.join(__dirname, 'ViteJS/');
+const BUILD_PATH = path.join(__dirname, 'dist/');
 const ENTRY_PATH = path.join(__dirname, 'index.js');
 const APP_NAME = 'vite';
 
@@ -26,7 +26,8 @@ const browserifyOptions = {
     bundleExternal: true
 };
 gulp.task('build-js', function () {
-    console.log('standard build');
+    console.log('Standard build');
+
     return browserify(browserifyOptions)
         .require(ENTRY_PATH, { expose: 'ViteJS' })
         .transform('browserify-replace', {
@@ -43,6 +44,7 @@ gulp.task('build-js', function () {
         .pipe(gulp.dest(BUILD_PATH));
 });
 
+console.log('ES5 build');
 
 const BUILD_ES5_PATH = path.join(BUILD_PATH, 'es5/');
 gulp.task('es5-src', function () {
