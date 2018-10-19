@@ -1,8 +1,7 @@
 const assert = require('assert');
 import vitejs from '../../index.js';
 
-const HTTP_RPC = new vitejs.HTTP_RPC({});
-const ViteJS = new vitejs(HTTP_RPC);
+const ViteJS = new vitejs();
 const Account = ViteJS.Vite.Account;
 
 describe('Vite_Account', function () {
