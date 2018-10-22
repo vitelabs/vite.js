@@ -40,7 +40,7 @@ for (let namespace in Methods) {
         vite[namespace][methodName] = (...params) => {
             return provider.request(methodName, params);
         };
-        vite[namespace][methodName].help=docs[namespace][methodName]||'';
+        vite[namespace][methodName].help=docs[namespace][name]||'';
     });
 }
 
