@@ -77,7 +77,7 @@ function newAddr(privKey) {
 
 function newAddrFromPub(pubKey) {
     let pre = blake.blake2b(pubKey, null, ADDR_SIZE);
-    return pre.slice(0, ADDR_SIZE);
+    return pre;
 }
 
 function newAddrFromPriv(privKey) {

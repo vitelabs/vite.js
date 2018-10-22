@@ -3,21 +3,21 @@ import utils from '../libs/utils.js';
 
 describe('strToUtf8', function () {
     it('test1', function () {
-        let utf8Bytes = utils.strToUtf8Bytes('为');
+        let utf8Bytes = utils.utf8ToBytes('为');
         let hex = utils.bytesToHex(utf8Bytes);
 
         assert.equal('e4b8ba', hex);
         assert.deepEqual(utf8Bytes, utils.hexToBytes(hex));
     });
     it('test2', function () {
-        let utf8Bytes = utils.strToUtf8Bytes('sdsdsds。；。、lp.;,p[oo阿京东方]');
+        let utf8Bytes = utils.utf8ToBytes('sdsdsds。；。、lp.;,p[oo阿京东方]');
         let hex = utils.bytesToHex(utf8Bytes);
 
         assert.equal('73647364736473e38082efbc9be38082e380816c702e3b2c705b6f6fe998bfe4baace4b89ce696b95d', hex);
         assert.deepEqual(utf8Bytes, utils.hexToBytes(hex));
     });
     it('test3', function () {
-        let utf8Bytes = utils.strToUtf8Bytes('[坏笑]😊🙂🙂😆😅😅');
+        let utf8Bytes = utils.utf8ToBytes('[坏笑]😊🙂🙂😆😅😅');
         let hex = utils.bytesToHex(utf8Bytes);
 
         assert.equal('5be59d8fe7ac915d', hex);
@@ -35,7 +35,7 @@ describe('getBytesSize', function () {
     it('test3', function () {
         assert.equal(56, utils.getBytesSize('[坏笑]😊🙂🙂😆😅😅'));
     });
-    it('test3', function () {
+    it('test4', function () {
         assert.equal(32, utils.getBytesSize('[坏笑]😊🙂🙂😆😅😅', 'utf16'));
     });
 });

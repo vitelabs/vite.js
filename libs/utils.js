@@ -37,7 +37,7 @@ export default {
         }
         return total;
     },
-    strToUtf8Bytes (str = '') {
+    utf8ToBytes (str = '') {
         var back = [];
         for (var i = 0; i < str.length; i++) {
             var code = str.charCodeAt(i);

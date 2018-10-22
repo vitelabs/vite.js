@@ -24,3 +24,14 @@ describe('isValidHexAddr', function () {
         assert.equal( address.isValidHexAddr('vite_c18cadb085fc4e291469106e5a3f197aef87f96cd297eb6b46'), true );
     });
 });
+
+describe('getAddrFromHexAddr', function () {
+    it('test-real', function () {
+        let addr = address.getAddrFromHexAddr('vite_69f3bdb5cdcfa145ae6cc42593a89088ff3dac587eb692d689');
+        assert.equal(addr, '69f3bdb5cdcfa145ae6cc42593a89088ff3dac58');
+    });
+    it('test-illegalAddr', function () {
+        let addr = address.getAddrFromHexAddr('cfa145ae6cc42593a89088ff3dac587eb692d689');
+        assert.equal(addr, null);
+    });
+});

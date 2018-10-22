@@ -112,7 +112,7 @@ class Ledger extends basicStruct {
             let baseTx = getBaseTx(fromAddr, latestBlock, latestSnapshotChainHash);
 
             if (message) {
-                let utf8bytes = libUtils.strToUtf8Bytes(message);
+                let utf8bytes = libUtils.utf8ToBytes(message);
                 let base64Str = Buffer.from(utf8bytes).toString('base64');
                 baseTx.data = base64Str;
             }

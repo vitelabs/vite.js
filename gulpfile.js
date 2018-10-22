@@ -10,8 +10,6 @@ const path = require('path');
 const babel = require('gulp-babel');
 const replace = require('gulp-replace');
 
-// [TODO] Not building a lightweight package, now. Maybe support in future.
-
 const BUILD_PATH = path.join(__dirname, 'dist/');
 const ENTRY_PATH = path.join(__dirname, 'index.js');
 const APP_NAME = 'vite';
