@@ -72,37 +72,17 @@ class Account {
         });
     }
 
-    sendTx({
-        fromAddr, toAddr, tokenId, amount, message
-    }, privKey) {
-        if ( !this.Vite.Account.isValidHexAddr(fromAddr) ) {
-            return Promise.reject('FromAddr error');
-        }
-        if ( !this.Vite.Account.isValidHexAddr(toAddr) ) {
-            return Promise.reject('ToAddr error');
-        }
-        if ( !amount ) {
-            return Promise.reject('Amount error');
+    sendRawTx(accountBlock, privKey) {
+        if (!accountBlock) {
+            return Promise.reject('AccountBlock must be required.');
         }
 
-        return new Promise((res, rej) => {
-            this.Vite.Ledger.getSendBlock({
-                fromAddr, toAddr, tokenId, amount, message
-            }).then((accountBlock)=>{
-                let { hash, signature, pubKey } = this.Vite.Account.signTX(accountBlock, privKey);
-                accountBlock.hash = hash;
-                accountBlock.publicKey = Buffer.from(pubKey).toString('base64');
-                accountBlock.signature = Buffer.from(signature).toString('base64');
+        let { hash, signature, pubKey } = this.Vite.Account.signTX(accountBlock, privKey);
+        accountBlock.hash = hash;
+        accountBlock.publicKey = Buffer.from(pubKey).toString('base64');
+        accountBlock.signature = Buffer.from(signature).toString('base64');
 
-                this.Vite['tx_sendRawTx'](accountBlock).then((data)=>{
-                    return res(data);
-                }).catch((err)=>{
-                    return rej(err);
-                });
-            }).catch((err)=>{
-                return rej(err);
-            });
-        });
+        return this.Vite['tx_sendRawTx'](accountBlock);
     }
 
     encrypt(key, pwd, scryptP) {

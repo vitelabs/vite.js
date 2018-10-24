@@ -57,7 +57,7 @@ class Ledger extends basicStruct {
         });
     }
 
-    getReceiveBlock(addr) {
+    getReceiveBlock(addr, isGetPow = true) {
         return this.provider.batch([{
             type: 'request',                    
             methodName: 'onroad_getOnroadBlocksByAddress',
@@ -88,22 +88,34 @@ class Ledger extends basicStruct {
             block.data && (baseTx.data = block.data);
             baseTx.fromBlockHash = block.hash || '';
 
+            if (!isGetPow) {
+                return baseTx;
+            }
             return getNonce.call(this, addr, baseTx.prevHash, baseTx);
         });
     }
 
     getSendBlock({
         fromAddr, toAddr, tokenId, amount, message
-    }) {
-        return this.provider.batch([{
+    }, isPledge = false, isGetPow = false) {
+        let requests = [{
             type: 'request',
             methodName: 'ledger_getLatestBlock',
             params: [ fromAddr ]
         }, {
             type: 'request',
             methodName: 'ledger_getLatestSnapshotChainHash'
-        }]).then((data)=>{
-            if (!data) {
+        }];
+
+        isPledge && requests.push({
+            type: 'request',
+            methodName: 'pledge_getPledgeData',
+            params: [ toAddr ]
+        });
+
+        return this.provider.batch(requests).then((data)=>{
+            if (!data || data.length < 2 || 
+                (isPledge && (data.length < 3 || !data[2].result))) {
                 return null;
             }
 
@@ -111,10 +123,12 @@ class Ledger extends basicStruct {
             let latestSnapshotChainHash = data[1].result;
             let baseTx = getBaseTx(fromAddr, latestBlock, latestSnapshotChainHash);
 
-            if (message) {
+            if (!isPledge && message) {
                 let utf8bytes = libUtils.utf8ToBytes(message);
                 let base64Str = Buffer.from(utf8bytes).toString('base64');
                 baseTx.data = base64Str;
+            } else if (isPledge) {
+                baseTx.data = data[2].result;
             }
 
             baseTx.tokenId = tokenId;
@@ -122,6 +136,9 @@ class Ledger extends basicStruct {
             baseTx.amount = amount;
             baseTx.blockType = 2;
 
+            if (!isGetPow) {
+                return baseTx;
+            }
             return getNonce.call(this, fromAddr, baseTx.prevHash, baseTx);
         });
     }
@@ -148,20 +165,13 @@ function getBaseTx(accountAddress, latestBlock, snapshotHash) {
     return baseTx;
 }
 
-function getPowHash(addr, prevHash) {
+function getNonce(addr, prevHash, baseTx) {
     let prev = prevHash || defaultHash;
     let realAddr = address.getAddrFromHexAddr(addr);
-    return libUtils.bytesToHex(blake.blake2b(realAddr + prev, null, 32));
-}
+    let hash = libUtils.bytesToHex(blake.blake2b(realAddr + prev, null, 32));
 
-function getNonce(addr, prevHash, baseTx) {
-    let hash = getPowHash(addr, prevHash);
-    return new Promise((res, rej) => {
-        return this.provider.request('pow_getPowNonce', ['', hash]).then((data) => {
-            baseTx.nonce = data.result;
-            return res(baseTx);
-        }).catch((err) => {
-            return rej(err);
-        });
+    return this.provider.request('pow_getPowNonce', ['', hash]).then((data) => {
+        baseTx.nonce = data.result;
+        return baseTx;
     });
 }
