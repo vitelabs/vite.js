@@ -132,7 +132,7 @@ class Ledger extends basicStruct {
             }
 
             baseTx.tokenId = tokenId;
-            baseTx.toAddress = toAddr;
+            baseTx.toAddress = isPledge ? 'vite_000000000000000000000000000000000000000309508ba646' : toAddr;
             baseTx.amount = amount;
             baseTx.blockType = 2;
 
