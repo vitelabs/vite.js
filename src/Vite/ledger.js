@@ -85,7 +85,7 @@ class Ledger extends basicStruct {
             let block = blocks[0];
             let baseTx = getBaseTx(addr, latestBlock, latestSnapshotChainHash);
             baseTx.blockType = 4;
-            block.data && (baseTx.data = block.data);
+            baseTx.data = null;
             baseTx.fromBlockHash = block.hash || '';
 
             if (!isGetPow) {
@@ -97,7 +97,7 @@ class Ledger extends basicStruct {
 
     getSendBlock({
         fromAddr, toAddr, tokenId, amount, message
-    }, isPledge = false, isGetPow = false) {
+    }, pledgeType = '', isGetPow = false) {
         let requests = [{
             type: 'request',
             methodName: 'ledger_getLatestBlock',
@@ -107,15 +107,22 @@ class Ledger extends basicStruct {
             methodName: 'ledger_getLatestSnapshotChainHash'
         }];
 
-        isPledge && requests.push({
-            type: 'request',
-            methodName: 'pledge_getPledgeData',
-            params: [ toAddr ]
-        });
+        if (pledgeType) {
+            pledgeType === 'get' && requests.push({
+                type: 'request',
+                methodName: 'pledge_getPledgeData',
+                params: [ toAddr ]
+            });
+            pledgeType === 'getCancel' && requests.push({
+                type: 'request',
+                methodName: 'pledge_getCancelPledgeData',
+                params: [ toAddr ]
+            });
+        }
 
         return this.provider.batch(requests).then((data)=>{
             if (!data || data.length < 2 || 
-                (isPledge && (data.length < 3 || !data[2].result))) {
+                (pledgeType && (data.length < 3 || !data[2].result))) {
                 return null;
             }
 
@@ -123,16 +130,16 @@ class Ledger extends basicStruct {
             let latestSnapshotChainHash = data[1].result;
             let baseTx = getBaseTx(fromAddr, latestBlock, latestSnapshotChainHash);
 
-            if (!isPledge && message) {
+            if (!pledgeType && message) {
                 let utf8bytes = libUtils.utf8ToBytes(message);
                 let base64Str = Buffer.from(utf8bytes).toString('base64');
                 baseTx.data = base64Str;
-            } else if (isPledge) {
+            } else if (pledgeType) {
                 baseTx.data = data[2].result;
             }
 
             baseTx.tokenId = tokenId;
-            baseTx.toAddress = isPledge ? 'vite_000000000000000000000000000000000000000309508ba646' : toAddr;
+            baseTx.toAddress = pledgeType ? 'vite_000000000000000000000000000000000000000309508ba646' : toAddr;
             baseTx.amount = amount;
             baseTx.blockType = 2;
 
@@ -156,8 +163,7 @@ function getBaseTx(accountAddress, latestBlock, snapshotHash) {
         height,
         timestamp,
         snapshotHash,
-        // logHash: '',
-        // quota: '',
+        difficulty: '65535',    // 18446743798831644672
         fee: '0'
     };
     baseTx.prevHash = latestBlock && latestBlock.hash ? latestBlock.hash : defaultHash;
@@ -170,7 +176,7 @@ function getNonce(addr, prevHash, baseTx) {
     let realAddr = address.getAddrFromHexAddr(addr);
     let hash = libUtils.bytesToHex(blake.blake2b(realAddr + prev, null, 32));
 
-    return this.provider.request('pow_getPowNonce', ['', hash]).then((data) => {
+    return this.provider.request('pow_getPowNonce', [baseTx.difficulty, hash]).then((data) => {
         baseTx.nonce = data.result;
         return baseTx;
     });

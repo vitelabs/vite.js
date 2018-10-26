@@ -12,15 +12,14 @@ class Pow extends basicStruct {
         super(provider);
     }
 
-    // difficulty
-    getNonce(addr, prevHash) {
+    getNonce(addr, prevHash, difficulty) {
         // if (!prevHash) {
         //     this.provider.request('ledger_getLatestBlock', [ addr ]).
         // }
         let prev = prevHash || defaultHash;
         let realAddr = address.getAddrFromHexAddr(addr);
         let hash = libUtils.bytesToHex(blake.blake2b(realAddr + prev, null, 32));
-        return this.provider.request('pow_getPowNonce', ['', hash]);
+        return this.provider.request('pow_getPowNonce', [difficulty, hash]);
     }
 }
 
