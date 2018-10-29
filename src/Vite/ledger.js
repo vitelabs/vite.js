@@ -131,7 +131,6 @@ class Ledger extends basicStruct {
 
         return new Promise((res, rej) => {
             this.provider.batch(requests).then((data)=>{
-                console.log(data);
                 if (!data || data.length < 2 || 
                     (pledgeType && (data.length < 3 || !data[2].result))) {
                     return rej('Batch Error');
