@@ -58,40 +58,49 @@ class Ledger extends basicStruct {
     }
 
     getReceiveBlock(addr, isGetPow = true) {
-        return this.provider.batch([{
-            type: 'request',                    
-            methodName: 'onroad_getOnroadBlocksByAddress',
-            params: [addr, 0, 1]
-        }, {
-            type: 'request',
-            methodName: 'ledger_getLatestBlock',
-            params: [addr]
-        }, {
-            type: 'request',
-            methodName: 'ledger_getLatestSnapshotChainHash'
-        }]).then((data)=>{
-            if (!data) {
-                return null;
-            }
+        return new Promise((res, rej) => {
+            this.provider.batch([{
+                type: 'request',                    
+                methodName: 'onroad_getOnroadBlocksByAddress',
+                params: [addr, 0, 1]
+            }, {
+                type: 'request',
+                methodName: 'ledger_getLatestBlock',
+                params: [addr]
+            }, {
+                type: 'request',
+                methodName: 'ledger_getLatestSnapshotChainHash'
+            }]).then((data)=>{
+                if (!data) {
+                    return res();
+                }
+    
+                let blocks = data[0].result;
+                let latestBlock = data[1].result;
+                let latestSnapshotChainHash = data[2].result;
+    
+                if (!blocks || !blocks.length) {
+                    return res();
+                }
+    
+                let block = blocks[0];
+                let baseTx = getBaseTx(addr, latestBlock, latestSnapshotChainHash);
+                baseTx.blockType = 4;
+                baseTx.data = null;
+                baseTx.fromBlockHash = block.hash || '';
+    
+                if (!isGetPow) {
+                    return res(baseTx);
+                }
 
-            let blocks = data[0].result;
-            let latestBlock = data[1].result;
-            let latestSnapshotChainHash = data[2].result;
-
-            if (!blocks || !blocks.length) {
-                return null;
-            }
-
-            let block = blocks[0];
-            let baseTx = getBaseTx(addr, latestBlock, latestSnapshotChainHash);
-            baseTx.blockType = 4;
-            baseTx.data = null;
-            baseTx.fromBlockHash = block.hash || '';
-
-            if (!isGetPow) {
-                return baseTx;
-            }
-            return getNonce.call(this, addr, baseTx.prevHash, baseTx);
+                getNonce.call(this, addr, baseTx.prevHash, baseTx).then((data) => {
+                    return res(data);
+                }).catch((err) => {
+                    return rej(err);
+                });
+            }).catch((err) => {
+                return rej(err);
+            });
         });
     }
 
@@ -116,37 +125,47 @@ class Ledger extends basicStruct {
             pledgeType === 'getCancel' && requests.push({
                 type: 'request',
                 methodName: 'pledge_getCancelPledgeData',
-                params: [ toAddr ]
+                params: [ toAddr, amount ]
             });
         }
 
-        return this.provider.batch(requests).then((data)=>{
-            if (!data || data.length < 2 || 
-                (pledgeType && (data.length < 3 || !data[2].result))) {
-                return null;
-            }
+        return new Promise((res, rej) => {
+            this.provider.batch(requests).then((data)=>{
+                console.log(data);
+                if (!data || data.length < 2 || 
+                    (pledgeType && (data.length < 3 || !data[2].result))) {
+                    return rej('Batch Error');
+                }
+    
+                let latestBlock = data[0].result;
+                let latestSnapshotChainHash = data[1].result;
+                let baseTx = getBaseTx(fromAddr, latestBlock, latestSnapshotChainHash);
+    
+                if (!pledgeType && message) {
+                    let utf8bytes = libUtils.utf8ToBytes(message);
+                    let base64Str = Buffer.from(utf8bytes).toString('base64');
+                    baseTx.data = base64Str;
+                } else if (pledgeType) {
+                    baseTx.data = data[2].result;
+                }
+    
+                baseTx.tokenId = tokenId;
+                baseTx.toAddress = pledgeType ? 'vite_000000000000000000000000000000000000000309508ba646' : toAddr;
+                pledgeType !== 'getCancel' && (baseTx.amount = amount);
+                baseTx.blockType = 2;
+    
+                if (!isGetPow) {
+                    return res(baseTx);
+                }
 
-            let latestBlock = data[0].result;
-            let latestSnapshotChainHash = data[1].result;
-            let baseTx = getBaseTx(fromAddr, latestBlock, latestSnapshotChainHash);
-
-            if (!pledgeType && message) {
-                let utf8bytes = libUtils.utf8ToBytes(message);
-                let base64Str = Buffer.from(utf8bytes).toString('base64');
-                baseTx.data = base64Str;
-            } else if (pledgeType) {
-                baseTx.data = data[2].result;
-            }
-
-            baseTx.tokenId = tokenId;
-            baseTx.toAddress = pledgeType ? 'vite_000000000000000000000000000000000000000309508ba646' : toAddr;
-            baseTx.amount = amount;
-            baseTx.blockType = 2;
-
-            if (!isGetPow) {
-                return baseTx;
-            }
-            return getNonce.call(this, fromAddr, baseTx.prevHash, baseTx);
+                getNonce.call(this, fromAddr, baseTx.prevHash, baseTx).then((data)=>{
+                    return res(data);
+                }).catch((err) => {
+                    return rej(err);
+                });
+            }).catch((err) => {
+                return rej(err);
+            });
         });
     }
 }

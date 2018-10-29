@@ -50,23 +50,35 @@ class Account {
     }
 
     receiveTx(address, privKey) {
-        return new Promise((res, rej) => {
-            this.Vite.Ledger.getReceiveBlock(address).then((accountBlock)=>{
-                if (!accountBlock) {
-                    return res();
-                }
-    
-                let { hash, signature, pubKey } = this.Vite.Account.signTX(accountBlock, privKey);
-                accountBlock.hash = hash;
-                accountBlock.publicKey = Buffer.from(pubKey).toString('base64');
-                accountBlock.signature = Buffer.from(signature).toString('base64');
+        let dealAccountBlock = (accountBlock, res, rej) => {
+            if (!accountBlock) {
+                return res();
+            }
 
-                this.Vite['tx_sendRawTx'](accountBlock).then((data)=>{
-                    return res(data);
-                }).catch((err)=>{
-                    return rej(err);
-                });
+            let { hash, signature, pubKey } = this.Vite.Account.signTX(accountBlock, privKey);
+            accountBlock.hash = hash;
+            accountBlock.publicKey = Buffer.from(pubKey).toString('base64');
+            accountBlock.signature = Buffer.from(signature).toString('base64');
+
+            this.Vite['tx_sendRawTx'](accountBlock).then((data)=>{
+                return res(data);
             }).catch((err)=>{
+                return rej(err);
+            });
+        };
+
+        return new Promise((res, rej) => {
+            this.Vite.Ledger.getReceiveBlock(address, false).then((accountBlock)=>{
+                dealAccountBlock(accountBlock, res, rej);
+            }).catch((err)=>{
+                if (err && err.error && err.error.code && err.error.code === -35002) {
+                    this.Vite.Ledger.getReceiveBlock(address).then((accountBlock)=>{
+                        dealAccountBlock(accountBlock, res, rej);
+                    }).catch((err)=>{
+                        rej(err);
+                    });
+                    return;
+                }
                 return rej(err);
             });
         });
