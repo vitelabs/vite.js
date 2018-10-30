@@ -1,7 +1,9 @@
 export default {
     wallet: [
-        'listAddress', 'newAddress', 'status', 'unlockAddress', 'lockAddress', 
-        'reloadAndFixAddressFile', 'isMayValidKeystoreFile', 'getDataDir', 'createTxWithPassphrase'
+        'listEntropyFilesInStandardDir', 'listAllEntropyFiles', 'unlock', 'lock', 
+        'listEntropyStoreAddresses', 'newMnemonicAndEntropyStore', 'deriveForIndexPath',
+        'recoverEntropyStoreFromMnemonic', 'globalCheckAddrUnlocked', 'isAddrUnlocked', 
+        'isUnlocked', 'findAddr', 'globalFindAddr', 'createTxWithPassphrase', 'addEntropyStore'
     ],
     net: [
         'syncInfo', 'peers'
