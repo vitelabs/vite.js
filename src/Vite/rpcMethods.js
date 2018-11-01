@@ -34,7 +34,8 @@ export default {
     ],
     ledger: [
         'getBlocksByAccAddr', 'getAccountByAccAddr', 'getLatestSnapshotChainHash', 
-        'getLatestBlock', 'getTokenMintage', 'getBlocksByHash', 'getSnapshotChainHeight'
+        'getLatestBlock', 'getTokenMintage', 'getBlocksByHash', 'getSnapshotChainHeight',
+        'getFittestSnapshotHash'
     ],
     pow: [
         'getPowNonce'
