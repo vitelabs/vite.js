@@ -1,6 +1,6 @@
 {
     "name": "@vitelabs/vite.js",
-    "version": "0.0.1-alpha3",
+    "version": "0.0.1-alpha4",
     "description": "",
     "main": "dist/es5/src/index.js",
     "scripts": {
