@@ -22,8 +22,14 @@ class WS_RPC extends IPC_WS {
         this.url = url;
         this.protocol = protocol;
         this.timeout = timeout;
+        this.headers = headers;
+        this.clientConfig = clientConfig;
 
-        this.socket = new websocket(url, protocol, undefined, headers, undefined, clientConfig);
+        this.reconnect();
+    }
+
+    reconnect() {
+        this.socket = new websocket(this.url, this.protocol, undefined, this.headers, undefined, this.clientConfig);
         this.socket.onopen = () => {
             (this.socket.readyState === this.socket.OPEN) && this._connected();
         };
