@@ -69,7 +69,7 @@ class Ledger extends basicStruct {
                 params: [addr]
             }, {
                 type: 'request',
-                methodName: 'ledger_getLatestSnapshotChainHash'
+                methodName: 'ledger_getFittestSnapshotHash'
             }]).then((data)=>{
                 if (!data) {
                     return res();
@@ -114,7 +114,7 @@ class Ledger extends basicStruct {
             params: [ fromAddr ]
         }, {
             type: 'request',
-            methodName: 'ledger_getLatestSnapshotChainHash'
+            methodName: 'ledger_getFittestSnapshotHash'
         }];
 
         if (pledgeType) {
