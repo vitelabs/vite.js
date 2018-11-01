@@ -36,9 +36,6 @@ export default {
         'getBlocksByAccAddr', 'getAccountByAccAddr', 'getLatestSnapshotChainHash', 
         'getLatestBlock', 'getTokenMintage', 'getBlocksByHash', 'getSnapshotChainHeight'
     ],
-    pow: [
-        'getPowNonce'
-    ],
     tx: [
         'sendRawTx'
     ]

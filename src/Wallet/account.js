@@ -32,13 +32,13 @@ class Account {
         return this.addrList;
     }
 
-    autoReceiveTX(address, privKey) {
+    autoReceiveTX(address, privKey, powDifficulty) {
         this.addrList = this.addrList || [];
         if (this.addrList.indexOf(address) >= 0) {
             return;
         }
         this.addrList.push(address);
-        loopAddr.call(this, address, privKey);
+        loopAddr.call(this, address, privKey, powDifficulty);
     }
 
     stopAutoReceiveTX(address) {
@@ -49,7 +49,7 @@ class Account {
         this.addrList.splice(i, 1);
     }
 
-    receiveTx(address, privKey) {
+    receiveTx(address, privKey, powDifficulty) {
         let signTX = (accountBlock) => {
             let { hash, signature, pubKey } = this.Vite.Account.signTX(accountBlock, privKey);
             accountBlock.hash = hash;
@@ -75,7 +75,7 @@ class Account {
             this.Vite.Ledger.getReceiveBlock(address, false).then((accountBlock)=>{
                 sendRawTx(accountBlock, res, (err) => {
                     if (err && err.error && err.error.code && err.error.code === -35002) {
-                        this.Vite.Ledger.getReceiveBlock(address, true).then((accountBlock)=>{
+                        this.Vite.Ledger.getReceiveBlock(address, powDifficulty).then((accountBlock)=>{
                             sendRawTx(accountBlock, res, rej);
                         }).catch((err)=>{
                             return rej(err);
@@ -182,7 +182,7 @@ class Account {
 
 export default Account;
 
-function loopAddr(address, privKey) {
+function loopAddr(address, privKey, powDifficulty) {
     if (this.addrList.indexOf(address) < 0) {
         return;
     }
@@ -191,11 +191,11 @@ function loopAddr(address, privKey) {
         let loopTimeout = setTimeout(()=>{
             clearTimeout(loopTimeout);
             loopTimeout = null;
-            loopAddr.call(this, address, privKey);
+            loopAddr.call(this, address, privKey, powDifficulty);
         }, loopTime);
     };
 
-    this.receiveTx(address, privKey).then(()=>{
+    this.receiveTx(address, privKey, powDifficulty).then(()=>{
         loop();
     }).catch((err)=>{
         console.warn(err);

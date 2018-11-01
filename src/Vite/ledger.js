@@ -57,7 +57,7 @@ class Ledger extends basicStruct {
         });
     }
 
-    getReceiveBlock(addr, isGetPow = true) {
+    getReceiveBlock(addr, powDifficulty) {
         return new Promise((res, rej) => {
             this.provider.batch([{
                 type: 'request',                    
@@ -84,16 +84,17 @@ class Ledger extends basicStruct {
                 }
     
                 let block = blocks[0];
-                let baseTx = getBaseTx(addr, latestBlock, latestSnapshotChainHash);
+                let baseTx = getBaseTx(addr, latestBlock, latestSnapshotChainHash, powDifficulty);
                 baseTx.blockType = 4;
                 baseTx.data = null;
                 baseTx.fromBlockHash = block.hash || '';
     
-                if (!isGetPow) {
+                if (!powDifficulty) {
                     return res(baseTx);
                 }
 
-                getNonce.call(this, addr, baseTx.prevHash, baseTx).then((data) => {
+                baseTx.difficulty = powDifficulty;
+                getNonce.call(this, addr, baseTx).then((data) => {
                     return res(data);
                 }).catch((err) => {
                     return rej(err);
@@ -106,7 +107,7 @@ class Ledger extends basicStruct {
 
     getSendBlock({
         fromAddr, toAddr, tokenId, amount, message
-    }, pledgeType = '', isGetPow = false) {
+    }, pledgeType = '', powDifficulty) {
         let requests = [{
             type: 'request',
             methodName: 'ledger_getLatestBlock',
@@ -153,11 +154,12 @@ class Ledger extends basicStruct {
                 pledgeType !== 'getCancel' && (baseTx.amount = amount);
                 baseTx.blockType = 2;
     
-                if (!isGetPow) {
+                if (!powDifficulty) {
                     return res(baseTx);
                 }
 
-                getNonce.call(this, fromAddr, baseTx.prevHash, baseTx).then((data)=>{
+                baseTx.difficulty = powDifficulty;
+                getNonce.call(this, fromAddr, baseTx).then((data)=>{
                     return res(data);
                 }).catch((err) => {
                     return rej(err);
@@ -181,7 +183,6 @@ function getBaseTx(accountAddress, latestBlock, snapshotHash) {
         height,
         timestamp,
         snapshotHash,
-        difficulty: '65535',    // 18446743798831644672
         fee: '0'
     };
     baseTx.prevHash = latestBlock && latestBlock.hash ? latestBlock.hash : defaultHash;
@@ -189,8 +190,8 @@ function getBaseTx(accountAddress, latestBlock, snapshotHash) {
     return baseTx;
 }
 
-function getNonce(addr, prevHash, baseTx) {
-    let prev = prevHash || defaultHash;
+function getNonce(addr, baseTx) {
+    let prev = baseTx.prevHash || defaultHash;
     let realAddr = address.getAddrFromHexAddr(addr);
     let hash = libUtils.bytesToHex(blake.blake2b(realAddr + prev, null, 32));
 
