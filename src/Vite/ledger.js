@@ -306,23 +306,3 @@ class Ledger extends basicStruct {
 }
 
 export default Ledger;
-
-// if (!powDifficulty) {
-// }
-
-// baseTx.difficulty = powDifficulty;
-// getNonce.call(this, fromAddr, baseTx).then((data)=>{
-//     return res(data);
-// }).catch((err) => {
-//     return rej(err);
-// });
-// function getNonce(addr, baseTx) {
-//     let prev = baseTx.prevHash || defaultHash;
-//     let realAddr = address.getAddrFromHexAddr(addr);
-//     let hash = libUtils.bytesToHex(blake.blake2b(realAddr + prev, null, 32));
-
-//     return this.provider.request('pow_getPowNonce', [baseTx.difficulty, hash]).then((data) => {
-//         baseTx.nonce = data.result;
-//         return baseTx;
-//     });
-// }
