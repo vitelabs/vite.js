@@ -7,6 +7,10 @@ import address from '../address';
 const rootPath = 'm/44\'/666666\'';
 
 class Address {
+    getAddrFromHexAddr(hexAddr) {
+        return address.getAddrFromHexAddr(hexAddr);
+    }
+
     getEntropyFromMnemonic(mnemonic) {
         let valid = bip39.validateMnemonic(mnemonic);
         if (!valid) {

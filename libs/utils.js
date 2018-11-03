@@ -1,3 +1,5 @@
+let blake = require('blakejs/blake2b');
+
 export default {
     bytesToHex(arr = []) {
         let hexArr = Array.prototype.map.call(arr, function (bit) {
@@ -59,5 +61,6 @@ export default {
         }
     
         return new Uint8Array(back);
-    }
+    },
+    blake2b: blake.blake2b
 };

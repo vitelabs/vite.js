@@ -32,13 +32,13 @@ class Account {
         return this.addrList;
     }
 
-    autoReceiveTX(address, privKey, powDifficulty) {
+    autoReceiveTX(address, privKey, CB) {
         this.addrList = this.addrList || [];
         if (this.addrList.indexOf(address) >= 0) {
             return;
         }
         this.addrList.push(address);
-        loopAddr.call(this, address, privKey, powDifficulty);
+        loopAddr.call(this, address, privKey, CB);
     }
 
     stopAutoReceiveTX(address) {
@@ -47,47 +47,6 @@ class Account {
             return;
         }
         this.addrList.splice(i, 1);
-    }
-
-    receiveTx(address, privKey, powDifficulty) {
-        let signTX = (accountBlock) => {
-            let { hash, signature, pubKey } = this.Vite.Account.signTX(accountBlock, privKey);
-            accountBlock.hash = hash;
-            accountBlock.publicKey = Buffer.from(pubKey).toString('base64');
-            accountBlock.signature = Buffer.from(signature).toString('base64');
-            return accountBlock;
-        };
-
-        let sendRawTx = (accountBlock, res, rej) => {
-            if (!accountBlock) {
-                return res();
-            }
-
-            accountBlock = signTX(accountBlock);
-            this.Vite['tx_sendRawTx'](accountBlock).then((data)=>{
-                return res(data);
-            }).catch((err)=>{
-                return rej(err);
-            });
-        };
-
-        return new Promise((res, rej) => {
-            this.Vite.Ledger.getReceiveBlock(address, false).then((accountBlock)=>{
-                sendRawTx(accountBlock, res, (err) => {
-                    if (err && err.error && err.error.code && err.error.code === -35002) {
-                        this.Vite.Ledger.getReceiveBlock(address, powDifficulty).then((accountBlock)=>{
-                            sendRawTx(accountBlock, res, rej);
-                        }).catch((err)=>{
-                            return rej(err);
-                        });
-                        return;
-                    }
-                    return rej(err);
-                });
-            }).catch((err)=>{
-                return rej(err);
-            });
-        });
     }
 
     sendRawTx(accountBlock, privKey) {
@@ -182,7 +141,7 @@ class Account {
 
 export default Account;
 
-function loopAddr(address, privKey, powDifficulty) {
+function loopAddr(address, privKey, CB) {
     if (this.addrList.indexOf(address) < 0) {
         return;
     }
@@ -191,15 +150,43 @@ function loopAddr(address, privKey, powDifficulty) {
         let loopTimeout = setTimeout(()=>{
             clearTimeout(loopTimeout);
             loopTimeout = null;
-            loopAddr.call(this, address, privKey, powDifficulty);
+            loopAddr.call(this, address, privKey, CB);
         }, loopTime);
     };
 
-    this.receiveTx(address, privKey, powDifficulty).then(()=>{
+    receiveTx.call(this, address, privKey, CB).then(()=>{
         loop();
     }).catch((err)=>{
         console.warn(err);
         loop();
+    });
+}
+
+function receiveTx(address, privKey, errorCb) {
+    return new Promise((res, rej) => {
+        this.Vite['onroad_getOnroadBlocksByAddress'](address, 0, 1).then((data) => {
+            if (!data || !data.result || !data.result.length) {
+                return res();
+            }
+
+            this.Vite.Ledger.receiveBlock({
+                accountAddress: address, 
+                blockHash: data.result[0].hash
+            }).then((accountBlock)=>{
+                this.sendRawTx(accountBlock, privKey).then((data)=> {
+                    res(data);
+                }).catch((err)=>{
+                    if (!errorCb) {
+                        return rej(err);
+                    }
+                    errorCb(err, accountBlock, res, rej);
+                });
+            }).catch((err)=>{
+                return rej(err);
+            });
+        }).catch((err) => {
+            return rej(err);
+        });
     });
 }
 
