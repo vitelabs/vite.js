@@ -5,6 +5,8 @@ import basicStruct from './basicStruct.js';
 
 const defaultHash = libUtils.bytesToHex(new BigNumber(0).toArray('big', 32));
 const Pledge_Addr = 'vite_000000000000000000000000000000000000000309508ba646';
+const Vote_Addr = 'vite_000000000000000000000000000000000000000270a48cc491';
+const Register_Addr = 'vite_0000000000000000000000000000000000000001c9e9f25417';
 const Gid = '00000000000000000001';
 
 class Ledger extends basicStruct {
@@ -206,9 +208,8 @@ class Ledger extends basicStruct {
 
             return this.getAccountBlock({
                 blockType: 2,
-                accountAddress, 
-                // tokenId,
-                toAddress: Pledge_Addr,
+                accountAddress,
+                toAddress: Vote_Addr,
                 data: data.result
             });
         });
@@ -225,15 +226,14 @@ class Ledger extends basicStruct {
             return this.getAccountBlock({
                 blockType: 2,
                 accountAddress, 
-                // tokenId,
-                toAddress: Pledge_Addr,
+                toAddress: Vote_Addr,
                 data: data.result
             });
         });
     }
 
     registerBlock({
-        accountAddress, nodeName, producerAddr
+        accountAddress, nodeName, producerAddr, amount, tokenId
     }) {
         return this.provider.request('register_getRegisterData', [Gid, nodeName, producerAddr]).then((data) => {
             if (!data || !data.result) {
@@ -243,15 +243,15 @@ class Ledger extends basicStruct {
             return this.getAccountBlock({
                 blockType: 2,
                 accountAddress, 
-                // tokenId,
-                toAddress: Pledge_Addr,
-                data: data.result
+                toAddress: Register_Addr,
+                data: data.result,
+                tokenId, amount
             });
         });
     }
 
     updateRegisterBlock({
-        accountAddress, nodeName, producerAddr
+        accountAddress, nodeName, producerAddr, amount, tokenId
     }) {
         return this.provider.request('register_getUpdateRegistrationData', [Gid, nodeName, producerAddr]).then((data) => {
             if (!data || !data.result) {
@@ -261,15 +261,15 @@ class Ledger extends basicStruct {
             return this.getAccountBlock({
                 blockType: 2,
                 accountAddress, 
-                // tokenId,
-                toAddress: Pledge_Addr,
-                data: data.result
+                toAddress: Register_Addr,
+                data: data.result,
+                tokenId, amount
             });
         });
     }
 
     cancelRegisterBlock({
-        accountAddress, nodeName
+        accountAddress, nodeName, tokenId
     }) {
         return this.provider.request('register_getCancelRegisterData', [Gid, nodeName]).then((data) => {
             if (!data || !data.result) {
@@ -278,10 +278,10 @@ class Ledger extends basicStruct {
 
             return this.getAccountBlock({
                 blockType: 2,
-                accountAddress, 
-                // tokenId,
-                toAddress: Pledge_Addr,
-                data: data.result
+                accountAddress,                 
+                toAddress: Register_Addr,
+                data: data.result,
+                tokenId
             });
         });
     }
@@ -296,9 +296,8 @@ class Ledger extends basicStruct {
 
             return this.getAccountBlock({
                 blockType: 2,
-                accountAddress, 
-                // tokenId,
-                toAddress: Pledge_Addr,
+                accountAddress,        
+                toAddress: Register_Addr,
                 data: data.result
             });
         });
