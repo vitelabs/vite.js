@@ -19,8 +19,8 @@ export default {
         'getPledgeData', 'getCancelPledgeData', 'getPledgeQuota', 'getPledgeList'
     ],
     register: [
-        'getSignDataForRegister', 'getRegisterData', 'getCancelRegisterData', 
-        'getRewardData', 'getUpdateRegistrationData'
+        'getRegistrationList', 'getRegisterData', 'getCancelRegisterData', 
+        'getRewardData', 'getUpdateRegistrationData', 'getCandidateList'
     ],
     vote: [
         'getVoteData', 'getCancelVoteData'

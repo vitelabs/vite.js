@@ -7,7 +7,6 @@ const defaultHash = libUtils.bytesToHex(new BigNumber(0).toArray('big', 32));
 const Pledge_Addr = 'vite_000000000000000000000000000000000000000309508ba646';
 const Vote_Addr = 'vite_000000000000000000000000000000000000000270a48cc491';
 const Register_Addr = 'vite_0000000000000000000000000000000000000001c9e9f25417';
-const Gid = '00000000000000000001';
 
 class Ledger extends basicStruct {
     constructor(provider) {
@@ -199,7 +198,7 @@ class Ledger extends basicStruct {
     }
 
     voteBlock({
-        accountAddress, nodeName
+        accountAddress, nodeName, Gid
     }) {
         return this.provider.request('vote_getVoteData', [Gid, nodeName]).then((data) => {
             if (!data || !data.result) {
@@ -216,7 +215,7 @@ class Ledger extends basicStruct {
     }
 
     cancelVoteBlock({
-        accountAddress
+        accountAddress, Gid
     }) {
         return this.provider.request('vote_getCancelVoteData', Gid).then((data) => {
             if (!data || !data.result) {
@@ -233,7 +232,7 @@ class Ledger extends basicStruct {
     }
 
     registerBlock({
-        accountAddress, nodeName, producerAddr, amount, tokenId
+        accountAddress, nodeName, producerAddr, amount, tokenId, Gid
     }) {
         return this.provider.request('register_getRegisterData', [Gid, nodeName, producerAddr]).then((data) => {
             if (!data || !data.result) {
@@ -251,7 +250,7 @@ class Ledger extends basicStruct {
     }
 
     updateRegisterBlock({
-        accountAddress, nodeName, producerAddr, amount, tokenId
+        accountAddress, nodeName, producerAddr, amount, tokenId, Gid
     }) {
         return this.provider.request('register_getUpdateRegistrationData', [Gid, nodeName, producerAddr]).then((data) => {
             if (!data || !data.result) {
@@ -269,7 +268,7 @@ class Ledger extends basicStruct {
     }
 
     cancelRegisterBlock({
-        accountAddress, nodeName, tokenId
+        accountAddress, nodeName, tokenId, Gid
     }) {
         return this.provider.request('register_getCancelRegisterData', [Gid, nodeName]).then((data) => {
             if (!data || !data.result) {
@@ -287,7 +286,7 @@ class Ledger extends basicStruct {
     }
 
     rewardBlock({
-        accountAddress, nodeName, rewardAddress
+        accountAddress, nodeName, rewardAddress, Gid
     }) {
         return this.provider.request('register_getRewardData', [Gid, nodeName, rewardAddress]).then((data) => {
             if (!data || !data.result) {
