@@ -23,7 +23,7 @@ export default {
         'getRewardData', 'getUpdateRegistrationData', 'getCandidateList'
     ],
     vote: [
-        'getVoteData', 'getCancelVoteData'
+        'getVoteData', 'getCancelVoteData','getVoteInfo'
     ],
     mintage: [
         'getMintageData', 'getMintageCancelPledgeData'
