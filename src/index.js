@@ -1,3 +1,4 @@
+import '@babel/polyfill';
 require('es6-promise').polyfill();
 
 import Vite from './Vite/index.js';
