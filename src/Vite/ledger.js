@@ -198,7 +198,7 @@ class Ledger extends basicStruct {
     }
 
     voteBlock({
-        accountAddress, nodeName, Gid
+        accountAddress, nodeName, Gid,tokenId
     }) {
         return this.provider.request('vote_getVoteData', [Gid, nodeName]).then((data) => {
             if (!data || !data.result) {
@@ -209,6 +209,7 @@ class Ledger extends basicStruct {
                 blockType: 2,
                 accountAddress,
                 toAddress: Vote_Addr,
+                tokenId,
                 data: data.result
             });
         });
