@@ -84,7 +84,7 @@ function getSource(accountBlock) {
 }
 
 function getRawTokenid(tokenId) {
-    if (tokenId.indexOf('tti_') !== 0) {
+    if (!tokenId||tokenId.indexOf('tti_') !== 0) {
         return null;
     }
     return tokenId.slice(4, tokenId.length - 4);
