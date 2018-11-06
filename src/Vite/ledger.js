@@ -209,16 +209,16 @@ class Ledger extends basicStruct {
                 blockType: 2,
                 accountAddress,
                 toAddress: Vote_Addr,
-                tokenId,
-                data: data.result
+                data: data.result,
+                tokenId
             });
         });
     }
 
     cancelVoteBlock({
-        accountAddress, Gid
+        accountAddress, Gid,tokenId
     }) {
-        return this.provider.request('vote_getCancelVoteData', Gid).then((data) => {
+        return this.provider.request('vote_getCancelVoteData', [Gid]).then((data) => {
             if (!data || !data.result) {
                 return Promise.reject(data);
             }
@@ -227,7 +227,8 @@ class Ledger extends basicStruct {
                 blockType: 2,
                 accountAddress, 
                 toAddress: Vote_Addr,
-                data: data.result
+                data: data.result,
+                tokenId
             });
         });
     }
