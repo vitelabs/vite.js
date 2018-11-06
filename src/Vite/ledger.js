@@ -250,7 +250,7 @@ class Ledger extends basicStruct {
     }
 
     updateRegisterBlock({
-        accountAddress, nodeName, producerAddr, amount, tokenId, Gid
+        accountAddress, nodeName, producerAddr, tokenId, Gid
     }) {
         return this.provider.request('register_getUpdateRegistrationData', [Gid, nodeName, producerAddr]).then((data) => {
             if (!data || !data.result) {
@@ -262,7 +262,7 @@ class Ledger extends basicStruct {
                 accountAddress, 
                 toAddress: Register_Addr,
                 data: data.result,
-                tokenId, amount
+                tokenId
             });
         });
     }
@@ -286,7 +286,7 @@ class Ledger extends basicStruct {
     }
 
     rewardBlock({
-        accountAddress, nodeName, rewardAddress, Gid
+        accountAddress, nodeName, rewardAddress, Gid, tokenId
     }) {
         return this.provider.request('register_getRewardData', [Gid, nodeName, rewardAddress]).then((data) => {
             if (!data || !data.result) {
@@ -297,7 +297,8 @@ class Ledger extends basicStruct {
                 blockType: 2,
                 accountAddress,        
                 toAddress: Register_Addr,
-                data: data.result
+                data: data.result,
+                tokenId
             });
         });
     }
