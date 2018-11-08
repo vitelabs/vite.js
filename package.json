@@ -1,6 +1,6 @@
 {
     "name": "@vite/vite.js",
-    "version": "0.0.1",
+    "version": "0.0.2-0",
     "description": "",
     "main": "dist/es5/src/index.js",
     "scripts": {
