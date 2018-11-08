@@ -193,7 +193,7 @@ function getBaseTx(accountAddress, latestBlock, snapshotHash) {
 function getNonce(addr, baseTx) {
     let prev = baseTx.prevHash || defaultHash;
     let realAddr = address.getAddrFromHexAddr(addr);
-    let hash = libUtils.bytesToHex(blake.blake2b(realAddr + prev, null, 32));
+    let hash = libUtils.bytesToHex(blake.blake2b(libUtils.hexToBytes(realAddr + prev), null, 32));
 
     return this.provider.request('pow_getPowNonce', [baseTx.difficulty, hash]).then((data) => {
         baseTx.nonce = data.result;
