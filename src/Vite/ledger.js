@@ -1,12 +1,8 @@
 import BigNumber from 'bn.js';
-import address from '../address';
-import libUtils from '../../libs/utils';
+import address from '../../address';
 import basicStruct from './basicStruct.js';
-
-const defaultHash = libUtils.bytesToHex(new BigNumber(0).toArray('big', 32));
-const Pledge_Addr = 'vite_000000000000000000000000000000000000000309508ba646';
-const Vote_Addr = 'vite_000000000000000000000000000000000000000270a48cc491';
-const Register_Addr = 'vite_0000000000000000000000000000000000000001c9e9f25417';
+import {defaultHash,Pledge_Addr,Vote_Addr,Register_Addr} from 'const/address';
+import encoder from 'utils/encoder';
 
 class Ledger extends basicStruct {
     constructor(provider) {
@@ -123,7 +119,7 @@ class Ledger extends basicStruct {
             };
 
             if (message) {
-                let utf8bytes = libUtils.utf8ToBytes(message);
+                let utf8bytes = encoder.utf8ToBytes(message);
                 let base64Str = Buffer.from(utf8bytes).toString('base64');
                 accountBlock.data = base64Str;
             } else {

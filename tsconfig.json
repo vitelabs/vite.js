@@ -1,0 +1,23 @@
+{
+    "compilerOptions": {
+        "module": "es2015",
+        "noImplicitAny": true,
+        "removeComments": true,
+        "preserveConstEnums": true,
+        "sourceMap": true,
+        "moduleResolution": "node",
+        "resolveJsonModule": true,
+        "baseUrl": "./src",
+        "paths": {
+        }
+    },
+    "include": [
+        "src/**/*",
+        "utils/**/*",
+        "libs/**/*"
+    ],
+    "exclude": [
+        "node_modules",
+        "**/*.spec.ts"
+    ]
+}

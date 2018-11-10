@@ -1,5 +1,4 @@
 import Version from './version.js';
-import Account from './account.js';
 import Ledger from './ledger.js';
 import Methods from './rpcMethods';
 
@@ -17,7 +16,6 @@ class Vite {
         }
 
         this.Version = new Version(provider);
-        this.Account = new Account(provider);
         this.Ledger = new Ledger(provider);
     }
 

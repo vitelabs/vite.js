@@ -1,12 +1,9 @@
 let blake = require('blakejs/blake2b');
 let nacl = require('@sisi/tweetnacl-blake2b');
 
-import utils from '../libs/utils';
+import encoder from './encoder';
+import {ADDR_PRE,ADDR_SIZE,ADDR_CHECK_SUM_SIZE,ADDR_LEN} from './const/address'
 
-const ADDR_PRE = 'vite_';
-const ADDR_SIZE = 20;
-const ADDR_CHECK_SUM_SIZE = 5;
-const ADDR_LEN = ADDR_PRE.length + ADDR_SIZE*2 + ADDR_CHECK_SUM_SIZE*2;
 
 export default {
     newHexAddr(priv) {
@@ -19,11 +16,11 @@ export default {
         let checkSum = getAddrCheckSum(addr);
 
         // HumanReadableAddress = 'vite_' + Hex(address + checkSum)
-        addr = utils.bytesToHex(addr);
+        addr = encoder.bytesToHex(addr);
         return {
             addr,
-            pubKey: utils.bytesToHex( privToPub(privKey) ),
-            privKey: utils.bytesToHex(privKey),
+            pubKey: encoder.bytesToHex( privToPub(privKey) ),
+            privKey: encoder.bytesToHex(privKey),
             hexAddr: ADDR_PRE + addr + checkSum
         };
     },
@@ -44,7 +41,7 @@ function isValidHexAddr(hexAddr) {
     }
 
     let pre = hexAddr.slice(ADDR_PRE.length, ADDR_PRE.length + ADDR_SIZE * 2);
-    let addr = utils.hexToBytes(pre); 
+    let addr = encoder.hexToBytes(pre); 
 
     let currentChecksum = hexAddr.slice(ADDR_PRE.length + ADDR_SIZE * 2);
     let checkSum = getAddrCheckSum(addr);
@@ -63,7 +60,7 @@ function privToPub(privKey) {
 function newAddr(privKey) {
     let addr = '';
     if (privKey) {
-        privKey = privKey instanceof ArrayBuffer ? privKey : utils.hexToBytes(privKey);
+        privKey = privKey instanceof ArrayBuffer ? privKey : encoder.hexToBytes(privKey);
         addr = newAddrFromPriv(privKey);
     } else {
         let keyPair = nacl.sign.keyPair();
