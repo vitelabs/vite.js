@@ -1,23 +1,25 @@
 let blake = require('blakejs/blake2b');
-
+declare enum Charset{
+    utf16="utf16",
+    utf8="utf8"
+}
 export default {
-    bytesToHex(arr = []) {
-        let hexArr = Array.prototype.map.call(arr, function (bit) {
+    bytesToHex(arr:Uint8Array = new Uint8Array([])) {
+        let hexArr = Array.prototype.map.call(arr, function (bit:Number) {
             return ('00' + bit.toString(16)).slice(-2);
         });
         return hexArr.join('');
     },
-    hexToBytes(hex) {
+    hexToBytes(hex:String) {
         let typedArray = new Uint8Array(hex.match(/[\da-f]{2}/gi).map(function (h) {
             return parseInt(h, 16);
         }));
         return typedArray;
     },
-    getBytesSize(str, charset){
+    getBytesSize(str:String, charset:Charset=Charset.utf8){
         var total = 0, code, i, len;
-        charset = charset ? charset.toLowerCase() : '';
 
-        if (charset === 'utf-16' || charset === 'utf16'){
+        if (charset === Charset.utf16){
             for (i = 0, len = str.length; i < len; i++) {
                 code = str.charCodeAt(i);
                 total += code <= 0xffff ? 2 : 4;

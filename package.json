@@ -64,7 +64,7 @@
         "@sisi/ed25519-blake2b-hd-key": "^1.0.2",
         "@sisi/tweetnacl-blake2b": "^1.0.0",
         "@types/bn.js": "^4.11.3",
-        "@types/node": "^10.12.4",
+        "@types/node": "^10.12.5",
         "bip39": "^2.5.0",
         "blakejs": "^1.1.0",
         "bn.js": "^4.11.8",
