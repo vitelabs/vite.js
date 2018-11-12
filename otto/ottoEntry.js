@@ -7,17 +7,17 @@ if (b_vite) {
             try {
                 var res = b_vite.send(Method, Params);
             } catch (e) {
-                return Promise.reject(e);
+                return JSON.stringify(e);
             }
-            return Promise.resolve(res);
+            return JSON.stringify(res);
         },
         batch(batchedReq) {
             try {
                 var res = b_vite.send(batchedReq);
             } catch (e) {
-                return Promise.reject(e);
+                return JSON.stringify(e);
             }
-            return Promise.resolve(res);
+            return JSON.stringify(res);
         }
     };
 }else{
