@@ -1,8 +1,8 @@
 const hd = require('@sisi/ed25519-blake2b-hd-key');
 
 import bip39 from 'bip39';
-import libUtils from '../../libs/utils';
-import address from '../address';
+import encoder from 'utils/encoder';
+import address from 'utils/address';
 
 const rootPath = 'm/44\'/666666\'';
 
@@ -75,6 +75,6 @@ export default Address;
 function getAddrFromPath(path, seed) {
     let { key } = hd.derivePath(path, seed);
     let { privateKey } = hd.getPublicKey(key);
-    let priv = libUtils.bytesToHex(privateKey);
+    let priv = encoder.bytesToHex(privateKey);
     return address.newHexAddr(priv);
 }

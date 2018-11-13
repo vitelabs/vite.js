@@ -9,6 +9,8 @@
         "resolveJsonModule": true,
         "baseUrl": "./src",
         "paths": {
+            "const":["./const"],
+            "utils":["./utils"]
         }
     },
     "include": [

@@ -1,7 +1,7 @@
 // Compatible with the wallet-client keystore
 
-import libUtils from '../../libs/utils';
-import address from '../address.js';
+import encoder from 'utils/encoder';
+import address from 'utils/address';
 
 const uuid = require('pure-uuid');
 const scryptsy = require('scryptsy');
@@ -37,7 +37,7 @@ class keystore {
             r: this.scryptR,
             p: this.p,
             keylen: this.scryptKeyLen,
-            salt: libUtils.bytesToHex(nacl.randomBytes(32)),
+            salt: encoder.bytesToHex(nacl.randomBytes(32)),
         };
         let encryptPwd = encryptKey(pwd, scryptParams);
 
@@ -54,7 +54,7 @@ class keystore {
             KDF: scryptName,
             ScryptParams: scryptParams,
             CipherText: text,
-            Nonce: libUtils.bytesToHex(nonce)
+            Nonce: encoder.bytesToHex(nonce)
         };
     
         let encryptedKeyJSON = {
@@ -70,7 +70,7 @@ class keystore {
 
     isValid(keystore) {
         // Out keystore file size is about 500 so if a file is very large it must not be a keystore file
-        if (libUtils.getBytesSize(keystore) > 2 * 1024) {
+        if (encoder.getBytesSize(keystore) > 2 * 1024) {
             return false;
         }
     
@@ -113,9 +113,9 @@ class keystore {
                 return false;
             }
 
-            libUtils.hexToBytes(crypto.ciphertext);
-            libUtils.hexToBytes(crypto.nonce);
-            libUtils.hexToBytes(crypto.scryptparams.salt);
+            encoder.hexToBytes(crypto.ciphertext);
+            encoder.hexToBytes(crypto.nonce);
+            encoder.hexToBytes(crypto.scryptparams.salt);
         } catch(err) {
             console.warn(err);
             return false;
@@ -136,11 +136,11 @@ class keystore {
 
         let privKey;
         try {
-            const decipher = crypto.createDecipheriv(keyJson.crypto.ciphername, encryptPwd, libUtils.hexToBytes(keyJson.crypto.nonce));
-            decipher.setAuthTag( libUtils.hexToBytes(tag) );
+            const decipher = crypto.createDecipheriv(keyJson.crypto.ciphername, encryptPwd, encoder.hexToBytes(keyJson.crypto.nonce));
+            decipher.setAuthTag( encoder.hexToBytes(tag) );
             decipher.setAAD(additionData);
     
-            privKey = decipher.update(libUtils.hexToBytes(ciphertext), 'utf8', 'hex');
+            privKey = decipher.update(encoder.hexToBytes(ciphertext), 'utf8', 'hex');
             privKey += decipher.final('hex');
         } catch(err) {
             console.warn(err);
@@ -155,7 +155,7 @@ export default keystore;
 
 function encryptKey(pwd, scryptParams) {
     let pwdBuff = Buffer.from(pwd);
-    let salt = libUtils.hexToBytes(scryptParams.salt);
+    let salt = encoder.hexToBytes(scryptParams.salt);
     salt = Buffer.from(salt);
     return scryptsy(pwdBuff, salt, +scryptParams.n, +scryptParams.r, +scryptParams.p, +scryptParams.keylen);
 }
@@ -164,7 +164,7 @@ function cipherText({ hexData, pwd, nonce, algorithm }) {
     let cipher = crypto.createCipheriv(algorithm, pwd, nonce);
     cipher.setAAD(additionData);
 
-    let ciphertext = cipher.update(libUtils.hexToBytes(hexData), 'utf8', 'hex');
+    let ciphertext = cipher.update(encoder.hexToBytes(hexData), 'utf8', 'hex');
     ciphertext += cipher.final('hex');
     let tag = cipher.getAuthTag().toString('hex');
 

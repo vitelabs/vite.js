@@ -1,5 +1,5 @@
 import BigNumber from 'bn.js';
-import address from '../../address';
+import address from 'utils/address';
 import basicStruct from './basicStruct.js';
 import {defaultHash,Pledge_Addr,Vote_Addr,Register_Addr} from 'const/address';
 import encoder from 'utils/encoder';

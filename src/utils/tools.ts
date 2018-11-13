@@ -4,7 +4,7 @@ let blake = require('blakejs/blake2b');
 import BigNumber from 'bn.js';
 import encoder from './encoder';
 import address from './address';
-import {defaultHash} from './const/address'
+import {defaultHash} from 'const/address'
 
 export default{
     signTX(accountBlock, privKey, type = 'byte') {
