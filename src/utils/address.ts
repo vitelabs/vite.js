@@ -6,7 +6,7 @@ import {ADDR_PRE,ADDR_SIZE,ADDR_CHECK_SUM_SIZE,ADDR_LEN} from 'const/address'
 
 
 export default {
-    newHexAddr(priv) {
+    newHexAddr(priv:String) {
         // address = Blake2b(PubKey)(len:20)
         let {
             addr, privKey
@@ -57,7 +57,7 @@ function privToPub(privKey) {
     return privKey.slice(32);
 }
 
-function newAddr(privKey) {
+function newAddr(privKey:String) {
     let addr = '';
     if (privKey) {
         privKey = privKey instanceof ArrayBuffer ? privKey : encoder.hexToBytes(privKey);
@@ -72,12 +72,12 @@ function newAddr(privKey) {
     return { addr, privKey };
 }
 
-function newAddrFromPub(pubKey) {
+function newAddrFromPub(pubKey:String) {
     let pre = blake.blake2b(pubKey, null, ADDR_SIZE);
     return pre;
 }
 
-function newAddrFromPriv(privKey) {
+function newAddrFromPriv(privKey:String) {
     return newAddrFromPub( privToPub(privKey) );
 }
 
