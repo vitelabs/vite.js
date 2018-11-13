@@ -5,7 +5,7 @@ if (b_vite) {
     var provider = {
         request(Method, Params = []) {
             try {
-                var res = b_vite.send(Method, Params);
+                var res = b_vite.send({Method, Params});
             } catch (e) {
                 return Promise.reject(e);
             }
