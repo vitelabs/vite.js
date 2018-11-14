@@ -1,8 +1,9 @@
+import Methods from '../src/Vite/rpcMethods';
+const stringifyObject = require('stringify-object');
 
-import Vite from '../src/Vite/index.js';
-
+var provider=null;
 if (b_vite) {
-    var provider = {
+    provider = {
         request(Method, Params = []) {
             try {
                 var res = b_vite.send({Method, Params});
@@ -23,6 +24,24 @@ if (b_vite) {
 }else{
     throw new Error('no global var "b_vite"' );
 }
-var vite = new Vite(provider);
+class Vite {
+    constructor(provider) {
+        this._currentProvider = provider;
+        const pretty = stringifyObject($vite_docs.help||{}, {
+            indent: '  ',
+            singleQuotes: false
+        });
+        this.help=pretty;
+        for (let namespace in Methods) {
+            Methods[namespace].forEach(name => {
+                let methodName = `${namespace}_${name}`;
+                this[methodName] = (...params) => {
+                    return this._currentProvider.request(methodName, params);
+                };
+                this[methodName].help=$vite_docs[namespace]&&$vite_docs[namespace][name]||'';
+            });
+        }
+    }
+}
 
-export default vite;
+export default new Vite(provider);
