@@ -26,7 +26,7 @@ if (b_vite) {
 class Vite {
     constructor(provider) {
         this._currentProvider = provider;
-        const pretty = JSON.stringify($vite_docs.help||{},undefined,'  ');
+        const pretty = $vite_docs.help||{};
         this.help=pretty;
         for (let namespace in Methods) {
             Methods[namespace].forEach(name => {
