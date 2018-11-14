@@ -125,6 +125,9 @@ gulp.task('build-otto', function () {
         .pipe(source(APP_NAME + '.js'))
         .pipe(gulp.dest(otto_BUILD_PATH))
         .pipe(streamify(uglify()))
+        .on('error', function (err) {
+            console.log('error:',err);
+        })
         .pipe(rename(APP_NAME + '.min.js'))
         .pipe(gulp.dest(otto_BUILD_PATH));
 });

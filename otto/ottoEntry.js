@@ -1,5 +1,4 @@
 import Methods from '../src/Vite/rpcMethods';
-const stringifyObject = require('stringify-object');
 
 var provider=null;
 if (b_vite) {
@@ -27,10 +26,7 @@ if (b_vite) {
 class Vite {
     constructor(provider) {
         this._currentProvider = provider;
-        const pretty = stringifyObject($vite_docs.help||{}, {
-            indent: '  ',
-            singleQuotes: false
-        });
+        const pretty = JSON.stringify($vite_docs.help||{},undefined,'  ');
         this.help=pretty;
         for (let namespace in Methods) {
             Methods[namespace].forEach(name => {
