@@ -14,7 +14,6 @@ class Communication {
         if (!abort) {
             return;
         }
-
         this._requestManager.forEach(({ request, rej }) => {
             request.abort();
             rej( this.ERRORS.ABORT() );
