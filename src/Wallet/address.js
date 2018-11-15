@@ -27,7 +27,8 @@ class Address {
         let mnemonic = bip39.generateMnemonic(256);
         let entropy = bip39.mnemonicToEntropy(mnemonic);
         let seed = bip39.mnemonicToSeedHex(mnemonic);
-        let addr = getAddrFromPath.call(this, rootPath, seed);
+        let path = `${rootPath}/0\'`;
+        let addr = getAddrFromPath.call(this, path, seed);
         return { addr, entropy };
     }
 
