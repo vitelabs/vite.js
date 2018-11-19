@@ -7,7 +7,7 @@ const crypto = typeof window !== 'undefined' ? require('browserify-aes') : requi
 
 const loopTime = 2000;
 const scryptName = 'scrypt';
-const len = 64;
+const len = 32;
 const versions = [1, 2];
 const algorithms = ['aes-256-gcm'];
 
@@ -111,7 +111,7 @@ class Account {
         };
         let encryptPwd = encryptKey(pwd, scryptParams);
 
-        let ciphertext = keyJson.encryptentropy.slice(0, len);
+        let ciphertext = keyJson.encryptentropy.slice(0, keyJson.encryptentropy.length - len);
         let tag = keyJson.encryptentropy.slice(len);
 
         let entropy;
@@ -275,6 +275,6 @@ function cipherText({ hexData, pwd, nonce, algorithm }) {
     let ciphertext = cipher.update(libUtils.hexToBytes(hexData), 'utf8', 'hex');
     ciphertext += cipher.final('hex');
     let tag = cipher.getAuthTag().toString('hex');
-
+    
     return ciphertext + tag;
 }

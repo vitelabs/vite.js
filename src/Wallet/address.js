@@ -23,8 +23,8 @@ class Address {
         return bip39.entropyToMnemonic(entropy);
     }
 
-    newAddr() {
-        let mnemonic = bip39.generateMnemonic(256);
+    newAddr(bits = 256) {
+        let mnemonic = bip39.generateMnemonic(bits);
         let entropy = bip39.mnemonicToEntropy(mnemonic);
         let seed = bip39.mnemonicToSeedHex(mnemonic);
         let path = `${rootPath}/0\'`;

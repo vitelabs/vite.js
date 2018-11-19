@@ -167,6 +167,6 @@ function cipherText({ hexData, pwd, nonce, algorithm }) {
     let ciphertext = cipher.update(libUtils.hexToBytes(hexData), 'utf8', 'hex');
     ciphertext += cipher.final('hex');
     let tag = cipher.getAuthTag().toString('hex');
-
+    
     return ciphertext + tag;
 }
