@@ -59,7 +59,9 @@ class Account {
         accountBlock.publicKey = Buffer.from(pubKey).toString('base64');
         accountBlock.signature = Buffer.from(signature).toString('base64');
 
-        return this.Vite['tx_sendRawTx'](accountBlock);
+        return this.Vite['tx_sendRawTx'](accountBlock).then(() => {
+            return accountBlock;
+        });
     }
 
     encrypt(key, pwd, scryptP) {
