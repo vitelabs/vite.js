@@ -64,7 +64,7 @@ class Account {
         });
     }
 
-    encrypt(key, pwd, scryptP) {
+    encrypt(key, pwd, scryptP, selfScryptsy) {
         let scryptParams = scryptP && scryptP.scryptParams ? scryptP.scryptParams : {
             n: scryptP && scryptP.n ? scryptP.n : this.n,
             r: scryptP && scryptP.r ? scryptP.r : this.scryptR,
@@ -72,36 +72,54 @@ class Account {
             keylen: scryptP && scryptP.keylen ? scryptP.keylen : this.scryptKeyLen,
             salt: scryptP && scryptP.salt ? scryptP.salt : libUtils.bytesToHex(nacl.randomBytes(32)),
         };
-        let encryptPwd = scryptP && scryptP.encryptPwd ? utils.hexToBytes(scryptP.encryptPwd) : encryptKey(pwd, scryptParams);
 
-        let nonce = nacl.randomBytes(12);
-        let encryptEntropy = cipherText({
-            hexData: key,
-            pwd: encryptPwd, 
-            nonce, 
-            algorithm: this.algorithm
+        let getResult = (encryptPwd, res, rej) => {
+            try {
+                let nonce = nacl.randomBytes(12);
+                let encryptEntropy = cipherText({
+                    hexData: key,
+                    pwd: encryptPwd, 
+                    nonce, 
+                    algorithm: this.algorithm
+                });
+        
+                let cryptoJSON = {
+                    cipherName: this.algorithm,
+                    KDF: scryptName,
+                    salt: scryptParams.salt,
+                    Nonce: libUtils.bytesToHex(nonce)
+                };
+            
+                let encryptedKeyJSON = {
+                    encryptEntropy,
+                    crypto: cryptoJSON,
+                    version: this.version,
+                    timestamp: new Date().getTime()
+                };
+                res(JSON.stringify(encryptedKeyJSON).toLocaleLowerCase());
+            } catch(err) {
+                rej(err);
+            }
+        };
+
+        return new Promise((res, rej) => {
+            if (scryptP && scryptP.encryptPwd ) {
+                let encryptPwd = utils.hexToBytes(scryptP.encryptPwd);
+                getResult(encryptPwd, res, rej);
+            } else {
+                encryptKey(pwd, scryptParams, selfScryptsy).then((result) => {
+                    getResult(result, res, rej);
+                }).catch((err) => {
+                    rej(err);
+                });
+            }
         });
-
-        let cryptoJSON = {
-            cipherName: this.algorithm,
-            KDF: scryptName,
-            salt: scryptParams.salt,
-            Nonce: libUtils.bytesToHex(nonce)
-        };
-    
-        let encryptedKeyJSON = {
-            encryptEntropy,
-            crypto: cryptoJSON,
-            version: this.version,
-            timestamp: new Date().getTime()
-        };
-        return JSON.stringify(encryptedKeyJSON).toLocaleLowerCase();
     }
 
-    decrypt(keystore, pwd) {
+    decrypt(keystore, pwd, selfScryptsy) {
         let keyJson = isValid(keystore);
         if (!keyJson) {
-            return false;
+            return Promise.reject(false);
         }
 
         let scryptParams = {
@@ -111,33 +129,46 @@ class Account {
             keylen: keystore.scryptParams ? keystore.scryptParams.scryptKeyLen || this.scryptKeyLen : this.scryptKeyLen,
             salt: keyJson.crypto.salt,
         };
-        let encryptPwd = encryptKey(pwd, scryptParams);
 
-        let ciphertext = keyJson.encryptentropy.slice(0, keyJson.encryptentropy.length - len);
-        let tag = keyJson.encryptentropy.slice(keyJson.encryptentropy.length - len);
-
-        let entropy;
-        try {
-            const decipher = crypto.createDecipheriv(keyJson.crypto.ciphername, encryptPwd, libUtils.hexToBytes(keyJson.crypto.nonce));
-            decipher.setAuthTag( libUtils.hexToBytes(tag) );
+        let getResult = (encryptPwd, res, rej) => {
+            let ciphertext = keyJson.encryptentropy.slice(0, keyJson.encryptentropy.length - len);
+            let tag = keyJson.encryptentropy.slice(keyJson.encryptentropy.length - len);
     
-            entropy = decipher.update(libUtils.hexToBytes(ciphertext), 'utf8', 'hex');
-            entropy += decipher.final('hex');
-        } catch(err) {
-            console.warn(err);
-            return false;
-        }
+            let entropy;
+            try {
+                const decipher = crypto.createDecipheriv(keyJson.crypto.ciphername, encryptPwd, libUtils.hexToBytes(keyJson.crypto.nonce));
+                decipher.setAuthTag( libUtils.hexToBytes(tag) );
+        
+                entropy = decipher.update(libUtils.hexToBytes(ciphertext), 'utf8', 'hex');
+                entropy += decipher.final('hex');
+            } catch(err) {
+                return rej(err);
+            }
+    
+            return res(entropy);
+        };
 
-        return entropy;
+        return new Promise((res, rej) => {
+            encryptKey(pwd, scryptParams, selfScryptsy).then((result) => {
+                getResult(result, res, rej);
+            }).catch((err) => {
+                rej(err);
+            });
+        });
     }
 
-    verify(scryptP, str) {
+    verify(scryptP, str, selfScryptsy) {
         if ( !isValidVersion1.call(this, scryptP) ) {
-            return false;
+            return Promise.reject(false);
         }
 
-        let encryptP = encryptKey(str, scryptP.scryptParams);
-        return encryptP.toString('hex') === scryptP.encryptP;
+        return new Promise((res, rej) => {
+            encryptKey(str, scryptP.scryptParams, selfScryptsy).then((encryptP) => {
+                return res(encryptP.toString('hex') === scryptP.encryptP);
+            }).catch(err => {
+                rej(err);
+            });
+        });
     }
 }
 
@@ -192,11 +223,14 @@ function receiveTx(address, privKey, errorCb) {
     });
 }
 
-function encryptKey(pwd, scryptParams) {
-    let pwdBuff = Buffer.from(pwd);
+function encryptKey(pwd, scryptParams, selfScryptsy) {
     let salt = libUtils.hexToBytes(scryptParams.salt);
-    salt = Buffer.from(salt);
-    return scryptsy(pwdBuff, salt, +scryptParams.n, +scryptParams.r, +scryptParams.p, +scryptParams.keylen);
+    if (!selfScryptsy) {
+        return Promise.resolve(
+            scryptsy(pwd, Buffer.from(salt), +scryptParams.n, +scryptParams.r, +scryptParams.p, +scryptParams.keylen)
+        );
+    }
+    return selfScryptsy(pwd, Array.from(salt), +scryptParams.n, +scryptParams.r, +scryptParams.p, +scryptParams.keylen);
 }
 
 function isValidVersion1(scryptP) {

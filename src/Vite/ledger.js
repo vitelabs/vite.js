@@ -7,6 +7,18 @@ const defaultHash = libUtils.bytesToHex(new BigNumber(0).toArray('big', 32));
 const Pledge_Addr = 'vite_000000000000000000000000000000000000000309508ba646';
 const Vote_Addr = 'vite_000000000000000000000000000000000000000270a48cc491';
 const Register_Addr = 'vite_0000000000000000000000000000000000000001c9e9f25417';
+const txType = {
+    'f29c6ce2_vite_0000000000000000000000000000000000000001c9e9f25417': 0,
+    '3b7bdf74_vite_0000000000000000000000000000000000000001c9e9f25417': 1,
+    '60862fe2_vite_0000000000000000000000000000000000000001c9e9f25417': 2,
+    'ce1f27a7_vite_0000000000000000000000000000000000000001c9e9f25417': 3,
+    'fdc17f25_vite_000000000000000000000000000000000000000270a48cc491': 4,
+    'a629c531_vite_000000000000000000000000000000000000000270a48cc491': 5,
+    '8de7dcfd_vite_000000000000000000000000000000000000000309508ba646': 6,
+    '9ff9c7b6_vite_000000000000000000000000000000000000000309508ba646': 7,
+    '46d0ce8b_vite_00000000000000000000000000000000000000056ad6d26692': 8,
+    '9b9125f5_vite_00000000000000000000000000000000000000056ad6d26692': 9
+};
 
 class Ledger extends basicStruct {
     constructor(provider) {
@@ -29,8 +41,27 @@ class Ledger extends basicStruct {
                 return null;
             }
             let account = data[1].result;
+            let rawList = data[0].result || [];
+
+            let list = [];
+            rawList.forEach((item) => {
+                if (item.blockType !== 2) {
+                    item.txType = 10;
+                    list.push(item);
+                    return;
+                }
+
+                let toAddress = item.toAddress;
+                let data = Buffer.from(item.data || '', 'base64').toString('hex');
+                let dataPrefix = data.slice(0, 8);
+                let type = txType[`${dataPrefix}_${toAddress}`] || 10;
+
+                item.txType = type;
+                list.push(item);
+            });
+
             return {
-                list: data[0].result || [],
+                list,
                 totalNum: account && account.totalNumber ? account.totalNumber : 0
             };
         });
