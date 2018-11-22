@@ -54,7 +54,8 @@ class Ledger extends basicStruct {
                 let toAddress = item.toAddress;
                 let data = Buffer.from(item.data || '', 'base64').toString('hex');
                 let dataPrefix = data.slice(0, 8);
-                let type = txType[`${dataPrefix}_${toAddress}`] || 10;
+                let type = txType[`${dataPrefix}_${toAddress}`];
+                type = (!type && type !== 0) ? 10 : type;
 
                 item.txType = type;
                 list.push(item);
