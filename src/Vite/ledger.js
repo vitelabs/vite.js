@@ -129,7 +129,8 @@ class Ledger extends basicStruct {
             params: [ accountAddress ]
         }, {
             type: 'request',
-            methodName: 'ledger_getFittestSnapshotHash'
+            methodName: 'ledger_getFittestSnapshotHash',
+            params: [ accountAddress, fromBlockHash ]
         }]).then((req) => {
             if (!req || !req.length || req.length < 2) {
                 return Promise.reject( new Error('Batch error') );
