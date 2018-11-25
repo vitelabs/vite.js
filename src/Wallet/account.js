@@ -1,5 +1,4 @@
-import libUtils from '../../libs/utils';
-import utils from '../../libs/utils';
+import encoder from 'utils/encoder';
 
 const nacl = require('@sisi/tweetnacl-blake2b');
 const scryptsy = require('scryptsy');
@@ -68,9 +67,9 @@ class Account {
             r: scryptP && scryptP.r ? scryptP.r : this.scryptR,
             p: scryptP && scryptP.p ? scryptP.p : this.p,
             keylen: scryptP && scryptP.keylen ? scryptP.keylen : this.scryptKeyLen,
-            salt: scryptP && scryptP.salt ? scryptP.salt : libUtils.bytesToHex(nacl.randomBytes(32)),
+            salt: scryptP && scryptP.salt ? scryptP.salt : encoder.bytesToHex(nacl.randomBytes(32)),
         };
-        let encryptPwd = scryptP && scryptP.encryptPwd ? utils.hexToBytes(scryptP.encryptPwd) : encryptKey(pwd, scryptParams);
+        let encryptPwd = scryptP && scryptP.encryptPwd ? encoder.hexToBytes(scryptP.encryptPwd) : encryptKey(pwd, scryptParams);
 
         let nonce = nacl.randomBytes(12);
         let encryptEntropy = cipherText({
@@ -84,7 +83,7 @@ class Account {
             cipherName: this.algorithm,
             KDF: scryptName,
             salt: scryptParams.salt,
-            Nonce: libUtils.bytesToHex(nonce)
+            Nonce: encoder.bytesToHex(nonce)
         };
     
         let encryptedKeyJSON = {
@@ -116,10 +115,10 @@ class Account {
 
         let entropy;
         try {
-            const decipher = crypto.createDecipheriv(keyJson.crypto.ciphername, encryptPwd, libUtils.hexToBytes(keyJson.crypto.nonce));
-            decipher.setAuthTag( libUtils.hexToBytes(tag) );
+            const decipher = crypto.createDecipheriv(keyJson.crypto.ciphername, encryptPwd, encoder.hexToBytes(keyJson.crypto.nonce));
+            decipher.setAuthTag( encoder.hexToBytes(tag) );
     
-            entropy = decipher.update(libUtils.hexToBytes(ciphertext), 'utf8', 'hex');
+            entropy = decipher.update(encoder.hexToBytes(ciphertext), 'utf8', 'hex');
             entropy += decipher.final('hex');
         } catch(err) {
             console.warn(err);
@@ -192,7 +191,7 @@ function receiveTx(address, privKey, errorCb) {
 
 function encryptKey(pwd, scryptParams) {
     let pwdBuff = Buffer.from(pwd);
-    let salt = libUtils.hexToBytes(scryptParams.salt);
+    let salt = encoder.hexToBytes(scryptParams.salt);
     salt = Buffer.from(salt);
     return scryptsy(pwdBuff, salt, +scryptParams.n, +scryptParams.r, +scryptParams.p, +scryptParams.keylen);
 }
@@ -215,7 +214,7 @@ function isValidVersion1(scryptP) {
     }
 
     try {
-        libUtils.hexToBytes(scryptParams.salt);
+        encoder.hexToBytes(scryptParams.salt);
     } catch(err) {
         return false;
     }
@@ -225,7 +224,7 @@ function isValidVersion1(scryptP) {
 
 function isValid(keystore) {
     // Out keystore file size is about 500 so if a file is very large it must not be a keystore file
-    if (libUtils.getBytesSize(keystore) > 2 * 1024) {
+    if (encoder.getBytesSize(keystore) > 2 * 1024) {
         return false;
     }
 
@@ -258,9 +257,9 @@ function isValid(keystore) {
             return false;
         }
 
-        libUtils.hexToBytes(keyJson.encryptentropy);
-        libUtils.hexToBytes(crypto.nonce);
-        libUtils.hexToBytes(crypto.salt);
+        encoder.hexToBytes(keyJson.encryptentropy);
+        encoder.hexToBytes(crypto.nonce);
+        encoder.hexToBytes(crypto.salt);
     } catch(err) {
         console.warn(err);
         return false;
@@ -272,7 +271,7 @@ function isValid(keystore) {
 function cipherText({ hexData, pwd, nonce, algorithm }) {
     let cipher = crypto.createCipheriv(algorithm, pwd, nonce);
 
-    let ciphertext = cipher.update(libUtils.hexToBytes(hexData), 'utf8', 'hex');
+    let ciphertext = cipher.update(encoder.hexToBytes(hexData), 'utf8', 'hex');
     ciphertext += cipher.final('hex');
     let tag = cipher.getAuthTag().toString('hex');
 
