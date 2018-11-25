@@ -3,6 +3,7 @@ let nacl = require('@sisi/tweetnacl-blake2b');
 
 import encoder from './encoder';
 import {ADDR_PRE,ADDR_SIZE,ADDR_CHECK_SUM_SIZE,ADDR_LEN} from 'const/address'
+import { ADDRGETNETWORKPARAMS } from 'dns';
 
 
 export default {
@@ -53,14 +54,13 @@ function getRealAddr(hexAddr) {
     return hexAddr.slice(ADDR_PRE.length, ADDR_PRE.length + ADDR_SIZE * 2);
 }
 
-function privToPub(privKey) {
+function privToPub(privKey:string) {
     return privKey.slice(32);
 }
 
-function newAddr(privKey:String) {
+function newAddr(privKey?:ArrayBuffer) {
     let addr = '';
     if (privKey) {
-        privKey = privKey instanceof ArrayBuffer ? privKey : encoder.hexToBytes(privKey);
         addr = newAddrFromPriv(privKey);
     } else {
         let keyPair = nacl.sign.keyPair();
@@ -72,12 +72,12 @@ function newAddr(privKey:String) {
     return { addr, privKey };
 }
 
-function newAddrFromPub(pubKey:String) {
+function newAddrFromPub(pubKey:string) {
     let pre = blake.blake2b(pubKey, null, ADDR_SIZE);
     return pre;
 }
 
-function newAddrFromPriv(privKey:String) {
+function newAddrFromPriv(privKey:string) {
     return newAddrFromPub( privToPub(privKey) );
 }
 

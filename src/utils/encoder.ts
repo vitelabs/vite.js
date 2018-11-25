@@ -1,10 +1,10 @@
-let blake = require('blakejs/blake2b');
+const blake = require('blakejs/blake2b');
 declare enum Charset{
     utf16="utf16",
     utf8="utf8"
 }
 export default {
-    bytesToHex(arr:Uint8Array = new Uint8Array([])) {
+    bytesToHex(arr:ArrayBuffer=Buffer.from([])) {
         let hexArr = Array.prototype.map.call(arr, function (bit:Number) {
             return ('00' + bit.toString(16)).slice(-2);
         });

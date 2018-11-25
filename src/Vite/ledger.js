@@ -55,37 +55,13 @@ class Ledger extends basicStruct {
     }
 
     getAccountBlock({
-        blockType,
-        fromBlockHash,
-        message, data,
-        accountAddress, toAddress, tokenId, amount
+        accountAddress
     }) {
         // 1: create contract send, 2: tx send, 3: reward send, 4: tx receive, 5: tx receive fail 
         // 1 2 3: send，4 5: receive
         // ps: normal tx: send is 2, receive is 4
 
-        if (!accountAddress || !address.isValidHexAddr(accountAddress)) {
-            return Promise.reject( new Error('AccountAddress error') );
-        }
-
-        if (!blockType || +blockType < 0 || +blockType > 5) {
-            return Promise.reject( new Error('BlockType error') );
-        }
-
-        blockType = +blockType;
-
-        if (blockType === 4 && !fromBlockHash) {
-            return Promise.reject( new Error('FromBlockHash error') );
-        }
-
-        // if (blockType === 2 && 
-        //     (!toAddress || !tokenId || !amount) ){
-        //     return Promise.reject( new Error('ToAddress, tokenId or amount error') );
-        // }
-
-        if (message && data) {
-            return Promise.reject( new Error('Message or data, only one') );
-        }
+ 
 
         return this.provider.batch([{
             type: 'request',
@@ -106,37 +82,6 @@ class Ledger extends basicStruct {
             let latestBlock = req[0].result;
             let height = latestBlock && latestBlock.height ? 
                 new BigNumber(latestBlock.height).add( new BigNumber(1) ).toString() : '1';
-            let timestamp = new BigNumber(new Date().getTime()).div( new BigNumber(1000) ).toNumber();
-    
-            let accountBlock = {
-                accountAddress,
-                prevHash: latestBlock && latestBlock.hash ? latestBlock.hash : defaultHash,
-                height,
-                timestamp,
-                snapshotHash: req[1].result,
-                blockType,
-                fee: '0'
-            };
-
-            if (message) {
-                let utf8bytes = encoder.utf8ToBytes(message);
-                let base64Str = Buffer.from(utf8bytes).toString('base64');
-                accountBlock.data = base64Str;
-            } else {
-                data && (accountBlock.data = data);
-            }
-
-            if (blockType === 2) {
-                accountBlock.tokenId = tokenId;
-                accountBlock.toAddress = toAddress;
-                accountBlock.amount = amount;
-            }
-
-            if (blockType === 4) {
-                accountBlock.fromBlockHash = fromBlockHash || '';
-            }
-
-            return accountBlock;
         });
     }
 

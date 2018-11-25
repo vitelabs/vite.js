@@ -57,8 +57,8 @@ module.exports = {
     },
     resolve: {
         alias: {
-            const: path.resolve(__dirname, 'src/const/'),
-            utils: path.resolve(__dirname, 'src/utils/')
+            const: path.resolve(__dirname, '../src/const/'),
+            utils: path.resolve(__dirname, '../src/utils/')
         },
         extensions: ['.js', '.json', '.ts']
     }
