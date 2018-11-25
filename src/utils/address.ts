@@ -2,12 +2,12 @@ let blake = require('blakejs/blake2b');
 let nacl = require('@sisi/tweetnacl-blake2b');
 
 import encoder from './encoder';
-import {ADDR_PRE,ADDR_SIZE,ADDR_CHECK_SUM_SIZE,ADDR_LEN} from 'const/address'
+import { ADDR_PRE, ADDR_SIZE, ADDR_CHECK_SUM_SIZE, ADDR_LEN } from 'const/address'
 import { ADDRGETNETWORKPARAMS } from 'dns';
 
 
 export default {
-    newHexAddr(priv:String) {
+    newHexAddr(priv: string) {
         // address = Blake2b(PubKey)(len:20)
         let {
             addr, privKey
@@ -20,7 +20,7 @@ export default {
         addr = encoder.bytesToHex(addr);
         return {
             addr,
-            pubKey: encoder.bytesToHex( privToPub(privKey) ),
+            pubKey: encoder.bytesToHex(privToPub(privKey)),
             privKey: encoder.bytesToHex(privKey),
             hexAddr: ADDR_PRE + addr + checkSum
         };
@@ -28,7 +28,7 @@ export default {
 
     isValidHexAddr,
 
-    getAddrFromHexAddr(hexAddr) {
+    getAddrFromHexAddr(hexAddr:string) {
         if (!isValidHexAddr(hexAddr)) {
             return null;
         }
@@ -36,52 +36,51 @@ export default {
     }
 };
 
-function isValidHexAddr(hexAddr) {
+function isValidHexAddr(hexAddr:string) {
     if (!hexAddr || hexAddr.length !== ADDR_LEN || hexAddr.indexOf(ADDR_PRE) !== 0) {
         return false;
     }
 
     let pre = hexAddr.slice(ADDR_PRE.length, ADDR_PRE.length + ADDR_SIZE * 2);
-    let addr = encoder.hexToBytes(pre); 
+    let addr = encoder.hexToBytes(pre);
 
     let currentChecksum = hexAddr.slice(ADDR_PRE.length + ADDR_SIZE * 2);
     let checkSum = getAddrCheckSum(addr);
-  
-    return currentChecksum === checkSum;
+
+    return currentChecksum === checkSum;//????
 }
 
-function getRealAddr(hexAddr) {
+function getRealAddr(hexAddr:string) {
     return hexAddr.slice(ADDR_PRE.length, ADDR_PRE.length + ADDR_SIZE * 2);
 }
 
-function privToPub(privKey:string) {
+function privToPub(privKey: ArrayBuffer) {
     return privKey.slice(32);
 }
 
-function newAddr(privKey?:ArrayBuffer) {
-    let addr = '';
+function newAddr(privKey?: ArrayBuffer | string):{addr:ArrayBuffer,privKey:ArrayBuffer} {
     if (privKey) {
-        addr = newAddrFromPriv(privKey);
-    } else {
-        let keyPair = nacl.sign.keyPair();
-        let publicKey = keyPair.publicKey;
-        privKey = keyPair.secretKey;
-        addr = newAddrFromPub(publicKey);
+        privKey=privKey instanceof ArrayBuffer?privKey:Buffer.from(privKey)
+        const addr = newAddrFromPriv(privKey);
+        return { addr, privKey };
     }
-
-    return { addr, privKey };
+    let keyPair = nacl.sign.keyPair();
+    let publicKey = keyPair.publicKey;
+    privKey= keyPair.secretKey as ArrayBuffer ;
+    const addr = newAddrFromPub(publicKey);
+    return { addr, privKey};
 }
 
-function newAddrFromPub(pubKey:string) {
+function newAddrFromPub(pubKey: string|ArrayBuffer): Uint8Array {
     let pre = blake.blake2b(pubKey, null, ADDR_SIZE);
     return pre;
 }
 
-function newAddrFromPriv(privKey:string) {
-    return newAddrFromPub( privToPub(privKey) );
+function newAddrFromPriv(privKey: ArrayBuffer) {
+    return newAddrFromPub(privToPub(privKey));
 }
 
-function getAddrCheckSum(addr) {
-    let res = blake.blake2bHex(addr, null, ADDR_CHECK_SUM_SIZE);
+function getAddrCheckSum(addr:string|ArrayBuffer):string {
+    let res = blake.blake2bHex(addr, null, ADDR_CHECK_SUM_SIZE);//?????
     return res;
 }

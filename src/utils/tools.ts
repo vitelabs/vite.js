@@ -23,28 +23,26 @@ export declare type accountBlock = {
     logHash?: string,
     nonce?: string
 }
-export function genBlock({ blockType, height, prevHash, accountAddress, snapshotHash = defaultHash }: { prevHash: string, height: number, preHash: string, accountAddress: string, snapshotHash: string, blockType: blockType }) {
+export function genBlock(accB: accountBlock, message: string) {
     const timestamp = Number((Date.now() / 1000).toFixed(0))
     const accountBlock: accountBlock = {
-        accountAddress,
-        prevHash,
-        height,
-        timestamp,
-        snapshotHash,
-        blockType,
+        accountAddress: accB.accountAddress,
+        prevHash: accB.prevHash,
+        height: accB.height,
+        timestamp: accB.timestamp,
+        snapshotHash: accB.snapshotHash,
+        blockType: accB.blockType,
         fee: '0'
     };
-    if (!accountAddress || !address.isValidHexAddr(accountAddress)) {
+    if (!accB.accountAddress || !address.isValidHexAddr(accB.accountAddress)) {
         throw new Error('AccountAddress error');
     }
 
-    if (!blockType || +blockType < 0 || +blockType > 5) {
+    if (!accB.blockType || +accB.blockType < 0 || +accB.blockType > 5) {
         throw new Error('BlockType error');
     }
 
-    blockType = +blockType;
-
-    if (blockType === 4 && !fromBlockHash) {
+    if (accB.blockType === 4 && !accB.fromBlockHash) {
         throw new Error('FromBlockHash error');
     }
 
@@ -53,25 +51,25 @@ export function genBlock({ blockType, height, prevHash, accountAddress, snapshot
     //     return Promise.reject( new Error('ToAddress, tokenId or amount error') );
     // }
 
-    if (message && data) {
-        return Promise.reject(new Error('Message or data, only one'));
+    if (message && accB.data) {
+        throw new Error('Message or data, only one');
     }
     if (message) {
         let utf8bytes = encoder.utf8ToBytes(message);
         let base64Str = Buffer.from(utf8bytes).toString('base64');
         accountBlock.data = base64Str;
     } else {
-        data && (accountBlock.data = data);
+        accB.data && (accountBlock.data = accB.data);
     }
 
-    if (blockType === 2) {
-        accountBlock.tokenId = tokenId;
-        accountBlock.toAddress = toAddress;
-        accountBlock.amount = amount;
+    if (accB.blockType === 2) {
+        accountBlock.tokenId = accB.tokenId;
+        accountBlock.toAddress = accB.toAddress;
+        accountBlock.amount = accB.amount;
     }
 
-    if (blockType === 4) {
-        accountBlock.fromBlockHash = fromBlockHash || '';
+    if (accB.blockType === 4) {
+        accountBlock.fromBlockHash = accB.fromBlockHash || '';
     }
 
     return accountBlock;

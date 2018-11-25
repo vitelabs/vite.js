@@ -1,4 +1,14 @@
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const TypedocWebpackPlugin = require('typedoc-webpack-plugin');
+
+const plugins = [new TypedocWebpackPlugin({
+    out: './docs',
+    module: 'commonjs',
+    target: 'es5',
+    exclude: '**/node_modules/**/*.*',
+    experimentalDecorators: true,
+    excludeExternals: true
+})];
 const path = require('path');
 // {
 //                 from: /\~ViteJS.version/,
@@ -6,9 +16,13 @@ const path = require('path');
 //             }
 
 module.exports = {
+    plugins,
     mode: 'production',
     output: {
-        path: path.join(__dirname, '../ViteJS')
+        path: path.join(__dirname, '../ViteJS'),
+        libraryTarget: 'umd',
+        library: 'ELEMENT',
+        umdNamedDefine: true
     },
     optimization: {
         splitChunks: {
