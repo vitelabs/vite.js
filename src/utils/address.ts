@@ -54,33 +54,33 @@ function getRealAddr(hexAddr:string) {
     return hexAddr.slice(ADDR_PRE.length, ADDR_PRE.length + ADDR_SIZE * 2);
 }
 
-function privToPub(privKey: ArrayBuffer) {
+function privToPub(privKey: Buffer) {
     return privKey.slice(32);
 }
 
-function newAddr(privKey?: ArrayBuffer | string):{addr:ArrayBuffer,privKey:ArrayBuffer} {
+function newAddr(privKey?: Buffer| string):{addr:Buffer,privKey:Buffer} {
     if (privKey) {
-        privKey=privKey instanceof ArrayBuffer?privKey:Buffer.from(privKey)
+        privKey=privKey instanceof Buffer?privKey:Buffer.from(privKey)
         const addr = newAddrFromPriv(privKey);
         return { addr, privKey };
     }
     let keyPair = nacl.sign.keyPair();
     let publicKey = keyPair.publicKey;
-    privKey= keyPair.secretKey as ArrayBuffer ;
+    privKey= keyPair.secretKey as Buffer;
     const addr = newAddrFromPub(publicKey);
     return { addr, privKey};
 }
 
-function newAddrFromPub(pubKey: string|ArrayBuffer): Uint8Array {
+function newAddrFromPub(pubKey: string|Buffer): Buffer {
     let pre = blake.blake2b(pubKey, null, ADDR_SIZE);
     return pre;
 }
 
-function newAddrFromPriv(privKey: ArrayBuffer) {
+function newAddrFromPriv(privKey: Buffer) {
     return newAddrFromPub(privToPub(privKey));
 }
 
-function getAddrCheckSum(addr:string|ArrayBuffer):string {
+function getAddrCheckSum(addr:string|ArrayBufferView):string {
     let res = blake.blake2bHex(addr, null, ADDR_CHECK_SUM_SIZE);//?????
     return res;
 }

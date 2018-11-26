@@ -11,8 +11,8 @@ const versions = [1, 2];
 const algorithms = ['aes-256-gcm'];
 
 class Account {
-    constructor(Vite) {
-        this.Vite = Vite;
+    constructor(services) {
+        this.services = services;
         this.addrList = [];
 
         this.version = 2;

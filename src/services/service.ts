@@ -1,22 +1,20 @@
-declare interface RPCrequest {
-    types?:string;
+import methods,{ledger} from "const/method";
+
+export declare interface RPCrequest {
+    types?: string;
     Method: methods;
-    params:any[];
+    params: any[];
 }
-declare interface RPCresponse {
-    jsonrpc?:string;
-    id?:number;
-    result?:any;
-    error?:RPCerror
+export declare interface RPCresponse {
+    jsonrpc?: string;
+    id?: number;
+    result?: any;
+    error?: RPCerror
 }
-declare interface RPCerror{
-    code:number,
-    message:string
+export declare interface RPCerror {
+    code: number,
+    message: string
 }
-
-import {methods,ledger} from "const/method";
-
-
 export default class client {
     _provider:any
     constructor(provider:any){

@@ -10,4 +10,5 @@ export const enum mintage { getMintageData = "mintage_getMintageData", getMintag
 export const enum consensusGroup { getConditionRegisterOfPledge = "consensusGroup_getConditionRegisterOfPledge", getConditionVoteOfDefault = "consensusGroup_getConditionVoteOfDefault", getConditionVoteOfKeepToken = "consensusGroup_getConditionVoteOfKeepToken", getCreateConsensusGroupData = "consensusGroup_getCreateConsensusGroupData", getCancelConsensusGroupData = "consensusGroup_getCancelConsensusGroupData", getReCreateConsensusGroupData = "consensusGroup_getReCreateConsensusGroupData" }
 export const enum ledger { getBlocksByAccAddr = "ledger_getBlocksByAccAddr", getAccountByAccAddr = "ledger_getAccountByAccAddr", getLatestSnapshotChainHash = "ledger_getLatestSnapshotChainHash", getLatestBlock = "ledger_getLatestBlock", getTokenMintage = "ledger_getTokenMintage", getBlocksByHash = "ledger_getBlocksByHash", getSnapshotChainHeight = "ledger_getSnapshotChainHeight", getFittestSnapshotHash = "ledger_getFittestSnapshotHash" }
 export const enum tx { sendRawTx = "tx_sendRawTx" }
-export type methods=wallet|net|onroad|contract|pledge|contract|register|vote|mintage|consensusGroup|ledger|tx
+type methods=wallet|net|onroad|contract|pledge|contract|register|vote|mintage|consensusGroup|ledger|tx
+export default methods

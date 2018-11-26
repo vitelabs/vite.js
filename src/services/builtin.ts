@@ -1,11 +1,33 @@
-const BigNumber = 'bn.js';
+let blake = require('blakejs/blake2b');
 
-import { ledger } from 'const/method';
+const BigNumber = require('bn.js');
 import address from 'utils/address';
-import { defaultHash, Pledge_Addr, Vote_Addr, Register_Addr } from 'const/address';
 import encoder from 'utils/encoder';
-import client from './service.js';
+import client from './service';
+import { blockType ,txType} from "const/type";
 
+import {Pledge_Addr,Vote_Addr,Register_Addr,defaultHash} from "const/address"
+import { RPCresponse } from "./service"
+import { accountBlock } from 'utils/tools';
+
+
+export declare type accountBlock = {
+    accountAddress?: string,
+    prevHash?: string,
+    height: number,
+    timestamp: number,
+    snapshotHash: string,
+    blockType?: blockType,
+    fee: string,
+    data?: string,
+    tokenId?: string,
+    toAddress?: string,
+    amount?: string,
+    fromBlockHash?: string,
+    logHash?: string,
+    nonce?: string,
+    hash?: string
+}
 class Ledger extends client {
     constructor(provider: any) {
         super(provider);
@@ -13,7 +35,9 @@ class Ledger extends client {
 
     getBlocks({
         addr, index, pageCount = 50
-    }) {
+    }: {
+            addr: string, index: number, pageCount: number
+        }) {
         return this.provider.batch([{
             type: 'request',
             methodName: 'ledger_getBlocksByAccAddr',
@@ -22,13 +46,33 @@ class Ledger extends client {
             type: 'request',
             methodName: 'ledger_getAccountByAccAddr',
             params: [addr]
-        }]).then((data) => {
+        }]).then((data: RPCresponse[]) => {
             if (!data || data.length < 2) {
                 return null;
             }
             let account = data[1].result;
+            let rawList = data[0].result || [];
+
+            let list: any[] = [];
+            rawList.forEach((item: any) => {
+                if (item.blockType !== 2) {
+                    item.txType = 10;
+                    list.push(item);
+                    return;
+                }
+
+                let toAddress = item.toAddress;
+                let data = Buffer.from(item.data || '', 'base64').toString('hex');
+                let dataPrefix = data.slice(0, 8);
+                const key =`${dataPrefix}_${toAddress}`;
+                const type = txType[key]===undefined?10:txType[key];
+
+                item.txType = type;
+                list.push(item);
+            });
+
             return {
-                list: data[0].result || [],
+                list,
                 totalNum: account && account.totalNumber ? account.totalNumber : 0
             };
         });
@@ -43,7 +87,7 @@ class Ledger extends client {
             type: 'request',
             methodName: 'onroad_getAccountOnroadInfo',
             params: [addr]
-        }]).then((data) => {
+        }]).then((data:RPCresponse[]) => {
             if (!data || !data.length || data.length < 2) {
                 return null;
             }
@@ -61,7 +105,8 @@ class Ledger extends client {
         fromBlockHash,
         message, data,
         accountAddress, toAddress, tokenId, amount
-    }) {
+    }
+    :any) {
         // 1: create contract send, 2: tx send, 3: reward send, 4: tx receive, 5: tx receive fail 
         // 1 2 3: send，4 5: receive
         // ps: normal tx: send is 2, receive is 4
@@ -95,8 +140,9 @@ class Ledger extends client {
             params: [accountAddress]
         }, {
             type: 'request',
-            methodName: 'ledger_getFittestSnapshotHash'
-        }]).then((req) => {
+            methodName: 'ledger_getFittestSnapshotHash',
+            params: [accountAddress, fromBlockHash]
+        }]).then((req:RPCresponse[]) => {
             if (!req || !req.length || req.length < 2) {
                 return Promise.reject(new Error('Batch error'));
             }
@@ -110,7 +156,7 @@ class Ledger extends client {
                 new BigNumber(latestBlock.height).add(new BigNumber(1)).toString() : '1';
             let timestamp = new BigNumber(new Date().getTime()).div(new BigNumber(1000)).toNumber();
 
-            let accountBlock = {
+            let accountBlock:accountBlock = {
                 accountAddress,
                 prevHash: latestBlock && latestBlock.hash ? latestBlock.hash : defaultHash,
                 height,
@@ -144,9 +190,9 @@ class Ledger extends client {
 
     receiveBlock({
         accountAddress, blockHash
-    }: {
-            accountAddress: string, blockHash: string
-        }) {
+    }:{
+        accountAddress:string, blockHash:string
+    }) {
         return this.getAccountBlock({
             blockType: 4,
             fromBlockHash: blockHash,
@@ -156,6 +202,8 @@ class Ledger extends client {
 
     sendBlock({
         accountAddress, toAddress, tokenId, amount, message
+    }:{
+        accountAddress:string, toAddress:string, tokenId:string, amount:string, message:string
     }) {
         return this.getAccountBlock({
             blockType: 2,
@@ -165,8 +213,10 @@ class Ledger extends client {
 
     pledgeBlock({
         accountAddress, toAddress, tokenId, amount
+    }:{
+        accountAddress:string, toAddress:string, tokenId:string, amount:string
     }) {
-        return this.provider.request('pledge_getPledgeData', [toAddress]).then((data) => {
+        return this.provider.request('pledge_getPledgeData', [toAddress]).then((data:RPCresponse) => {
             if (!data || !data.result) {
                 return Promise.reject(data);
             }
@@ -182,8 +232,10 @@ class Ledger extends client {
 
     cancelPledgeBlock({
         accountAddress, toAddress, tokenId, amount
+    }:{
+        accountAddress:string, toAddress:string, tokenId:string, amount:string
     }) {
-        return this.provider.request('pledge_getCancelPledgeData', [toAddress, amount]).then((data) => {
+        return this.provider.request('pledge_getCancelPledgeData', [toAddress, amount]).then((data:RPCresponse) => {
             if (!data || !data.result) {
                 return Promise.reject(data);
             }
@@ -199,8 +251,10 @@ class Ledger extends client {
 
     voteBlock({
         accountAddress, nodeName, Gid, tokenId
+    }:{
+        accountAddress:string, nodeName:string, Gid:string, tokenId:string
     }) {
-        return this.provider.request('vote_getVoteData', [Gid, nodeName]).then((data) => {
+        return this.provider.request('vote_getVoteData', [Gid, nodeName]).then((data:RPCresponse) => {
             if (!data || !data.result) {
                 return Promise.reject(data);
             }
@@ -217,8 +271,10 @@ class Ledger extends client {
 
     cancelVoteBlock({
         accountAddress, Gid, tokenId
+    }:{
+        accountAddress:string, nodeName:string, Gid:string, tokenId:string
     }) {
-        return this.provider.request('vote_getCancelVoteData', [Gid]).then((data) => {
+        return this.provider.request('vote_getCancelVoteData', [Gid]).then((data:RPCresponse) => {
             if (!data || !data.result) {
                 return Promise.reject(data);
             }
@@ -235,8 +291,10 @@ class Ledger extends client {
 
     registerBlock({
         accountAddress, nodeName, producerAddr, amount, tokenId, Gid
+    }:{
+        accountAddress:string, nodeName:string, Gid:string, tokenId:string,producerAddr:string,amount:string
     }) {
-        return this.provider.request('register_getRegisterData', [Gid, nodeName, producerAddr]).then((data) => {
+        return this.provider.request('register_getRegisterData', [Gid, nodeName, producerAddr]).then((data:RPCresponse) => {
             if (!data || !data.result) {
                 return Promise.reject(data);
             }
@@ -253,8 +311,10 @@ class Ledger extends client {
 
     updateRegisterBlock({
         accountAddress, nodeName, producerAddr, tokenId, Gid
+    }:{
+        accountAddress:string, nodeName:string, Gid:string, tokenId:string,producerAddr:string
     }) {
-        return this.provider.request('register_getUpdateRegistrationData', [Gid, nodeName, producerAddr]).then((data) => {
+        return this.provider.request('register_getUpdateRegistrationData', [Gid, nodeName, producerAddr]).then((data:RPCresponse) => {
             if (!data || !data.result) {
                 return Promise.reject(data);
             }
@@ -271,8 +331,11 @@ class Ledger extends client {
 
     cancelRegisterBlock({
         accountAddress, nodeName, tokenId, Gid
+    }
+    :{
+        accountAddress:string, nodeName:string, Gid:string, tokenId:string
     }) {
-        return this.provider.request('register_getCancelRegisterData', [Gid, nodeName]).then((data) => {
+        return this.provider.request('register_getCancelRegisterData', [Gid, nodeName]).then((data:RPCresponse) => {
             if (!data || !data.result) {
                 return Promise.reject(data);
             }
@@ -292,7 +355,7 @@ class Ledger extends client {
     }:{
         accountAddress:string, nodeName:string, rewardAddress:string, Gid:string, tokenId:string
     }) {
-        return this.provider.request('register_getRewardData', [Gid, nodeName, rewardAddress]).then((data) => {
+        return this.provider.request('register_getRewardData', [Gid, nodeName, rewardAddress]).then((data:RPCresponse) => {
             if (!data || !data.result) {
                 return Promise.reject(data);
             }

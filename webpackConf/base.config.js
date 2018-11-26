@@ -1,24 +1,30 @@
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const TypedocWebpackPlugin = require('typedoc-webpack-plugin');
-
+const TerserPlugin = require('terser-webpack-plugin');
+const path=require('path');
+console.log(path.join(__dirname, '../ViteJS'));
 const plugins = [new TypedocWebpackPlugin({
-    out: './docs',
+    out: path.resolve(__dirname,'./docs'),
     module: 'commonjs',
     target: 'es5',
     exclude: '**/node_modules/**/*.*',
     experimentalDecorators: true,
     excludeExternals: true
 })];
-const path = require('path');
-// {
-//                 from: /\~ViteJS.version/,
-//                 to: version
-//             }
+
+const baseDir = path.resolve(process.cwd(), './src');
 
 module.exports = {
     plugins,
     mode: 'production',
+    entry: {
+        const: path.resolve(baseDir, './const/index.ts'),
+        provider: path.resolve(baseDir, './provider/index.ts'),
+        services: path.resolve(baseDir, './services/index.ts'),
+        utils: path.resolve(baseDir, './utils/index.ts'),
+        wallet: path.resolve(baseDir, './wallet/index.js'),
+    },
     output: {
+        filename:'[name].[hash].js',
         path: path.join(__dirname, '../ViteJS'),
         libraryTarget: 'umd',
         library: 'ELEMENT',
@@ -34,19 +40,7 @@ module.exports = {
                 }
             }
         },
-        minimizer: [
-            // we specify a custom UglifyJsPlugin here to get source maps in production
-            new UglifyJsPlugin({
-                cache: true,
-                parallel: true,
-                uglifyOptions: {
-                    compress: false,
-                    ecma: 6,
-                    mangle: true
-                },
-                sourceMap: false
-            })
-        ]
+        minimizer: [new TerserPlugin()]
     },
     module: {
         rules: [{

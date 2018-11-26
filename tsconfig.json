@@ -1,8 +1,9 @@
 {
     "compilerOptions": {
+        "allowJs": true,
         "target": "es5",
         "module": "es2015",
-        "noImplicitAny": true,
+        "noImplicitAny": false,
         "removeComments": true,
         "preserveConstEnums": true,
         "sourceMap": true,
@@ -10,9 +11,19 @@
         "resolveJsonModule": true,
         "baseUrl": "./src",
         "paths": {
-            "const":["./const"],
-            "utils":["./utils"]
-        }
+            "const": [
+                "./const"
+            ],
+            "utils": [
+                "./utils"
+            ]
+        },
+        "lib": [
+            "es5",
+            "es2017",
+            "es2015",
+            "es2017.typedarrays"
+        ]
     },
     "include": [
         "src/**/*",
