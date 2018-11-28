@@ -15,7 +15,7 @@ module.exports = {
     },
     output: {
         filename:'[name].js',
-        path: path.join(__dirname, '../lib/vitejs'),
+        path: path.join(__dirname, '../dist/vitejs'),
         libraryTarget: 'umd',
         library: 'vitejs',
         umdNamedDefine: true
