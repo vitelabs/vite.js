@@ -1,6 +1,6 @@
-import ViteJS from '../../../index.js';
+import ipcProvider from 'provider/IPC_RPC';
 
-const IPC_RPC = new ViteJS.IPC_RPC({
+const IPC_RPC = new ipcProvider({
     path: '/Users/sisi/viteisbest/vite.ipc',
     timeout: 3000
 });

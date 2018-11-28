@@ -1,5 +1,5 @@
 const nacl = require('@sisi/tweetnacl-blake2b');
-import utils from '../../src/utils/encoder';
+import utils from '../../src/utils/encoder.ts';
 
 const assert = require('assert');
 

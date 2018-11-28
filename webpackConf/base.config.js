@@ -17,7 +17,7 @@ module.exports = {
     // plugins,
     mode: 'production',
     entry: {
-        const: path.resolve(baseDir, './const/index.ts'),
+        const: path.resolve(baseDir, './const/address.ts'),
         provider: path.resolve(baseDir, './provider/index.ts'),
         services: path.resolve(baseDir, './services/index.ts'),
         utils: path.resolve(baseDir, './utils/index.ts'),

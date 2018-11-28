@@ -3,11 +3,10 @@ let blake = require('blakejs/blake2b');
 const BigNumber = require('bn.js');
 import address from 'utils/address';
 import encoder from 'utils/encoder';
-import client from './service';
 import { blockType ,txType} from "const/type";
 
 import {Pledge_Addr,Vote_Addr,Register_Addr,defaultHash} from "const/address"
-import { RPCresponse } from "./service"
+import { RPCresponse } from "."
 import { accountBlock } from 'utils/tools';
 
 
@@ -28,11 +27,12 @@ export declare type accountBlock = {
     nonce?: string,
     hash?: string
 }
-class Ledger extends client {
-    constructor(provider: any) {
-        super(provider);
-    }
 
+class Ledger  {
+    constructor(provider: any) {
+        this.provider=provider
+    }
+    provider:any
     getBlocks({
         addr, index, pageCount = 50
     }: {

@@ -1,6 +1,6 @@
 
 const assert = require('assert');
-import address from '../src/address.js';
+import address from '../src/utils/address';
 
 describe('newHexAddr', function () {
     it('test', function () {

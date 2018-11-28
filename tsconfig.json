@@ -2,7 +2,7 @@
     "compilerOptions": {
         "allowJs": true,
         "target": "es5",
-        "module": "es2015",
+        "module": "commonjs",
         "noImplicitAny": false,
         "removeComments": true,
         "preserveConstEnums": true,
@@ -11,11 +11,8 @@
         "resolveJsonModule": true,
         "baseUrl": "./src",
         "paths": {
-            "const": [
-                "./const"
-            ],
-            "utils": [
-                "./utils"
+            "*": [
+                "./*"
             ]
         },
         "lib": [

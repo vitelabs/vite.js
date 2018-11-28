@@ -1,8 +1,7 @@
 const assert = require('assert');
-import vitejs from '../../index.js';
+import tools from 'utils/tools';
 
-const ViteJS = new vitejs();
-const Account = ViteJS.Wallet.Account;
+const Account = tools;
 
 describe('Wallet_Account', function () {
     it('test_encrypt_decrypt', function () {

@@ -1,5 +1,5 @@
 const assert = require('assert');
-import utils from '../../src/utils/encoder';
+import utils from '../src/utils/encoder.ts';
 
 describe('strToUtf8', function () {
     it('test1', function () {

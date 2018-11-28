@@ -1,8 +1,7 @@
 const assert = require('assert');
-import vitejs from '../../index.js';
+import tools from 'utils/tools';
 
-const ViteJS = new vitejs();
-const Account = ViteJS.Vite.Account;
+const Account = tools;
 
 describe('Vite_Account', function () {
     it('test_signTX_receive', function () {
