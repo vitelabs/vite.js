@@ -1,9 +1,9 @@
 {
     "name": "@vite/vitejs",
-    "version": "1.0.0",
+    "version": "1.0.1-0",
     "description": "",
     "main": "dist/vitejs/index.js",
-    "module":"dist/es5",
+    "module": "dist/es5",
     "scripts": {
         "build:browser": "webpack",
         "build:es5": "tsc",
@@ -14,9 +14,9 @@
         "rpc": "node test/bin/startRPC",
         "lint": "eslint ./ --cache",
         "lint-all": "eslint ./",
-        "prerelease":"",
-        "release":"",
-        "release-alpha":""
+        "prerelease": "",
+        "release": "",
+        "release-alpha": ""
     },
     "repository": {
         "type": "git",
