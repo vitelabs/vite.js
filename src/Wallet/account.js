@@ -1,4 +1,6 @@
 import { hexToBytes, bytesToHex, getBytesSize } from 'utils/encoder';
+import {tx,onroad} from 'const/method';
+import {signTX} from 'utils/tools';
 
 const nacl = require('@sisi/tweetnacl-blake2b');
 const scryptsy = require('scryptsy');
@@ -21,8 +23,8 @@ const scryptR = 8;
 const scryptKeyLen = 32;
 const algorithm = 'aes-256-gcm';
 class Account {
-    constructor(Vite) {
-        this.Vite = Vite;
+    constructor(client) {
+        this.client = client;
         this.addrList = [];
     }
 
@@ -52,12 +54,12 @@ class Account {
             return Promise.reject('AccountBlock must be required.');
         }
 
-        let { hash, signature, pubKey } = this.Vite.Account.signTX(accountBlock, privKey);
+        let { hash, signature, pubKey } = signTX(accountBlock, privKey);
         accountBlock.hash = hash;
         accountBlock.publicKey = Buffer.from(pubKey).toString('base64');
         accountBlock.signature = Buffer.from(signature).toString('base64');
 
-        return this.Vite['tx_sendRawTx'](accountBlock).then(() => {
+        return this.client.request(tx.sendRawTx,accountBlock).then(() => {
             return accountBlock;
         });
     }
@@ -193,12 +195,12 @@ function loopAddr(address, privKey, CB) {
 
 function receiveTx(address, privKey, errorCb) {
     return new Promise((res, rej) => {
-        this.Vite['onroad_getOnroadBlocksByAddress'](address, 0, 1).then((data) => {
+        this.client.request(onroad.getOnroadBlocksByAddress,address, 0, 1).then((data) => {
             if (!data || !data.result || !data.result.length) {
                 return res();
             }
 
-            this.Vite.Ledger.receiveBlock({
+            this.client.builtin.receiveBlock({
                 accountAddress: address,
                 blockHash: data.result[0].hash
             }).then((accountBlock) => {

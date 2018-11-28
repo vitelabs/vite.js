@@ -3,10 +3,10 @@ const XMLHttpRequest = typeof window !== 'undefined' && window.XMLHttpRequest ?
     window.XMLHttpRequest : require('xhr2');
 
 class HTTP_RPC extends Communication {
-    constructor({ 
-        host = 'http://localhost:8415', 
-        headers, 
-        timeout = 0 
+    constructor({
+        host = 'http://localhost:8415',
+        headers={},
+        timeout = 0
     }) {
         super();
 
@@ -36,12 +36,12 @@ class HTTP_RPC extends Communication {
             let request = this._getRequest();
             let _request = this._addReq({
                 request,
-                rej: (err)=>{
+                rej: (err) => {
                     resetAbort = true;
                     rej(err);
                 }
             });
-            
+
             let clearRequestAndTimeout = () => {
                 requestTimeout && clearTimeout(requestTimeout);
                 requestTimeout = null;
@@ -56,7 +56,7 @@ class HTTP_RPC extends Communication {
 
                 request.abort();
                 clearRequestAndTimeout();
-                return rej( this.ERRORS.TIMEOUT(this.timeout) );
+                return rej(this.ERRORS.TIMEOUT(this.timeout));
             }, this.timeout) : null;
 
             // Request finish
@@ -64,7 +64,7 @@ class HTTP_RPC extends Communication {
                 if (request.readyState !== 4 || resetAbort) {
                     return;
                 }
- 
+
                 clearRequestAndTimeout();
                 let result = request.responseText;
 
@@ -74,7 +74,7 @@ class HTTP_RPC extends Communication {
                         return rej(result);
                     }
                 } catch (e) {
-                    return rej( this.ERRORS.INVAILID_RESPONSE(result) );
+                    return rej(this.ERRORS.INVAILID_RESPONSE(result));
                 }
 
                 return res(result);
@@ -82,10 +82,10 @@ class HTTP_RPC extends Communication {
 
             // Send request
             try {
-                request.send( JSON.stringify(payload) );
+                request.send(JSON.stringify(payload));
             } catch (err) {
                 clearRequestAndTimeout();
-                return rej( this.ERRORS.CONNECT(this.host) );
+                return rej(this.ERRORS.CONNECT(this.host));
             }
         });
     }
