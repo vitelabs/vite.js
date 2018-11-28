@@ -1,4 +1,4 @@
-import {bytesToHex,hexToBytes,getBytesSize} from 'utils/encoder';
+import { bytesToHex, hexToBytes, getBytesSize } from 'utils/encoder';
 import { tx, onroad } from 'const/method';
 import tools from 'utils/tools';
 
@@ -10,7 +10,7 @@ const crypto = typeof window !== 'undefined' ? require('browserify-aes') : requi
 
 const loopTime = 2000;
 const scryptName = 'scrypt';
-const len = 64;
+const len = 32;
 const versions = [1, 2];
 const algorithms = ['aes-256-gcm'];
 
@@ -68,7 +68,7 @@ class Account {
 
 export default Account;
 
-export function encrypt(key, pwd, scryptP) {
+export function encrypt(key, pwd, scryptP, selfScryptsy) {
     let scryptParams = scryptP && scryptP.scryptParams ? scryptP.scryptParams : {
         n: scryptP && scryptP.n ? scryptP.n : n,
         r: scryptP && scryptP.r ? scryptP.r : scryptR,
@@ -76,30 +76,47 @@ export function encrypt(key, pwd, scryptP) {
         keylen: scryptP && scryptP.keylen ? scryptP.keylen : scryptKeyLen,
         salt: scryptP && scryptP.salt ? scryptP.salt : bytesToHex(nacl.randomBytes(32)),
     };
-    let encryptPwd = scryptP && scryptP.encryptPwd ? hexToBytes(scryptP.encryptPwd) : encryptKey(pwd, scryptParams);
+    let getResult = (encryptPwd, res, rej) => {
+        try {
+            let nonce = nacl.randomBytes(12);
+            let encryptEntropy = cipherText({
+                hexData: key,
+                pwd: encryptPwd,
+                nonce,
+                algorithm
+            });
 
-    let nonce = nacl.randomBytes(12);
-    let encryptEntropy = cipherText({
-        hexData: key,
-        pwd: encryptPwd,
-        nonce,
-        algorithm
+            let cryptoJSON = {
+                cipherName: algorithm,
+                KDF: scryptName,
+                salt: scryptParams.salt,
+                Nonce: bytesToHex(nonce)
+            };
+
+            let encryptedKeyJSON = {
+                encryptEntropy,
+                crypto: cryptoJSON,
+                version,
+                timestamp: new Date().getTime()
+            };
+            res(JSON.stringify(encryptedKeyJSON).toLocaleLowerCase());
+        } catch (err) {
+            rej(err);
+        }
+    };
+
+    return new Promise((res, rej) => {
+        if (scryptP && scryptP.encryptPwd) {
+            let encryptPwd = hexToBytes(scryptP.encryptPwd);
+            getResult(encryptPwd, res, rej);
+        } else {
+            encryptKey(pwd, scryptParams, selfScryptsy).then((result) => {
+                getResult(result, res, rej);
+            }).catch((err) => {
+                rej(err);
+            });
+        }
     });
-
-    let cryptoJSON = {
-        cipherName: algorithm,
-        KDF: scryptName,
-        salt: scryptParams.salt,
-        Nonce: bytesToHex(nonce)
-    };
-
-    let encryptedKeyJSON = {
-        encryptEntropy,
-        crypto: cryptoJSON,
-        version,
-        timestamp: new Date().getTime()
-    };
-    return JSON.stringify(encryptedKeyJSON).toLocaleLowerCase();
 }
 
 export function decrypt(keystore, pwd) {
