@@ -10,10 +10,10 @@ const ks = JSON.stringify(keyJSON);
 if (process.env.NODE_ENV !== 'testWatch') {
     describe('Wallet_encryptKeystore', function () {
         it('test_encrypt', function () {
-            let privKey = 'afa2a3ab3347b5bbe210dc099b2e010e5491d698e5112db6bc278cfd8fa27eb9f0fde0110193147e7961e61eeb22576c535b3442fd6bd9c457775e0cc69f1951';
-            let k = newHexAddr(privKey);
-            let keystore = keystore.encrypt(k, '1');
-            assert.equal(keystore.decrypt(keystore, '1'), privKey);
+            const privKey = 'afa2a3ab3347b5bbe210dc099b2e010e5491d698e5112db6bc278cfd8fa27eb9f0fde0110193147e7961e61eeb22576c535b3442fd6bd9c457775e0cc69f1951';
+            const k = newHexAddr(privKey);
+            const keystoreF = keystore.encrypt(k, '1');
+            assert.equal(keystore.decrypt(keystoreF, '1'), privKey);
         });
     });
 

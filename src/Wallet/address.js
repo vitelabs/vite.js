@@ -1,15 +1,13 @@
 const hd = require('@sisi/ed25519-blake2b-hd-key');
 
 import bip39 from 'bip39';
-import encoder from 'utils/encoder';
-import address from 'utils/address';
+import {bytesToHex} from 'utils/encoder';
+import {getAddrFromHexAddr as _utils_getAddrFromHexAddr,newHexAddr} from 'utils/address';
 
 const rootPath = 'm/44\'/666666\'';
 
 
-export function getAddrFromHexAddr(hexAddr) {
-    return address.getAddrFromHexAddr(hexAddr);
-}
+export const getAddrFromHexAddr=_utils_getAddrFromHexAddr;
 
 export function getEntropyFromMnemonic(mnemonic) {
     let valid = bip39.validateMnemonic(mnemonic);
@@ -73,6 +71,6 @@ export function getAddrsFromMnemonic(mnemonic, num = 10, path) {
 function getAddrFromPath(path, seed) {
     let { key } = hd.derivePath(path, seed);
     let { privateKey } = hd.getPublicKey(key);
-    let priv = encoder.bytesToHex(privateKey);
-    return address.newHexAddr(priv);
+    let priv = bytesToHex(privateKey);
+    return newHexAddr(priv);
 }

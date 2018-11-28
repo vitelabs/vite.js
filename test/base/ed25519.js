@@ -1,5 +1,5 @@
 const nacl = require('@sisi/tweetnacl-blake2b');
-import utils from '../../src/utils/encoder.ts';
+import {hexToBytes,bytesToHex} from '../../src/utils/encoder.ts';
 
 const assert = require('assert');
 
@@ -58,16 +58,16 @@ let testData = [
 ];
 
 testData.forEach((testCase, index)=>{
-    let privByte = utils.hexToBytes( testCase.priv );
+    let privByte = hexToBytes( testCase.priv );
     let key = nacl.sign.keyPair.fromSecretKey(privByte);
 
-    let message = utils.hexToBytes(testCase.message);
+    let message = hexToBytes(testCase.message);
     let signData = nacl.sign.detached(message, privByte);
-    let signHex = utils.bytesToHex(signData);
+    let signHex = bytesToHex(signData);
 
     describe(`test_${index}`, function () {
         it('publicKey', function() {
-            assert.equal(testCase.pub, utils.bytesToHex(key.publicKey));
+            assert.equal(testCase.pub, bytesToHex(key.publicKey));
         });
 
         it('signData', function() {

@@ -2,8 +2,8 @@ const nacl = require('@sisi/tweetnacl-blake2b');
 const blake = require('blakejs/blake2b');
 const BigNumber = require('bn.js');
 
-import encoder from './encoder';
-import address from './address';
+import {bytesToHex,hexToBytes,utf8ToBytes} from './encoder';
+import {isValidHexAddr,getAddrFromHexAddr,newHexAddr} from './address';
 import { defaultHash } from 'const/address';
 import { blockType } from "const/type";
 
@@ -34,7 +34,7 @@ export function genBlock(accB: accountBlock, message: string) {
         blockType: accB.blockType,
         fee: '0'
     };
-    if (!accB.accountAddress || !address.isValidHexAddr(accB.accountAddress)) {
+    if (!accB.accountAddress || !isValidHexAddr(accB.accountAddress)) {
         throw new Error('AccountAddress error');
     }
 
@@ -55,7 +55,7 @@ export function genBlock(accB: accountBlock, message: string) {
         throw new Error('Message or data, only one');
     }
     if (message) {
-        let utf8bytes = encoder.utf8ToBytes(message);
+        let utf8bytes = utf8ToBytes(message);
         let base64Str = Buffer.from(utf8bytes).toString('base64');
         accountBlock.data = base64Str;
     } else {
@@ -77,20 +77,20 @@ export function genBlock(accB: accountBlock, message: string) {
 
 export  function signTX(accountBlock: accountBlock, privKey: string, type = 'byte') {
     let sourceHex = getSource(accountBlock);
-    let source = encoder.hexToBytes(sourceHex);
+    let source = hexToBytes(sourceHex);
 
-    let addr = address.newHexAddr(privKey);
+    let addr = newHexAddr(privKey);
     let pubKey = addr.pubKey; // Hex string
 
     let hash = blake.blake2b(source, null, 32);
-    let hashString = encoder.bytesToHex(hash);
+    let hashString = bytesToHex(hash);
 
-    let signature = nacl.sign.detached(hash, encoder.hexToBytes(privKey), encoder.hexToBytes(pubKey));
-    let signatureHex = encoder.bytesToHex(signature);
+    let signature = nacl.sign.detached(hash, hexToBytes(privKey), hexToBytes(pubKey));
+    let signatureHex = bytesToHex(signature);
 
     return {
         hash: hashString,
-        pubKey: type === 'byte' ? encoder.hexToBytes(pubKey) : pubKey,
+        pubKey: type === 'byte' ? hexToBytes(pubKey) : pubKey,
         signature: type === 'byte' ? signature : signatureHex
     };
 }
@@ -103,22 +103,22 @@ export  function signTX(accountBlock: accountBlock, privKey: string, type = 'byt
 function getSource(accountBlock: accountBlock) {
     let source = '';
     const blockType = Buffer.from('' + accountBlock.blockType) || Buffer.from('')
-    source += blockType ? encoder.bytesToHex(blockType) : '';
+    source += blockType ? bytesToHex(blockType) : '';
     source += accountBlock.prevHash || defaultHash;
-    source += accountBlock.height ? encoder.bytesToHex(new BigNumber(accountBlock.height).toArray('big', 8)) : '';
-    source += accountBlock.accountAddress ? address.getAddrFromHexAddr(accountBlock.accountAddress) : '';
+    source += accountBlock.height ? bytesToHex(new BigNumber(accountBlock.height).toArray('big', 8)) : '';
+    source += accountBlock.accountAddress ? getAddrFromHexAddr(accountBlock.accountAddress) : '';
 
     if (accountBlock.toAddress) {
-        source += address.getAddrFromHexAddr(accountBlock.toAddress);
+        source += getAddrFromHexAddr(accountBlock.toAddress);
         let amount = new BigNumber(accountBlock.amount);
-        source += accountBlock.amount && !amount.isZero() ? encoder.bytesToHex(amount.toArray('big')) : '';
+        source += accountBlock.amount && !amount.isZero() ? bytesToHex(amount.toArray('big')) : '';
         source += getRawTokenid(accountBlock.tokenId) || '';
     } else {
         source += accountBlock.fromBlockHash || defaultHash;
     }
 
     let fee = new BigNumber(accountBlock.fee);
-    source += accountBlock.fee && !fee.isZero() ? encoder.bytesToHex(fee.toArray('big')) : '';
+    source += accountBlock.fee && !fee.isZero() ? bytesToHex(fee.toArray('big')) : '';
     source += accountBlock.snapshotHash || '';
 
     if (accountBlock.data) {
@@ -126,7 +126,7 @@ function getSource(accountBlock: accountBlock) {
         source += hex;
     }
 
-    source += accountBlock.timestamp ? encoder.bytesToHex(new BigNumber(accountBlock.timestamp).toArray('big', 8)) : '';
+    source += accountBlock.timestamp ? bytesToHex(new BigNumber(accountBlock.timestamp).toArray('big', 8)) : '';
     source += accountBlock.logHash || '';
     source += accountBlock.nonce ? Buffer.from(accountBlock.nonce, 'base64').toString('hex') : '';
 

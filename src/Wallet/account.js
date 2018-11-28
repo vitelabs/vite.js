@@ -1,4 +1,4 @@
-import encoder from 'utils/encoder';
+import {bytesToHex,hexToBytes,getBytesSize} from 'utils/encoder';
 import { tx, onroad } from 'const/method';
 import tools from 'utils/tools';
 
@@ -23,13 +23,12 @@ const p = 6;
 const scryptR = 8;
 const scryptKeyLen = 32;
 const algorithm = 'aes-256-gcm';
+const version = 2;
 
 class Account {
     constructor(services) {
         this.services = services;
         this.addrList = [];
-
-        this.version = 2;
     }
 
     getUnLockAddrList() {
@@ -75,9 +74,9 @@ export function encrypt(key, pwd, scryptP) {
         r: scryptP && scryptP.r ? scryptP.r : scryptR,
         p: scryptP && scryptP.p ? scryptP.p : p,
         keylen: scryptP && scryptP.keylen ? scryptP.keylen : scryptKeyLen,
-        salt: scryptP && scryptP.salt ? scryptP.salt : encoder.bytesToHex(nacl.randomBytes(32)),
+        salt: scryptP && scryptP.salt ? scryptP.salt : bytesToHex(nacl.randomBytes(32)),
     };
-    let encryptPwd = scryptP && scryptP.encryptPwd ? encoder.hexToBytes(scryptP.encryptPwd) : encryptKey(pwd, scryptParams);
+    let encryptPwd = scryptP && scryptP.encryptPwd ? hexToBytes(scryptP.encryptPwd) : encryptKey(pwd, scryptParams);
 
     let nonce = nacl.randomBytes(12);
     let encryptEntropy = cipherText({
@@ -91,13 +90,13 @@ export function encrypt(key, pwd, scryptP) {
         cipherName: algorithm,
         KDF: scryptName,
         salt: scryptParams.salt,
-        Nonce: encoder.bytesToHex(nonce)
+        Nonce: bytesToHex(nonce)
     };
 
     let encryptedKeyJSON = {
         encryptEntropy,
         crypto: cryptoJSON,
-        version: this.version,
+        version,
         timestamp: new Date().getTime()
     };
     return JSON.stringify(encryptedKeyJSON).toLocaleLowerCase();
@@ -123,10 +122,10 @@ export function decrypt(keystore, pwd) {
 
     let entropy;
     try {
-        const decipher = crypto.createDecipheriv(keyJson.crypto.ciphername, encryptPwd, encoder.hexToBytes(keyJson.crypto.nonce));
-        decipher.setAuthTag(encoder.hexToBytes(tag));
+        const decipher = crypto.createDecipheriv(keyJson.crypto.ciphername, encryptPwd, hexToBytes(keyJson.crypto.nonce));
+        decipher.setAuthTag(hexToBytes(tag));
 
-        entropy = decipher.update(encoder.hexToBytes(ciphertext), 'utf8', 'hex');
+        entropy = decipher.update(hexToBytes(ciphertext), 'utf8', 'hex');
         entropy += decipher.final('hex');
     } catch (err) {
         console.warn(err);
@@ -195,7 +194,7 @@ function receiveTx(address, privKey, errorCb) {
 
 function encryptKey(pwd, scryptParams) {
     let pwdBuff = Buffer.from(pwd);
-    let salt = encoder.hexToBytes(scryptParams.salt);
+    let salt = hexToBytes(scryptParams.salt);
     salt = Buffer.from(salt);
     return scryptsy(pwdBuff, salt, +scryptParams.n, +scryptParams.r, +scryptParams.p, +scryptParams.keylen);
 }
@@ -218,7 +217,7 @@ function isValidVersion1(scryptP) {
     }
 
     try {
-        encoder.hexToBytes(scryptParams.salt);
+        hexToBytes(scryptParams.salt);
     } catch (err) {
         return false;
     }
@@ -228,7 +227,7 @@ function isValidVersion1(scryptP) {
 
 function isValid(keystore) {
     // Out keystore file size is about 500 so if a file is very large it must not be a keystore file
-    if (encoder.getBytesSize(keystore) > 2 * 1024) {
+    if (getBytesSize(keystore) > 2 * 1024) {
         return false;
     }
 
@@ -261,9 +260,9 @@ function isValid(keystore) {
             return false;
         }
 
-        encoder.hexToBytes(keyJson.encryptentropy);
-        encoder.hexToBytes(crypto.nonce);
-        encoder.hexToBytes(crypto.salt);
+        hexToBytes(keyJson.encryptentropy);
+        hexToBytes(crypto.nonce);
+        hexToBytes(crypto.salt);
     } catch (err) {
         console.warn(err);
         return false;
@@ -275,7 +274,7 @@ function isValid(keystore) {
 function cipherText({ hexData, pwd, nonce, algorithm }) {
     let cipher = crypto.createCipheriv(algorithm, pwd, nonce);
 
-    let ciphertext = cipher.update(encoder.hexToBytes(hexData), 'utf8', 'hex');
+    let ciphertext = cipher.update(hexToBytes(hexData), 'utf8', 'hex');
     ciphertext += cipher.final('hex');
     let tag = cipher.getAuthTag().toString('hex');
 
