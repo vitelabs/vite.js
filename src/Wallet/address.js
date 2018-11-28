@@ -21,8 +21,8 @@ export function getMnemonicFromEntropy(entropy) {
     return bip39.entropyToMnemonic(entropy);
 }
 
-export function newAddr() {
-    let mnemonic = bip39.generateMnemonic(256);
+export function newAddr(bits = 256) {
+    let mnemonic = bip39.generateMnemonic(bits);
     let entropy = bip39.mnemonicToEntropy(mnemonic);
     let seed = bip39.mnemonicToSeedHex(mnemonic);
     let addr = getAddrFromPath(rootPath, seed);

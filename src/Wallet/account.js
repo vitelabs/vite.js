@@ -1,8 +1,4 @@
-import { bytesToHex, hexToBytes, getBytesSize } from 'utils/encoder';
-import { tx, onroad } from 'const/method';
-import tools from 'utils/tools';
-
-
+import { hexToBytes, bytesToHex, getBytesSize } from 'utils/encoder';
 
 const nacl = require('@sisi/tweetnacl-blake2b');
 const scryptsy = require('scryptsy');
@@ -14,6 +10,7 @@ const len = 32;
 const versions = [1, 2];
 const algorithms = ['aes-256-gcm'];
 
+const version = 2;
 // LightScryptN is the N parameter of Scrypt encryption algorithm, using 4MB
 // memory and taking approximately 100ms CPU time on a modern processor.
 const n = 4096;
@@ -23,11 +20,9 @@ const p = 6;
 const scryptR = 8;
 const scryptKeyLen = 32;
 const algorithm = 'aes-256-gcm';
-const version = 2;
-
 class Account {
-    constructor(services) {
-        this.services = services;
+    constructor(Vite) {
+        this.Vite = Vite;
         this.addrList = [];
     }
 
@@ -57,17 +52,18 @@ class Account {
             return Promise.reject('AccountBlock must be required.');
         }
 
-        let { hash, signature, pubKey } = tools.signTX(accountBlock, privKey);
+        let { hash, signature, pubKey } = this.Vite.Account.signTX(accountBlock, privKey);
         accountBlock.hash = hash;
         accountBlock.publicKey = Buffer.from(pubKey).toString('base64');
         accountBlock.signature = Buffer.from(signature).toString('base64');
 
-        return this.services.request(tx.sendRawTx, accountBlock);
+        return this.Vite['tx_sendRawTx'](accountBlock).then(() => {
+            return accountBlock;
+        });
     }
 }
 
 export default Account;
-
 export function encrypt(key, pwd, scryptP, selfScryptsy) {
     let scryptParams = scryptP && scryptP.scryptParams ? scryptP.scryptParams : {
         n: scryptP && scryptP.n ? scryptP.n : n,
@@ -76,6 +72,7 @@ export function encrypt(key, pwd, scryptP, selfScryptsy) {
         keylen: scryptP && scryptP.keylen ? scryptP.keylen : scryptKeyLen,
         salt: scryptP && scryptP.salt ? scryptP.salt : bytesToHex(nacl.randomBytes(32)),
     };
+
     let getResult = (encryptPwd, res, rej) => {
         try {
             let nonce = nacl.randomBytes(12);
@@ -83,7 +80,7 @@ export function encrypt(key, pwd, scryptP, selfScryptsy) {
                 hexData: key,
                 pwd: encryptPwd,
                 nonce,
-                algorithm
+                algorithm: algorithm
             });
 
             let cryptoJSON = {
@@ -96,7 +93,7 @@ export function encrypt(key, pwd, scryptP, selfScryptsy) {
             let encryptedKeyJSON = {
                 encryptEntropy,
                 crypto: cryptoJSON,
-                version,
+                version: version,
                 timestamp: new Date().getTime()
             };
             res(JSON.stringify(encryptedKeyJSON).toLocaleLowerCase());
@@ -119,10 +116,10 @@ export function encrypt(key, pwd, scryptP, selfScryptsy) {
     });
 }
 
-export function decrypt(keystore, pwd) {
+export function decrypt(keystore, pwd, selfScryptsy) {
     let keyJson = isValid(keystore);
     if (!keyJson) {
-        return false;
+        return Promise.reject(false);
     }
 
     let scryptParams = {
@@ -132,33 +129,46 @@ export function decrypt(keystore, pwd) {
         keylen: keystore.scryptParams ? keystore.scryptParams.scryptKeyLen || scryptKeyLen : scryptKeyLen,
         salt: keyJson.crypto.salt,
     };
-    let encryptPwd = encryptKey(pwd, scryptParams);
 
-    let ciphertext = keyJson.encryptentropy.slice(0, len);
-    let tag = keyJson.encryptentropy.slice(len);
+    let getResult = (encryptPwd, res, rej) => {
+        let ciphertext = keyJson.encryptentropy.slice(0, keyJson.encryptentropy.length - len);
+        let tag = keyJson.encryptentropy.slice(keyJson.encryptentropy.length - len);
 
-    let entropy;
-    try {
-        const decipher = crypto.createDecipheriv(keyJson.crypto.ciphername, encryptPwd, hexToBytes(keyJson.crypto.nonce));
-        decipher.setAuthTag(hexToBytes(tag));
+        let entropy;
+        try {
+            const decipher = crypto.createDecipheriv(keyJson.crypto.ciphername, encryptPwd, hexToBytes(keyJson.crypto.nonce));
+            decipher.setAuthTag(hexToBytes(tag));
 
-        entropy = decipher.update(hexToBytes(ciphertext), 'utf8', 'hex');
-        entropy += decipher.final('hex');
-    } catch (err) {
-        console.warn(err);
-        return false;
-    }
+            entropy = decipher.update(hexToBytes(ciphertext), 'utf8', 'hex');
+            entropy += decipher.final('hex');
+        } catch (err) {
+            return rej(err);
+        }
 
-    return entropy;
+        return res(entropy);
+    };
+
+    return new Promise((res, rej) => {
+        encryptKey(pwd, scryptParams, selfScryptsy).then((result) => {
+            getResult(result, res, rej);
+        }).catch((err) => {
+            rej(err);
+        });
+    });
 }
 
-export function verify(scryptP, str) {
-    if (!isValidVersion1(scryptP)) {
-        return false;
+export function verify(scryptP, str, selfScryptsy) {
+    if (!isValidVersion1.call(this, scryptP)) {
+        return Promise.reject(false);
     }
 
-    let encryptP = encryptKey(str, scryptP.scryptParams);
-    return encryptP.toString('hex') === scryptP.encryptP;
+    return new Promise((res, rej) => {
+        encryptKey(str, scryptP.scryptParams, selfScryptsy).then((encryptP) => {
+            return res(encryptP.toString('hex') === scryptP.encryptP);
+        }).catch(err => {
+            rej(err);
+        });
+    });
 }
 function loopAddr(address, privKey, CB) {
     if (this.addrList.indexOf(address) < 0) {
@@ -183,12 +193,12 @@ function loopAddr(address, privKey, CB) {
 
 function receiveTx(address, privKey, errorCb) {
     return new Promise((res, rej) => {
-        this.services.request(onroad.getOnroadBlocksByAddress, address, 0, 1).then((data) => {
+        this.Vite['onroad_getOnroadBlocksByAddress'](address, 0, 1).then((data) => {
             if (!data || !data.result || !data.result.length) {
                 return res();
             }
 
-            this.builtins.receiveBlock({
+            this.Vite.Ledger.receiveBlock({
                 accountAddress: address,
                 blockHash: data.result[0].hash
             }).then((accountBlock) => {
@@ -209,11 +219,14 @@ function receiveTx(address, privKey, errorCb) {
     });
 }
 
-function encryptKey(pwd, scryptParams) {
-    let pwdBuff = Buffer.from(pwd);
+function encryptKey(pwd, scryptParams, selfScryptsy) {
     let salt = hexToBytes(scryptParams.salt);
-    salt = Buffer.from(salt);
-    return scryptsy(pwdBuff, salt, +scryptParams.n, +scryptParams.r, +scryptParams.p, +scryptParams.keylen);
+    if (!selfScryptsy) {
+        return Promise.resolve(
+            scryptsy(pwd, Buffer.from(salt), +scryptParams.n, +scryptParams.r, +scryptParams.p, +scryptParams.keylen)
+        );
+    }
+    return selfScryptsy(pwd, Array.from(salt), +scryptParams.n, +scryptParams.r, +scryptParams.p, +scryptParams.keylen);
 }
 
 function isValidVersion1(scryptP) {

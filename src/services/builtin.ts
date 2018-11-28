@@ -1,8 +1,8 @@
 let blake = require('blakejs/blake2b');
 
 const BigNumber = require('bn.js');
-import address from 'utils/address';
-import encoder from 'utils/encoder';
+import {isValidHexAddr} from 'utils/address';
+import {utf8ToBytes} from 'utils/encoder';
 import { blockType ,txType} from "const/type";
 
 import {Pledge_Addr,Vote_Addr,Register_Addr,defaultHash} from "const/address"
@@ -111,7 +111,7 @@ class Ledger  {
         // 1 2 3: send，4 5: receive
         // ps: normal tx: send is 2, receive is 4
 
-        if (!accountAddress || !address.isValidHexAddr(accountAddress)) {
+        if (!accountAddress || !isValidHexAddr(accountAddress)) {
             return Promise.reject(new Error('AccountAddress error'));
         }
 
@@ -167,7 +167,7 @@ class Ledger  {
             };
 
             if (message) {
-                let utf8bytes = encoder.utf8ToBytes(message);
+                let utf8bytes = utf8ToBytes(message);
                 let base64Str = Buffer.from(utf8bytes).toString('base64');
                 accountBlock.data = base64Str;
             } else {

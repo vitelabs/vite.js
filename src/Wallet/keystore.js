@@ -1,7 +1,7 @@
 // Compatible with the wallet-client keystore
 
-import {bytesToHex,getBytesSize,hexToBytes} from 'utils/encoder';
-import {isValidHexAddr} from 'utils/address';
+import { bytesToHex, getBytesSize, hexToBytes } from 'utils/encoder';
+import { isValidHexAddr } from 'utils/address';
 
 const uuid = require('pure-uuid');
 const scryptsy = require('scryptsy');
@@ -31,7 +31,7 @@ class Keystore {
         this.algorithm = 'aes-256-gcm';
     }
 
-    encrypt(key, pwd) {
+    encrypt(key, pwd, selfScryptsy) {
         let scryptParams = {
             n: this.n,
             r: this.scryptR,
@@ -39,33 +39,41 @@ class Keystore {
             keylen: this.scryptKeyLen,
             salt: bytesToHex(nacl.randomBytes(32)),
         };
-        let encryptPwd = encryptKey(pwd, scryptParams);
 
-        let nonce = nacl.randomBytes(12);
-        let text = cipherText({
-            hexData: key.privKey,
-            pwd: encryptPwd, 
-            nonce, 
-            algorithm: this.algorithm
+        let getResult = (encryptPwd, res) => {
+            let nonce = nacl.randomBytes(12);
+            let text = cipherText({
+                hexData: key.privKey,
+                pwd: encryptPwd,
+                nonce,
+                algorithm: this.algorithm
+            });
+
+            let cryptoJSON = {
+                cipherName: this.algorithm,
+                KDF: scryptName,
+                ScryptParams: scryptParams,
+                CipherText: text,
+                Nonce: bytesToHex(nonce)
+            };
+
+            let encryptedKeyJSON = {
+                hexAddress: key.hexAddr,
+                crypto: cryptoJSON,
+                id: new uuid(1).format(),
+                keystoreversion: this.keystoreVersion,
+                timestamp: new Date().getTime(),
+            };
+            return res(JSON.stringify(encryptedKeyJSON).toLocaleLowerCase());
+        };
+
+        return new Promise((res, rej) => {
+            encryptKey(pwd, scryptParams, selfScryptsy).then((result) => {
+                getResult(result, res);
+            }).catch((err) => {
+                rej(err);
+            });
         });
-
-        let cryptoJSON = {
-            cipherName: this.algorithm,
-            KDF: scryptName,
-            ScryptParams: scryptParams,
-            CipherText: text,
-            Nonce: bytesToHex(nonce)
-        };
-    
-        let encryptedKeyJSON = {
-            hexAddress: key.hexAddr,
-            crypto: cryptoJSON,
-            id: new uuid(1).format(),
-            keystoreversion: this.keystoreVersion,
-            timestamp: new Date().getTime(),
-        };
-    
-        return JSON.stringify(encryptedKeyJSON).toLocaleLowerCase();
     }
 
     isValid(keystore) {
@@ -73,25 +81,25 @@ class Keystore {
         if (getBytesSize(keystore) > 2 * 1024) {
             return false;
         }
-    
+
         // Must be a JSON-string
         let keyJson = {};
         try {
             keyJson = JSON.parse(keystore.toLowerCase());
-        } catch(err) {
+        } catch (err) {
             console.warn(err);
             return false;
         }
 
         // Required parameter
-        if (!keyJson.id || 
-            !keyJson.crypto || 
-            !keyJson.hexaddress || 
-            !keyJson.keystoreversion || 
+        if (!keyJson.id ||
+            !keyJson.crypto ||
+            !keyJson.hexaddress ||
+            !keyJson.keystoreversion ||
             !isValidHexAddr(keyJson.hexaddress)) {
             return false;
         }
-    
+
         try {
             new uuid().parse(keyJson.id);
         } catch (err) {
@@ -116,7 +124,7 @@ class Keystore {
             hexToBytes(crypto.ciphertext);
             hexToBytes(crypto.nonce);
             hexToBytes(crypto.scryptparams.salt);
-        } catch(err) {
+        } catch (err) {
             console.warn(err);
             return false;
         }
@@ -124,40 +132,50 @@ class Keystore {
         return keyJson;
     }
 
-    decrypt(keystore, pwd) {
+    decrypt(keystore, pwd, selfScryptsy) {
         let keyJson = this.isValid(keystore);
         if (!keyJson) {
-            return false;
+            return Promise.reject(false);
         }
 
-        let encryptPwd = encryptKey(pwd, keyJson.crypto.scryptparams);
         let ciphertext = keyJson.crypto.ciphertext.slice(0, privKeyLen * 2);
         let tag = keyJson.crypto.ciphertext.slice(privKeyLen * 2);
+        console.log(tag);
 
-        let privKey;
-        try {
-            const decipher = crypto.createDecipheriv(keyJson.crypto.ciphername, encryptPwd, hexToBytes(keyJson.crypto.nonce));
-            decipher.setAuthTag( hexToBytes(tag) );
-            decipher.setAAD(additionData);
-    
-            privKey = decipher.update(hexToBytes(ciphertext), 'utf8', 'hex');
-            privKey += decipher.final('hex');
-        } catch(err) {
-            console.warn(err);
-            return false;
-        }
+        let getResult = (encryptPwd, res, rej) => {
+            try {
+                const decipher = crypto.createDecipheriv(keyJson.crypto.ciphername, encryptPwd, hexToBytes(keyJson.crypto.nonce));
+                decipher.setAuthTag(hexToBytes(tag));
+                decipher.setAAD(additionData);
 
-        return privKey;
+                let privKey = decipher.update(hexToBytes(ciphertext), 'utf8', 'hex');
+                privKey += decipher.final('hex');
+                return res(privKey);
+            } catch (err) {
+                return rej(err);
+            }
+        };
+
+        return new Promise((res, rej) => {
+            encryptKey(pwd, keyJson.crypto.scryptparams, selfScryptsy).then((result) => {
+                getResult(result, res, rej);
+            }).catch((err) => {
+                rej(err);
+            });
+        });
     }
 }
 
 export default Keystore;
 
-function encryptKey(pwd, scryptParams) {
-    let pwdBuff = Buffer.from(pwd);
+function encryptKey(pwd, scryptParams, selfScryptsy) {
     let salt = hexToBytes(scryptParams.salt);
-    salt = Buffer.from(salt);
-    return scryptsy(pwdBuff, salt, +scryptParams.n, +scryptParams.r, +scryptParams.p, +scryptParams.keylen);
+    if (!selfScryptsy) {
+        return Promise.resolve(
+            scryptsy(pwd, Buffer.from(salt), +scryptParams.n, +scryptParams.r, +scryptParams.p, +scryptParams.keylen)
+        );
+    }
+    return selfScryptsy(pwd, Array.from(salt), +scryptParams.n, +scryptParams.r, +scryptParams.p, +scryptParams.keylen);
 }
 
 function cipherText({ hexData, pwd, nonce, algorithm }) {

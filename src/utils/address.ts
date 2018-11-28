@@ -1,5 +1,5 @@
-let blake = require('blakejs/blake2b');
-let nacl = require('@sisi/tweetnacl-blake2b');
+const blake = require('blakejs/blake2b');
+const nacl = require('@sisi/tweetnacl-blake2b');
 
 import {bytesToHex,hexToBytes} from './encoder';
 import { ADDR_PRE, ADDR_SIZE, ADDR_CHECK_SUM_SIZE, ADDR_LEN } from 'const/address';
@@ -11,7 +11,6 @@ export function newHexAddr(priv: string) {
     let {
         addr, privKey
     } = newAddr(priv);
-
     // checkSum = Blake2b(address)(len:5)
     let checkSum = getAddrCheckSum(addr);
 
@@ -55,10 +54,10 @@ function getRealAddr(hexAddr: string) {
 function privToPub(privKey: Buffer) {
     return privKey.slice(32);
 }
-
-function newAddr(privKey?: Buffer | string): { addr: Buffer, privKey: Buffer } {
+//Buffer | string????
+function newAddr(privKey?: any): { addr: Buffer, privKey: Buffer } {
     if (privKey) {
-        privKey = privKey instanceof Buffer ? privKey : Buffer.from(privKey)
+        privKey = privKey instanceof Buffer ? privKey : hexToBytes(privKey)
         const addr = newAddrFromPriv(privKey);
         return { addr, privKey };
     }
