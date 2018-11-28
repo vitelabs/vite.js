@@ -1,5 +1,5 @@
 import methods from "const/method";
-import builtin from "./builtin";
+import {Builtin} from "./builtin";
 import { httpProvider, ipcProvider, wsProvider } from "provider/index";
 
 export declare interface RPCrequest {
@@ -17,12 +17,12 @@ export declare interface RPCerror {
     code: number,
     message: string
 }
-export default class client {
+export class client {
     _provider: any
-    builtin: builtin
+    builtin: Builtin
     constructor(provider: any) {
         this._provider = provider;
-        this.builtin = new builtin(this._provider)
+        this.builtin = new Builtin(this._provider)
     }
     get provider() {
         return this._provider

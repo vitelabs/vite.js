@@ -5,6 +5,7 @@ import * as provider from "./provider";
 import * as utils from "./utils";
 import * as constance from "./const";
 import * as wallet from "./Wallet";
+import * as client from "./client";
 
 export default {
     

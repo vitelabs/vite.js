@@ -28,7 +28,7 @@ export declare type accountBlock = {
     hash?: string
 }
 
-class Ledger  {
+export class Builtin  {
     constructor(provider: any) {
         this.provider=provider
     }
@@ -370,5 +370,3 @@ class Ledger  {
         });
     }
 }
-
-export default Ledger;

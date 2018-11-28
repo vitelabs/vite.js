@@ -1,5 +1,5 @@
-import a from "./address";
-import e from "./encoder";
+import * as a from "./address";
+import * as e from "./encoder";
 import * as t from "./tools";
 
 export const address=a

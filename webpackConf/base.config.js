@@ -7,10 +7,7 @@ module.exports = {
     // plugins,
     mode: 'production',
     entry: {
-        const: path.resolve(baseDir, './const/address.ts'),
-        provider: path.resolve(baseDir, './provider/index.ts'),
-        services: path.resolve(baseDir, './services/index.ts'),
-        utils: path.resolve(baseDir, './utils/index.ts'),
+        index: path.resolve(baseDir, './index.ts'),
         wallet: path.resolve(baseDir, './wallet/index.js'),
     },
     output: {
