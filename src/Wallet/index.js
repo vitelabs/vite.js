@@ -1,16 +1,7 @@
-import keystore from './keystore.js';
-import address from './address.js';
-import account from './account.js';
+import k from './keystore.js';
+import * as addr from './address';
+import acc from './account';
 
-class Wallet {
-    constructor(Vite) {
-        this.version = 1;
-        this.Vite = Vite;
-
-        this.Keystore = new keystore();
-        this.Address = new address();
-        this.Account = new account(Vite);
-    }
-}
-
-export default Wallet;
+export const Keystore=k;
+export const Address=addr;
+export const Account=acc;

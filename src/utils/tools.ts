@@ -23,59 +23,59 @@ export declare type accountBlock = {
     logHash?: string,
     nonce?: string
 }
-// export function genBlock(accB: accountBlock, message: string) {
-//     const timestamp = Number((Date.now() / 1000).toFixed(0))
-//     const accountBlock: accountBlock = {
-//         accountAddress: accB.accountAddress,
-//         prevHash: accB.prevHash,
-//         height: accB.height,
-//         timestamp: accB.timestamp,
-//         snapshotHash: accB.snapshotHash,
-//         blockType: accB.blockType,
-//         fee: '0'
-//     };
-//     if (!accB.accountAddress || !address.isValidHexAddr(accB.accountAddress)) {
-//         throw new Error('AccountAddress error');
-//     }
+export function genBlock(accB: accountBlock, message: string) {
+    const timestamp = Number((Date.now() / 1000).toFixed(0))
+    const accountBlock: accountBlock = {
+        accountAddress: accB.accountAddress,
+        prevHash: accB.prevHash,
+        height: accB.height,
+        timestamp: accB.timestamp,
+        snapshotHash: accB.snapshotHash,
+        blockType: accB.blockType,
+        fee: '0'
+    };
+    if (!accB.accountAddress || !address.isValidHexAddr(accB.accountAddress)) {
+        throw new Error('AccountAddress error');
+    }
 
-//     if (!accB.blockType || +accB.blockType < 0 || +accB.blockType > 5) {
-//         throw new Error('BlockType error');
-//     }
+    if (!accB.blockType || +accB.blockType < 0 || +accB.blockType > 5) {
+        throw new Error('BlockType error');
+    }
 
-//     if (accB.blockType === 4 && !accB.fromBlockHash) {
-//         throw new Error('FromBlockHash error');
-//     }
+    if (accB.blockType === 4 && !accB.fromBlockHash) {
+        throw new Error('FromBlockHash error');
+    }
 
-//     // if (blockType === 2 && 
-//     //     (!toAddress || !tokenId || !amount) ){
-//     //     return Promise.reject( new Error('ToAddress, tokenId or amount error') );
-//     // }
+    // if (blockType === 2 && 
+    //     (!toAddress || !tokenId || !amount) ){
+    //     return Promise.reject( new Error('ToAddress, tokenId or amount error') );
+    // }
 
-//     if (message && accB.data) {
-//         throw new Error('Message or data, only one');
-//     }
-//     if (message) {
-//         let utf8bytes = encoder.utf8ToBytes(message);
-//         let base64Str = Buffer.from(utf8bytes).toString('base64');
-//         accountBlock.data = base64Str;
-//     } else {
-//         accB.data && (accountBlock.data = accB.data);
-//     }
+    if (message && accB.data) {
+        throw new Error('Message or data, only one');
+    }
+    if (message) {
+        let utf8bytes = encoder.utf8ToBytes(message);
+        let base64Str = Buffer.from(utf8bytes).toString('base64');
+        accountBlock.data = base64Str;
+    } else {
+        accB.data && (accountBlock.data = accB.data);
+    }
 
-//     if (accB.blockType === 2) {
-//         accountBlock.tokenId = accB.tokenId;
-//         accountBlock.toAddress = accB.toAddress;
-//         accountBlock.amount = accB.amount;
-//     }
+    if (accB.blockType === 2) {
+        accountBlock.tokenId = accB.tokenId;
+        accountBlock.toAddress = accB.toAddress;
+        accountBlock.amount = accB.amount;
+    }
 
-//     if (accB.blockType === 4) {
-//         accountBlock.fromBlockHash = accB.fromBlockHash || '';
-//     }
+    if (accB.blockType === 4) {
+        accountBlock.fromBlockHash = accB.fromBlockHash || '';
+    }
 
-//     return accountBlock;
-// }
+    return accountBlock;
+}
 
-export default function signTX(accountBlock: accountBlock, privKey: string, type = 'byte') {
+export  function signTX(accountBlock: accountBlock, privKey: string, type = 'byte') {
     let sourceHex = getSource(accountBlock);
     let source = encoder.hexToBytes(sourceHex);
 

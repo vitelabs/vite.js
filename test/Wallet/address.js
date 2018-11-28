@@ -1,14 +1,11 @@
 const assert = require('assert');
-import vitejs from '../../index.js';
-
-const ViteJS = new vitejs();
-const WalletHD = ViteJS.Wallet.Address;
+import {getAddrsFromMnemonic} from '../../src/Wallet/address';
 
 describe('Wallet_Address', function () {
     it('test_getAddrsFromMnemonic_1', function () {
         let mnemonic = 'truck female picnic cactus mountain around keen letter brass assume night air shallow predict gap scheme again moon drive slender tone coin stairs seven';
 
-        let as = WalletHD.getAddrsFromMnemonic(mnemonic, 10, 'm/44\'/999\'');
+        let as = getAddrsFromMnemonic(mnemonic, 10, 'm/44\'/999\'');
         let arr = [];
         as.forEach((item)=>{
             arr.push(item.hexAddr);
@@ -31,7 +28,7 @@ describe('Wallet_Address', function () {
     let mnemonic = 'horn equal mystery success pride regret renew great witness hire man moon';
 
     it('test_getAddrsFromMnemonic_2', function () {
-        let as = WalletHD.getAddrsFromMnemonic(mnemonic, 10, 'm/44\'/999\'');
+        let as = getAddrsFromMnemonic(mnemonic, 10, 'm/44\'/999\'');
         let arr = [];
         as.forEach((item)=>{
             arr.push(item.hexAddr);
@@ -52,7 +49,7 @@ describe('Wallet_Address', function () {
     });
 
     it('test_getAddrsFromSeed', function () {
-        let as = WalletHD.getAddrsFromMnemonic(mnemonic, 10, 'm/44\'/666666\'');
+        let as = getAddrsFromMnemonic(mnemonic, 10, 'm/44\'/666666\'');
         let arr = [];
         as.forEach((item)=>{
             arr.push(item.hexAddr);

@@ -2,16 +2,21 @@
     "name": "@vitelabs/vite.js",
     "version": "0.0.1-alpha8",
     "description": "",
-    "main": "dist/es5/src/index.js",
+    "main": "dist/vitejs/index.js",
+    "module":"dist/es5",
     "scripts": {
-        "build": "rm -rf dist && gulp",
+        "build:browser": "rm -rf dist && gulp",
+        "build:es5": "rm -rf dist && gulp",
         "test:rpc": "cross-env NODE_ENV=test nyc mocha test/RPC/index.js --no-timeouts",
         "test": "cross-env NODE_ENV=test nyc mocha --compilers ts:ts-node/register -r tsconfig-paths/register test/index.js  --no-timeouts",
         "test:w": "cross-env NODE_ENV=testWatch mocha test/index.js --require @babel/register -w --no-timeouts",
         "coverage": "nyc report --reporter=text-lcov | coveralls",
         "rpc": "node test/bin/startRPC",
         "lint": "eslint ./ --cache",
-        "lint-all": "eslint ./"
+        "lint-all": "eslint ./",
+        "prerelease":"",
+        "release":"",
+        "release-alpha":""
     },
     "repository": {
         "type": "git",

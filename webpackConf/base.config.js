@@ -1,15 +1,5 @@
-// const TypedocWebpackPlugin = require('typedoc-webpack-plugin');
-// const TerserPlugin = require('terser-webpack-plugin');
 const path=require('path');
-console.log(path.join(__dirname, '../ViteJS'));
-// const plugins = [new TypedocWebpackPlugin({
-//     out: path.resolve(__dirname,'./docs'),
-//     module: 'commonjs',
-//     target: 'es5',
-//     exclude: '**/node_modules/**/*.*',
-//     experimentalDecorators: true,
-//     excludeExternals: true
-// })];
+
 
 const baseDir = path.resolve(process.cwd(), './src');
 
@@ -25,7 +15,7 @@ module.exports = {
     },
     output: {
         filename:'[name].js',
-        path: path.join(__dirname, '../ViteJS'),
+        path: path.join(__dirname, '../lib/vitejs'),
         libraryTarget: 'umd',
         library: 'vitejs',
         umdNamedDefine: true

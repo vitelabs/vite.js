@@ -1,5 +1,5 @@
 const blake = require('blakejs/blake2b');
-declare enum Charset{
+declare const enum Charset{
     utf16="utf16",
     utf8="utf8"
 }

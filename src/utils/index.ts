@@ -1,6 +1,6 @@
 import a from "./address";
 import e from "./encoder";
-import t from "./tools";
+import * as t from "./tools";
 
 export const address=a
 export const encoder=e

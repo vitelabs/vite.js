@@ -15,7 +15,7 @@ const additionData = Buffer.from('vite');
 
 const privKeyLen = 64;
 
-class keystore {
+class Keystore {
     constructor() {
         this.keystoreVersion = 1;
 
@@ -151,7 +151,7 @@ class keystore {
     }
 }
 
-export default keystore;
+export default Keystore;
 
 function encryptKey(pwd, scryptParams) {
     let pwdBuff = Buffer.from(pwd);

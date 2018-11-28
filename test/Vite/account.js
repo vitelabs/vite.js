@@ -1,7 +1,5 @@
 const assert = require('assert');
-import tools from 'utils/tools';
-
-const Account = tools;
+import {signTX} from 'utils/tools';
 
 describe('Vite_Account', function () {
     it('test_signTX_receive', function () {
@@ -21,9 +19,9 @@ describe('Vite_Account', function () {
             'signature':'cad7e04fe1a1184df1394d73cee27ef79b6b6a9b52a82b9bcf546cd9e96adf53423149a33a856c6220f7745bd7c1512bd1e6fc21f9a4dd878dd50ac44e596200'
         };
 
-        Account.signTX(accountBlock, privKey);
+        signTX(accountBlock, privKey);
 
-        let { hash, signature } = Account.signTX(accountBlock, privKey, 'hex');
+        let { hash, signature } = signTX(accountBlock, privKey, 'hex');
         assert.equal(hash, accountBlock.hash);
         assert.equal(signature, accountBlock.signature);
     });
@@ -48,7 +46,7 @@ describe('Vite_Account', function () {
             'signature':'r9JcJLiZGhFK6+bCLmcfu2W5yIPDbm2BpVWJaokkeiOebGe2WSq94jxfvF/UI40/hOWhnlWMSvXTgmnnt8P7Bw=='
         };
 
-        let { hash, signature } = Account.signTX(accountBlock, privKey);
+        let { hash, signature } = signTX(accountBlock, privKey);
         assert.equal(hash, accountBlock.hash);
         assert.equal(Buffer.from(signature).toString('base64'), accountBlock.signature);
     });
