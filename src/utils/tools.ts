@@ -102,8 +102,8 @@ export  function signTX(accountBlock: accountBlock, privKey: string, type = 'byt
 
 function getSource(accountBlock: accountBlock) {
     let source = '';
-    const blockType = Buffer.from('' + accountBlock.blockType) || Buffer.from('')
-    source += blockType ? bytesToHex(blockType) : '';
+    const blockType = Buffer.from([accountBlock.blockType]).toString('hex');
+    source += blockType;
     source += accountBlock.prevHash || defaultHash;
     source += accountBlock.height ? bytesToHex(new BigNumber(accountBlock.height).toArray('big', 8)) : '';
     source += accountBlock.accountAddress ? getAddrFromHexAddr(accountBlock.accountAddress) : '';
