@@ -1,8 +1,8 @@
 const hd = require('@sisi/ed25519-blake2b-hd-key');
 
 import bip39 from 'bip39';
-import {bytesToHex} from 'utils/encoder';
-import {getAddrFromHexAddr as _utils_getAddrFromHexAddr,newHexAddr} from 'utils/address';
+import {bytesToHex} from '../../src/utils/encoder';
+import {getAddrFromHexAddr as _utils_getAddrFromHexAddr,newHexAddr} from '../../src/utils/address';
 
 const rootPath = 'm/44\'/666666\'';
 

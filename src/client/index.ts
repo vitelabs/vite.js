@@ -1,6 +1,6 @@
 import methods from "const/method";
 import {Builtin} from "./builtin";
-import { httpProvider, ipcProvider, wsProvider } from "provider/index";
+import { httpProvider, ipcProvider, wsProvider } from "../provider/index";
 
 export declare interface RPCrequest {
     types?: string;

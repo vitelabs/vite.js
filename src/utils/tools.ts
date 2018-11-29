@@ -4,8 +4,8 @@ const BigNumber = require('bn.js');
 
 import {bytesToHex,hexToBytes,utf8ToBytes} from './encoder';
 import {isValidHexAddr,getAddrFromHexAddr,newHexAddr} from './address';
-import { defaultHash } from 'const/address';
-import { blockType } from "const/type";
+import { defaultHash } from '../const/address';
+import { blockType } from "../const/type";
 
 export declare type accountBlock = {
     accountAddress: string,

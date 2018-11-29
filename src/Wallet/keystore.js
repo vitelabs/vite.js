@@ -1,7 +1,7 @@
 // Compatible with the wallet-client keystore
 
-import { bytesToHex, getBytesSize, hexToBytes } from 'utils/encoder';
-import { isValidHexAddr } from 'utils/address';
+import { bytesToHex, getBytesSize, hexToBytes } from '../../src/utils/encoder';
+import { isValidHexAddr } from '../../src/utils/address';
 
 const uuid = require('pure-uuid');
 const scryptsy = require('scryptsy');

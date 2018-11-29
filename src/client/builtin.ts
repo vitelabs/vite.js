@@ -1,13 +1,11 @@
-let blake = require('blakejs/blake2b');
-
 const BigNumber = require('bn.js');
-import {isValidHexAddr} from 'utils/address';
-import {utf8ToBytes} from 'utils/encoder';
-import { blockType ,txType} from "const/type";
+import {isValidHexAddr} from '../utils/address';
+import {utf8ToBytes} from '../utils/encoder';
+import { blockType ,txType} from "../const/type";
 
-import {Pledge_Addr,Vote_Addr,Register_Addr,defaultHash} from "const/address"
+import {Pledge_Addr,Vote_Addr,Register_Addr,defaultHash} from "../const/address"
 import { RPCresponse } from "."
-import { accountBlock } from 'utils/tools';
+import { accountBlock } from '../utils/tools';
 
 
 export declare type accountBlock = {

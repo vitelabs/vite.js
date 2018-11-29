@@ -1,6 +1,6 @@
-import { hexToBytes, bytesToHex, getBytesSize } from 'utils/encoder';
-import {tx,onroad} from 'const/method';
-import {signTX} from 'utils/tools';
+import { hexToBytes, bytesToHex, getBytesSize } from '../../src/utils/encoder';
+import {tx,onroad} from '../../src/const/method';
+import {signTX} from '../../src/utils/tools';
 
 const nacl = require('@sisi/tweetnacl-blake2b');
 const scryptsy = require('scryptsy');

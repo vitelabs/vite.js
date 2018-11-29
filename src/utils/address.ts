@@ -2,7 +2,7 @@ const blake = require('blakejs/blake2b');
 const nacl = require('@sisi/tweetnacl-blake2b');
 
 import {bytesToHex,hexToBytes} from './encoder';
-import { ADDR_PRE, ADDR_SIZE, ADDR_CHECK_SUM_SIZE, ADDR_LEN } from 'const/address';
+import { ADDR_PRE, ADDR_SIZE, ADDR_CHECK_SUM_SIZE, ADDR_LEN } from '../const/address';
 
 
 
