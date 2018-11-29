@@ -2,16 +2,17 @@ const path=require('path');
 
 
 const baseDir = path.resolve(process.cwd(), './src');
+const target=process.env.build_target;
 
 module.exports = {
     // plugins,
+    target,
     mode: 'production',
     entry: {
-        index: path.resolve(baseDir, './index.ts'),
-        wallet: path.resolve(baseDir, './wallet/index.js'),
+        index: path.resolve(baseDir, './index.ts')
     },
     output: {
-        filename:'[name].js',
+        filename:`[name].${target}.js`,
         path: path.join(__dirname, '../dist/vitejs'),
         libraryTarget: 'umd',
         library: 'vitejs',
@@ -55,7 +56,8 @@ module.exports = {
     resolve: {
         alias: {
             const: path.resolve(__dirname, '../src/const/'),
-            utils: path.resolve(__dirname, '../src/utils/')
+            utils: path.resolve(__dirname, '../src/utils/'),
+            provider: path.resolve(__dirname, '../src/provider/')
         },
         extensions: ['.js', '.json', '.ts']
     }
