@@ -1,12 +1,14 @@
 import '@babel/polyfill';
 require('es6-promise').polyfill();
 
-import * as provider from "./provider";
-import * as utils from "./utils";
-import * as constance from "./const";
-import * as wallet from "./Wallet";
-import * as client from "./client";
+import * as p from "./provider";
+import * as u from "./utils";
+import * as con from "./const";
+import * as w from "./Wallet";
+import * as c from "./client";
 
-export default {
-    
-}
+export const provider=p;
+export const utils=u;
+export const constant=con;
+export const wallet=w;
+export const client=c;
