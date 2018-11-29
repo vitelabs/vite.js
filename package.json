@@ -16,7 +16,7 @@
         "rpc": "node test/bin/startRPC",
         "lint": "eslint ./ --cache",
         "lint-all": "eslint ./",
-        "prerelease-alpha": "npm version prerelease",
+        "prerelease-alpha": "npm run build && npm version prerelease",
         "release-alpha": "npm publish --access-publick --tag alpha",
         "release": ""
     },
