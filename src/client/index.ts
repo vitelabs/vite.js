@@ -1,5 +1,5 @@
 import methods from "const/method";
-import {Builtin} from "./builtin";
+import { Builtin } from "./builtin";
 import { httpProvider, ipcProvider, wsProvider } from "../provider/index";
 
 export declare interface RPCrequest {
@@ -17,7 +17,7 @@ export declare interface RPCerror {
     code: number,
     message: string
 }
-export class client {
+export class Client {
     _provider: any
     builtin: Builtin
     constructor(provider: any) {
@@ -66,12 +66,32 @@ export declare type wsClientOpt = {
     clientConfig: object,
     timeout?: number
 }
-export function initClientWithHttp(opt: httpClientOpt) {
-    return new client(new httpProvider(opt))
+export async function initClientWithHttp(opt: httpClientOpt) {
+    const WS_RPC = new httpProvider(opt);
+    const client = new Client(WS_RPC);
+    return client
 }
-export function initClientWithWs(opt: ipcClientOpt) {
-    return new client(new ipcProvider(opt))
+export async function initClientWithWs(opt: wsClientOpt) {
+        const WS_RPC = new wsProvider(opt);
+        const client = new Client(WS_RPC);
+        return client;
+    // return new Promise((res, rej) => {
+    //     const WS_RPC = new wsProvider(opt);
+    //     WS_RPC._connectConnect = function () {
+    //         const client = new Client(WS_RPC);
+    //        res(client)
+    //     }
+    //     WS_RPC
+    //     WS_RPC._connectErr=function(){
+    //         rej(new Error("ERROR"))
+    //     }
+    //     WS_RPC._connectTimeout=function(){
+    //         rej(new Error("TIMEOUT"))
+    //     }
+    // })
 }
-export function initClientWithIpc(opt: wsClientOpt) {
-    return new client(new wsProvider(opt))
+export async function initClientWithIpc(opt: ipcClientOpt) {
+    const IPC_RPC = new ipcProvider(opt);
+    const client = new Client(IPC_RPC);
+    return client
 }
