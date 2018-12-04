@@ -4,13 +4,13 @@ const XMLHttpRequest = typeof window !== 'undefined' && window.XMLHttpRequest ?
 
 class HTTP_RPC extends Communication {
     constructor({
-        host = 'http://localhost:8415',
+        url = 'http://localhost:8415',
         headers={},
-        timeout = 0
+        timeout = 1000
     }) {
         super();
 
-        this.host = host;
+        this.url = url;
         this.timeout = timeout;
         this.headers = headers;
     }
@@ -18,7 +18,7 @@ class HTTP_RPC extends Communication {
     _getRequest() {
         let request = new XMLHttpRequest();
 
-        request.open('POST', this.host);
+        request.open('POST', this.url);
 
         // Set headers
         request.setRequestHeader('Content-Type', 'application/json;charset=utf-8');
@@ -85,7 +85,7 @@ class HTTP_RPC extends Communication {
                 request.send(JSON.stringify(payload));
             } catch (err) {
                 clearRequestAndTimeout();
-                return rej(this.ERRORS.CONNECT(this.host));
+                return rej(this.ERRORS.CONNECT(this.url));
             }
         });
     }
