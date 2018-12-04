@@ -1,12 +1,11 @@
 const BigNumber = require('bn.js');
-import {isValidHexAddr} from '../utils/address';
-import {utf8ToBytes} from '../utils/encoder';
-import { blockType ,txType} from "../const/type";
+import { isValidHexAddr } from 'utils/address/privToAddr';
+import { utf8ToBytes } from 'utils/encoder';
+import { accountBlock } from 'utils/tools';
+import { blockType, txType } from "../const/type";
 
-import {Pledge_Addr,Vote_Addr,Register_Addr,defaultHash} from "../const/address"
+import { Pledge_Addr, Vote_Addr, Register_Addr, Default_Hash} from "const/address"
 import { RPCresponse } from "."
-import { accountBlock } from '../utils/tools';
-
 
 export declare type accountBlock = {
     accountAddress?: string,
@@ -30,12 +29,14 @@ export class Builtin  {
     constructor(provider: any) {
         this.provider=provider
     }
+
     provider:any
+
     getBlocks({
         addr, index, pageCount = 50
     }: {
-            addr: string, index: number, pageCount: number
-        }) {
+        addr: string, index: number, pageCount: number
+    }) {
         return this.provider.batch([{
             type: 'request',
             methodName: 'ledger_getBlocksByAccAddr',
@@ -63,7 +64,7 @@ export class Builtin  {
                 let data = Buffer.from(item.data || '', 'base64').toString('hex');
                 let dataPrefix = data.slice(0, 8);
                 const key =`${dataPrefix}_${toAddress}`;
-                const type = txType[key]===undefined?10:txType[key];
+                const type = txType[key] === undefined ? 10 : txType[key];
 
                 item.txType = type;
                 list.push(item);
@@ -76,8 +77,8 @@ export class Builtin  {
         });
     }
 
-    getBalance(addr:string) {
-        return this.provider.batch([{
+    async getBalance(addr: string) {
+        const data:RPCresponse[] = await this.provider.batch([{
             type: 'request',
             methodName: 'ledger_getAccountByAccAddr',
             params: [addr]
@@ -85,17 +86,17 @@ export class Builtin  {
             type: 'request',
             methodName: 'onroad_getAccountOnroadInfo',
             params: [addr]
-        }]).then((data:RPCresponse[]) => {
-            if (!data || !data.length || data.length < 2) {
-                return null;
-            }
+        }]);
 
-            let result = {
-                balance: data[0].result,
-                onroad: data[1].result
-            };
-            return result;
-        });
+        if (!data || !data.length || data.length < 2) {
+            return null;
+        }
+
+        let result = {
+            balance: data[0].result,
+            onroad: data[1].result
+        };
+        return result;
     }
 
     getAccountBlock({
@@ -103,8 +104,7 @@ export class Builtin  {
         fromBlockHash,
         message, data,
         accountAddress, toAddress, tokenId, amount
-    }
-    :any) {
+    }: any) {
         // 1: create contract send, 2: tx send, 3: reward send, 4: tx receive, 5: tx receive fail 
         // 1 2 3: send，4 5: receive
         // ps: normal tx: send is 2, receive is 4
@@ -156,7 +156,7 @@ export class Builtin  {
 
             let accountBlock:accountBlock = {
                 accountAddress,
-                prevHash: latestBlock && latestBlock.hash ? latestBlock.hash : defaultHash,
+                prevHash: latestBlock && latestBlock.hash ? latestBlock.hash : Default_Hash,
                 height,
                 timestamp,
                 snapshotHash: req[1].result,
@@ -329,8 +329,7 @@ export class Builtin  {
 
     cancelRegisterBlock({
         accountAddress, nodeName, tokenId, Gid
-    }
-    :{
+    }:{
         accountAddress:string, nodeName:string, Gid:string, tokenId:string
     }) {
         return this.provider.request('register_getCancelRegisterData', [Gid, nodeName]).then((data:RPCresponse) => {

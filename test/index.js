@@ -8,20 +8,12 @@ describe('Base Libs Test', function() {
     });
 });
 
-describe('Utils Test: libs/utils', function () {
-    require('./utils');
-});
-
-describe('Address Test: src/address', function () {
-    require('./address');
-});
-
 describe('Vite Test: src/Vite', function () {
     require('./Vite/account');
 });
 
-describe('Wallet Test: src/Wallet', function () {
-    require('./Wallet/keystore');
-    require('./Wallet/address');
-    require('./Wallet/account');
+describe('Utils Test: src/utils', function () {
+    require('./utils/encoder');
+    require('./utils/address');
+    require('./utils/keystore');
 });

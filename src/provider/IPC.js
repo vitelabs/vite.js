@@ -2,10 +2,10 @@ import IPC_WS from './Communication/ipc_ws';
 const net = require('net');
 
 class IPC_RPC extends IPC_WS {
-    constructor({
-        path = '',
-        delimiter = '\n',
-        timeout = 0
+    constructor(path = '', timeout = 60000, options = {
+        delimiter: '\n',
+        retryTimes: 10,
+        retryInterval: 10000
     }) {
         super({
             onEventTypes: ['error', 'end', 'timeout', 'data', 'close', 'connect'],
@@ -17,16 +17,28 @@ class IPC_RPC extends IPC_WS {
             return this.ERRORS.CONNECT();
         }
 
+        this.type = 'ipc';
         this.path = path;
-        this.delimiter = delimiter;
         this.timeout = timeout;
+        this.delimiter = options.delimiter;
 
+        // Try to reconnect.
+        let times = 0;
         this.socket = net.connect({ path });
+        
         this.socket.on('connect', ()=>{
+            times = 0;
             this._connected();
         });
         this.socket.on('close', ()=>{
             this._closed();
+            if (times > options.retryTimes) {
+                return;
+            }
+            setTimeout(() => {
+                times++;
+                this.reconnect();
+            }, options.retryInterval);
         });
         this.socket.on('error', ()=>{
             this._errored();

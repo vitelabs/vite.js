@@ -2,12 +2,12 @@ import IPC_WS from './Communication/ipc_ws';
 const websocket = require('websocket').w3cwebsocket;
 
 class WS_RPC extends IPC_WS {
-    constructor({
-        url = 'ws://localhost:31420',
-        protocol,
-        headers,
-        clientConfig,
-        timeout = 0
+    constructor(url = 'ws://localhost:31420', timeout = 60000, options = {
+        protocol: '',
+        headers: '',
+        clientConfig: '',
+        retryTimes: 10,
+        retryInterval: 10000
     }) {
         super({
             onEventTypes: ['error', 'close', 'connect'],
@@ -19,13 +19,29 @@ class WS_RPC extends IPC_WS {
             return this.ERRORS.CONNECT(url);
         }
 
+        this.type = 'ws';
         this.url = url;
-        this.protocol = protocol;
         this.timeout = timeout;
-        this.headers = headers;
-        this.clientConfig = clientConfig;
+        this.protocol = options.protocol;
+        this.headers = options.headers;
+        this.clientConfig = options.clientConfig;
 
         this.reconnect();
+
+        // Try to reconnect.
+        let times = 0;
+        this.on('connect', () => {
+            times = 0;
+        });
+        this.on('close', () => {
+            if (times > options.retryTimes) {
+                return;
+            }
+            setTimeout(() => {
+                times++;
+                this.reconnect();
+            }, options.retryInterval);
+        });
     }
 
     reconnect() {

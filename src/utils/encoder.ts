@@ -1,22 +1,24 @@
 const blake = require('blakejs/blake2b');
+
 declare const enum Charset {
     utf16 = "utf16",
     utf8 = "utf8"
 }
 
-
-export function bytesToHex(arr: Buffer = Buffer.from([])) {//？？？？
+export function bytesToHex(arr: Buffer = Buffer.from([])): string {
     let hexArr = Array.prototype.map.call(arr, function (bit: Number) {
         return ('00' + bit.toString(16)).slice(-2);
     });
     return hexArr.join('');
 }
+
 export function hexToBytes(hex: String) {
     let typedArray = new Uint8Array(hex.match(/[\da-f]{2}/gi).map(function (h) {
         return parseInt(h, 16);
     }));
     return typedArray;
 }
+
 export function getBytesSize(str: String, charset: Charset = Charset.utf8) {
     var total = 0, code, i, len;
 
@@ -42,6 +44,7 @@ export function getBytesSize(str: String, charset: Charset = Charset.utf8) {
     }
     return total;
 }
+
 export function utf8ToBytes(str = '') {
     const back = [];
     for (var i = 0; i < str.length; i++) {
@@ -65,7 +68,7 @@ export function utf8ToBytes(str = '') {
 
     return new Uint8Array(back);
 }
-export const blake2b = blake.blake2b;
+
 export function strToUtf8Bytes(str: string) {
     if (!str) {
         return null;
@@ -94,4 +97,5 @@ export function strToUtf8Bytes(str: string) {
     }
     return new Uint8Array(back);
 }
-
+export const _Buffer = Buffer;
+export const blake2b = blake.blake2b;

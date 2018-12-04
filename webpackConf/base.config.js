@@ -1,15 +1,21 @@
-const path=require('path');
-
+const path = require('path');
+const webpack = require('webpack');
 
 const baseDir = path.resolve(process.cwd(), './src');
-const target=process.env.build_target;
+const target = process.env.build_target;
+const Buffer_Path = path.join(__dirname, '../node_modules/buffer/index.js');
 
 module.exports = {
-    // plugins,
+    plugins:[
+        new webpack.NormalModuleReplacementPlugin(/\/buffer\//, function(resource) {
+            resource.request = Buffer_Path;
+        })
+    ],
     target,
     mode: 'production',
     entry: {
         index: path.resolve(baseDir, './index.ts')
+        // index: path.resolve(baseDir, '../index.js')
     },
     output: {
         filename:`[name].${target}.js`,
@@ -61,5 +67,4 @@ module.exports = {
         },
         extensions: ['.js', '.json', '.ts']
     }
-
 };
