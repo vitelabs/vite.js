@@ -1,9 +1,6 @@
-import * as address from "./address";
-import * as method from "./method";
 import * as type from "./type";
+import * as error from "./error";
+import * as method from "./method";
+import * as contract from "./contract";
 
-export {
-    address,
-    method,
-    type
-}
+export { type, error, method, contract };

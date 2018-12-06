@@ -1,3 +1,5 @@
+import { checkParams } from 'utils/tools';
+import { paramsFormat } from 'const/error';
 import { decipheriv, encryptPwd } from './tools';
 import { defaultScryptParams, additionData } from './vars';
 import isValid from './validated';
@@ -64,9 +66,17 @@ function decryptOldKeystore(keystore, pwd, selfScryptsy) {
 const decryptFuncs = [decryptOldKeystore, decryptVersion1, decryptVersion2, decryptVersion3];
 
 export default function decrypt(keystore, pwd, selfScryptsy) {
+    let err = checkParams({ keystore, pwd }, ['keystore', 'pwd']);
+    if (err) {
+        return Promise.reject(err);
+    }
+
     let keyJson = isValid(keystore);
     if (!keyJson) {
-        return Promise.reject(false);
+        return Promise.reject({
+            code: paramsFormat.code,
+            message: `${paramsFormat.msg} Illegal keystore.`
+        });
     }
 
     if (keyJson.version) {

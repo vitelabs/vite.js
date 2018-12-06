@@ -4,6 +4,7 @@
     "description": "",
     "main": "dist/vitejs/index.node.js",
     "browser": "dist/vitejs/index.web.js",
+    "typings": "src/index.d.ts",
     "scripts": {
         "build:browser": "build_target=web webpack",
         "build:es5": "tsc",

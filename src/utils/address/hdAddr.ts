@@ -1,9 +1,11 @@
-const hd = require('@sisi/ed25519-blake2b-hd-key');
 const bip39 = require('bip39');
+const hd = require('@sisi/ed25519-blake2b-hd-key');
 
-import { bytesToHex } from '../encoder';
-import { newHexAddr } from './privToAddr';
+import { checkParams } from 'utils/tools';
+import { paramsFormat } from 'const/error';
 import { ROOT_PATH  } from './vars';
+import { bytesToHex } from '../encoder';
+import { newHexAddr, isValidHexAddr as _isValidHexAddr, getAddrFromHexAddr as _getAddrFromHexAddr } from './privToAddr';
 
 declare type addrObj = {
     addr: string, 
@@ -13,20 +15,37 @@ declare type addrObj = {
 }
 
 export function getEntropyFromMnemonic(mnemonic: string): string {
-    let valid = bip39.validateMnemonic(mnemonic);
-    if (!valid) {
-        return '';
+    let err = checkParams({ mnemonic }, ['mnemonic'], [{
+        name: 'mnemonic',
+        func: bip39.validateMnemonic
+    }]);
+    if (err) {
+        console.error(new Error(err.message));
+        return null;
     }
+
     return bip39.mnemonicToEntropy(mnemonic);
 }
 
 export function getMnemonicFromEntropy(entropy: string): string {
+    let err = checkParams({ entropy }, ['entropy']);
+    if (err) {
+        console.error(new Error(err.message));
+        return null;
+    }
+
     return bip39.entropyToMnemonic(entropy);
 }
 
 export function newAddr(bits: number = 256): {
     addr: addrObj, entropy: string, mnemonic: string
 } {
+    let err = checkParams({ bits }, ['bits']);
+    if (err) {
+        console.error(new Error(err.message));
+        return null;
+    }
+
     let mnemonic = bip39.generateMnemonic(bits);
     let entropy = bip39.mnemonicToEntropy(mnemonic);
     let seed = bip39.mnemonicToSeedHex(mnemonic);
@@ -36,13 +55,18 @@ export function newAddr(bits: number = 256): {
 }
 
 export function getAddrFromMnemonic(mnemonic, index = 0): addrObj | boolean {
-    if (!mnemonic) {
-        return false;
+    let err = checkParams({ mnemonic }, ['mnemonic'], [{
+        name: 'mnemonic',
+        func: bip39.validateMnemonic
+    }]);
+    if (err) {
+        console.error(new Error(err.message));
+        return null;
     }
 
-    let valid = bip39.validateMnemonic(mnemonic);
-    if (!valid) {
-        return false;
+    if (index < 0) {
+        console.warn(`${paramsFormat.msg} Index must greater than 0.`);
+        index = 0;
     }
 
     let path = getPath(index);
@@ -51,14 +75,22 @@ export function getAddrFromMnemonic(mnemonic, index = 0): addrObj | boolean {
 }
 
 export function getAddrsFromMnemonic(mnemonic, start = 0, num = 10): Array<string> | boolean {
-    if (!mnemonic || num > 10 || num < 0) {
-        return false;
+    let err = checkParams({ mnemonic }, ['mnemonic'], [{
+        name: 'mnemonic',
+        func: bip39.validateMnemonic
+    }]);
+    if (err) {
+        console.error(new Error(err.message));
+        return null;
     }
 
-    start = start > 0 ? start : 0;
-    let valid = bip39.validateMnemonic(mnemonic);
-    if (!valid) {
-        return false;
+    if (start < 0) {
+        console.warn(`${paramsFormat.msg} Start must greater than 0 or equal to 0.`);
+        start = 0;
+    }
+
+    if (num <= 0) {
+        return [];
     }
 
     let addrs = [];
@@ -72,6 +104,10 @@ export function getAddrsFromMnemonic(mnemonic, start = 0, num = 10): Array<strin
 
     return addrs;
 }
+
+export const getAddrFromHexAddr = _getAddrFromHexAddr;
+
+export const isValidHexAddr = _isValidHexAddr;
 
 
 

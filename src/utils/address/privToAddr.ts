@@ -1,13 +1,14 @@
 const blake = require('blakejs/blake2b');
-const nacl = require('@sisi/tweetnacl-blake2b');
 
+import { checkParams } from 'utils/tools';
+import { keyPair, getPublicKey } from 'utils/ed25519';
 import { bytesToHex, hexToBytes } from '../encoder';
 import { ADDR_PRE, ADDR_SIZE, ADDR_CHECK_SUM_SIZE, ADDR_LEN  } from './vars';
 
 
 export function newHexAddr(priv?: Buffer | string): {
     addr: string, pubKey: string, privKey: string, hexAddr: string
-} {
+} | null {
     // address = Blake2b(PubKey)(len:20)
     let {
         addr, privKey
@@ -19,18 +20,38 @@ export function newHexAddr(priv?: Buffer | string): {
     // HumanReadableAddress = 'vite_' + Hex(address + checkSum)
     let _addr = bytesToHex(addr);
 
+    let _pubKey = getPublicKey(privKey);
     return {
         addr: _addr,
-        pubKey: bytesToHex(privToPub(privKey)),
+        pubKey: bytesToHex(_pubKey),
         privKey: bytesToHex(privKey),
         hexAddr: ADDR_PRE + _addr + checkSum
     };
 }
 
-export function getAddrFromHexAddr(hexAddr: string): string {
-    if (!isValidHexAddr(hexAddr)) {
+export function newHexAddrFromPub(pubkey: string | Buffer) {
+    let err = checkParams({ pubkey }, ['pubkey']);
+    if (err) {
+        console.error(new Error(err.message));
         return null;
     }
+
+    let addr = newAddrFromPub(pubkey);
+    let checkSum = getAddrCheckSum(addr);
+    let _addr = bytesToHex(addr);
+    return ADDR_PRE + _addr + checkSum;
+}
+
+export function getAddrFromHexAddr(hexAddr: string): string {
+    let err = checkParams({ hexAddr }, ['hexAddr'], [{
+        name: 'hexAddr',
+        func: isValidHexAddr
+    }]);
+    if (err) {
+        console.error(new Error(err.message));
+        return null;
+    }
+
     return getRealAddr(hexAddr);
 }
 
@@ -54,18 +75,14 @@ function getRealAddr(hexAddr: string): string {
     return hexAddr.slice(ADDR_PRE.length, ADDR_PRE.length + ADDR_SIZE * 2);
 }
 
-function privToPub(privKey: Buffer): Buffer {
-    return privKey.slice(32);
-}
-
 function newAddr(privKey?: Buffer | string): { addr: Buffer, privKey: Buffer } {
     // Init priveKey
     let _privKey;
     if (privKey) {
         _privKey = privKey instanceof Buffer ? privKey : Buffer.from(privKey, 'hex');
     } else {
-        let keyPair = nacl.sign.keyPair();
-        _privKey = keyPair.secretKey as Buffer;
+        let _keyPair = keyPair();
+        _privKey = _keyPair.secretKey as Buffer;
     }
 
     const addr = newAddrFromPriv(_privKey);
@@ -78,7 +95,8 @@ function newAddrFromPub(pubKey: string | Buffer): Buffer {
 }
 
 function newAddrFromPriv(privKey: Buffer): Buffer  {
-    return newAddrFromPub(privToPub(privKey));
+    let publicKey = getPublicKey(privKey);
+    return newAddrFromPub(publicKey);
 }
 
 function getAddrCheckSum(addr: string | ArrayBufferView): string {

@@ -1,4 +1,5 @@
 const blake = require('blakejs/blake2b');
+import { checkParams } from 'utils/tools';
 
 declare const enum Charset {
     utf16 = "utf16",
@@ -6,6 +7,12 @@ declare const enum Charset {
 }
 
 export function bytesToHex(arr: Buffer = Buffer.from([])): string {
+    let err = checkParams({ arr }, ['arr']);
+    if (err) {
+        console.error(new Error(err.message));
+        return null;
+    }
+
     let hexArr = Array.prototype.map.call(arr, function (bit: Number) {
         return ('00' + bit.toString(16)).slice(-2);
     });
@@ -13,6 +20,12 @@ export function bytesToHex(arr: Buffer = Buffer.from([])): string {
 }
 
 export function hexToBytes(hex: String) {
+    let err = checkParams({ hex }, ['hex']);
+    if (err) {
+        console.error(new Error(err.message));
+        return null;
+    }
+
     let typedArray = new Uint8Array(hex.match(/[\da-f]{2}/gi).map(function (h) {
         return parseInt(h, 16);
     }));
@@ -20,6 +33,12 @@ export function hexToBytes(hex: String) {
 }
 
 export function getBytesSize(str: String, charset: Charset = Charset.utf8) {
+    let err = checkParams({ str  }, ['str']);
+    if (err) {
+        console.error(new Error(err.message));
+        return null;
+    }
+
     var total = 0, code, i, len;
 
     if (charset === Charset.utf16) {
@@ -46,6 +65,12 @@ export function getBytesSize(str: String, charset: Charset = Charset.utf8) {
 }
 
 export function utf8ToBytes(str = '') {
+    let err = checkParams({ str  }, ['str']);
+    if (err) {
+        console.error(new Error(err.message));
+        return null;
+    }
+
     const back = [];
     for (var i = 0; i < str.length; i++) {
         var code = str.charCodeAt(i);
@@ -70,9 +95,12 @@ export function utf8ToBytes(str = '') {
 }
 
 export function strToUtf8Bytes(str: string) {
-    if (!str) {
+    let err = checkParams({ str  }, ['str']);
+    if (err) {
+        console.error(new Error(err.message));
         return null;
     }
+
     var back = [];
     // var byteSize = 0;
     for (var i = 0; i < str.length; i++) {
@@ -97,5 +125,7 @@ export function strToUtf8Bytes(str: string) {
     }
     return new Uint8Array(back);
 }
+
 export const _Buffer = Buffer;
+
 export const blake2b = blake.blake2b;

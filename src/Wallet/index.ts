@@ -1,5 +1,5 @@
 import { tx, onroad } from 'const/method';
-import { signTX } from 'utils/tools';
+import { signAccountBlock } from 'utils/accountBlock';
 import client from "../client";
 
 const loopTime = 2000;
@@ -39,12 +39,12 @@ class Wallet extends client {
             return Promise.reject('AccountBlock must be required.');
         }
 
-        let { hash, signature, pubKey } = signTX(accountBlock, privKey);
-        accountBlock.hash = hash;
-        accountBlock.publicKey = Buffer.from(pubKey, 'hex').toString('base64');
-        accountBlock.signature = Buffer.from(signature, 'hex').toString('base64');
+        let _accountBlock = signAccountBlock(accountBlock, privKey);
+        if (!_accountBlock) {
+            return Promise.reject(_accountBlock);
+        }
 
-        return this.request(tx.sendRawTx, accountBlock).then(() => {
+        return this.request(tx.sendRawTx, _accountBlock).then(() => {
             return accountBlock;
         });
     }
@@ -71,32 +71,26 @@ function loopAddr(address, privKey, CB) {
     });
 }
 
-function receiveTx(address, privKey, errorCb) {
-    return new Promise((res, rej) => {
-        this.request(onroad.getOnroadBlocksByAddress,address, 0, 1).then((result) => {
-            if (!result || !result.length) {
-                return res();
-            }
+async function receiveTx(address, privKey, errorCb) {
+    const result = await this.request(onroad.getOnroadBlocksByAddress,address, 0, 1)
+    if (!result || !result.length) {
+        return null;
+    }
 
-            this.builtin.receiveBlock({
-                accountAddress: address,
-                blockHash: result[0].hash
-            }).then((accountBlock) => {
-                this.sendRawTx(accountBlock, privKey).then((data) => {
-                    res(data);
-                }).catch((err) => {
-                    if (!errorCb) {
-                        return rej(err);
-                    }
-                    errorCb(err, accountBlock, res, rej);
-                });
-            }).catch((err) => {
-                return rej(err);
-            });
-        }).catch((err) => {
-            return rej(err);
-        });
+    const accountBlock = await this.builtin.receiveBlock({
+        accountAddress: address,
+        blockHash: result[0].hash
     });
+
+    try {
+        const data = await this.sendRawTx(accountBlock, privKey);
+        return data
+    } catch(err) {
+        if (!errorCb) {
+            return Promise.reject(err);
+        }
+        errorCb(err, accountBlock, Promise.resolve, Promise.reject);
+    }
 }
 
 export default Wallet;

@@ -2,10 +2,10 @@ const BigNumber = require('bn.js');
 import { isValidHexAddr } from 'utils/address/privToAddr';
 import { utf8ToBytes } from 'utils/encoder';
 import { accountBlock } from 'utils/tools';
-import { blockType, txType } from "../const/type";
+import { BlockType, txType } from "../const/type";
 
-import { Pledge_Addr, Vote_Addr, Register_Addr, Default_Hash} from "const/address"
-import { RPCresponse } from "."
+import { Pledge_Addr, Vote_Addr, Register_Addr, Default_Hash} from "const/contract"
+import { RPCresponse } from "const/type"
 
 export declare type accountBlock = {
     accountAddress?: string,
@@ -13,7 +13,7 @@ export declare type accountBlock = {
     height: number,
     timestamp: number,
     snapshotHash: string,
-    blockType?: blockType,
+    blockType?: BlockType,
     fee: string,
     data?: string,
     tokenId?: string,
@@ -27,7 +27,7 @@ export declare type accountBlock = {
 
 export class Builtin  {
     constructor(provider: any) {
-        this.provider=provider
+        this.provider = provider
     }
 
     provider:any

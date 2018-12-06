@@ -1,9 +1,10 @@
 const uuid = require('pure-uuid');
 
-import { currentVersion } from './vars';
+import { checkParams } from 'utils/tools';
 import { hexToBytes } from 'utils/encoder';
-import { algorithm, scryptName } from './vars';
 import { isValidHexAddr } from 'utils/address/privToAddr';
+import { currentVersion } from './vars';
+import { algorithm, scryptName } from './vars';
 
 function isValidVersion1(keyJson) {
     // Required parameter
@@ -154,6 +155,12 @@ function isValidOldKeystore(keyJson) {
 const validatedFuncs = [isValidOldKeystore, isValidVersion1, isValidVersion2, isValidVersion3];
 
 export default function isValid(keystore) {
+    let err = checkParams({ keystore }, ['keystore']);
+    if (err) {
+        console.error(new Error(err));
+        return false;
+    }
+
     try {
         // Must be a JSON-string
         let keyJson = JSON.parse(keystore.toLowerCase());

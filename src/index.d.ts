@@ -1,4 +1,4 @@
-import methods from "const/method";
+import methods from "./const/method";
 
 export declare type Hex = string;
 export declare type Address = string;
@@ -52,7 +52,7 @@ export enum BuiltinTxType {
     rewardReq,
     txRes,
     txResFail
-};
+}
 
 export declare type SignBlock = {
     accountAddress: Address,
@@ -148,37 +148,3 @@ export declare type quotaBlock = {
     snapshotHash?: Hex
 }
 
-export declare type sendTxBlock = {
-    accountAddress: Address,
-    toAddress: Address,
-    tokenId: TokenId,
-    amount: BigInt,
-
-    message?: string,
-    prevHash?: Hex,
-    height?: Uint64,
-    snapshotHash?: Hex
-}
-
-export declare type receiveTxBlock = {
-    accountAddress: Address,
-    fromBlockHash: Hex,
-
-    prevHash?: Hex,
-    height?: Uint64,
-    snapshotHash?: Hex
-}
-
-export declare type formatBlock = {
-    blockType: BlockType,
-    accountAddress: Address,
-    fromBlockHash?: Hex,
-    data?: Base64,
-    message?: string,
-    toAddress?: Address,
-    tokenId?: TokenId,
-    amount?: BigInt,
-    prevHash?: Hex,
-    height?: Uint64,
-    snapshotHash?: Hex
-}

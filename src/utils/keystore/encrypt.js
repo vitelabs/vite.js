@@ -1,11 +1,13 @@
 const uuid = require('pure-uuid');
-const nacl = require('@sisi/tweetnacl-blake2b');
 
+import { random } from 'utils/ed25519';
+import { checkParams } from 'utils/tools';
+import { newHexAddr } from 'utils/address/privToAddr';
 import { hexToBytes, bytesToHex } from 'utils/encoder';
+import { paramsFormat } from 'const/error';
+import isValid from './validated';
 import { cipheriv, encryptPwd } from './tools';
 import { scryptName, algorithm, currentVersion, defaultScryptParams, additionData } from './vars';
-import isValid from './validated';
-import { newHexAddr } from 'utils/address/privToAddr';
 
 const n = defaultScryptParams.n;
 const p = defaultScryptParams.p;
@@ -14,12 +16,17 @@ const keyLen = defaultScryptParams.keyLen;
 
 
 export function encrypt(key, pwd, _scryptParams, selfScryptsy) {
+    let err = checkParams({ key, pwd }, ['key', 'pwd']);
+    if (err) {
+        return Promise.reject(err);
+    }
+
     let scryptParams = {
         n: _scryptParams && _scryptParams.n ? _scryptParams.n : n,
         r: _scryptParams && _scryptParams.r ? _scryptParams.r : r,
         p: _scryptParams && _scryptParams.p ? _scryptParams.p : p,
         keylen: _scryptParams && _scryptParams.keylen ? _scryptParams.keylen : keyLen,
-        salt : _scryptParams && _scryptParams.salt ? _scryptParams.salt : bytesToHex(nacl.randomBytes(32))
+        salt : _scryptParams && _scryptParams.salt ? _scryptParams.salt : bytesToHex(random())
     };
 
     let getResult = (encryptPwd, res, rej) => {
@@ -42,8 +49,15 @@ export function encrypt(key, pwd, _scryptParams, selfScryptsy) {
 
 // encryptToVersion3
 export function encryptV1ToV3(key, keystore) {
+    let err = checkParams({ key, keystore }, ['key', 'keystore']);
+    if (err) {
+        console.error(new Error(err.message));
+        return false;
+    }
+
     let keyJson = isValid(keystore);
     if (!keyJson) {
+        console.error(new Error(`${paramsFormat.msg} Illegal keystore.`));
         return false;
     }
 
@@ -53,11 +67,18 @@ export function encryptV1ToV3(key, keystore) {
     try {
         return getKeystore(key, _encryptPwd, scryptParams);
     } catch (err) {
+        console.error(err);
         return false;
     }
 }
 
 export function encryptOldKeystore(privKey, pwd, selfScryptsy) {
+    let err = checkParams({ privKey, pwd }, ['privKey', 'pwd']);
+    if (err) {
+        console.error(new Error(err.message));
+        return false;
+    }
+
     let key = newHexAddr(privKey);
 
     let scryptParams = {
@@ -65,11 +86,11 @@ export function encryptOldKeystore(privKey, pwd, selfScryptsy) {
         r,
         p,
         keylen: keyLen,
-        salt: bytesToHex(nacl.randomBytes(32)),
+        salt: bytesToHex(random()),
     };
 
     let getResult = (_encryptPwd, res) => {
-        let nonce = nacl.randomBytes(12);
+        let nonce = random(12);
         let text = cipheriv({
             rawText: key.privKey,
             pwd: _encryptPwd,
@@ -106,7 +127,7 @@ export function encryptOldKeystore(privKey, pwd, selfScryptsy) {
 
 
 function getKeystore(rawText, pwd, scryptParams) {
-    let nonce = nacl.randomBytes(12);
+    let nonce = random(12);
 
     let ciphertext = cipheriv({
         rawText,
@@ -132,67 +153,3 @@ function getKeystore(rawText, pwd, scryptParams) {
 
     return JSON.stringify(encryptedKeyJSON).toLocaleLowerCase();
 }
-
-// Version2 encrypt
-// export function encryptVersion2(key, pwd, _scryptParams, selfScryptsy) {
-//     let scryptParams = {
-//         n: _scryptParams && _scryptParams.n ? _scryptParams.n : n,
-//         r: _scryptParams && _scryptParams.r ? _scryptParams.r : r,
-//         p: _scryptParams && _scryptParams.p ? _scryptParams.p : p,
-//         keylen: _scryptParams && _scryptParams.keylen ? _scryptParams.keylen : keyLen,
-//         salt : _scryptParams && _scryptParams.salt ? _scryptParams.salt : bytesToHex(nacl.randomBytes(32))
-//     };
-
-//     let getResult = (encryptPwd, res, rej) => {
-//         try {
-//             let _keystore = getKeystoreVersion2(key, encryptPwd, scryptParams);
-//             res(_keystore);
-//         } catch (err) {
-//             rej(err);
-//         }
-//     };
-
-//     return new Promise((res, rej) => {
-//         encryptPwd(pwd, scryptParams, selfScryptsy).then((result) => {
-//             getResult(result, res, rej);
-//         }).catch((err) => {
-//             rej(err);
-//         });
-//     });
-// }
-
-// function getKeystoreVersion2(rawText, pwd, scryptParams) {
-//     let nonce = nacl.randomBytes(12);
-
-//     let encryptEntropy = cipheriv({
-//         rawText,
-//         pwd,
-//         nonce,
-//         algorithm: algorithm
-//     });
-
-//     let cryptoJSON = {
-//         cipherName: algorithm,
-//         KDF: scryptName,
-//         Nonce: bytesToHex(nonce),
-//     };
-
-//     if (scryptParams && (
-//         scryptParams.n !== n ||
-//         scryptParams.r !== r ||
-//         scryptParams.p !== p ||
-//         scryptParams.keylen !== keyLen )) {
-//         cryptoJSON.scryptParams = scryptParams;
-//     } else {
-//         cryptoJSON.salt = scryptParams.salt;
-//     }
-
-//     let encryptedKeyJSON = {
-//         encryptEntropy,
-//         crypto: cryptoJSON,
-//         version: currentVersion,
-//         timestamp: new Date().getTime()
-//     };
-
-//     return JSON.stringify(encryptedKeyJSON).toLocaleLowerCase();
-// }

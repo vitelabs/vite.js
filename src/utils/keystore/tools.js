@@ -24,7 +24,6 @@ export function decipheriv({ algorithm, encryptPwd, nonce, encryptText }, additi
     decipher.setAuthTag(hexToBytes(tag));
     additionData && decipher.setAAD(additionData);
 
-
     let rawText = decipher.update(hexToBytes(ciphertext), 'utf8', 'hex');
     rawText += decipher.final('hex');
     return rawText;
