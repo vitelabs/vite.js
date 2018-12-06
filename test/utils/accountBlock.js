@@ -1,7 +1,7 @@
 const assert = require('assert');
-import { signAccountBlock } from 'utils/accountBlock';
+import { getBuiltinTxType, signAccountBlock } from 'utils/accountBlock';
 
-describe('Vite_Account', function () {
+describe('signAccountBlock', function () {
     it('test_signTX_receive', function () {
         let privKey = 'dcb735c454777a697c417472a5dc46333fd738c062c26f2dc6bce8a972dece1f79e0fbc083681e636fef9b389d91c5700ae5d401438158e5c7798b76232cdf88';
         let accountBlock = {
@@ -52,4 +52,31 @@ describe('Vite_Account', function () {
         assert.equal(publicKey, accountBlock.publicKey);
         assert.equal(signature, accountBlock.signature);
     });
+});
+
+describe('', function () {
+    let block = {
+        accountAddress: 'vite_155e4e83fb0499dcc3047e0458bbfae77f2ac1270e38c176f8',
+        amount: '0',
+        blockType: 2,
+        confirmedTimes: '279',
+        data: 'pinFMQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB',
+        difficulty: null,
+        fee: '0',
+        fromAddress: 'vite_155e4e83fb0499dcc3047e0458bbfae77f2ac1270e38c176f8',
+        fromBlockHash: '0000000000000000000000000000000000000000000000000000000000000000',
+        hash: '35a17f1919f3c95c5ecb710c97fca0a0c4049fa8cb9c64e3b475769450498bf1',
+        height: '19',
+        logHash: null,
+        nonce: null,
+        prevHash: 'fef0b178458acb3f7d37d575b10139357d79a5a90adc3fdc8ddd96800770fce7',
+        publicKey: 'Kn+xAEkrRm/KSsfE38htuM5P6NCwsp1x70/yya+ZIJ0=',
+        quota: '62000',
+        signature: 'DPiaz3ZjGzXrycnjXdmXgr823J/4zv1MB1yoDQRaIkCZkLlwM6V8AzekqHjhveWz+ymM57X3royv5FtpfdKcCA==',
+        snapshotHash: 'ff91866c4393566c44a667e8344c1567a12fdefa27093a69fed6ecbf4cb02046',
+        timestamp: 1544100858,
+        toAddress: 'vite_000000000000000000000000000000000000000270a48cc491',
+        tokenId: 'tti_5649544520544f4b454e6e40',
+    };
+    console.log( getBuiltinTxType(block.toAddress, block.data, block.blockType) );
 });

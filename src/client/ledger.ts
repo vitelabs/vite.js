@@ -1,6 +1,6 @@
 import { RPCresponse, BuiltinTxType, Address } from "const/type";
 import { getBuiltinTxType } from 'utils/accountBlock';
-import { checkParams, validInteger } from 'utils/tools';
+import { checkParams } from 'utils/tools';
 import { isValidHexAddr } from 'utils/address/privToAddr';
 
 export default class ledger {
@@ -43,15 +43,14 @@ export default class ledger {
         addr: Address, index: number, pageCount?: number, totalNum?: number
     }) {
         let err = checkParams({ addr, index }, ['addr', 'index'], [{
-            name: 'index',
-            func: validInteger
-        }, {
             name: 'addr',
             func: isValidHexAddr
         }]);
         if (err) {
             return Promise.reject(err);
         }
+
+        index = index >= 0 ? index : 0; 
 
         if (totalNum === 0) {
             return {

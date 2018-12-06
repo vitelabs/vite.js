@@ -30,7 +30,7 @@ export function checkParams(params, requiredP:Array<string> = [], validFunc:Arra
         if ( !func(params[name]) ) {
             return {
                 code: paramsFormat.code,
-                message: `${paramsFormat.msg} Illegal ${name}. ${msg}`
+                message: `${paramsFormat.msg} Illegal ${name}. ${msg || ''}`
             }
         }
     }

@@ -77,9 +77,9 @@ async function receiveTx(address, privKey, errorCb) {
         return null;
     }
 
-    const accountBlock = await this.builtin.receiveBlock({
+    const accountBlock = await this.buildinTxBlock.receiveTx.async({
         accountAddress: address,
-        blockHash: result[0].hash
+        fromBlockHash: result[0].hash
     });
 
     try {

@@ -17,15 +17,15 @@ export default class tx {
 
         this.getAccountBlock = {
             sync: _getAccountBlock,
-            async: this.asyncAccountBlock
+            async: this.asyncAccountBlock.bind(this)
         }
         this.receiveTx = {
             sync: getReceiveTxBlock,
-            async: this.asyncReceiveTx
+            async: this.asyncReceiveTx.bind(this)
         }
         this.sendTx = {
             sync: getSendTxBlock,
-            async: this.asyncSendTx
+            async: this.asyncSendTx.bind(this)
         }
     }
 
@@ -308,11 +308,5 @@ export default class tx {
 
 
 function validReqType(type) {
-    if (type !== 'async' && type !== 'sync') {
-        return {
-            code: paramsFormat.code,
-            message: `${paramsFormat.msg} RequestType can only be \'async\' or \'sync\'`
-        }
-    }
-    return null;
+    return type === 'async' || type == 'sync';
 }

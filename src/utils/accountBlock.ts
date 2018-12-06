@@ -98,7 +98,8 @@ export function getBuiltinTxType(toAddress, data, blockType) {
     let _data = Buffer.from(data || '', 'base64').toString('hex');
     const dataPrefix = _data.slice(0, 8);
     const key =`${dataPrefix}_${toAddress}`;
-    const type = txType[key] ? defaultType : txType[key];
+
+    const type = txType[key] || defaultType;
     return type;
 }
 
