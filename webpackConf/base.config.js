@@ -9,7 +9,10 @@ module.exports = {
     plugins:[
         new webpack.NormalModuleReplacementPlugin(/\/buffer\//, function(resource) {
             resource.request = Buffer_Path;
-        })
+        }),
+        new webpack.DefinePlugin({
+            'processSilence': process.env.NODE_ENV && process.env.NODE_ENV.indexOf('test') === 0 ? 0 : 1
+        }),
     ],
     target,
     mode: 'production',

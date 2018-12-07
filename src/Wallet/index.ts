@@ -84,12 +84,12 @@ async function receiveTx(address, privKey, errorCb) {
 
     try {
         const data = await this.sendRawTx(accountBlock, privKey);
-        return data
+        return data;
     } catch(err) {
         if (!errorCb) {
             return Promise.reject(err);
         }
-        errorCb(err, accountBlock, Promise.resolve, Promise.reject);
+        return errorCb(err, accountBlock);
     }
 }
 

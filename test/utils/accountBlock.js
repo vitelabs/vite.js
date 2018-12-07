@@ -1,5 +1,230 @@
 const assert = require('assert');
-import { getBuiltinTxType, signAccountBlock } from 'utils/accountBlock';
+import { getAccountBlock, getSendTxBlock, getReceiveTxBlock, getBuiltinTxType, signAccountBlock } from 'utils/accountBlock';
+import { BlockType } from 'const/type';
+import { Default_Hash } from 'const/contract';
+
+// let block = {
+//     accountAddress: 'vite_155e4e83fb0499dcc3047e0458bbfae77f2ac1270e38c176f8',
+//     amount: '0',
+//     blockType: 2,
+//     confirmedTimes: '279',
+//     data: 'pinFMQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB',
+//     difficulty: null,
+//     fee: '0',
+//     fromAddress: 'vite_155e4e83fb0499dcc3047e0458bbfae77f2ac1270e38c176f8',
+//     fromBlockHash: '0000000000000000000000000000000000000000000000000000000000000000',
+//     hash: '35a17f1919f3c95c5ecb710c97fca0a0c4049fa8cb9c64e3b475769450498bf1',
+//     height: '19',
+//     logHash: null,
+//     nonce: null,
+//     prevHash: 'fef0b178458acb3f7d37d575b10139357d79a5a90adc3fdc8ddd96800770fce7',
+//     publicKey: 'Kn+xAEkrRm/KSsfE38htuM5P6NCwsp1x70/yya+ZIJ0=',
+//     quota: '62000',
+//     signature: 'DPiaz3ZjGzXrycnjXdmXgr823J/4zv1MB1yoDQRaIkCZkLlwM6V8AzekqHjhveWz+ymM57X3royv5FtpfdKcCA==',
+//     snapshotHash: 'ff91866c4393566c44a667e8344c1567a12fdefa27093a69fed6ecbf4cb02046',
+//     timestamp: 1544100858,
+//     toAddress: 'vite_000000000000000000000000000000000000000270a48cc491',
+//     tokenId: 'tti_5649544520544f4b454e6e40',
+// };
+
+describe('getAccountBlock', function () {
+    let reqAccBlock = [{
+        accountAddress: 'vite_155e4e83fb0499dcc3047e0458bbfae77f2ac1270e38c176f8',
+        blockType: 2,
+        snapshotHash: 'ff91866c4393566c44a667e8344c1567a12fdefa27093a69fed6ecbf4cb02046'
+    },{
+        accountAddress: 'vite_155e4e83fb0499dcc3047e0458bbfae77f2ac1270e38c176f8',
+        blockType: 2,
+        snapshotHash: 'ff91866c4393566c44a667e8344c1567a12fdefa27093a69fed6ecbf4cb02046',
+        amount: '0',
+        toAddress: 'vite_000000000000000000000000000000000000000270a48cc491',
+        tokenId: 'tti_5649544520544f4b454e6e40'
+    },{
+        accountAddress: 'vite_155e4e83fb0499dcc3047e0458bbfae77f2ac1270e38c176f8',
+        blockType: 4,
+        fromBlockHash: 'ff91866c4393566c44a667e8344c1567a12fdefa27093a69fed6ecbf4cb02046',
+        snapshotHash: 'ff91866c4393566c44a667e8344c1567a12fdefa27093a69fed6ecbf4cb02046',
+        amount: '0',
+        toAddress: 'vite_000000000000000000000000000000000000000270a48cc491',
+        tokenId: 'tti_5649544520544f4b454e6e40',
+        height: '19',
+        prevHash: 'fef0b178458acb3f7d37d575b10139357d79a5a90adc3fdc8ddd96800770fce7'
+    },{
+        accountAddress: 'vite_155e4e83fb0499dcc3047e0458bbfae77f2ac1270e38c176f8',
+        blockType: 4,
+        fromBlockHash: 'ff91866c4393566c44a667e8344c1567a12fdefa27093a69fed6ecbf4cb02046',
+        snapshotHash: 'ff91866c4393566c44a667e8344c1567a12fdefa27093a69fed6ecbf4cb02046',
+        amount: '0',
+        toAddress: 'vite_000000000000000000000000000000000000000270a48cc491',
+        tokenId: 'tti_5649544520544f4b454e6e40',
+        height: '19',
+        prevHash: 'fef0b178458acb3f7d37d575b10139357d79a5a90adc3fdc8ddd96800770fce7'
+    },{
+        accountAddress: 'vite_155e4e83fb0499dcc3047e0458bbfae77f2ac1270e38c176f8',
+        blockType: 2,
+        snapshotHash: 'ff91866c4393566c44a667e8344c1567a12fdefa27093a69fed6ecbf4cb02046',
+        height: '19',
+        prevHash: 'fef0b178458acb3f7d37d575b10139357d79a5a90adc3fdc8ddd96800770fce7',
+        message: '2123'
+    },{
+        accountAddress: 'vite_155e4e83fb0499dcc3047e0458bbfae77f2ac1270e38c176f8',
+        blockType: 4,
+        fromBlockHash: 'ff91866c4393566c44a667e8344c1567a12fdefa27093a69fed6ecbf4cb02046',
+        snapshotHash: 'ff91866c4393566c44a667e8344c1567a12fdefa27093a69fed6ecbf4cb02046',
+        height: '19',
+        prevHash: 'fef0b178458acb3f7d37d575b10139357d79a5a90adc3fdc8ddd96800770fce7',
+        data: 'MjEyMw==',
+        nonce: 'MjEyMw=='
+    }];
+
+    testAccBlockCase(reqAccBlock, getAccountBlock);
+});
+
+
+describe('getSendTxBlock', function () {
+    let reqAccBlock = [{
+        accountAddress: 'vite_155e4e83fb0499dcc3047e0458bbfae77f2ac1270e38c176f8',
+        snapshotHash: 'ff91866c4393566c44a667e8344c1567a12fdefa27093a69fed6ecbf4cb02046',
+        amount: '0',
+        toAddress: 'vite_000000000000000000000000000000000000000270a48cc491',
+        tokenId: 'tti_5649544520544f4b454e6e40'
+    },{
+        accountAddress: 'vite_155e4e83fb0499dcc3047e0458bbfae77f2ac1270e38c176f8',
+        snapshotHash: 'ff91866c4393566c44a667e8344c1567a12fdefa27093a69fed6ecbf4cb02046',
+        amount: '0',
+        toAddress: 'vite_000000000000000000000000000000000000000270a48cc491',
+        tokenId: 'tti_5649544520544f4b454e6e40',
+        height: '19',
+        prevHash: 'fef0b178458acb3f7d37d575b10139357d79a5a90adc3fdc8ddd96800770fce7',
+        message: '2123'
+    }];
+
+    testAccBlockCase(reqAccBlock, getSendTxBlock, (resBlock) => {
+        it('send tx: blockType = 2', function () {
+            assert.equal(resBlock.blockType, 2);
+        });
+    });
+});
+
+describe('getReceiveTxBlock', function () {
+    let reqAccBlock = [{
+        accountAddress: 'vite_155e4e83fb0499dcc3047e0458bbfae77f2ac1270e38c176f8',
+        fromBlockHash: 'ff91866c4393566c44a667e8344c1567a12fdefa27093a69fed6ecbf4cb02046',
+        snapshotHash: 'ff91866c4393566c44a667e8344c1567a12fdefa27093a69fed6ecbf4cb02046'
+    },{
+        accountAddress: 'vite_155e4e83fb0499dcc3047e0458bbfae77f2ac1270e38c176f8',
+        fromBlockHash: 'ff91866c4393566c44a667e8344c1567a12fdefa27093a69fed6ecbf4cb02046',
+        snapshotHash: 'ff91866c4393566c44a667e8344c1567a12fdefa27093a69fed6ecbf4cb02046',
+        height: '19',
+        prevHash: 'fef0b178458acb3f7d37d575b10139357d79a5a90adc3fdc8ddd96800770fce7'
+    }];
+
+    testAccBlockCase(reqAccBlock, getReceiveTxBlock, (resBlock) => {
+        it('receive tx: blockType = 4', function () {
+            assert.equal(resBlock.blockType, 4);
+        });
+    });
+});
+
+describe('getBuiltinTxType', function () {
+    let RevokeVoting = {
+        blockType: 2,
+        data: 'pinFMQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB',
+        toAddress: 'vite_000000000000000000000000000000000000000270a48cc491'
+    };
+    let Voting = {
+        blockType: 2,
+        data: '/cF/JQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA0hhbgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+        toAddress: 'vite_000000000000000000000000000000000000000270a48cc491'
+    };
+    let TxRes = {
+        blockType: 4,
+        data: 'MjEyMw==',
+        toAddress: 'vite_155e4e83fb0499dcc3047e0458bbfae77f2ac1270e38c176f8'
+    };
+    let WithdrawalOfQuota = {
+        blockType: 2,
+        data: 'n/nHtgAAAAAAAAAAAAAAABVeToP7BJncwwR+BFi7+ud/KsEnAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABPzBqJAn8AAA=',
+        toAddress: 'vite_000000000000000000000000000000000000000309508ba646'
+    };
+    let TxReq = {
+        blockType: 2,
+        data: null,
+        toAddress: 'vite_155e4e83fb0499dcc3047e0458bbfae77f2ac1270e38c176f8'
+    };
+    let GetQuota = {
+        blockType: 2,
+        data: 'jefc/QAAAAAAAAAAAAAAABVeToP7BJncwwR+BFi7+ud/KsEn',
+        toAddress: 'vite_000000000000000000000000000000000000000309508ba646'
+    };
+    let SBPreg = {
+        blockType: 2,
+        data: '8pxs4gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGAAAAAAAAAAAAAAAABwv7dBTikKqChmXMP0/IEF0NQACQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHMjMyMzIzMgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=',
+        toAddress: 'vite_0000000000000000000000000000000000000001c9e9f25417'
+    };
+    let RevokeReg = {
+        blockType: 2,
+        data: 'YIYv4gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABzIzMjMyMzIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+        toAddress: 'vite_0000000000000000000000000000000000000001c9e9f25417'
+    };
+    let UpdateReg = {
+        blockType: 2,
+        data: 'O3vfdAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGAAAAAAAAAAAAAAAADF4fUrf0FtM5BYUSzVPhltH5VHKgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHMjMyMzIzMgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=/IEF0NQACQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHMjMyMzIzMgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=',
+        toAddress: 'vite_0000000000000000000000000000000000000001c9e9f25417'
+    };
+    let CreateContractReq = {
+        blockType: 1,
+        data: '',
+        toAddress: 'vite_0000000000000000000000000000000000000001c9e9f25417'
+    };
+    let RewardReq = {
+        blockType: 3,
+        data: '',
+        toAddress: 'vite_0000000000000000000000000000000000000001c9e9f25417'
+    };
+    let TxResFail = {
+        blockType: 5,
+        data: '',
+        toAddress: 'vite_0000000000000000000000000000000000000001c9e9f25417'
+    };
+
+    it('RevokeVoting', function() {
+        assert.equal( getBuiltinTxType(RevokeVoting.toAddress, RevokeVoting.data, RevokeVoting.blockType), 'RevokeVoting' );
+    });
+    it('Voting', function() {
+        assert.equal( getBuiltinTxType(Voting.toAddress, Voting.data, Voting.blockType), 'Voting' );
+    });
+    it('TxRes', function() {
+        assert.equal( getBuiltinTxType(TxRes.toAddress, TxRes.data, TxRes.blockType), 'TxRes' );
+    });
+    it('WithdrawalOfQuota', function() {
+        assert.equal( getBuiltinTxType(WithdrawalOfQuota.toAddress, WithdrawalOfQuota.data, WithdrawalOfQuota.blockType), 'WithdrawalOfQuota' );
+    });
+    it('TxReq', function() {
+        assert.equal( getBuiltinTxType(TxReq.toAddress, TxReq.data, TxReq.blockType), 'TxReq' );
+    });
+    it('GetQuota', function() {
+        assert.equal( getBuiltinTxType(GetQuota.toAddress, GetQuota.data, GetQuota.blockType), 'GetQuota' );
+    });
+    it('SBPreg', function() {
+        assert.equal( getBuiltinTxType(SBPreg.toAddress, SBPreg.data, SBPreg.blockType), 'SBPreg' );
+    });
+    it('RevokeReg', function() {
+        assert.equal( getBuiltinTxType(RevokeReg.toAddress, RevokeReg.data, RevokeReg.blockType), 'RevokeReg' );
+    });
+    it('UpdateReg', function() {
+        assert.equal( getBuiltinTxType(UpdateReg.toAddress, UpdateReg.data, UpdateReg.blockType), 'UpdateReg' );
+    });
+    it('CreateContractReq', function() {
+        assert.equal( getBuiltinTxType(CreateContractReq.toAddress, CreateContractReq.data, CreateContractReq.blockType), 'CreateContractReq' );
+    });
+    it('RewardReq', function() {
+        assert.equal( getBuiltinTxType(RewardReq.toAddress, RewardReq.data, RewardReq.blockType), 'RewardReq' );
+    });
+    it('TxResFail', function() {
+        assert.equal( getBuiltinTxType(TxResFail.toAddress, TxResFail.data, TxResFail.blockType), 'TxResFail' );
+    });
+});
 
 describe('signAccountBlock', function () {
     it('test_signTX_receive', function () {
@@ -54,29 +279,49 @@ describe('signAccountBlock', function () {
     });
 });
 
-describe('', function () {
-    let block = {
-        accountAddress: 'vite_155e4e83fb0499dcc3047e0458bbfae77f2ac1270e38c176f8',
-        amount: '0',
-        blockType: 2,
-        confirmedTimes: '279',
-        data: 'pinFMQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB',
-        difficulty: null,
-        fee: '0',
-        fromAddress: 'vite_155e4e83fb0499dcc3047e0458bbfae77f2ac1270e38c176f8',
-        fromBlockHash: '0000000000000000000000000000000000000000000000000000000000000000',
-        hash: '35a17f1919f3c95c5ecb710c97fca0a0c4049fa8cb9c64e3b475769450498bf1',
-        height: '19',
-        logHash: null,
-        nonce: null,
-        prevHash: 'fef0b178458acb3f7d37d575b10139357d79a5a90adc3fdc8ddd96800770fce7',
-        publicKey: 'Kn+xAEkrRm/KSsfE38htuM5P6NCwsp1x70/yya+ZIJ0=',
-        quota: '62000',
-        signature: 'DPiaz3ZjGzXrycnjXdmXgr823J/4zv1MB1yoDQRaIkCZkLlwM6V8AzekqHjhveWz+ymM57X3royv5FtpfdKcCA==',
-        snapshotHash: 'ff91866c4393566c44a667e8344c1567a12fdefa27093a69fed6ecbf4cb02046',
-        timestamp: 1544100858,
-        toAddress: 'vite_000000000000000000000000000000000000000270a48cc491',
-        tokenId: 'tti_5649544520544f4b454e6e40',
-    };
-    console.log( getBuiltinTxType(block.toAddress, block.data, block.blockType) );
-});
+
+
+function testAccBlockCase(reqAccBlock, func, validFunc) {
+    let time = new Date().getTime()/1000;
+
+    reqAccBlock.forEach((reqBlock) => {
+        let resBlock = func(reqBlock);
+        validFunc && validFunc(resBlock);
+
+        it('required params', function () {
+            assert.equal( resBlock.accountAddress, reqBlock.accountAddress );
+            reqBlock.blockType && assert.equal( resBlock.blockType, reqBlock.blockType );
+            assert.equal( resBlock.snapshotHash, reqBlock.snapshotHash );
+            assert.equal( (resBlock.timestamp - time) < 6000, true );
+            reqBlock.nonce && assert.equal( resBlock.nonce, reqBlock.nonce );
+        });
+
+        it('prevHash and height', function () {
+            reqBlock.prevHash && assert.equal( resBlock.prevHash, reqBlock.prevHash );
+            reqBlock.height && assert.equal( resBlock.height, +reqBlock.height + 1 );
+            !reqBlock.height && assert.equal( resBlock.height, '1' );
+            !reqBlock.prevHash && assert.equal( resBlock.prevHash, Default_Hash );
+        });
+
+        resBlock.blockType === BlockType.TxRes &&
+        it('receiveBlock don\'t have tokenInfo', function () {
+            assert.equal( resBlock.fromBlockHash, reqBlock.fromBlockHash );
+            assert.equal( resBlock.tokenId, undefined );
+            assert.equal( resBlock.amount, undefined);
+            assert.equal( resBlock.toAddress, undefined );
+        });
+
+        resBlock.blockType === BlockType.TxReq && 
+        it('sendBlock need have tokenInfo', function () {
+            reqBlock.tokenId && assert.equal( resBlock.tokenId, reqBlock.tokenId );
+            reqBlock.amount && assert.equal( resBlock.amount, reqBlock.amount );
+            reqBlock.toAddress && assert.equal( resBlock.toAddress, reqBlock.toAddress );
+        });
+
+        (reqBlock.message || reqBlock.data) &&
+        it('message to base64 string, data is not change.', function () {
+            reqBlock.message && assert.equal( resBlock.data, Buffer.from(reqBlock.message).toString('base64') );
+            reqBlock.data && assert.equal( resBlock.data, reqBlock.data );
+        });
+    });
+}

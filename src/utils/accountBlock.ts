@@ -8,7 +8,7 @@ import { formatAccountBlock, validReqAccountBlock } from "utils/builtin";
 
 import { Default_Hash } from 'const/contract';
 import { paramsMissing, paramsFormat } from "const/error";
-import { AccountBlock, BlockType, SignBlock, sendTxBlock, receiveTxBlock, formatBlock } from "const/type";
+import { AccountBlock, BlockType, SignBlock, sendTxBlock, receiveTxBlock, syncFormatBlock } from "const/type";
 
 
 enum txType {
@@ -26,10 +26,10 @@ enum txType {
 
 
 export function getAccountBlock({
-    blockType, fromBlockHash, accountAddress, message, data, height, prevHash, snapshotHash, toAddress, tokenId, amount
-}: formatBlock) {
+    blockType, fromBlockHash, accountAddress, message, data, height, prevHash, snapshotHash, toAddress, tokenId, amount, nonce
+}: syncFormatBlock) {
     let reject = (error, errMsg = '') => {
-        let message = `${error.msg} ${errMsg}`;
+        let message = `${error.message || error.msg || ''} ${errMsg}`;
         console.error(new Error(message));
         return null;
     }
@@ -54,7 +54,7 @@ export function getAccountBlock({
     }
 
     return formatAccountBlock({
-        blockType, fromBlockHash, accountAddress, message, data, height, prevHash, snapshotHash, toAddress, tokenId, amount
+        blockType, fromBlockHash, accountAddress, message, data, height, prevHash, snapshotHash, toAddress, tokenId, amount, nonce
     });
 }
 
@@ -97,7 +97,7 @@ export function getBuiltinTxType(toAddress, data, blockType) {
 
     let _data = Buffer.from(data || '', 'base64').toString('hex');
     const dataPrefix = _data.slice(0, 8);
-    const key =`${dataPrefix}_${toAddress}`;
+    const key = `${dataPrefix}_${toAddress}`;
 
     const type = txType[key] || defaultType;
     return type;

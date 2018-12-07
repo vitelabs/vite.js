@@ -60,5 +60,5 @@ export function validNodeName(nodeName) {
 }
 
 export function validInteger(num) {
-    return /(^[1-9]\d*$)/g.test(num);
+    return num && (/(^[1-9]\d*$)/g.test(num) || num === '0');
 }

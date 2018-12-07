@@ -53,7 +53,7 @@ class IPC_WS extends Communication {
                 
                 results.push(res);
             } catch (error) {
-                console.log(error);
+                // console.log(error);
             }
         });
 

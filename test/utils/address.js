@@ -31,10 +31,6 @@ describe('getAddrFromHexAddr', function () {
         let addr = getAddrFromHexAddr('vite_69f3bdb5cdcfa145ae6cc42593a89088ff3dac587eb692d689');
         assert.equal(addr, '69f3bdb5cdcfa145ae6cc42593a89088ff3dac58');
     });
-    it('test-illegalAddr', function () {
-        let addr = getAddrFromHexAddr('cfa145ae6cc42593a89088ff3dac587eb692d689');
-        assert.equal(addr, null);
-    });
 });
 
 describe('HD_Address', function () {

@@ -1,13 +1,10 @@
 import * as _methods from "const/method";
 import { RPCrequest, RPCresponse, Methods } from "const/type";
-// import { Builtin } from "./builtin";
-
 import txBlock from './txBlock';
 import ledger from './ledger';
 
 export default class client {
     _provider: any
-    // builtin: Builtin
     buildinTxBlock: txBlock
     buildinLedger: ledger
 
@@ -25,11 +22,9 @@ export default class client {
 
     constructor(provider: any) {
         this._provider = provider;
-
         this.buildinTxBlock = new txBlock(this);
         this.buildinLedger = new ledger(this);
 
-        // this.builtin = new Builtin(this._provider);
         this._setMethodsName();
     }
 

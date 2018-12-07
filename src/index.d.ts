@@ -29,11 +29,11 @@ export declare interface RPCerror {
 }
 
 export enum BlockType {
-    createContractReq = 1,
-    txReq,
-    rewardReq,
-    txRes,
-    txResFail
+    CreateContractReq = 1,
+    TxReq,
+    RewardReq,
+    TxRes,
+    TxResFail
 }
 
 export enum BuiltinTxType {
@@ -47,11 +47,11 @@ export enum BuiltinTxType {
     WithdrawalOfQuota,
     TokenIssuance,
     WithdrawalOfToken,
-    createContractReq,
-    txReq,
-    rewardReq,
-    txRes,
-    txResFail
+    CreateContractReq,
+    TxReq,
+    RewardReq,
+    TxRes,
+    TxResFail
 }
 
 export declare type SignBlock = {
