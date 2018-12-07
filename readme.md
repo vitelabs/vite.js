@@ -5,21 +5,21 @@
 ## Prerequisites
 
 * node.js
-* npm
+* yarn
 
 ## Building (gulp)
 
-`npm run build`
+`yarn run build`
 
 ## Testing (mocha) 
 
-1. `npm run rpc`
-2. `npm run test`
+1. `yarn run rpc`
+2. `yarn run test`
 
 
 ## Starting
 
-1. `npm install`
+1. `yarn install`
 2. Configure eslint in your editor, rules like '.eslintrc'.
 
 ### Branch naming rules

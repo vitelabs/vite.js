@@ -55,8 +55,7 @@ export function getRawTokenid(tokenId: string) {
 }
 
 export function validNodeName(nodeName) {
-    nodeName = nodeName.replace(/(^\s*)|(\s*$)/g, '');
-    return /^[a-zA-Z0-9_\.\s]+$/g.test(nodeName) && nodeName.length <= 40;
+    return /^[a-zA-Z0-9_\.]+(\s{1}[a-zA-Z0-9_\.]+)*$/g.test(nodeName) && nodeName.length <= 40;
 }
 
 export function validInteger(num) {
