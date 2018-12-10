@@ -3,5 +3,6 @@
 # Ignore built files except build/index.js
 coverage/*
 dist/*
+static/*
 ottoDist/*
 otto/fix_modules
