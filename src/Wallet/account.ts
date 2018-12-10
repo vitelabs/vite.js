@@ -79,8 +79,6 @@ class Account {
             }
 
             this.getBalance().then(() => {
-                console.log(this.balance);
-
                 let onroad = this.balance && this.balance.onroad ? this.balance.onroad : null;
                 let balanceInfos = onroad && onroad.tokenBalanceInfoMap ? onroad.tokenBalanceInfoMap : null;
 
@@ -109,7 +107,6 @@ class Account {
     }
 
     autoReceiveTx(intervals:number = 2000, receiveFailAction:Function = null) {
-        console.log()
         if (this._autoReceive) {
             return;
         }
@@ -288,7 +285,7 @@ class Account {
             accountAddress: this.address, 
             toAddress, tokenId, amount
         };
-        const _withdrawalOfQuotaBlock = await this._client.buildinTxBlock.getQuota(reqBlock);
+        const _withdrawalOfQuotaBlock = await this._client.buildinTxBlock.withdrawalOfQuota(reqBlock);
         return this._client.buildinLedger.sendRawTx(_withdrawalOfQuotaBlock, this.privateKey);
     }
 }
