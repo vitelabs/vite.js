@@ -5,14 +5,10 @@ import Methods from '../src/Vite/rpcMethods';
 if (b_vite) {
     var provider = {
         request(Method, Params = []) {
-            if (!(Params instanceof Array)){
-                Params=[Params];
-            }
             try {
-                var res = b_vite.send({ Method, Params });
+                var res = b_vite.send({Method, Params});
             } catch (e) {
-                // console.log(JSON.stringify(e));
-                return e;
+                return Promise.reject(e);
             }
             // console.log(JSON.stringify(res));
             return res;

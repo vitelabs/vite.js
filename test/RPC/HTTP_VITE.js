@@ -1,6 +1,6 @@
-import ViteJS from '../../index.js';
+import httpProvider from 'provider/HTTP_RPC';
 
-const HTTP_RPC = new ViteJS.HTTP_RPC({
+const HTTP_RPC = new httpProvider({
     host: 'http://127.0.0.1:48132/',
     timeout: 200
 });
