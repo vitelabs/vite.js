@@ -3,10 +3,10 @@
 // });
 
 describe('Utils Test: src/utils', function () {
-    require('./utils/address');
-    require('./utils/keystore');
+    // require('./utils/address');
+    // require('./utils/keystore');
     require('./utils/accountBlock');
-    require('./utils/ed25519');
-    require('./utils/encoder');
-    require('./utils/tools');
+    // require('./utils/ed25519');
+    // require('./utils/encoder');
+    // require('./utils/tools');
 });

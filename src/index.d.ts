@@ -12,7 +12,7 @@ export type Methods = methods;
 
 export declare interface RPCrequest {
     type?: string;
-    Method: methods;
+    methodName: methods;
     params: any[];
 }
 
@@ -55,18 +55,18 @@ export enum BuiltinTxType {
 }
 
 export declare type SignBlock = {
-    accountAddress: Address,
-    blockType: BlockType,
-    prevHash: Hex,
-    snapshotHash: Hex,
-    timestamp: Int64,
-    height: Uint64,
-    fee: BigInt,
-    fromBlockHash?: Hex,
-    toAddress?: Address,
-    tokenId?: TokenId,
-    amount?: BigInt,
-    data?: Base64,
+    accountAddress: Address
+    blockType: BlockType
+    prevHash: Hex
+    snapshotHash: Hex
+    timestamp: Int64
+    height: Uint64
+    fee?: BigInt
+    fromBlockHash?: Hex
+    toAddress?: Address
+    tokenId?: TokenId
+    amount?: BigInt
+    data?: Base64
     nonce?: Base64
     logHash?: Hex
 }
@@ -78,10 +78,10 @@ export declare type AccountBlock = {
     snapshotHash: Hex,
     timestamp: Int64,
     height: Uint64,
-    fee: BigInt,
     hash: Hex,
     signature: Base64,
     publicKey: Base64,
+    fee?: BigInt,
     fromBlockHash?: Hex,
     toAddress?: Address,
     tokenId?: TokenId,
@@ -148,3 +148,53 @@ export declare type quotaBlock = {
     snapshotHash?: Hex
 }
 
+export declare type sendTxBlock = {
+    accountAddress: Address,
+    toAddress: Address,
+    tokenId: TokenId,
+    amount: BigInt,
+
+    message?: string,
+    prevHash?: Hex,
+    height?: Uint64,
+    snapshotHash?: Hex
+}
+
+export declare type receiveTxBlock = {
+    accountAddress: Address,
+    fromBlockHash: Hex,
+
+    prevHash?: Hex,
+    height?: Uint64,
+    snapshotHash?: Hex
+}
+
+export declare type syncFormatBlock = {
+    blockType: BlockType
+    accountAddress: Address
+    snapshotHash: Hex
+    prevHash?: Hex
+    height?: Uint64
+    fromBlockHash?: Hex
+    data?: Base64
+    message?: string
+    toAddress?: Address
+    tokenId?: TokenId
+    amount?: BigInt,
+    nonce?: Base64
+}
+
+export declare type formatBlock = {
+    blockType: BlockType,
+    accountAddress: Address,
+    fromBlockHash?: Hex,
+    data?: Base64,
+    message?: string,
+    toAddress?: Address,
+    tokenId?: TokenId,
+    amount?: BigInt,
+    prevHash?: Hex,
+    height?: Uint64,
+    snapshotHash?: Hex,
+    nonce?: Base64
+}

@@ -1,4 +1,4 @@
-import { no, paramsFormat } from "const/error";
+import { no } from "const/error";
 import { Quota_Addr, Vote_Addr, Register_Addr, Default_Gid } from "const/contract";
 import { RPCresponse, SBPregBlock, block8, block7, revokeVotingBlock, quotaBlock, sendTxBlock, receiveTxBlock, formatBlock } from "const/type";
 
@@ -6,11 +6,22 @@ import { checkParams, validNodeName } from "utils/tools";
 import { formatAccountBlock, validReqAccountBlock } from "utils/builtin";
 import { getAccountBlock as _getAccountBlock, getSendTxBlock, getReceiveTxBlock } from 'utils/accountBlock';
 
+import client from '.';
+
 export default class tx {
-    _client: any
-    getAccountBlock: object
-    receiveTx: object
-    sendTx: object
+    _client: client
+    getAccountBlock: {
+        sync: Function,
+        async: Function
+    }
+    receiveTx: {
+        sync: Function,
+        async: Function
+    }
+    sendTx: {
+        sync: Function,
+        async: Function
+    }
 
     constructor(client) {
         this._client = client;
@@ -101,7 +112,7 @@ export default class tx {
             return Promise.reject(err);
         }
 
-        const result:RPCresponse = await this._client.request('register_getRegisterData', Gid, nodeName, toAddress);
+        const result:RPCresponse = await this._client.register.getRegisterData(Gid, nodeName, toAddress);
         return this[`${requestType}AccountBlock`]({
             blockType: 2,
             accountAddress,
@@ -127,7 +138,7 @@ export default class tx {
             return Promise.reject(err);
         }
 
-        const result:RPCresponse = await this._client.request('register_getUpdateRegistrationData', Gid, nodeName, toAddress);
+        const result:RPCresponse = await this._client.register.getUpdateRegistrationData(Gid, nodeName, toAddress);
         return this[`${requestType}AccountBlock`]({
             blockType: 2,
             accountAddress,
@@ -153,7 +164,7 @@ export default class tx {
             return Promise.reject(err);
         }
 
-        const result:RPCresponse = await this._client.request('register_getCancelRegisterData', Gid, nodeName);
+        const result:RPCresponse = await this._client.register.getCancelRegisterData(Gid, nodeName);
         return this[`${requestType}AccountBlock`]({
             blockType: 2,
             accountAddress,
@@ -179,7 +190,7 @@ export default class tx {
             return Promise.reject(err);
         }
 
-        const result:RPCresponse = await this._client.request('register_getRewardData', Gid, nodeName, toAddress);
+        const result:RPCresponse = await this._client.register.getRewardData(Gid, nodeName, toAddress);
         return this[`${requestType}AccountBlock`]({
             blockType: 2,
             accountAddress,
@@ -205,7 +216,7 @@ export default class tx {
             return Promise.reject(err);
         }
 
-        const result:RPCresponse = await this._client.request('vote_getVoteData', Gid, nodeName);
+        const result:RPCresponse = await this._client.vote.getVoteData(Gid, nodeName);
         return this[`${requestType}AccountBlock`]({
             blockType: 2,
             accountAddress,
@@ -226,7 +237,7 @@ export default class tx {
             return Promise.reject(err);
         }
 
-        const result:RPCresponse = await this._client.request('vote_getCancelVoteData', Gid);
+        const result:RPCresponse = await this._client.vote.getCancelVoteData(Gid);
         return this[`${requestType}AccountBlock`]({
             blockType: 2,
             accountAddress,
@@ -247,7 +258,7 @@ export default class tx {
             return Promise.reject(err);
         }
 
-        const result:RPCresponse = await this._client.request('pledge_getPledgeData', toAddress);
+        const result:RPCresponse = await this._client.pledge.getPledgeData(toAddress);
         return this[`${requestType}AccountBlock`]({
             blockType: 2,
             toAddress: Quota_Addr,
@@ -267,7 +278,7 @@ export default class tx {
             return Promise.reject(err);
         }
 
-        const result:RPCresponse = await this._client.request('pledge_getCancelPledgeData', toAddress, amount);
+        const result:RPCresponse = await this._client.pledge.getCancelPledgeData(toAddress, amount);
         return this[`${requestType}AccountBlock`]({
             blockType: 2,
             toAddress: Quota_Addr,

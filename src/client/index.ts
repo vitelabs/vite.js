@@ -8,17 +8,17 @@ export default class client {
     buildinTxBlock: txBlock
     buildinLedger: ledger
 
-    wallet: any
-    net: Object
-    onroad: Object
-    contract: Object
-    pledge: Object
-    register: Object
-    vote: Object
-    mintage: Object
-    consensusGroup: Object
-    ledger: Object
-    tx: Object
+    wallet: _methods.walletFunc
+    net: _methods.netFunc
+    onroad: _methods.onroadFunc
+    contract: _methods.contractFunc
+    pledge: _methods.pledgeFunc
+    register: _methods.registerFunc
+    vote: _methods.voteFunc
+    mintage: _methods.mintageFunc
+    consensusGroup: _methods.consensusGroupFunc
+    ledger: _methods.ledgerFunc
+    tx: _methods.txFunc
 
     constructor(provider: any) {
         this._provider = provider;

@@ -1,96 +1,159 @@
-import { tx, onroad } from 'const/method';
-import { signAccountBlock } from 'utils/accountBlock';
-import client from "../client";
+import client from "client";
+import { paramsMissing, addressIllegal, addressMissing} from 'const/error';
+import { Address, AddrObj, Hex } from "const/type";
+import { checkParams } from 'utils/tools';
+import { newAddr, getId, validateMnemonic, getEntropyFromMnemonic, getAddrsFromMnemonic, isValidHexAddr, getAddrFromMnemonic } from 'utils/address/hdAddr';
+import Account from './account';
 
-const loopTime = 2000;
+class Wallet {
+    addrList: Array<AddrObj>
+    mnemonic: string
+    addrNum: number
+    addrStartInx: number
+    entropy: string
+    addrTotalNum: number
+    id: Hex
+    activeAccount: Account
+    _client: client
 
-class Wallet extends client {
-    addrList: Array<string>
-
-    constructor(provider: any) {
-        super(provider);
-
-        this.addrList = [];
-    }
-
-    getUnLockAddrList() {
-        return this.addrList;
-    }
-
-    autoReceiveTX(address, privKey, CB) {
-        this.addrList = this.addrList || [];
-        if (this.addrList.indexOf(address) >= 0) {
+    constructor({
+        client, mnemonic, bits=256, addrNum = 1
+    }, {
+        addrTotalNum = 10,
+        addrStartInx = 0
+    }) {
+        let err = checkParams({ mnemonic, client }, ['client'], [{
+            name: 'mnemonic',
+            func: validateMnemonic
+        }]);
+        if (err) {
+            console.error(new Error(err.message));
             return;
         }
-        this.addrList.push(address);
-        loopAddr.call(this, address, privKey, CB);
-    }
 
-    stopAutoReceiveTX(address) {
-        let i = this.addrList.indexOf(address);
-        if (i < 0) {
-            return;
-        }
-        this.addrList.splice(i, 1);
-    }
+        this._client = client;
 
-    sendRawTx(accountBlock, privKey) {
-        if (!accountBlock) {
-            return Promise.reject('AccountBlock must be required.');
-        }
-
-        let _accountBlock = signAccountBlock(accountBlock, privKey);
-        if (!_accountBlock) {
-            return Promise.reject(_accountBlock);
+        this.addrTotalNum = addrTotalNum;
+        let _addrNum = +addrNum && +addrNum > 0 ? +addrNum : 1;
+        _addrNum = _addrNum > addrTotalNum ? addrTotalNum : _addrNum;
+        this.addrNum = _addrNum;
+        
+        if (mnemonic) {
+            this.mnemonic = mnemonic;
+            this.entropy = getEntropyFromMnemonic(mnemonic);
+        } else {
+            const { entropy, mnemonic } = newAddr(bits);
+            this.mnemonic = mnemonic;
+            this.entropy = entropy;
         }
 
-        return this.request(tx.sendRawTx, _accountBlock).then(() => {
-            return accountBlock;
+        this.addrStartInx= addrStartInx;
+        this.addrList = getAddrsFromMnemonic(this.mnemonic, addrStartInx, this.addrNum);
+        this.id = getId(this.mnemonic);
+
+        this.activeAccount = null;
+
+        let funcName = ['getBalance', 'sendRawTx', 'sendTx', 'receiveTx', 'SBPreg', 'updateReg', 'revokeReg', 'retrieveReward', 'voting', 'revokeVoting', 'getQuota', 'withdrawalOfQuota'];
+        funcName.forEach((name) => {
+            this[name] = (...args) => {
+                return this.activeAccount[name](...args);
+            };
         });
     }
-}
 
-function loopAddr(address, privKey, CB) {
-    if (this.addrList.indexOf(address) < 0) {
-        return;
+    activateAccount({
+        address, index = this.addrStartInx
+    }: { address?: Address, index?: number }, {
+        intervals = 2000, 
+        receiveFailAction = null,
+        duration = 5 * 60 * 1000
+    }: { intervals?: number, receiveFailAction?: null, duration?: number }) {
+        index = validAddrParams({
+            address, index
+        });
+        if (index === null) {
+            return null;
+        }
+
+        let addrObj: AddrObj = this.addrList[index];
+        let activeAccount = new Account({
+            privateKey: addrObj.privKey,
+            client: this._client
+        });
+
+        activeAccount.activate(intervals, receiveFailAction);
+        if (duration > 0) {
+            setTimeout(() => {
+                this.freezeAccount();
+            }, duration);
+        }
+
+        this.activeAccount = activeAccount;
+        return activeAccount;
     }
 
-    let loop = () => {
-        let loopTimeout = setTimeout(() => {
-            clearTimeout(loopTimeout);
-            loopTimeout = null;
-            loopAddr.call(this, address, privKey, CB);
-        }, loopTime);
-    };
+    freezeAccount() {
+        if (!this.activeAccount) {
+            return;
+        }
+        this.activeAccount.freeze();
+        this.activeAccount = null;
+    }
 
-    receiveTx.call(this, address, privKey, CB).then(() => {
-        loop();
-    }).catch((err) => {
-        console.warn(err);
-        loop();
-    });
+    addAddr() {
+        let index =  this.addrList.length;
+        if (index >= this.addrTotalNum) {
+            return null;
+        }
+
+        let addrObj = getAddrFromMnemonic(this.mnemonic, index);
+        if (!addrObj) {
+            return null;
+        }
+        this.addrList.push(addrObj);
+        return addrObj;
+    }
+
+    get balance() {
+        if (!this.activeAccount) {
+            return null;
+        }
+        return this.activeAccount.balance;
+    }
 }
 
-async function receiveTx(address, privKey, errorCb) {
-    const result = await this.request(onroad.getOnroadBlocksByAddress,address, 0, 1)
-    if (!result || !result.length) {
+export const walletAccount = Wallet;
+
+export const account = Account;
+
+
+
+function validAddrParams({
+    address, index = this.addrStartInx
+}: { address?: Address, index?: number }) {
+    if (!address && !index && index !== 0) {
+        console.error( new Error(`${paramsMissing.message} Address or index.`) );
         return null;
     }
 
-    const accountBlock = await this.buildinTxBlock.receiveTx.async({
-        accountAddress: address,
-        fromBlockHash: result[0].hash
-    });
-
-    try {
-        const data = await this.sendRawTx(accountBlock, privKey);
-        return data;
-    } catch(err) {
-        if (!errorCb) {
-            return Promise.reject(err);
-        }
-        return errorCb(err, accountBlock);
+    if (address && !isValidHexAddr) {
+        console.error( new Error(`${addressIllegal.message}`) );
+        return null;
     }
-}
 
-export default Wallet;
+    if (!address) {
+        return index;
+    }
+
+    let i;
+    for (i = 0; i < this.addrList.length; i++) {
+        if (this.addrList[i].hexAddr === address) {
+            break;
+        }
+    }
+    if (i === this.addrList.length) {
+        console.error( new Error(`${addressMissing.message}`) );
+        return null;
+    }
+    return i;
+}

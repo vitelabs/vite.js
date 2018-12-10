@@ -29,7 +29,7 @@ export function getAccountBlock({
     blockType, fromBlockHash, accountAddress, message, data, height, prevHash, snapshotHash, toAddress, tokenId, amount, nonce
 }: syncFormatBlock) {
     let reject = (error, errMsg = '') => {
-        let message = `${error.message || error.msg || ''} ${errMsg}`;
+        let message = `${error.message || ''} ${errMsg}`;
         console.error(new Error(message));
         return null;
     }

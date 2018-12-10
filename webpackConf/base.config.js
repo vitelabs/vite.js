@@ -64,6 +64,7 @@ module.exports = {
     },
     resolve: {
         alias: {
+            client: path.resolve(__dirname, '../src/client/'),
             const: path.resolve(__dirname, '../src/const/'),
             utils: path.resolve(__dirname, '../src/utils/'),
             provider: path.resolve(__dirname, '../src/provider/')

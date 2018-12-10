@@ -57,7 +57,7 @@ export function encryptV1ToV3(key, keystore) {
 
     let keyJson = isValid(keystore);
     if (!keyJson) {
-        console.error(new Error(`${paramsFormat.msg} Illegal keystore.`));
+        console.error(new Error(`${paramsFormat.message} Illegal keystore.`));
         return false;
     }
 

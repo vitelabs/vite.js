@@ -16,7 +16,7 @@ export function checkParams(params, requiredP:Array<string> = [], validFunc:Arra
         if ( !isHave(name) ) {
             return {
                 code: paramsMissing.code,
-                message: `${paramsMissing.msg} ${name}.`
+                message: `${paramsMissing.message} ${name}.`
             }
         }
     }
@@ -30,7 +30,7 @@ export function checkParams(params, requiredP:Array<string> = [], validFunc:Arra
         if ( !func(params[name]) ) {
             return {
                 code: paramsFormat.code,
-                message: `${paramsFormat.msg} Illegal ${name}. ${msg || ''}`
+                message: `${paramsFormat.message} Illegal ${name}. ${msg || ''}`
             }
         }
     }

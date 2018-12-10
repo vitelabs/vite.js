@@ -1,17 +1,16 @@
 const bip39 = require('bip39');
 const hd = require('@sisi/ed25519-blake2b-hd-key');
 
-import { checkParams } from 'utils/tools';
+import { AddrObj, Hex } from 'const/type';
 import { paramsFormat } from 'const/error';
+import { checkParams } from 'utils/tools';
+import { bytesToHex, blake2b } from 'utils/encoder';
 import { ROOT_PATH  } from './vars';
-import { bytesToHex } from '../encoder';
 import { newHexAddr, isValidHexAddr as _isValidHexAddr, getAddrFromHexAddr as _getAddrFromHexAddr } from './privToAddr';
 
-declare type addrObj = {
-    addr: string, 
-    pubKey: string, 
-    privKey: string, 
-    hexAddr: string
+
+export function validateMnemonic(mnemonic) {
+    return mnemonic && bip39.validateMnemonic(mnemonic);
 }
 
 export function getEntropyFromMnemonic(mnemonic: string): string {
@@ -38,7 +37,7 @@ export function getMnemonicFromEntropy(entropy: string): string {
 }
 
 export function newAddr(bits: number = 256): {
-    addr: addrObj, entropy: string, mnemonic: string
+    addr: AddrObj, entropy: string, mnemonic: string
 } {
     let err = checkParams({ bits }, ['bits']);
     if (err) {
@@ -54,7 +53,7 @@ export function newAddr(bits: number = 256): {
     return { addr, entropy, mnemonic };
 }
 
-export function getAddrFromMnemonic(mnemonic, index = 0): addrObj | boolean {
+export function getAddrFromMnemonic(mnemonic, index = 0): AddrObj {
     let err = checkParams({ mnemonic }, ['mnemonic'], [{
         name: 'mnemonic',
         func: bip39.validateMnemonic
@@ -65,7 +64,7 @@ export function getAddrFromMnemonic(mnemonic, index = 0): addrObj | boolean {
     }
 
     if (index < 0) {
-        console.warn(`${paramsFormat.msg} Index must greater than 0.`);
+        console.warn(`${paramsFormat.message} Index must greater than 0.`);
         index = 0;
     }
 
@@ -74,7 +73,7 @@ export function getAddrFromMnemonic(mnemonic, index = 0): addrObj | boolean {
     return getAddrFromPath(path, seed);
 }
 
-export function getAddrsFromMnemonic(mnemonic, start = 0, num = 10): Array<string> | boolean {
+export function getAddrsFromMnemonic(mnemonic, start = 0, num = 10): AddrObj[] {
     let err = checkParams({ mnemonic }, ['mnemonic'], [{
         name: 'mnemonic',
         func: bip39.validateMnemonic
@@ -85,7 +84,7 @@ export function getAddrsFromMnemonic(mnemonic, start = 0, num = 10): Array<strin
     }
 
     if (start < 0) {
-        console.warn(`${paramsFormat.msg} Start must greater than 0 or equal to 0.`);
+        console.warn(`${paramsFormat.message} Start must greater than 0 or equal to 0.`);
         start = 0;
     }
 
@@ -105,13 +104,29 @@ export function getAddrsFromMnemonic(mnemonic, start = 0, num = 10): Array<strin
     return addrs;
 }
 
+export function getId(mnemonic: string): Hex {
+    let err = checkParams({ mnemonic }, ['mnemonic'], [{
+        name: 'mnemonic',
+        func: validateMnemonic
+    }]);
+    if (err) {
+        console.error( new Error(err.message) );
+        return null;
+    }
+
+    let addrObj = getAddrFromMnemonic(mnemonic, 0);
+    let keyBuffer = Buffer.from(addrObj.hexAddr);
+    let idByte = blake2b(keyBuffer, null, 32);
+    return Buffer.from(idByte).toString('hex');
+}
+
 export const getAddrFromHexAddr = _getAddrFromHexAddr;
 
 export const isValidHexAddr = _isValidHexAddr;
 
 
 
-function getAddrFromPath(path: string, seed: string): addrObj {
+function getAddrFromPath(path: string, seed: string): AddrObj {
     let { key } = hd.derivePath(path, seed);
     let { privateKey } = hd.getPublicKey(key);
     let priv = bytesToHex(privateKey);

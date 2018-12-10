@@ -74,6 +74,82 @@ export const enum tx {
     sendRawTx = "tx_sendRawTx" 
 }
 
+export type walletFunc = {
+    listEntropyFilesInStandardDir: Function
+    listAllEntropyFiles: Function
+    unlock: Function
+    lock: Function
+    listEntropyStoreAddresses: Function
+    newMnemonicAndEntropyStore: Function
+    deriveForIndexPath: Function
+    recoverEntropyStoreFromMnemonic: Function
+    globalCheckAddrUnlocked: Function
+    isAddrUnlocked: Function
+    isUnlocked: Function
+    findAddr: Function
+    globalFindAddr: Function
+    createTxWithPassphrase: Function
+    addEntropyStore: Function
+}
+export type netFunc = { 
+    syncInfo: Function
+    peers: Function
+}
+export type onroadFunc = { 
+    getOnroadBlocksByAddress: Function
+    getAccountOnroadInfo: Function
+    listWorkingAutoReceiveWorker: Function
+    startAutoReceive: Function
+    stopAutoReceive: Function
+}
+export type contractFunc = { 
+    getCreateContractToAddress: Function
+}
+export type pledgeFunc = { 
+    getPledgeData: Function
+    getCancelPledgeData: Function
+    getPledgeQuota: Function
+    getPledgeList: Function
+}
+export type registerFunc = { 
+    getRegistrationList: Function
+    getRegisterData: Function
+    getCancelRegisterData: Function
+    getRewardData: Function
+    getUpdateRegistrationData: Function
+    getCandidateList: Function
+}
+export type voteFunc = { 
+    getVoteData: Function
+    getCancelVoteData: Function
+    getVoteInfo: Function
+}
+export type mintageFunc = { 
+    getMintageData: Function
+    getMintageCancelPledgeData: Function
+}
+export type consensusGroupFunc = { 
+    getConditionRegisterOfPledge: Function
+    getConditionVoteOfDefault: Function
+    getConditionVoteOfKeepToken: Function
+    getCreateConsensusGroupData: Function
+    getCancelConsensusGroupData: Function
+    getReCreateConsensusGroupData: Function
+}
+export type ledgerFunc = { 
+    getBlocksByAccAddr: Function
+    getAccountByAccAddr: Function
+    getLatestSnapshotChainHash: Function
+    getLatestBlock: Function
+    getTokenMintage: Function
+    getBlocksByHash: Function
+    getSnapshotChainHeight: Function
+    getFittestSnapshotHash: Function
+}
+export type txFunc = { 
+    sendRawTx: Function
+}
+
 type methods = wallet | net | onroad | contract | pledge | contract | register | vote | mintage | consensusGroup | ledger | tx
 
 export default methods;

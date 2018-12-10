@@ -3,7 +3,7 @@ require('es6-promise').polyfill();
 
 import * as u from "./utils";
 import * as con from "./const";
-import w from "./Wallet";
+import * as w from "./Wallet";
 import c from "./client";
 
 export const utils = u;

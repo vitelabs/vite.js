@@ -1,19 +1,29 @@
 export const no = {
     code: '100000',
-    msg: 'What do you want to do?'
+    message: 'What do you want to do?'
 }
 
 export const paramsMissing = {
     code: '100001',
-    msg: 'Missing parameter(s).'
+    message: 'Missing parameter(s).'
 }
 
 export const paramsFormat = {
     code: '100002',
-    msg: 'Incorrect parameter format.'
+    message: 'Incorrect parameter format.'
 }
 
 export const paramsConflict = {
     code: '100003',
-    msg: 'Parameter conflict.'
+    message: 'Parameter conflict.'
+}
+
+export const addressIllegal = {
+    code: '200001',
+    message: 'Illeagl address.'
+}
+
+export const addressMissing = {
+    code: '200002',
+    message: 'Address does not exist'
 }

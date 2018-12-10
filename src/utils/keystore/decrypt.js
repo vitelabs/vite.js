@@ -75,7 +75,7 @@ export default function decrypt(keystore, pwd, selfScryptsy) {
     if (!keyJson) {
         return Promise.reject({
             code: paramsFormat.code,
-            message: `${paramsFormat.msg} Illegal keystore.`
+            message: `${paramsFormat.message} Illegal keystore.`
         });
     }
 

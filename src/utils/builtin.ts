@@ -74,14 +74,14 @@ export function validReqAccountBlock({
     if (+blockType === 4 && !fromBlockHash) {
         return {
             code: paramsMissing.code,
-            msg: `${paramsMissing.msg} ReceiveBlock must have fromBlockHash.`
+            msg: `${paramsMissing.message} ReceiveBlock must have fromBlockHash.`
         };
     }
 
     if (message && data) {
         return {
             code: paramsConflict.code,
-            msg: `${paramsConflict.msg} Message and data are only allowed to exist one.`
+            msg: `${paramsConflict.message} Message and data are only allowed to exist one.`
         };
     }
 

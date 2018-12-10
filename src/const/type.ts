@@ -12,7 +12,7 @@ export type Methods = methods;
 
 export declare interface RPCrequest {
     type?: string;
-    Method: methods;
+    methodName: methods;
     params: any[];
 }
 
@@ -197,4 +197,11 @@ export declare type formatBlock = {
     height?: Uint64,
     snapshotHash?: Hex,
     nonce?: Base64
+}
+
+export declare type AddrObj = {
+    addr: string, 
+    pubKey: Hex, 
+    privKey: Hex, 
+    hexAddr: Address
 }
