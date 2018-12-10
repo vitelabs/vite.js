@@ -17,7 +17,7 @@ class HTTP_RPC extends Communication {
     _getRequest() {
         let request = new XMLHttpRequest();
 
-        request.open('POST', this.host);
+        request.open('POST', this.url);
 
         // Set headers
         request.setRequestHeader('Content-Type', 'application/json;charset=utf-8');
@@ -84,7 +84,7 @@ class HTTP_RPC extends Communication {
                 request.send(JSON.stringify(payload));
             } catch (err) {
                 clearRequestAndTimeout();
-                return rej(this.ERRORS.CONNECT(this.host));
+                return rej(this.ERRORS.CONNECT(this.url));
             }
         });
     }
