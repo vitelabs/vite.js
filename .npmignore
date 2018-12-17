@@ -11,8 +11,4 @@ test
 .gitignore
 .travis.yml
 gulpfile.js
-ottoDist
 src
-test
-.travis.yml
-gulpfile.js
