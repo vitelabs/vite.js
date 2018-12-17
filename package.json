@@ -1,6 +1,6 @@
 {
     "name": "@vite/vitejs",
-    "version": "1.0.1-6",
+    "version": "1.0.1-7",
     "description": "",
     "main": "dist/vitejs/index.node.js",
     "browser": "dist/vitejs/index.web.js",
