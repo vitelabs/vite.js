@@ -17,14 +17,18 @@ module.exports = {
     target,
     mode: 'production',
     entry: {
-        index: path.resolve(baseDir, './index.ts')
+        client: path.resolve(baseDir, 'client/index.ts'),
+        const: path.resolve(baseDir, 'const/index.ts'),
+        provider: path.resolve(baseDir, 'provider/index.ts'),
+        WSprovider: path.resolve(baseDir, 'provider/WS.js'),
+        HTTPprovider: path.resolve(baseDir, 'provider/HTTP.js'),
+        IPCprovider: path.resolve(baseDir, 'provider/IPC.js'),
+        utils: path.resolve(baseDir, 'utils/index.ts'),
+        wallet: path.resolve(baseDir, 'wallet/index.ts'),
     },
     output: {
-        filename:`[name].${target}.js`,
-        path: path.join(__dirname, '../dist/vitejs'),
-        libraryTarget: 'umd',
-        library: 'vitejs',
-        umdNamedDefine: true
+        filename:'[name].js',
+        path: path.join(__dirname, '../dist/es5'),
     },
     optimization: {
         splitChunks: {

@@ -10,10 +10,7 @@ class Communication {
         this._requestId = 0;
     }
 
-    reset(abort = true) {
-        if (!abort) {
-            return;
-        }
+    abort() {
         this._requestManager.forEach(({ request, rej }) => {
             request.abort();
             rej( this.ERRORS.ABORT() );
