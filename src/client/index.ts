@@ -20,12 +20,25 @@ export default class client {
     ledger: _methods.ledgerFunc
     tx: _methods.txFunc
 
-    constructor(provider: any) {
+    constructor(provider: any, firstConnect: Function) {
         this._provider = provider;
         this.buildinTxBlock = new txBlock(this);
         this.buildinLedger = new ledger(this);
 
+        firstConnect && this.connectedOnce(firstConnect);
         this._setMethodsName();
+    }
+
+    connectedOnce(cb) {
+        if (this._provider.type === 'http' || this._provider.connectStatus) {
+            cb && cb(this);
+            return;
+        }
+
+        this._provider.on('connect', () => {
+            cb && cb(this);
+            this._provider.remove('connect');
+        });
     }
 
     _setMethodsName() {
@@ -52,7 +65,8 @@ export default class client {
         }
     }
 
-    set provider(provider) {
+    setProvider(provider, abort) {
+        abort && this._provider.abort(abort);
         this._provider = provider;
 
         let providerType = this._provider.type || 'http';
