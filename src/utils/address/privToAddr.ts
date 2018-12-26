@@ -7,7 +7,7 @@ import { bytesToHex, hexToBytes } from '../encoder';
 import { ADDR_PRE, ADDR_SIZE, ADDR_CHECK_SUM_SIZE, ADDR_LEN  } from './vars';
 
 
-export function newHexAddr(priv?: Buffer | string): AddrObj {
+export function newHexAddr(priv?: Hex | Buffer): AddrObj {
     // address = Blake2b(PubKey)(len:20)
     let {
         addr, privKey
