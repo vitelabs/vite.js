@@ -1,12 +1,13 @@
 const blake = require('blakejs/blake2b');
 import { checkParams } from 'utils/tools';
+import { Hex } from 'const/type';
 
 declare const enum Charset {
     utf16 = "utf16",
     utf8 = "utf8"
 }
 
-export function bytesToHex(arr: Buffer = Buffer.from([])): string {
+export function bytesToHex(arr: Buffer = Buffer.from([])): Hex {
     let err = checkParams({ arr }, ['arr']);
     if (err) {
         console.error(new Error(err.message));
@@ -19,7 +20,7 @@ export function bytesToHex(arr: Buffer = Buffer.from([])): string {
     return hexArr.join('');
 }
 
-export function hexToBytes(hex: String) {
+export function hexToBytes(hex: Hex) {
     let err = checkParams({ hex }, ['hex']);
     if (err) {
         console.error(new Error(err.message));

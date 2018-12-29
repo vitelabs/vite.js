@@ -105,6 +105,7 @@ export function getBuiltinTxType(toAddress, data, blockType) {
 
 // 1.sendBlock
 // hash = HashFunction(BlockType + PrevHash  + Height + AccountAddress + ToAddress + Amount + TokenId  + Fee + SnapshotHash + Data + Timestamp + LogHash + Nonce）
+
 // 2.receiveBlock
 // hash = HashFunction(BlockType + PrevHash  + Height + AccountAddress + FromBlockHash + Fee + SnapshotHash + Data + Timestamp + LogHash + Nonce）
 
