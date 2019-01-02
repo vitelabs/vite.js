@@ -1,30 +1,33 @@
-import client from "client";
+import client from 'client';
 import { paramsMissing, addressIllegal, addressMissing} from 'const/error';
-import { Address, AddrObj, Hex } from "const/type";
+import { Address, AddrObj, Hex, LangList } from 'const/type';
 import { checkParams } from 'utils/tools';
 import { newAddr, getId, validateMnemonic, getEntropyFromMnemonic, getAddrsFromMnemonic, isValidHexAddr, getAddrFromMnemonic } from 'utils/address/hdAddr';
 import Account from './account';
 
 class Wallet {
     addrList: Array<AddrObj>
+    lang: LangList
     mnemonic: string
     addrNum: number
     addrStartInx: number
     entropy: string
     addrTotalNum: number
     id: Hex
-    activeAccount: Account
+    activeAccountList: Array<Account>
     _client: client
 
     constructor({
-        client, mnemonic, bits=256, addrNum = 1
+        client, mnemonic, bits=256, addrNum = 1, lang = LangList.english
     }, {
         addrTotalNum = 10,
         addrStartInx = 0
     }) {
         let err = checkParams({ mnemonic, client }, ['client'], [{
             name: 'mnemonic',
-            func: validateMnemonic
+            func: (_mnemonic) => {
+                return validateMnemonic(_mnemonic, lang);
+            }
         }]);
         if (err) {
             console.error(new Error(err.message));
@@ -38,27 +41,21 @@ class Wallet {
         _addrNum = _addrNum > addrTotalNum ? addrTotalNum : _addrNum;
         this.addrNum = _addrNum;
         
+        this.lang = lang || LangList.english;
         if (mnemonic) {
             this.mnemonic = mnemonic;
-            this.entropy = getEntropyFromMnemonic(mnemonic);
+            this.entropy = getEntropyFromMnemonic(mnemonic, this.lang);
         } else {
-            const { entropy, mnemonic } = newAddr(bits);
+            const { entropy, mnemonic } = newAddr(bits, this.lang);
             this.mnemonic = mnemonic;
             this.entropy = entropy;
         }
 
         this.addrStartInx= addrStartInx;
-        this.addrList = getAddrsFromMnemonic(this.mnemonic, addrStartInx, this.addrNum);
-        this.id = getId(this.mnemonic);
+        this.addrList = getAddrsFromMnemonic(this.mnemonic, addrStartInx, this.addrNum, this.lang);
+        this.id = getId(this.mnemonic, this.lang);
 
-        this.activeAccount = null;
-
-        let funcName = ['getBalance', 'sendRawTx', 'sendTx', 'receiveTx', 'SBPreg', 'updateReg', 'revokeReg', 'retrieveReward', 'voting', 'revokeVoting', 'getQuota', 'withdrawalOfQuota'];
-        funcName.forEach((name) => {
-            this[name] = (...args) => {
-                return this.activeAccount[name](...args);
-            };
-        });
+        this.activeAccountList = [];
     }
 
     activateAccount({
@@ -84,20 +81,29 @@ class Wallet {
         activeAccount.activate(intervals, receiveFailAction);
         if (duration > 0) {
             setTimeout(() => {
-                this.freezeAccount();
+                this.freezeAccount(activeAccount);
             }, duration);
         }
 
-        this.activeAccount = activeAccount;
+        this.activeAccountList.push(activeAccount);
         return activeAccount;
     }
 
-    freezeAccount() {
-        if (!this.activeAccount) {
+    freezeAccount(activeAccount: Account) {
+        if (!this.activeAccountList || !this.activeAccountList.length || !activeAccount) {
             return;
         }
-        this.activeAccount.freeze();
-        this.activeAccount = null;
+
+        activeAccount.freeze && activeAccount.freeze();
+
+        let i;
+        for (i=0; i<this.activeAccountList.length; i++) {
+            if (this.activeAccountList[i] === activeAccount) {
+                break;
+            }
+        }
+        this.activeAccountList.splice(i, 1);
+        activeAccount = null;
     }
 
     addAddr() {
@@ -106,19 +112,12 @@ class Wallet {
             return null;
         }
 
-        let addrObj = getAddrFromMnemonic(this.mnemonic, index);
+        let addrObj = getAddrFromMnemonic(this.mnemonic, index, this.lang);
         if (!addrObj) {
             return null;
         }
         this.addrList.push(addrObj);
         return addrObj;
-    }
-
-    get balance() {
-        if (!this.activeAccount) {
-            return null;
-        }
-        return this.activeAccount.balance;
     }
 }
 

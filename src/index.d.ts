@@ -54,6 +54,17 @@ export enum BuiltinTxType {
     TxResFail
 }
 
+export enum LangList {
+    english = 'english',
+    japanese = 'japanese',
+    chineseSimplified = 'chinese_simplified',
+    chineseTraditional = 'chinese_traditional',
+    french = 'french',
+    italian = 'italian',
+    korean = 'korean',
+    spanish = 'spanish'
+}
+
 export declare type SignBlock = {
     accountAddress: Address
     blockType: BlockType
@@ -197,4 +208,11 @@ export declare type formatBlock = {
     height?: Uint64,
     snapshotHash?: Hex,
     nonce?: Base64
+}
+
+export declare type AddrObj = {
+    addr: string, 
+    pubKey: Hex, 
+    privKey: Hex, 
+    hexAddr: Address
 }

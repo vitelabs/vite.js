@@ -34,7 +34,7 @@ describe('getAddrFromHexAddr', function () {
 });
 
 describe('HD_Address', function () {
-    it('test_getAddrsFromSeed', function () {
+    it('test_getAddrsFromMnemonic', function () {
         let as = hdAddr.getAddrsFromMnemonic('horn equal mystery success pride regret renew great witness hire man moon');
         let arr = [];
         as.forEach((item)=>{

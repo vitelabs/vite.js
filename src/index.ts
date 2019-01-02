@@ -1,12 +1,12 @@
 import '@babel/polyfill';
 require('es6-promise').polyfill();
 
-import * as u from "./utils";
 import * as con from "./const";
-import * as w from "./Wallet";
+import * as u from "./utils";
 import c from "./client";
+import * as w from "./Wallet";
 
-export const utils = u;
 export const constant = con;
-export const wallet = w;
+export const utils = u;
 export const client = c;
+export const wallet = w;

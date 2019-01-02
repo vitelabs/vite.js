@@ -1,7 +1,7 @@
 const bip39 = require('bip39');
 const hd = require('@sisi/ed25519-blake2b-hd-key');
 
-import { AddrObj, Hex } from 'const/type';
+import { AddrObj, Hex, LangList } from 'const/type';
 import { paramsFormat } from 'const/error';
 import { checkParams } from 'utils/tools';
 import { bytesToHex, blake2b } from 'utils/encoder';
@@ -9,34 +9,37 @@ import { ROOT_PATH  } from './vars';
 import { newHexAddr, isValidHexAddr as _isValidHexAddr, getAddrFromHexAddr as _getAddrFromHexAddr } from './privToAddr';
 
 
-export function validateMnemonic(mnemonic) {
-    return mnemonic && bip39.validateMnemonic(mnemonic);
+
+export function validateMnemonic(mnemonic: string, lang: LangList = LangList.english) {
+    return mnemonic && bip39.validateMnemonic(mnemonic, getWordList(lang));
 }
 
-export function getEntropyFromMnemonic(mnemonic: string): string {
+export function getEntropyFromMnemonic(mnemonic: string, lang: LangList = LangList.english): string {
     let err = checkParams({ mnemonic }, ['mnemonic'], [{
         name: 'mnemonic',
-        func: bip39.validateMnemonic
+        func: (_m) => {
+            return validateMnemonic(_m, lang);
+        }
     }]);
     if (err) {
         console.error(new Error(err.message));
         return null;
     }
 
-    return bip39.mnemonicToEntropy(mnemonic);
+    return bip39.mnemonicToEntropy(mnemonic, getWordList(lang));
 }
 
-export function getMnemonicFromEntropy(entropy: string): string {
+export function getMnemonicFromEntropy(entropy: string, lang: LangList = LangList.english): string {
     let err = checkParams({ entropy }, ['entropy']);
     if (err) {
         console.error(new Error(err.message));
         return null;
     }
 
-    return bip39.entropyToMnemonic(entropy);
+    return bip39.entropyToMnemonic(entropy, getWordList(lang));
 }
 
-export function newAddr(bits: number = 256): {
+export function newAddr(bits: number = 256, lang: LangList = LangList.english): {
     addr: AddrObj, entropy: string, mnemonic: string
 } {
     let err = checkParams({ bits }, ['bits']);
@@ -45,18 +48,21 @@ export function newAddr(bits: number = 256): {
         return null;
     }
 
-    let mnemonic = bip39.generateMnemonic(bits);
-    let entropy = bip39.mnemonicToEntropy(mnemonic);
+    let wordList = getWordList(lang);
+    let mnemonic = bip39.generateMnemonic(bits, null, wordList);
+    let entropy = bip39.mnemonicToEntropy(mnemonic, wordList);
     let seed = bip39.mnemonicToSeedHex(mnemonic);
     let path = getPath(0);
     let addr = getAddrFromPath(path, seed);
     return { addr, entropy, mnemonic };
 }
 
-export function getAddrFromMnemonic(mnemonic, index = 0): AddrObj {
+export function getAddrFromMnemonic(mnemonic, index = 0, lang: LangList = LangList.english): AddrObj {
     let err = checkParams({ mnemonic }, ['mnemonic'], [{
         name: 'mnemonic',
-        func: bip39.validateMnemonic
+        func: (_m) => {
+            return validateMnemonic(_m, lang);
+        }
     }]);
     if (err) {
         console.error(new Error(err.message));
@@ -73,10 +79,12 @@ export function getAddrFromMnemonic(mnemonic, index = 0): AddrObj {
     return getAddrFromPath(path, seed);
 }
 
-export function getAddrsFromMnemonic(mnemonic, start = 0, num = 10): AddrObj[] {
+export function getAddrsFromMnemonic(mnemonic, start = 0, num = 10, lang: LangList = LangList.english): AddrObj[] {
     let err = checkParams({ mnemonic }, ['mnemonic'], [{
         name: 'mnemonic',
-        func: bip39.validateMnemonic
+        func: (_m) => {
+            return validateMnemonic(_m, lang);
+        }
     }]);
     if (err) {
         console.error(new Error(err.message));
@@ -104,10 +112,12 @@ export function getAddrsFromMnemonic(mnemonic, start = 0, num = 10): AddrObj[] {
     return addrs;
 }
 
-export function getId(mnemonic: string): Hex {
+export function getId(mnemonic: string, lang: LangList = LangList.english): Hex {
     let err = checkParams({ mnemonic }, ['mnemonic'], [{
         name: 'mnemonic',
-        func: validateMnemonic
+        func: (_m) => {
+            return validateMnemonic(_m, lang);
+        }
     }]);
     if (err) {
         console.error( new Error(err.message) );
@@ -135,4 +145,9 @@ function getAddrFromPath(path: string, seed: string): AddrObj {
 
 function getPath(index: number): string {
     return `${ROOT_PATH}/${index}\'`;
+}
+
+function getWordList(lang: LangList = LangList.english) {
+    lang = lang && bip39.wordlists[lang] ? lang : LangList.english;
+    return bip39.wordlists[lang];
 }
