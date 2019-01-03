@@ -10,11 +10,10 @@ class Account {
     realAddress: string
     privateKey: Hex
     publicKey: Hex
-    selfScryptsy: Function
+    balance
     _client: client
     _lock: Boolean
     _autoReceive: Boolean
-    balance
 
     constructor({ privateKey, client }: {
         privateKey?: Hex | Buffer, client: client
@@ -47,7 +46,7 @@ class Account {
 
     getPublicKey() {
         if (this.publicKey) {
-            return this.publicKey;
+            return Buffer.from(this.publicKey, 'hex');
         }
         let privKey = Buffer.from(this.privateKey, 'hex');
         return getPublicKey(privKey);
