@@ -22,7 +22,7 @@ export function newHexAddr(priv?: Hex | Buffer): AddrObj {
     let _pubKey = getPublicKey(privKey);
     return {
         addr: _addr,
-        pubKey: bytesToHex(_pubKey),
+        pubKey: _pubKey,
         privKey: bytesToHex(privKey),
         hexAddr: ADDR_PRE + _addr + checkSum
     };
