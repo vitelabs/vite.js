@@ -39,7 +39,7 @@ export function getMnemonicFromEntropy(entropy: string, lang: LangList = LangLis
     return bip39.entropyToMnemonic(entropy, getWordList(lang));
 }
 
-export function newAddr(bits: number = 256, lang: LangList = LangList.english): {
+export function newAddr(bits: number = 256, lang: LangList = LangList.english, pwd: string = ''): {
     addr: AddrObj, entropy: string, mnemonic: string
 } {
     let err = checkParams({ bits }, ['bits']);
@@ -51,13 +51,13 @@ export function newAddr(bits: number = 256, lang: LangList = LangList.english): 
     let wordList = getWordList(lang);
     let mnemonic = bip39.generateMnemonic(bits, null, wordList);
     let entropy = bip39.mnemonicToEntropy(mnemonic, wordList);
-    let seed = bip39.mnemonicToSeedHex(mnemonic);
+    let seed = bip39.mnemonicToSeedHex(mnemonic, pwd);
     let path = getPath(0);
     let addr = getAddrFromPath(path, seed);
     return { addr, entropy, mnemonic };
 }
 
-export function getAddrFromMnemonic(mnemonic, index = 0, lang: LangList = LangList.english): AddrObj {
+export function getAddrFromMnemonic(mnemonic, index = 0, lang: LangList = LangList.english, pwd: string = ''): AddrObj {
     let err = checkParams({ mnemonic }, ['mnemonic'], [{
         name: 'mnemonic',
         func: (_m) => {
@@ -75,11 +75,11 @@ export function getAddrFromMnemonic(mnemonic, index = 0, lang: LangList = LangLi
     }
 
     let path = getPath(index);
-    let seed = bip39.mnemonicToSeedHex(mnemonic);
+    let seed = bip39.mnemonicToSeedHex(mnemonic, pwd);
     return getAddrFromPath(path, seed);
 }
 
-export function getAddrsFromMnemonic(mnemonic, start = 0, num = 10, lang: LangList = LangList.english): AddrObj[] {
+export function getAddrsFromMnemonic(mnemonic, start = 0, num = 10, lang: LangList = LangList.english, pwd: string = ''): AddrObj[] {
     let err = checkParams({ mnemonic }, ['mnemonic'], [{
         name: 'mnemonic',
         func: (_m) => {
@@ -101,7 +101,7 @@ export function getAddrsFromMnemonic(mnemonic, start = 0, num = 10, lang: LangLi
     }
 
     let addrs = [];
-    let seed = bip39.mnemonicToSeedHex(mnemonic);
+    let seed = bip39.mnemonicToSeedHex(mnemonic, pwd);
 
     for (let i = start; i < num; i++) {
         let currentPath = getPath(i);

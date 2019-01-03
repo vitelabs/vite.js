@@ -7,6 +7,7 @@ import Account from './account';
 
 class Wallet {
     addrList: Array<AddrObj>
+    pwd: string
     lang: LangList
     mnemonic: string
     addrNum: number
@@ -18,7 +19,7 @@ class Wallet {
     _client: client
 
     constructor({
-        client, mnemonic, bits=256, addrNum = 1, lang = LangList.english
+        client, mnemonic, bits=256, addrNum = 1, lang = LangList.english, pwd = ''
     }, {
         addrTotalNum = 10,
         addrStartInx = 0
@@ -46,13 +47,13 @@ class Wallet {
             this.mnemonic = mnemonic;
             this.entropy = getEntropyFromMnemonic(mnemonic, this.lang);
         } else {
-            const { entropy, mnemonic } = newAddr(bits, this.lang);
+            const { entropy, mnemonic } = newAddr(bits, this.lang, pwd);
             this.mnemonic = mnemonic;
             this.entropy = entropy;
         }
 
         this.addrStartInx= addrStartInx;
-        this.addrList = getAddrsFromMnemonic(this.mnemonic, addrStartInx, this.addrNum, this.lang);
+        this.addrList = getAddrsFromMnemonic(this.mnemonic, addrStartInx, this.addrNum, this.lang, pwd);
         this.id = getId(this.mnemonic, this.lang);
 
         this.activeAccountList = [];
@@ -106,13 +107,13 @@ class Wallet {
         activeAccount = null;
     }
 
-    addAddr() {
+    addAddr(pwd: string = '') {
         let index =  this.addrList.length;
         if (index >= this.addrTotalNum) {
             return null;
         }
 
-        let addrObj = getAddrFromMnemonic(this.mnemonic, index, this.lang);
+        let addrObj = getAddrFromMnemonic(this.mnemonic, index, this.lang, pwd);
         if (!addrObj) {
             return null;
         }
