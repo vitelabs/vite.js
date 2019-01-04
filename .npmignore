@@ -10,5 +10,6 @@ test
 .eslintrc.js
 .gitignore
 .travis.yml
-gulpfile.js
-src
+tsconfig.json
+webpack.config.js
+webpackConf

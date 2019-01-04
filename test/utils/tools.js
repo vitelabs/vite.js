@@ -1,6 +1,6 @@
 const assert = require('assert');
 
-import { getRawTokenid, validNodeName, validInteger } from 'utils/tools';
+import { getRawTokenid, validNodeName, validInteger }from '../../packages/utils/src/tools';
 
 describe('utils/tools', function () {
     it('getRawTokenid', function () {

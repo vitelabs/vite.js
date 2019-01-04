@@ -1,0 +1,24 @@
+{
+    "name": "@vite/vitejs-utils",
+    "version": "1.1.0-1",
+    "main": "dist/index.js",
+    "typings": "src/index.d.ts",
+    "scripts": {
+        "prebuild": "rm -rf ./dist",
+        "build": "yarn run prebuild && tsc"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/vitelabs/vite.js.git"
+    },
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/vitelabs/vite.js/issues"
+    },
+    "homepage": "https://github.com/vitelabs/vite.js#readme",
+    "dependencies": {
+        "@sisi/tweetnacl-blake2b": "^1.0.0",
+        "@vite/vitejs-error": "^1.1.0-1",
+        "blakejs": "^1.1.0"
+    }
+}

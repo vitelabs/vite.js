@@ -1,0 +1,37 @@
+{
+    "name": "@vite/vitejs",
+    "version": "1.1.0-1",
+    "main": "dist/index.js",
+    "typings": "index.d.ts",
+    "scripts": {
+        "prebuild": "rm -rf ./dist",
+        "build": "yarn run prebuild && tsc && webpack"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/vitelabs/vite.js.git"
+    },
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/vitelabs/vite.js/issues"
+    },
+    "homepage": "https://github.com/vitelabs/vite.js#readme",
+    "peerDependencies": {
+        "buffer": "~5.2.1"
+    },
+    "dependencies": {
+        "buffer": "~5.2.1",
+        "es6-promise": "^4.2.5",
+        "@babel/polyfill": "^7.0.0",
+        "@vite/vitejs-utils": "^1.1.0-1",
+        "@vite/vitejs-constant": "^1.1.0-1",
+        "@vite/vitejs-error": "^1.1.0-1",
+        "@vite/vitejs-keystore": "^1.1.0-1",
+        "@vite/vitejs-privtoaddr": "^1.1.0-1",
+        "@vite/vitejs-hdaddr": "^1.1.0-1",
+        "@vite/vitejs-client": "^1.1.0-1",
+        "@vite/vitejs-account": "^1.1.0-1",
+        "@vite/vitejs-hdaccount": "^1.1.0-1",
+        "@vite/vitejs-accountblock": "^1.1.0-1"
+    }
+}
