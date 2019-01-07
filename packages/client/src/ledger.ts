@@ -82,7 +82,7 @@ export default class ledger {
         let rawList;
         requests.forEach((_r, i) => {
             if (_r.methodName === _ledger.getAccountByAccAddr) {
-                totalNum = data[i].result ? data[i].result.totalNum : 0;
+                totalNum = data[i].result ? data[i].result.totalNumber : 0;
                 return;
             }
             rawList = data[i].result || [];

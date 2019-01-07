@@ -4,10 +4,10 @@
     "description": "",
     "scripts": {
         "postinstall": "lerna bootstrap",
-        "build": "lerna exec yarn run build",
+        "build": "npm run postinstall && lerna exec yarn run build",
         "rpc": "node test/bin/startRPC",
         "test:rpc": "cross-env NODE_ENV=test nyc mocha --compilers ts:ts-node/register -r tsconfig-paths/register test/RPC/index.js --no-timeouts",
-        "test": "yarn run postinstall && cross-env NODE_ENV=test nyc mocha --compilers ts:ts-node/register -r tsconfig-paths/register test/index.js  --no-timeouts",
+        "test": "npm run postinstall && cross-env NODE_ENV=test nyc mocha --compilers ts:ts-node/register -r tsconfig-paths/register test/index.js  --no-timeouts",
         "coverage": "nyc report --reporter=text-lcov | coveralls",
         "lint": "eslint ./ --cache",
         "lint:all": "eslint ./",
