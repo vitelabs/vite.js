@@ -17,6 +17,9 @@
             "es2017.typedarrays"
         ]
     },
+    "include": [
+        "packages/**/*"
+    ],
     "exclude": [
         "node_modules",
         "**/*.spec.ts"
