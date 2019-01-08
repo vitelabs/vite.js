@@ -1,10 +1,10 @@
 {
     "name": "@vite/vitejs",
-    "version": "1.1.1-0",
+    "version": "1.1.0",
     "description": "",
     "main": "dist/vitejs/index.node.js",
     "browser": "dist/vitejs/index.web.js",
-    "typings": "src/index.d.ts",
+    "typings": "index.d.ts",
     "scripts": {
         "build:browser": "build_target=web webpack",
         "build:node": "build_target=node webpack",

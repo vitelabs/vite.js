@@ -1,4 +1,4 @@
-import methods from "./const/method";
+import methods from "./src/const/method";
 
 export declare type Hex = string;
 export declare type Address = string;
