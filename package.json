@@ -1,19 +1,19 @@
 {
     "name": "@vite/vitejs",
-    "version": "1.1.0-1",
+    "version": "1.1.2",
     "description": "",
     "scripts": {
         "postinstall": "lerna bootstrap",
         "build": "yarn run postinstall && lerna run build",
         "rpc": "node test/bin/startRPC",
         "test:rpc": "cross-env NODE_ENV=test nyc mocha --compilers ts:ts-node/register -r tsconfig-paths/register test/RPC/index.js --no-timeouts",
-        "test": "yarn run postinstall && cross-env NODE_ENV=test nyc mocha --compilers ts:ts-node/register -r tsconfig-paths/register test/index.js  --no-timeouts",
+        "test": "yarn run build && cross-env NODE_ENV=test nyc mocha --compilers ts:ts-node/register -r tsconfig-paths/register test/index.js  --no-timeouts",
         "coverage": "nyc report --reporter=text-lcov | coveralls",
         "lint": "eslint ./ --cache",
         "lint:all": "eslint ./",
         "prerelease-alpha": "npm run build && npm version prerelease",
-        "release-alpha": "npm publish --access-public --tag alpha",
-        "release": ""
+        "publish-alpha": "npm publish --access-public --tag alpha",
+        "publish": "npm dist-tag add @vite/vitejs@alpha latest"
     },
     "repository": {
         "type": "git",
