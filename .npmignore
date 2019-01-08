@@ -11,5 +11,3 @@ test
 .gitignore
 .travis.yml
 gulpfile.js
-src
-tsconfig.json
