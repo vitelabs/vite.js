@@ -33,7 +33,8 @@ export enum BlockType {
     TxReq,
     RewardReq,
     TxRes,
-    TxResFail
+    TxResFail,
+    SendRefund
 }
 
 export enum BuiltinTxType {
@@ -51,7 +52,8 @@ export enum BuiltinTxType {
     TxReq,
     RewardReq,
     TxRes,
-    TxResFail
+    TxResFail,
+    SendRefund
 }
 
 export enum LangList {
