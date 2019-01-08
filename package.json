@@ -20,7 +20,7 @@
         "lint-all": "eslint ./",
         "prerelease-alpha": "npm run build && npm version prerelease",
         "publish-alpha": "npm publish --access-public --tag alpha",
-        "release": ""
+        "publish": "npm dist-tag add @vite/vitejs@alpha latest"
     },
     "repository": {
         "type": "git",
