@@ -7,7 +7,7 @@
         "noImplicitAny": false,
         "removeComments": true,
         "preserveConstEnums": true,
-        "sourceMap": true,
+        "sourceMap": false,
         "moduleResolution": "node",
         "resolveJsonModule": true,
         "baseUrl": "./src",
