@@ -13,3 +13,5 @@ test
 gulpfile.js
 tsconfig.json
 src
+webpackConf
+webpack.config.js

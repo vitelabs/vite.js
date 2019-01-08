@@ -19,7 +19,7 @@
         "lint": "eslint ./ --cache",
         "lint-all": "eslint ./",
         "prerelease-alpha": "npm run build && npm version prerelease",
-        "release-alpha": "npm publish --access-public --tag alpha",
+        "publish-alpha": "npm publish --access-public --tag alpha",
         "release": ""
     },
     "repository": {
