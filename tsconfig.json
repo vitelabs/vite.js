@@ -10,6 +10,7 @@
         "sourceMap": true,
         "moduleResolution": "node",
         "resolveJsonModule": true,
+        "baseUrl": "./packages",
         "lib": [
             "es5",
             "es2017",
