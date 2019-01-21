@@ -1,6 +1,6 @@
 import { no } from "const/error";
-import { Quota_Addr, Vote_Addr, Register_Addr, Default_Gid } from "const/contract";
-import { RPCresponse, SBPregBlock, block8, block7, revokeVotingBlock, quotaBlock, sendTxBlock, receiveTxBlock, formatBlock } from "const/type";
+import { Quota_Addr, Vote_Addr, Register_Addr, Snapshot_Gid, Delegate_Gid } from "const/contract";
+import { RPCresponse, SBPregBlock, block8, block7, revokeVotingBlock, quotaBlock, sendTxBlock, receiveTxBlock, formatBlock, createContractBlock, callContractBlock } from "const/type";
 
 import { checkParams, validNodeName } from "utils/tools";
 import { formatAccountBlock, validReqAccountBlock } from "utils/builtin";
@@ -41,7 +41,7 @@ export default class tx {
     }
 
     async asyncAccountBlock({
-        blockType, fromBlockHash, accountAddress, message, data, height, prevHash, snapshotHash, toAddress, tokenId, amount,
+        blockType, fromBlockHash, accountAddress, message, data, height, prevHash, snapshotHash, toAddress, tokenId, amount, fee
     }: formatBlock) {
         let reject = (error, errMsg = '') => {
             let message = `${error.msg} ${errMsg}`;
@@ -92,12 +92,12 @@ export default class tx {
         prevHash = latestBlock && latestBlock.hash ? latestBlock.hash : '';
 
         return formatAccountBlock({
-            blockType, fromBlockHash, accountAddress, message, data, height, prevHash, snapshotHash, toAddress, tokenId, amount,
+            blockType, fromBlockHash, accountAddress, message, data, height, prevHash, snapshotHash, toAddress, tokenId, amount, fee
         });
     }
 
     async SBPreg({
-        accountAddress, nodeName, toAddress, amount, tokenId, Gid = Default_Gid, height, prevHash, snapshotHash
+        accountAddress, nodeName, toAddress, amount, tokenId, Gid = Snapshot_Gid, height, prevHash, snapshotHash
     }: SBPregBlock, requestType = 'async') {
         let err = checkParams({ 
             toAddress, nodeName, tokenId, amount, requestType
@@ -123,7 +123,7 @@ export default class tx {
     }
 
     async updateReg({
-        accountAddress, nodeName, toAddress, tokenId, Gid = Default_Gid, height, prevHash, snapshotHash
+        accountAddress, nodeName, toAddress, tokenId, Gid = Snapshot_Gid, height, prevHash, snapshotHash
     }: block8, requestType = 'async') {
         let err = checkParams({ 
             toAddress, nodeName, tokenId, requestType
@@ -149,7 +149,7 @@ export default class tx {
     }
 
     async revokeReg({
-        accountAddress, nodeName, tokenId, Gid = Default_Gid, height, prevHash, snapshotHash
+        accountAddress, nodeName, tokenId, Gid = Snapshot_Gid, height, prevHash, snapshotHash
     }: block7, requestType = 'async') {
         let err = checkParams({ 
             nodeName, tokenId, requestType
@@ -175,7 +175,7 @@ export default class tx {
     }
 
     async retrieveReward({
-        accountAddress, nodeName, toAddress, tokenId, Gid = Default_Gid, height, prevHash, snapshotHash
+        accountAddress, nodeName, toAddress, tokenId, Gid = Snapshot_Gid, height, prevHash, snapshotHash
     }: block8, requestType = 'async') {
         let err = checkParams({ 
             toAddress, nodeName, tokenId, requestType
@@ -201,7 +201,7 @@ export default class tx {
     }
 
     async voting({
-        accountAddress, nodeName, tokenId, Gid = Default_Gid, height, prevHash, snapshotHash
+        accountAddress, nodeName, tokenId, Gid = Snapshot_Gid, height, prevHash, snapshotHash
     }: block7, requestType = 'async') {
         let err = checkParams({ 
             nodeName, tokenId, requestType
@@ -227,7 +227,7 @@ export default class tx {
     }
 
     async revokeVoting({
-        accountAddress, tokenId, Gid = Default_Gid, height, prevHash, snapshotHash
+        accountAddress, tokenId, Gid = Snapshot_Gid, height, prevHash, snapshotHash
     }: revokeVotingBlock, requestType = 'async') {
         let err = checkParams({ tokenId, requestType }, ['tokenId'], [{
             name: 'requestType',
@@ -312,6 +312,47 @@ export default class tx {
         return this.asyncAccountBlock({
             blockType: 4,
             fromBlockHash, accountAddress, height, prevHash, snapshotHash
+        });
+    }
+
+    async createContract({
+        accountAddress, tokenId, amount, fee, hexCode, abi, params, height, prevHash, snapshotHash
+    }: createContractBlock, requestType = 'async') {
+        let err = checkParams({ hexCode, abi, tokenId, amount, fee}, ['hexCode', 'abi', 'tokenId', 'amount', 'fee']);
+        if (err) {
+            return Promise.reject(err);
+        }
+
+        let block = requestType === 'async' ? await this.asyncAccountBlock({
+            blockType: 1, accountAddress, height, prevHash, snapshotHash, tokenId, amount, fee
+        }) : _getAccountBlock({
+            blockType: 1, accountAddress, height, prevHash, snapshotHash, tokenId, amount, fee
+        });
+
+        let toAddress = await this._client.contract.getCreateContractToAddress(accountAddress, block.height, block.prevHash, block.snapshotHash);
+        block.toAddress = toAddress;
+
+        let data = await this._client.contract.getCreateContractData(Delegate_Gid, hexCode, abi, params);
+        block.data = data;
+
+        return block;
+    }
+
+    async callContract({
+        accountAddress, toAddress, tokenId, amount, abi, methodName, params, height, prevHash, snapshotHash
+    }: callContractBlock, requestType = 'async') {
+        let err = checkParams({ toAddress, abi, methodName, tokenId, amount }, ['toAddress', 'abi', 'methodName', 'tokenId', 'amount']);
+        if (err) {
+            return Promise.reject(err);
+        }
+
+        const result:RPCresponse = await this._client.contract.getCallContractData(abi, methodName, params);
+        return this[`${requestType}AccountBlock`]({
+            blockType: 2,
+            accountAddress,
+            toAddress,
+            data: result,
+            height, prevHash, snapshotHash, tokenId, amount
         });
     }
 }

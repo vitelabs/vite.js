@@ -194,6 +194,7 @@ export declare type syncFormatBlock = {
     toAddress?: Address
     tokenId?: TokenId
     amount?: BigInt,
+    fee?: BigInt,
     nonce?: Base64
 }
 
@@ -206,10 +207,37 @@ export declare type formatBlock = {
     toAddress?: Address,
     tokenId?: TokenId,
     amount?: BigInt,
+    fee?: BigInt,
     prevHash?: Hex,
     height?: Uint64,
     snapshotHash?: Hex,
     nonce?: Base64
+}
+
+export declare type createContractBlock = {
+    accountAddress: Address, 
+    hexCode: Hex, 
+    abi: string, 
+    tokenId: TokenId,
+    amount: BigInt,
+    fee: BigInt,
+    params?: string,
+    prevHash?: Hex,
+    height?: Uint64,
+    snapshotHash?: Hex
+}
+
+export declare type callContractBlock = {
+    accountAddress: Address, 
+    toAddress: Address,
+    abi: string, 
+    tokenId: TokenId,
+    amount: BigInt,
+    methodName: string,
+    params?: string,
+    prevHash?: Hex,
+    height?: Uint64,
+    snapshotHash?: Hex
 }
 
 export declare type AddrObj = {

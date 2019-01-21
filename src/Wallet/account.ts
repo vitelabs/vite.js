@@ -287,6 +287,26 @@ class Account {
         const _withdrawalOfQuotaBlock = await this._client.buildinTxBlock.withdrawalOfQuota(reqBlock);
         return this._client.buildinLedger.sendRawTx(_withdrawalOfQuotaBlock, this.privateKey);
     }
+
+    async createContract({
+        hexCode, abi, params, tokenId, amount, fee = '10000000000000000000'
+    }) {
+        const _createContractBlock = await this._client.buildinTxBlock.createContract({
+            accountAddress: this.address, 
+            hexCode, abi, params, tokenId, amount, fee
+        });
+        return this._client.buildinLedger.sendRawTx(_createContractBlock, this.privateKey);
+    }
+
+    async callContract({
+        toAddress, abi, methodName, params, tokenId, amount
+    }) {
+        const _callContractBlock = await this._client.buildinTxBlock.callContract({
+            accountAddress: this.address, 
+            toAddress, abi, methodName, params, tokenId, amount
+        });
+        return this._client.buildinLedger.sendRawTx(_callContractBlock, this.privateKey);
+    }
 }
 
 export default Account;
