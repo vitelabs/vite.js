@@ -22,7 +22,7 @@ export default class ledger {
             return Promise.reject(err);
         }
 
-        const data:RPCresponse[] = await this._client.batch([{
+        const data = await this._client.batch([{
             methodName: _ledger.getAccountByAccAddr,
             params: [addr]
         }, {
@@ -30,7 +30,7 @@ export default class ledger {
             params: [addr]
         }]);
 
-        if (!data || +data.length < 2) {
+        if (!data || (data instanceof Array && data.length < 2)) {
             return null;
         }
 
@@ -72,7 +72,7 @@ export default class ledger {
             })
         }
 
-        const data:RPCresponse[] = await this._client.batch(requests);
+        const data = await this._client.batch(requests);
 
         let rawList;
         requests.forEach((_r, i) => {

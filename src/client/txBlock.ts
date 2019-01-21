@@ -77,7 +77,7 @@ export default class tx {
             return reject(no);
         }
 
-        let req: RPCresponse[] = await this._client.batch(requests);
+        let req = await this._client.batch(requests);
         let latestBlock;
 
         requests.forEach((_r, index) =>{
