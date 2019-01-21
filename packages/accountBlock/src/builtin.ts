@@ -10,7 +10,7 @@ const { checkParams, validInteger } = tools;
 
 
 export function formatAccountBlock({
-    blockType, fromBlockHash, accountAddress, message, data, height, prevHash, snapshotHash, tokenId, toAddress, amount, nonce
+    blockType, fromBlockHash, accountAddress, message, data, height, prevHash, snapshotHash, tokenId, fee, toAddress, amount, nonce
 }: formatBlock) {
     let _height = height ? new BigNumber(height).add(new BigNumber(1)).toString() : '1';
     let _prevHash = prevHash || Default_Hash;
@@ -32,7 +32,7 @@ export function formatAccountBlock({
         data && (_accountBlock.data = data);
     }
 
-    if (blockType === 2) {
+    if (blockType === 2 || blockType === 1) {
         tokenId && (_accountBlock.tokenId = tokenId);
         toAddress && (_accountBlock.toAddress = toAddress);
         amount && (_accountBlock.amount = amount);
@@ -43,6 +43,7 @@ export function formatAccountBlock({
     }
 
     nonce && (_accountBlock.nonce = nonce);
+    fee && (_accountBlock.fee = fee);
 
     return _accountBlock;
 }

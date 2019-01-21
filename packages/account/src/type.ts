@@ -161,6 +161,7 @@ export declare type syncFormatBlock = {
     toAddress?: Address
     tokenId?: TokenId
     amount?: BigInt,
+    fee?: BigInt,
     nonce?: Base64
 }
 
@@ -173,6 +174,7 @@ export declare type formatBlock = {
     toAddress?: Address,
     tokenId?: TokenId,
     amount?: BigInt,
+    fee?: BigInt,
     prevHash?: Hex,
     height?: Uint64,
     snapshotHash?: Hex,

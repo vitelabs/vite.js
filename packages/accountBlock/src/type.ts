@@ -48,6 +48,7 @@ export declare type formatBlock = {
     toAddress?: Address,
     tokenId?: TokenId,
     amount?: BigInt,
+    fee?: BigInt,
     prevHash?: Hex,
     height?: Uint64,
     snapshotHash?: Hex,

@@ -104,8 +104,10 @@ export type onroadFunc = {
     startAutoReceive: Function
     stopAutoReceive: Function
 }
-export type contractFunc = { 
+export type contractFunc = {     
     getCreateContractToAddress: Function
+    getCreateContractData: Function
+    getCallContractData: Function
 }
 export type pledgeFunc = { 
     getPledgeData: Function
@@ -338,6 +340,7 @@ export declare type syncFormatBlock = {
     height?: Uint64
     fromBlockHash?: Hex
     data?: Base64
+    fee?: BigInt
     message?: string
     toAddress?: Address
     tokenId?: TokenId
@@ -355,9 +358,36 @@ export declare type formatBlock = {
     tokenId?: TokenId,
     amount?: BigInt,
     prevHash?: Hex,
+    fee?: BigInt,
     height?: Uint64,
     snapshotHash?: Hex,
     nonce?: Base64
+}
+
+export declare type createContractBlock = {
+    accountAddress: Address, 
+    hexCode: Hex, 
+    abi: string, 
+    tokenId: TokenId,
+    amount: BigInt,
+    fee: BigInt,
+    params?: string,
+    prevHash?: Hex,
+    height?: Uint64,
+    snapshotHash?: Hex
+}
+
+export declare type callContractBlock = {
+    accountAddress: Address, 
+    toAddress: Address,
+    abi: string, 
+    tokenId: TokenId,
+    amount: BigInt,
+    methodName: string,
+    params?: string,
+    prevHash?: Hex,
+    height?: Uint64,
+    snapshotHash?: Hex
 }
 
 export declare type AddrObj = {

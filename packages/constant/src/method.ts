@@ -27,7 +27,9 @@ export const enum onroad {
     stopAutoReceive = "onroad_stopAutoReceive" 
 }
 export const enum contract { 
-    getCreateContractToAddress = "contract_getCreateContractToAddress" 
+    getCreateContractToAddress = "contract_getCreateContractToAddress" ,
+    getCreateContractData = "contract_getCreateContractData",
+    getCallContractData = "contract_getCallContractData"
 }
 export const enum pledge { 
     getPledgeData = "pledge_getPledgeData", 
@@ -53,8 +55,7 @@ export const enum mintage {
     getMintageCancelPledgeData = "mintage_getMintageCancelPledgeData" 
 }
 export const enum consensusGroup { 
-    getConditionRegisterOfPledge = "consensusGroup_getConditionRegisterOfPledge", 
-    getConditionVoteOfDefault = "consensusGroup_getConditionVoteOfDefault", 
+    getConditionRegisterOfPledge = "consensusGroup_getConditionRegisterOfPledge",
     getConditionVoteOfKeepToken = "consensusGroup_getConditionVoteOfKeepToken", 
     getCreateConsensusGroupData = "consensusGroup_getCreateConsensusGroupData", 
     getCancelConsensusGroupData = "consensusGroup_getCancelConsensusGroupData", 

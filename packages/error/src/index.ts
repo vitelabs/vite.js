@@ -27,3 +27,8 @@ export const addressMissing = {
     code: '200002',
     message: 'Address does not exist'
 }
+
+export const requestTimeout = {
+    code: '300001',
+    message: 'Request timeout'
+}

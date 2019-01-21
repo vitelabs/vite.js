@@ -124,7 +124,7 @@ export function getBlockHash(accountBlock: SignBlock) {
         source += getAddrFromHexAddr(accountBlock.toAddress);
         let amount = new BigNumber(accountBlock.amount);
         source += accountBlock.amount && !amount.isZero() ? bytesToHex(amount.toArray('big')) : '';
-        source += getRawTokenid(accountBlock.tokenId) || '';
+        source += accountBlock.tokenId ? getRawTokenid(accountBlock.tokenId) || '' : '';
     } else {
         source += accountBlock.fromBlockHash || Default_Hash;
     }
