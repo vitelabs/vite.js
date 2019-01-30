@@ -59,7 +59,7 @@ export function isValidHexAddr(hexAddr: Hex): boolean {
         return false;
     }
 
-    let pre = hexAddr.slice(ADDR_PRE.length, ADDR_PRE.length + ADDR_SIZE * 2);
+    let pre = getRealAddr(hexAddr);
     let addr = hexToBytes(pre);
 
     let currentChecksum = hexAddr.slice(ADDR_PRE.length + ADDR_SIZE * 2);
@@ -98,6 +98,6 @@ function newAddrFromPriv(privKey: Buffer): Buffer  {
     return newAddrFromPub(publicKey);
 }
 
-function getAddrCheckSum(addr: string | ArrayBufferView): string {
+function getAddrCheckSum(addr: ArrayBufferView): string {
     return blake.blake2bHex(addr, null, ADDR_CHECK_SUM_SIZE);
 }

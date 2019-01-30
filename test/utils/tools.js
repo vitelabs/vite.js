@@ -1,10 +1,13 @@
 const assert = require('assert');
 
-import { getRawTokenid, validNodeName, validInteger } from 'utils/tools';
+import { getRawTokenid, getTokenIdFromRaw, validNodeName, validInteger } from 'utils/tools';
 
 describe('utils/tools', function () {
     it('getRawTokenid', function () {
         assert.equal('5649544520544f4b454e', getRawTokenid('tti_5649544520544f4b454e6e40'));
+    });
+    it('getTokenIdFromRaw', function () {
+        assert.equal('tti_5649544520544f4b454e6e40', getTokenIdFromRaw('5649544520544f4b454e'));
     });
     it('validNodeName', function () {
         assert.equal(true, validNodeName('2323_sdsd'));

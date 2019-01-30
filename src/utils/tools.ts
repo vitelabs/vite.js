@@ -1,3 +1,4 @@
+const blake = require('blakejs/blake2b');
 import { paramsMissing, paramsFormat } from "const/error";
 
 export function checkParams(params, requiredP:Array<string> = [], validFunc:Array<{ name, func, msg? }> =[]) {
@@ -42,7 +43,7 @@ export function getRawTokenid(tokenId: string) {
     let err = checkParams({ tokenId }, ['tokenId'], [{
         name: 'tokenId',
         func: (_t) => {
-            return tokenId.indexOf('tti_') === 0;
+            return _t.indexOf('tti_') === 0 && _t.length === 28;
         }
     }]);
 
@@ -52,6 +53,22 @@ export function getRawTokenid(tokenId: string) {
     }
 
     return tokenId.slice(4, tokenId.length - 4);
+}
+
+export function getTokenIdFromRaw(rawTokenId: string) {
+    let err = checkParams({ rawTokenId }, ['rawTokenId'], [{
+        name: 'rawTokenId',
+        func: (_t) => {
+            return /^[0-9a-fA-F]+$/.test(_t) && _t.length === 20;
+        }
+    }]);
+    if (err) {
+        console.error(new Error(err.message));
+        return null;
+    }
+
+    let checkSum = blake.blake2bHex(Buffer.from(rawTokenId, 'hex'), null, 2);
+    return `tti_${rawTokenId}${checkSum}`;
 }
 
 export function validNodeName(nodeName) {
