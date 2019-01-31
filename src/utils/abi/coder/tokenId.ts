@@ -4,7 +4,8 @@ import { tokenIdIllegal } from '../error';
 
 export default {
     encode(typeObj, params) {
-        let result = '';
+        let result = '';      
+
         params.forEach((tokenId) => {
             let rawTokenId = getRawTokenid(tokenId);
             if (!rawTokenId) {
@@ -19,6 +20,7 @@ export default {
             _encodeResult.set(bytesToken, offset);
             result += Buffer.from(_encodeResult).toString('hex');
         });
+        
         return result;
     },
     decode() {

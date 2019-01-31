@@ -1,27 +1,28 @@
 const BigNumber = require('bn.js');
-import { numberIllegal, lengthIllegal } from '../error';
+import { lengthIllegal } from '../error';
 
 export default {
     encode(typeObj, params) {
+        const BYTE_LEN = typeObj.byteLength;
         let result = '';
-        params.forEach((numStr) => {
-            const BYTE_LEN = typeObj.byteLength;
 
-            if ( typeof numStr !== 'string' || 
-                 !/^[0-9]+$/.test(numStr)) {
-                throw numberIllegal; 
+        params.forEach((numStr) => {
+            let bytesInt = new BigNumber(numStr).toArray();
+
+            if (typeObj.actualByteLen < bytesInt.length) {
+                throw lengthIllegal;
             }
 
-            let _encodeResult = new Uint8Array(BYTE_LEN);
-            let bytesInt = new BigNumber(numStr).toArray();
             let offset = BYTE_LEN - bytesInt.length;
             if (offset < 0) {
                 throw lengthIllegal;
             }
-
+            
+            let _encodeResult = new Uint8Array(BYTE_LEN);
             _encodeResult.set(bytesInt, offset);
             result += Buffer.from(_encodeResult).toString('hex');
         });
+
         return result;
     },
     decode() {

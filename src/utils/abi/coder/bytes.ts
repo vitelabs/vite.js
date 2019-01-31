@@ -4,10 +4,10 @@ import number from './int';
 
 export default {
     encode(typeObj, params) {
-        let result = '';
-        params.forEach((str) => {
-            const BYTE_LEN = typeObj.byteLength;
+        const BYTE_LEN = typeObj.byteLength;
+        let result = '';        
 
+        params.forEach((str) => {
             if ( typeof str !== 'string' || 
                  !/^0x[0-9a-fA-F]+$/.test(str) ||
                  str.length % 2 !== 0 ) {
@@ -19,30 +19,35 @@ export default {
 
             if (!BYTE_LEN) {
                 const STR_LEN = bytesStr.length;
+                let dataLength = 32 * Math.ceil(bytesStr.length / 32);
+                
                 let bytesLen = number.encode({ 
                     type: 'int', byteLength: 32, isArr: false
-                }, STR_LEN + '');
+                }, [STR_LEN + '']);
+                let bytesDataLen = number.encode({
+                    type: 'int', byteLength: 32, isArr: false
+                }, [dataLength + '']);
 
-                var dataLength = 32 * Math.ceil(bytesStr.length / 32);
-                var padding = new Uint8Array(dataLength - bytesStr.length);
-
-                let len = STR_LEN + dataLength;
+                let len = bytesDataLen.length/2 + bytesLen.length/2 + dataLength;
                 let arr = new Uint8Array(len);
-                arr.set(Buffer.from(bytesLen, 'hex'));
-                arr.set(bytesStr, bytesLen.length);
-                arr.set(padding, bytesLen.length + bytesStr.length);
-                return Buffer.from(arr).toString('hex');
+
+                arr.set(Buffer.from(bytesDataLen, 'hex'));
+                arr.set(Buffer.from(bytesLen, 'hex'), bytesDataLen.length / 2);
+                arr.set(bytesStr, bytesDataLen.length / 2 + bytesLen.length / 2);
+                result += Buffer.from(arr).toString('hex');
+                return;
             }
 
-            let _encodeResult = new Uint8Array(BYTE_LEN);
-            let offset = BYTE_LEN - bytesStr.length;
-            if (offset < 0) {
+            if (typeObj.actualByteLen < bytesStr.length || 
+                BYTE_LEN - bytesStr.length < 0) {
                 throw lengthIllegal;
             }
 
-            _encodeResult.set(bytesStr, offset);
+            let _encodeResult = new Uint8Array(BYTE_LEN);
+            _encodeResult.set(bytesStr);
             result += Buffer.from(_encodeResult).toString('hex');
         });
+
         return result;
     },
     decode() {

@@ -1,9 +1,9 @@
 const BigNumber = require('bn.js');
-import { hexToBytes } from 'utils/encoder';
 
 export default {
     encode(typeObj, params) {
-        let result = '';
+        let result = '';        
+
         params.forEach((_params) => {
             const BYTE_LEN = typeObj.byteLength;
 
@@ -15,6 +15,7 @@ export default {
             _encodeResult.set(bytesBool, offset);
             result += Buffer.from(_encodeResult).toString('hex');
         });
+
         return result;
     },
     decode() {
