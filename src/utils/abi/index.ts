@@ -11,10 +11,22 @@ const isObject = function(obj) {
 };
 
 export default {
-    encodeMethod(jsonMethod, mehtodName) {
+    encodeMethod,
+
+    encodeParameter(type, param) {
+        return _encodeParameter(type, param).result;
+    },
+
+    encodeParameters,
+
+    encodeMethodCall(jsonMethod, params) {
+        return encodeMethod(jsonMethod) + encodeParameters(jsonMethod.inputs, params);
+    },
+
+    encodeLog(jsonMethod, mehtodName?) {
         let _jsonMethod = jsonMethod;
         let isArr = isArray(jsonMethod);
-
+    
         if (isArr && jsonMethod.length !== 1 && !mehtodName ||
             (!isArr && !isObject(jsonMethod))) {
             throw 'error';
@@ -33,46 +45,7 @@ export default {
         }
 
         let result = jsonMethodToString(_jsonMethod);
-        return blake.blake2bHex(Buffer.from(result), null, 32).slice(0, 8);
-    },
-
-    encodeParameter(type, params) {
-        let typeObj = validType(type.toString());
-        if ( !typeObj || 
-             (typeObj && typeObj.isArr && !isArray(params) ||
-             (typeObj && !typeObj.isArr && typeof params !== 'string')) ) {
-            return false;
-        }
-
-        let result = '';
-
-        let _params = [params];
-        if (typeObj.isArr) {
-            _params = params;
-            const ARR_LEN = _params.length;
-
-            let bytesLen = typeObj.isArr ? encode.int({
-                type: 'int', byteLength: 32, isArr: false
-            }, [ARR_LEN]) : '';
-            result += bytesLen;
-        }
-
-        let encodeResult = encode[typeObj.type](typeObj, _params);
-        return result + encodeResult;
-    },
-
-    encodeParameters(types, params) {
-        if (types.length !== params.length) {
-            throw 'error';
-        }
-        let typeArr = [];
-        types.forEach((type) => {
-            typeArr.push(validType(type.toString()));
-        });
-    },
-
-    encodeMethodCall(jsonMethod, params) {
-        return this.encodeMethod(jsonMethod) + this.encodeParameters(jsonMethod.inputs, params);
+        return blake.blake2bHex(Buffer.from(result), null, 32);
     },
 
     decodeParameter(type, params) {
@@ -86,12 +59,152 @@ export default {
         return decode[typeObj.type](typeObj, params);
     },
 
+    decodeParameters() {
+
+    },
+
     decodeLog() {
 
     }
 }
 
+function encodeMethod(jsonMethod, mehtodName?) {
+    let _jsonMethod = jsonMethod;
+    let isArr = isArray(jsonMethod);
 
+    if (isArr && jsonMethod.length !== 1 && !mehtodName ||
+        (!isArr && !isObject(jsonMethod))) {
+        throw 'error';
+    }
+    
+    if (isArr) {
+        if (!mehtodName && jsonMethod.length === 1) {
+            _jsonMethod = jsonMethod[0];
+        } else {
+            for (let i=0; i<jsonMethod.length; i++) {
+                if (jsonMethod[i].name === mehtodName) {
+                    _jsonMethod = jsonMethod[i];
+                }
+            }
+        }
+    }
+
+    let result = jsonMethodToString(_jsonMethod);
+    return blake.blake2bHex(Buffer.from(result), null, 32).slice(0, 8);
+}
+
+function encodeParameters(types, params) {
+    if (!isArray(types) || !isArray(params) || types.length !== params.length) {
+        throw 'error';
+    }
+
+    let _indexResult = [];
+    let dynamicRes = [];
+    let totalLength = 0;
+    
+    types.forEach((type, i) => {
+        let _res = _encodeParameter(type, params[i]);
+
+        if (!_res.isDynamic) {
+            totalLength += _res.result.length;
+            _indexResult.push(_res.result);
+            return
+        }
+
+        totalLength += 64;
+        _indexResult.push(false);
+        let _r = _res.result;
+        if (_res.typeObj.type === 'bytes') {
+            _r = _r.slice(64);
+        }
+        dynamicRes.push(_r);
+    });
+
+    let result = '';
+    let dynamicResult = '';
+    _indexResult.forEach((_r) => {
+        if (_r) {
+            result += _r;
+            return;
+        }
+
+        let len = totalLength + dynamicResult.length;
+        let bytesDataLen = encode.int({
+            type: 'int', byteLength: 32, isArr: false
+        }, [len/2 + '']).result; 
+        result += bytesDataLen;
+        dynamicResult += dynamicRes.shift();
+    });
+
+    return result + dynamicResult;
+}
+
+function _encodeParameter(type, params) {
+    let typeObj = validType(type.toString());
+    if ( !typeObj || 
+         (typeObj && typeObj.isArr && !isArray(params) ||
+         (typeObj && !typeObj.isArr && typeof params !== 'string')) ) {
+        return false;
+    }
+
+    if (!typeObj.isArr) {
+        let _r = encode[typeObj.type](typeObj, [params]);
+        _r.typeObj = typeObj;
+        return _r;
+    }
+
+    let computedArr = (typeObj, arrLen, params) => {
+        if (!params || (arrLen && params.length !== +arrLen)) {
+            throw 'length error';
+        }
+        
+        let result = '';
+        let _res = encode[typeObj.type](typeObj, params);
+        if (!arrLen) {
+            const ARR_LEN = params.length;
+
+            let bytesLen = typeObj.isArr ? encode.int({
+                type: 'int', byteLength: 32, isArr: false
+            }, [ARR_LEN]).result : '';
+            result += bytesLen;
+        }
+        return {
+            isDynamic: _res.isDynamic || !arrLen,
+            result: result + _res.result
+        }
+    }
+
+    let result = '';
+    let lenArr = [];
+    let isDynamic = false;
+
+    let typeArr = type.split('[').slice(1);
+    if (!typeArr) {
+        lenArr.push(0);
+    } else {
+        typeArr.forEach(_tArr => {
+            let _len = _tArr.match(/\d+/g);
+            lenArr.push(_len && _len[0] ? _len[0] : 0);
+        });
+    }
+
+    let loop = (params, _i = 0) => {
+        if (_i === lenArr.length - 1) {
+            let _res = computedArr(typeObj, lenArr[lenArr.length - _i - 1], params);
+            isDynamic = isDynamic || _res.isDynamic;
+            result += _res.result;
+            return;
+        }
+        _i++;
+        isArray(params) && params.forEach((_p) => {
+            loop(_p, _i);
+        });
+    }
+    loop(params);
+    return {
+        typeObj, isDynamic, result
+    };
+}
 
 function jsonMethodToString(jsonMethod) {
     let isObj = isObject(jsonMethod);
@@ -128,7 +241,7 @@ function jsonMethodToString(jsonMethod) {
 */
 function validType(typeStr) {
     const typeSingle = new RegExp(/(^\w+)(\d*)$/g);
-    const typeArray = new RegExp(/(^\w+)\[(\d*)\]$/g);
+    const typeArray = new RegExp(/(^\w+)(\[(\d*)\])+$/g);
     const getNum = new RegExp(/(\d+)/g);
     const typePre = ['uint', 'int', 'address', 'bool', 'bytes', 'string', 'tokenId', 'gid'];
 
@@ -160,14 +273,14 @@ function validType(typeStr) {
     // int uint
     if (type.indexOf('int') >= 0) {
         if (_size && !(_size > 0 && _size <= 256 && _size%8 === 0)) {
-        return false;
+            return false;
         }
         type = 'int';
         byteLength = _size / 8 || 32;
     // bytes
     } else if (type === 'bytes') {
         if (_size && !(_size > 0 && _size <= 32)) {
-        return false;
+            return false;
         }
     // bool
     } else if (type === 'bool') {

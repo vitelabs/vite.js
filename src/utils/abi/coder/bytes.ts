@@ -23,10 +23,10 @@ export default {
                 
                 let bytesLen = number.encode({ 
                     type: 'int', byteLength: 32, isArr: false
-                }, [STR_LEN + '']);
+                }, [STR_LEN + '']).result;
                 let bytesDataLen = number.encode({
                     type: 'int', byteLength: 32, isArr: false
-                }, [dataLength + '']);
+                }, [dataLength + '']).result;
 
                 let len = bytesDataLen.length/2 + bytesLen.length/2 + dataLength;
                 let arr = new Uint8Array(len);
@@ -48,7 +48,10 @@ export default {
             result += Buffer.from(_encodeResult).toString('hex');
         });
 
-        return result;
+        return { 
+            isDynamic: !BYTE_LEN,
+            result
+        };
     },
     decode() {
         

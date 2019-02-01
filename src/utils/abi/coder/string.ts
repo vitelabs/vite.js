@@ -25,9 +25,9 @@ export default {
 
             let bytesLen = number.encode({ 
                 type: 'int', byteLength: 32, isArr: false
-            }, [STR_LEN + '']);
+            }, [STR_LEN + '']).result;
 
-            let len =  + bytesLen.length/2 + dataLength;
+            let len = bytesLen.length/2 + dataLength;
             let arr = new Uint8Array(len);
 
             arr.set(Buffer.from(bytesLen, 'hex'));
@@ -36,7 +36,10 @@ export default {
             return;
         });
 
-        return result;
+        return {
+            isDynamic: true, 
+            result
+        };
     },
     decode() {
         

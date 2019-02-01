@@ -23,7 +23,10 @@ export default {
             result += Buffer.from(_encodeResult).toString('hex');
         });
 
-        return result;
+        return { 
+            isDynamic: false,
+            result
+        };
     },
     decode() {
         
