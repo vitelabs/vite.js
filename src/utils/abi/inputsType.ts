@@ -26,8 +26,6 @@ function formatType(typeStr) {
             byteLength = ADDR_SIZE;
             break;
         case 'gid': 
-            byteLength = 10;
-            break;
         case 'tokenId':
             byteLength = 10;
             break;

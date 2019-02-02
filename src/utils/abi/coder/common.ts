@@ -46,7 +46,7 @@ export function decode(typeObj, params) {
     }
 
     let data = params.substring(Offset * 2);
-    return getRawData(typeObj.type, params);
+    return getRawData(typeObj.type, data);
 }
 
 
