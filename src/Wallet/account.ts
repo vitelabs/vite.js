@@ -23,20 +23,13 @@ class Account {
             return;
         }
 
-        if (!privateKey) {
-            console.error(new Error(`${paramsMissing.message} PrivateKey or keystore.`));
-            return;
-        }
-        
-        if (privateKey) {
-            let {
-                addr, pubKey, privKey, hexAddr
-            } = privToAddr.newHexAddr(privateKey);
-            this.privateKey = privKey;
-            this.publicKey = pubKey;
-            this.address = hexAddr;
-            this.realAddress = addr;
-        }
+        let {
+            addr, pubKey, privKey, hexAddr
+        } = privToAddr.newHexAddr(privateKey);
+        this.privateKey = privKey;
+        this.publicKey = pubKey;
+        this.address = hexAddr;
+        this.realAddress = addr;
 
         this._client = client;
         this._lock = true;

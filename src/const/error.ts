@@ -20,7 +20,7 @@ export const paramsConflict = {
 
 export const addressIllegal = {
     code: '200001',
-    message: 'Illeagl address.'
+    message: 'Illegal address.'
 }
 
 export const addressMissing = {
