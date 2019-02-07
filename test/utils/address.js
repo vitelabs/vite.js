@@ -1,7 +1,7 @@
 const assert = require('assert');
 
 import { privToAddr, hdAddr } from 'utils/address/index.ts';
-const { newHexAddr, isValidHexAddr, getAddrFromHexAddr } = privToAddr;
+const { newHexAddr, isValidHexAddr, getAddrFromHexAddr, getHexAddrFromAddr } = privToAddr;
 
 describe('newHexAddr', function () {
     it('test', function () {
@@ -30,6 +30,11 @@ describe('getAddrFromHexAddr', function () {
     it('test-real', function () {
         let addr = getAddrFromHexAddr('vite_69f3bdb5cdcfa145ae6cc42593a89088ff3dac587eb692d689');
         assert.equal(addr, '69f3bdb5cdcfa145ae6cc42593a89088ff3dac58');
+    });
+
+    it('test-real-hex', function () {
+        let addr = getHexAddrFromAddr('69f3bdb5cdcfa145ae6cc42593a89088ff3dac58');
+        assert.equal(addr, 'vite_69f3bdb5cdcfa145ae6cc42593a89088ff3dac587eb692d689');
     });
 });
 

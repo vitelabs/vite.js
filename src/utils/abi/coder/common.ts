@@ -1,12 +1,18 @@
 // address bool gid number
 
 const BigNumber = require('bn.js');
-import { getAddrFromHexAddr } from 'utils/address/privToAddr';
-import { getRawTokenid } from 'utils/tools';
+
+import { getAddrFromHexAddr, getHexAddrFromAddr } from 'utils/address/privToAddr';
+import { getRawTokenid, getTokenIdFromRaw } from 'utils/tools';
+
+
 
 export function encode(typeObj, params) {
     const Bytes_Data = getBytesData(typeObj.type, params);
+    return encodeBytesData(typeObj, Bytes_Data);
+}
 
+export function encodeBytesData(typeObj, Bytes_Data) {
     const Actual_Byte_Len = typeObj.actualByteLen;
     if (Actual_Byte_Len < Bytes_Data.length) {
         throw 'Illegal length.';
@@ -19,7 +25,7 @@ export function encode(typeObj, params) {
     }
 
     let result = new Uint8Array(Byte_Len);
-    result.set(Bytes_Data, Offset);
+    result.set(Bytes_Data, typeObj.type === 'bytes' ? 0 : Offset);
 
     return {
         result: Buffer.from(result).toString('hex'),
@@ -28,13 +34,15 @@ export function encode(typeObj, params) {
     }
 }
 
-export function decode(typeObj, params) {
+export function decodeToHexData(typeObj, params) {
     if ( typeof params !== 'string' || !/^[0-9a-fA-F]+$/.test(params) ) {
         throw 'Need hex-string.';
     }
 
-    const Data_Len = params.length / 2;
     const Byte_Len = typeObj.byteLength;
+    const _params = params.substring(0, Byte_Len*2);
+    const Data_Len = _params.length / 2;
+
     if (Byte_Len !== Data_Len) {
         throw 'Illegal length.';
     }
@@ -45,23 +53,36 @@ export function decode(typeObj, params) {
         throw 'Illegal length.';
     }
 
-    let data = params.substring(Offset * 2);
-    return getRawData(typeObj.type, data);
+    return {
+        result: typeObj.type === 'bytes' ? _params.substring(0, _params.length - Offset * 2) : _params.substring(Offset * 2),
+        params: params.substring(Data_Len * 2)
+    };
 }
+
+
+export function decode(typeObj, params) {
+    let res = decodeToHexData(typeObj, params);
+
+    return {
+        result: getRawData(typeObj.type, res.result),
+        params: res.params
+    }
+}
+
 
 
 function getRawData(type, params) {
     switch (type) {
         case 'address':
-            return formatAddr(params);
+            return showAddr(params);
         case 'bool':
-            return formatNumber(!!params ? '1' : '0');
+            return showNumber(!!params ? '1' : '0');
         case 'number':
-            return formatNumber(params);
+            return showNumber(params);
         case 'gid':
-            return formatGid(params);
+            return params;
         case 'tokenId':
-            return fomatTokenId(params);
+            return showTokenId(params);
     }
 }
 
@@ -105,4 +126,24 @@ function fomatTokenId(tokenId) {
         throw 'Illegal tokenId.';
     }
     return Buffer.from(rawTokenId, 'hex');
+}
+
+function showAddr(address) {
+    let addr = getHexAddrFromAddr(address);
+    if (!addr) {
+        throw 'Illegal address.';
+    }
+    return addr;
+}
+
+function showNumber(str) {
+    return new BigNumber(str, 16).toString();
+}
+
+function showTokenId(rawTokenId) {
+    let tokenId = getTokenIdFromRaw(rawTokenId);
+    if (!tokenId) {
+        throw 'Illegal tokenId.';
+    }
+    return tokenId;
 }

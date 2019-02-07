@@ -1,10 +1,8 @@
 import { formatType } from '../inputsType';
 import { isArray  } from 'utils/encoder';
 
-import { encode as commonEncode } from './common';
-
-import stringCoder from './string';
-import bytesCoder from './bytes';
+import { encode as commonEncode, decode as commonDecode } from './common';
+import { encode as dynamicEncode, decode as dynamicDecode } from './dynamic';
 
 const encode = {
     address: commonEncode,
@@ -12,19 +10,19 @@ const encode = {
     tokenId: commonEncode,
     number: commonEncode,
     bool: commonEncode,
-    string: stringCoder.encode,
-    bytes: bytesCoder.encode,
+    string: dynamicEncode,
+    bytes: dynamicEncode,
 }
 
-// const decode = {
-//     address: addressCoder.decode,
-//     gid: gidCoder.decode,
-//     tokenId: tokenIdCoder.decode,
-//     string: stringCoder.decode,
-//     bytes: bytesCoder.decode,
-//     number: numberCoder.decode,
-//     bool: boolCoder.decode
-// }
+const decode = {
+    address: commonDecode,
+    gid: commonDecode,
+    tokenId: commonDecode,
+    number: commonDecode,
+    bool: commonDecode,
+    string: dynamicDecode,
+    bytes: dynamicDecode
+}
 
 export function encodeParameter(typeStr, params) {
     let typeObj = formatType(typeStr);
@@ -86,6 +84,15 @@ export function encodeParameters(types, params) {
     return result + dynamicResult;
 }
 
+export function decodeParameter(typeStr, params) {
+    let typeObj = formatType(typeStr);
+    if (!typeObj.isArr) {
+        return decode[typeObj.type](typeObj, params).result;
+    }
+    return decodeArrs(typeStr, params, typeObj);
+}
+
+
 
 
 function encodeArr(typeObj, arrLen, params) {
@@ -145,4 +152,65 @@ function encodeArrs(typeStr, params, typeObj) {
     return {
         typeObj, isDynamic, result
     };
+}
+
+function decodeArr(typeObj, arrLen, params) {
+    let isDynamic = !arrLen;
+    let _param = params;
+
+    if (isDynamic) {
+        let len = params.substring(0, 64);
+        arrLen = decode.number({
+            type: 'number', byteLength: 32, isArr: false
+        }, len).result;
+        _param = params.substring(64);
+    }
+
+    let result = [];
+    for(let i=0; i<arrLen; i++) {
+        let res = decode[typeObj.type](typeObj, _param);
+        result.push(res.result);
+        _param = res.params;
+    }
+
+    return {
+        result, params: _param
+    };
+}
+
+function decodeArrs(typeStr, params, typeObj) {
+    let typeArr = typeStr.split('[').slice(1);
+
+    let lenArr = [];
+    typeArr.forEach(_tArr => {
+        let _len = _tArr.match(/\d+/g);
+        lenArr.push(_len && _len[0] ? _len[0] : 0);
+    });
+
+    let loop = (i = 0, result?) => {
+        if ((lenArr.length <= 1 && i === lenArr.length) ||
+            (lenArr.length > 1 && i === lenArr.length - 1)) {
+            return result;
+        }
+
+        let l  = lenArr[i];
+        let _r = [];
+
+        if (!result) {
+            while (params) {
+                let _res = decodeArr(typeObj, l, params);
+                params = _res.params;
+                _r.push(_res.result);
+            }
+            _r = _r.length > 1 ? _r : _r[0]
+        } else {
+            while (result && result.length) {
+                _r.push(result.splice(0, l));
+            }
+        }
+
+        i++;
+        return loop(i, _r);
+    }
+    return loop();
 }

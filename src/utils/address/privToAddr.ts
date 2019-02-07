@@ -41,7 +41,7 @@ export function newHexAddrFromPub(pubkey: Hex | Buffer): string {
     return ADDR_PRE + _addr + checkSum;
 }
 
-export function getAddrFromHexAddr(hexAddr: Hex): string {
+export function getAddrFromHexAddr(hexAddr: Hex): Hex {
     let err = checkParams({ hexAddr }, ['hexAddr'], [{
         name: 'hexAddr',
         func: isValidHexAddr
@@ -52,6 +52,22 @@ export function getAddrFromHexAddr(hexAddr: Hex): string {
     }
 
     return getRealAddr(hexAddr);
+}
+
+export function getHexAddrFromAddr(realAddr: Hex): string {
+    let err = checkParams({ realAddr }, ['realAddr'], [{
+        name: 'realAddr',
+        func: (_realAddr) => {
+            return typeof _realAddr === 'string' && /^[0-9a-fA-F]+$/.test(_realAddr) && _realAddr.length === ADDR_SIZE * 2
+        }
+    }]);
+    if (err) {
+        console.error(new Error(err.message));
+        return null;
+    }
+
+    let checkSum = getAddrCheckSum( Buffer.from(realAddr, 'hex') );
+    return ADDR_PRE + realAddr + checkSum;
 }
 
 export function isValidHexAddr(hexAddr: Hex): boolean {

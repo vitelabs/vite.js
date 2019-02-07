@@ -1,5 +1,5 @@
 import encodeFunction from './encodeFunction'
-import { encodeParameter, encodeParameters } from './coder/index'
+import { encodeParameter, encodeParameters, decodeParameter } from './coder/index'
 
 export default {
     encodeFunctionSignature,
@@ -10,16 +10,9 @@ export default {
         return encodeParameter(type, param).result;
     },
     encodeParameters,
-    // decodeParameter(type, params) {
-    //     let typeObj = validType(type.toString());
-    //     if ( !typeObj ||
-    //          typeof params !== 'string' ||
-    //          !/^[0-9a-fA-F]+$/.test(params) ||
-    //          (typeObj.byteLength && params.length % (typeObj.byteLength*2) !== 0) ) {
-    //         return false;
-    //     }
-    //     return decode[typeObj.type](typeObj, params);
-    // },
+    decodeParameter(type, params) {
+        return decodeParameter(type, params);
+    },
 
     // decodeParameters() {
 
