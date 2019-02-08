@@ -3,9 +3,8 @@ import { encode as commonEncode, encodeBytesData, decode as commonDecode, decode
 
 export function encode(typeObj, params) {
     const Bytes_Data = getBytesData(typeObj.type, params);
-    const Is_Dynamic = !typeObj.byteLength;
 
-    if (!Is_Dynamic) {
+    if (typeObj.byteLength) {
         return encodeBytesData(typeObj, Bytes_Data);
     }
 
@@ -17,18 +16,13 @@ export function encode(typeObj, params) {
         }, dataLength).result + result
     }
 
-    return {
-        result,
-        isDynamic: true,
-        typeObj
-    }
+    return { result, typeObj }
 }
 
 export function decode(typeObj, params) {
-    const Is_Dynamic = !typeObj.byteLength;
     const Type = typeObj.type;
 
-    if (!Is_Dynamic) {
+    if (typeObj.byteLength) {
         let decodeRes = decodeToHexData(typeObj, params);
         return {
             result: getRawData(typeObj.type, decodeRes.result),

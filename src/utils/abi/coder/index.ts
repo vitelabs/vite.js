@@ -35,7 +35,7 @@ export function encodeParameter(typeStr, params) {
         return encode[typeObj.type](typeObj, params);
     }
 
-    return encodeArrs(typeStr, params, typeObj);
+    return encodeArrs(typeObj, params);
 }
 
 export function encodeParameters(types, params) {
@@ -50,7 +50,7 @@ export function encodeParameters(types, params) {
     types.forEach((type, i) => {
         let _res = encodeParameter(type, params[i]);
 
-        if (!_res.isDynamic) {
+        if (!_res.typeObj.isDynamic) {
             totalLength += _res.result.length;
             tempResult.push(_res.result);
             return;
@@ -89,9 +89,72 @@ export function decodeParameter(typeStr, params) {
     if (!typeObj.isArr) {
         return decode[typeObj.type](typeObj, params).result;
     }
-    return decodeArrs(typeStr, params, typeObj);
+    return decodeArrs(typeObj, params);
 }
 
+export function decodeParameters(types, params) {
+    if (!isArray(types)) {
+        throw 'Illegal types and params.';
+    }
+
+    let _params = params;
+    let resArr = [];
+    let indexArr = [];
+
+    types.forEach((type) => {
+        let typeObj = formatType(type);
+
+        if (!typeObj.isDynamic) {
+            let _res = decode[typeObj.type](typeObj, _params);
+            _params = _res.params;
+            resArr.push({
+                isDynamic: false,
+                result: _res.result
+            });
+            return;
+        }
+
+        let _res = decode.number({
+            type: 'number', byteLength: 32, isArr: false
+        }, _params);
+        let index = _res.result;
+        _params = _res.params;
+        indexArr.push(index * 2);
+        resArr.push({
+            isDynamic: true,
+            typeObj, 
+            index: index * 2
+        });
+    });
+
+    let result = [];
+    let currentInx = 0;
+    resArr.forEach((_res, i) => {
+        if (!_res.isDynamic) {
+            result.push(_res.result);
+            return;
+        }
+
+        let _p;
+        if ((currentInx + 1) !== indexArr.length) {
+            _p = params.slice(_res.index, indexArr[currentInx+1]);
+        } else {
+            _p = params.slice(_res.index);
+        }
+
+        if (_res.typeObj.type === 'bytes' && !_res.typeObj.isArr) {
+            let len = 32 * Math.ceil(_p.length / 2 / 32);
+            _p = encode.number({
+                type: 'number', byteLength: 32
+            }, len).result + _p;
+        }
+        currentInx++;
+
+        result.push( decodeParameter(types[i], _p) );
+    });
+
+    return result;
+}
 
 
 
@@ -101,11 +164,8 @@ function encodeArr(typeObj, arrLen, params) {
     }
     
     let result = '';
-    let isDynamic = false;
-
     params.forEach((_param) => {
         let res = encode[typeObj.type](typeObj, _param);
-        isDynamic = isDynamic || res.isDynamic;
         result += res.result;
     });
 
@@ -114,32 +174,16 @@ function encodeArr(typeObj, arrLen, params) {
             type: 'number', byteLength: 32, isArr: false
         }, params.length).result;
 
-    return {
-        isDynamic: isDynamic || !arrLen,
-        result: bytesArrLen + result
-    }
+    return bytesArrLen + result;
 }
 
-function encodeArrs(typeStr, params, typeObj) {
+function encodeArrs(typeObj, params) {
     let result = '';
-    let lenArr = [];
-    let isDynamic = false;
-
-    let typeArr = typeStr.split('[').slice(1);
-    if (typeArr.length > 1) {
-        console.warn(`Not support [][][] like ${typeStr}, now.`);
-    }
-
-    typeArr.forEach(_tArr => {
-        let _len = _tArr.match(/\d+/g);
-        lenArr.push(_len && _len[0] ? _len[0] : 0);
-    });
+    let lenArr = typeObj.arrLen;
 
     let loop = (params, i = 0) => {
         if (i === lenArr.length - 1) {
-            let _res = encodeArr(typeObj, lenArr[lenArr.length - i - 1], params);
-            isDynamic = isDynamic || _res.isDynamic;
-            result += _res.result;
+            result += encodeArr(typeObj, lenArr[lenArr.length - i - 1], params);
             return;
         }
         i++;
@@ -150,15 +194,13 @@ function encodeArrs(typeStr, params, typeObj) {
 
     loop(params);
     return {
-        typeObj, isDynamic, result
+        typeObj, result
     };
 }
 
 function decodeArr(typeObj, arrLen, params) {
-    let isDynamic = !arrLen;
     let _param = params;
-
-    if (isDynamic) {
+    if (typeObj.isDynamic) {
         let len = params.substring(0, 64);
         arrLen = decode.number({
             type: 'number', byteLength: 32, isArr: false
@@ -178,14 +220,8 @@ function decodeArr(typeObj, arrLen, params) {
     };
 }
 
-function decodeArrs(typeStr, params, typeObj) {
-    let typeArr = typeStr.split('[').slice(1);
-
-    let lenArr = [];
-    typeArr.forEach(_tArr => {
-        let _len = _tArr.match(/\d+/g);
-        lenArr.push(_len && _len[0] ? _len[0] : 0);
-    });
+function decodeArrs(typeObj, params) {
+    let lenArr = typeObj.arrLen;
 
     let loop = (i = 0, result?) => {
         if ((lenArr.length <= 1 && i === lenArr.length) ||

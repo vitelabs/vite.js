@@ -29,7 +29,6 @@ export function encodeBytesData(typeObj, Bytes_Data) {
 
     return {
         result: Buffer.from(result).toString('hex'),
-        isDynamic: false,
         typeObj
     }
 }

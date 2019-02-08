@@ -6,15 +6,22 @@ const typePre = ['uint', 'int', 'address', 'bool', 'bytes', 'string', 'tokenId',
 function formatType(typeStr) {
     let { isArr, type, size } = validType(typeStr);
 
-    let _len;
+    let arrLen = [];
+    let isDynamic = type === 'string';
     if (isArr) {
-        let _typeStrArr = typeStr.split('[');
-        _len = _typeStrArr[1].match(getNum);
+        let _typeStrArr = typeStr.split('[').slice(1);
+        if (_typeStrArr.length > 1) {
+            console.warn(`Not support [][][] like ${typeStr}, now.`);
+        }
+        _typeStrArr.forEach(_tArr => {
+            let _len = _tArr.match(/\d+/g);
+            let len = _len && _len[0] ? _len[0] : 0;
+            isDynamic = isDynamic || !len;
+            arrLen.push(len);
+        });
     }
 
-    let arrLen = _len && _len[0] ? _len[0] : null;
-    let byteLength = size || 0;
-    
+    let byteLength = size || 0;    
     switch (type) {
         case 'number': 
             byteLength = size / 8 || 32;
@@ -36,7 +43,8 @@ function formatType(typeStr) {
         byteLength: Math.ceil(byteLength / 32) * 32, 
         actualByteLen: byteLength,
         isArr, 
-        len: arrLen
+        arrLen,
+        isDynamic: isDynamic || (type === 'bytes' && !byteLength)
     };
 }
 

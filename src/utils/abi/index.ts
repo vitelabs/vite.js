@@ -1,5 +1,5 @@
 import encodeFunction from './encodeFunction'
-import { encodeParameter, encodeParameters, decodeParameter } from './coder/index'
+import { encodeParameter, encodeParameters, decodeParameter, decodeParameters } from './coder/index'
 
 export default {
     encodeFunctionSignature,
@@ -13,10 +13,7 @@ export default {
     decodeParameter(type, params) {
         return decodeParameter(type, params);
     },
-
-    // decodeParameters() {
-
-    // },
+    decodeParameters
 
     // decodeLog() {
 
