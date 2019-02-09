@@ -410,4 +410,64 @@ describe('utils/tools', function () {
         let encodeLogSignatureResult2 = abi.encodeLogSignature({'type':'event','name':'check','inputs':[{'name':'t','type':'address'},{'name':'b','type':'uint256'}]});
         assert.equal('17c53855485cba60b5dea781a996394bb9d3b44bc8932b3adf79ac70e908b220', encodeLogSignatureResult2);        
     });
+
+    it('decodeLog', function() {
+        let decodeResult1 = abi.decodeLog([
+            {type:'string',name:'myString'},
+            {type:'uint256',name:'myNumber',indexed: true},
+            {type: 'uint8',name: 'mySmallNumber',indexed: true}
+        ], 
+        '0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000748656c6c6f252100000000000000000000000000000000000000000000000000',
+        ['000000000000000000000000000000000000000000000000000000000000f310', '0000000000000000000000000000000000000000000000000000000000000010']);
+        assert.deepEqual({
+            '0': 'Hello%!',
+            '1': '62224',
+            '2': '16',
+            myString: 'Hello%!',
+            myNumber: '62224',
+            mySmallNumber: '16'
+        }, decodeResult1);
+
+        let decodeResult2 = abi.decodeLog([{'indexed':true,'name':'from','type':'address'},{'indexed':true,'name':'to','type':'address'},{'indexed':false,'name':'value','type':'uint256'}],
+            '00000000000000000000000000000000000000000000000000000000000f4240',
+            ['0000000000000000000000000100000000000000000000000000000000000000', '0000000000000000000000000200000000000000000000000000000000000000']);
+        assert.deepEqual({
+            '0': 'vite_010000000000000000000000000000000000000063bef3da00',
+            '1': 'vite_0200000000000000000000000000000000000000e4194eedc2',
+            '2': '1000000',
+            from: 'vite_010000000000000000000000000000000000000063bef3da00',
+            to: 'vite_0200000000000000000000000000000000000000e4194eedc2',
+            value: '1000000'
+        }, decodeResult2);
+
+        let decodeResult3 = abi.decodeLog([
+            {'indexed':false,'name':'who','type':'address'},
+            {'indexed':false,'name':'wad','type':'uint128'},
+            {'indexed':false,'name':'currency','type':'bytes3'}],
+        '00000000000000000000000000ce0d46d924cc8437c806721496599fc3ffa2680000000000000000000000000000000000000000000000000000020489e800007573640000000000000000000000000000000000000000000000000000000000',
+        []);
+        assert.deepEqual({
+            '0': 'vite_00ce0d46d924cc8437c806721496599fc3ffa2683f65ed606e',
+            '1': '2218516807680',
+            '2': '757364',
+            who: 'vite_00ce0d46d924cc8437c806721496599fc3ffa2683f65ed606e',
+            wad: '2218516807680',
+            currency: '757364'
+        }, decodeResult3);
+    });
+
+    it('encodeFunctionCall', function() {
+        let result = abi.encodeFunctionCall({
+            name: 'myMethod',
+            type: 'function',
+            inputs: [{
+                type: 'uint256',
+                name: 'myNumber'
+            },{
+                type: 'string',
+                name: 'myString'
+            }]
+        }, ['2345675643', 'Hello!%']);
+        assert.equal('96173f6c000000000000000000000000000000000000000000000000000000008bd02b7b0000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000000748656c6c6f212500000000000000000000000000000000000000000000000000', result);
+    });
 });
