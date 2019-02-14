@@ -5,6 +5,7 @@ import { RPCresponse, SBPregBlock, block8, block7, revokeVotingBlock, quotaBlock
 import { checkParams, validNodeName } from "utils/tools";
 import { formatAccountBlock, validReqAccountBlock } from "utils/builtin";
 import { getAccountBlock as _getAccountBlock, getSendTxBlock, getReceiveTxBlock } from 'utils/accountBlock';
+import {encodeFunctionCall} from "utils/abi"
 
 import client from '.';
 
@@ -339,19 +340,19 @@ export default class tx {
     }
 
     async callContract({
-        accountAddress, toAddress, tokenId, amount, abi, methodName, params, height, prevHash, snapshotHash
+        accountAddress, toAddress, tokenId, amount, jsonInterface, params=[], height, prevHash, snapshotHash
     }: callContractBlock, requestType = 'async') {
-        let err = checkParams({ toAddress, abi, methodName, tokenId, amount }, ['toAddress', 'abi', 'methodName', 'tokenId', 'amount']);
+        let err = checkParams({ toAddress, jsonInterface, tokenId, amount }, ['toAddress', 'jsonInterface','tokenId', 'amount']);
         if (err) {
             return Promise.reject(err);
         }
 
-        const result:RPCresponse = await this._client.contract.getCallContractData(abi, methodName, params);
+        // const result:RPCresponse = await this._client.contract.getCallContractData(abi, methodName, params);
         return this[`${requestType}AccountBlock`]({
             blockType: 2,
             accountAddress,
             toAddress,
-            data: result,
+            data: encodeFunctionCall(jsonInterface,params),
             height, prevHash, snapshotHash, tokenId, amount
         });
     }

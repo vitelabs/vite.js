@@ -18,7 +18,7 @@
         "rpc": "node test/bin/startRPC",
         "lint": "eslint ./ --cache",
         "lint-all": "eslint ./",
-        "prerelease-alpha": "npm run build && npm version prerelease",
+        "prepublish-alpha": "npm run build && npm version prerelease",
         "publish-alpha": "npm publish --access-public --tag alpha",
         "publish": "npm dist-tag add @vite/vitejs@alpha latest"
     },

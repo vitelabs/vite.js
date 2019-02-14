@@ -230,11 +230,10 @@ export declare type createContractBlock = {
 export declare type callContractBlock = {
     accountAddress: Address, 
     toAddress: Address,
-    abi: string, 
+    jsonInterface: object, 
     tokenId: TokenId,
     amount: BigInt,
-    methodName: string,
-    params?: string,
+    params?: [],
     prevHash?: Hex,
     height?: Uint64,
     snapshotHash?: Hex
