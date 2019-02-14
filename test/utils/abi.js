@@ -1,6 +1,6 @@
 const assert = require('assert');
 
-import abi from 'utils/abi/index';
+import * as abi from 'utils/abi/index';
 
 describe('utils/tools', function () {
     it('encodeParameter', function () {

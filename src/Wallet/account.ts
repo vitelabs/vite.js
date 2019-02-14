@@ -292,11 +292,11 @@ class Account {
     }
 
     async callContract({
-        toAddress, abi, methodName, params, tokenId, amount
+        toAddress, jsonInterface, params, tokenId, amount
     }) {
         const _callContractBlock = await this._client.buildinTxBlock.callContract({
             accountAddress: this.address, 
-            toAddress, abi, methodName, params, tokenId, amount
+            toAddress, jsonInterface, params, tokenId, amount
         });
         return this._client.buildinLedger.sendRawTx(_callContractBlock, this.privateKey);
     }

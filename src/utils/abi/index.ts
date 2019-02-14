@@ -1,35 +1,33 @@
-import { isArray  } from 'utils/encoder';
+import { isArray } from 'utils/encoder';
 import encodeFunction from './encodeFunction';
-import { encodeParameter, encodeParameters, decodeParameter, decodeParameters } from './coder/index';
+import { encodeParameter as _encodeParameter, encodeParameters as _encodeParameters, decodeParameter as _decodeParameter, decodeParameters as _decodeParameters } from './coder';
 
-export default {
-    encodeFunctionSignature,
-    encodeLogSignature(jsonFunction, mehtodName?) {
-        return encodeFunction(jsonFunction, mehtodName);
-    },
-    encodeParameter(type, param) {
-        return encodeParameter(type, param).result;
-    },
-    encodeParameters,
-    encodeFunctionCall(jsonInterface, params) {
-        let inputs = jsonInterface.inputs;
-        let types = [];
-        inputs.forEach(({ type }) => {
-            types.push(type);
-        });
-        return encodeFunctionSignature(jsonInterface) + encodeParameters(types, params)
-    },
-    decodeParameter,
-    decodeParameters,
-    decodeLog
+
+export function encodeLogSignature(jsonFunction, mehtodName?) {
+    return encodeFunction(jsonFunction, mehtodName);
+}
+export function encodeParameter(type, param) {
+    return _encodeParameter(type, param).result;
+}
+export const encodeParameters = _encodeParameters
+export const decodeParameter = _decodeParameter
+export const decodeParameters = _decodeParameters
+export function encodeFunctionCall(jsonInterface, params) {
+    let inputs = jsonInterface.inputs;
+    let types = [];
+    inputs.forEach(({ type }) => {
+        types.push(type);
+    });
+    return encodeFunctionSignature(jsonInterface) + encodeParameters(types, params)
 }
 
-function encodeFunctionSignature(jsonFunction, mehtodName?) {
+
+export function encodeFunctionSignature(jsonFunction, mehtodName?) {
     let result = encodeFunction(jsonFunction, mehtodName);
     return result.slice(0, 8);
 }
 
-function decodeLog(inputs, data = '', topics) {
+export function decodeLog(inputs, data = '', topics) {
     let topicCount = 0;
     topics = isArray(topics) ? topics : [topics];
 
@@ -52,7 +50,7 @@ function decodeLog(inputs, data = '', topics) {
 
     let returnValues = {};
     let notIndexedCount = 0;
-    
+
     indexedParams.forEach(({ indexed, name, result }, i) => {
         if (!indexed) {
             result = notIndexedParams[notIndexedCount];
