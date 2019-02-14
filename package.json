@@ -1,6 +1,6 @@
 {
     "name": "@vite/vitejs",
-    "version": "1.1.4",
+    "version": "1.1.5-2",
     "description": "",
     "main": "dist/vitejs/index.node.js",
     "browser": "dist/vitejs/index.web.js",
@@ -19,8 +19,8 @@
         "lint": "eslint ./ --cache",
         "lint-all": "eslint ./",
         "prepublish-alpha": "npm run build && npm version prerelease",
-        "publish-alpha": "npm publish --access-public --tag alpha",
-        "publish": "npm dist-tag add @vite/vitejs@alpha latest"
+        "pub-alpha": "npm publish --access-public --tag alpha",
+        "pub": "npm dist-tag add @vite/vitejs@alpha latest"
     },
     "repository": {
         "type": "git",
