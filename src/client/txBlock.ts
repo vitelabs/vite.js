@@ -352,7 +352,7 @@ export default class tx {
             blockType: 2,
             accountAddress,
             toAddress,
-            data: encodeFunctionCall(jsonInterface,params),
+            data: Buffer.from(encodeFunctionCall(jsonInterface,params),"hex").toString("base64"),
             height, prevHash, snapshotHash, tokenId, amount
         });
     }
