@@ -364,6 +364,26 @@ export default class tx {
             height, prevHash, snapshotHash, tokenId, amount
         });
     }
+
+    async mintage() {
+
+    }
+
+    async mintageIssue() {
+
+    }
+
+    async mintageBurn() {
+        
+    }
+
+    async changeTokenType() {
+
+    }
+
+    async changeTransferOwner() {
+        
+    }
 }
 
 
