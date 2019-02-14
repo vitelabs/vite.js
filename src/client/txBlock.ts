@@ -334,9 +334,6 @@ export default class tx {
         let toAddress = await this._client.contract.getCreateContractToAddress(accountAddress, block.height, block.prevHash, block.snapshotHash);
         block.toAddress = toAddress;
 
-        let _data = await this._client.contract.getCreateContractData(Delegate_Gid, hexCode, abi, params);
-        console.log(_data)
-
         let jsonInterface = getConstructor(abi);
         let data = Delegate_Gid + '01' + hexCode;
         if (jsonInterface) {
@@ -348,7 +345,6 @@ export default class tx {
         }
 
         block.data = Buffer.from(data, 'hex').toString('base64');
-        console.log(data);
         return block;
     }
 
@@ -360,7 +356,6 @@ export default class tx {
             return Promise.reject(err);
         }
 
-        // const result:RPCresponse = await this._client.contract.getCallContractData(abi, methodName, params);
         return this[`${requestType}AccountBlock`]({
             blockType: 2,
             accountAddress,
