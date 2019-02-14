@@ -5,7 +5,8 @@ import { RPCresponse, SBPregBlock, block8, block7, revokeVotingBlock, quotaBlock
 import { checkParams, validNodeName } from "utils/tools";
 import { formatAccountBlock, validReqAccountBlock } from "utils/builtin";
 import { getAccountBlock as _getAccountBlock, getSendTxBlock, getReceiveTxBlock } from 'utils/accountBlock';
-import {encodeFunctionCall} from "utils/abi"
+import { encodeFunctionCall, encodeParameters } from "utils/abi";
+import { isArray } from 'utils/encoder';
 
 import client from '.';
 
@@ -333,9 +334,21 @@ export default class tx {
         let toAddress = await this._client.contract.getCreateContractToAddress(accountAddress, block.height, block.prevHash, block.snapshotHash);
         block.toAddress = toAddress;
 
-        let data = await this._client.contract.getCreateContractData(Delegate_Gid, hexCode, abi, params);
-        block.data = data;
+        let _data = await this._client.contract.getCreateContractData(Delegate_Gid, hexCode, abi, params);
+        console.log(_data)
 
+        let jsonInterface = getConstructor(abi);
+        let data = Delegate_Gid + '01' + hexCode;
+        if (jsonInterface) {
+            let inputs = jsonInterface.inputs;
+            let types = [];
+            inputs.forEach(({ type }) => {
+                types.push(type);
+            });
+        }
+
+        block.data = Buffer.from(data, 'hex').toString('base64');
+        console.log(data);
         return block;
     }
 
@@ -352,7 +365,7 @@ export default class tx {
             blockType: 2,
             accountAddress,
             toAddress,
-            data: encodeFunctionCall(jsonInterface,params),
+            data: encodeFunctionCall(jsonInterface, params),
             height, prevHash, snapshotHash, tokenId, amount
         });
     }
@@ -362,4 +375,18 @@ export default class tx {
 
 function validReqType(type) {
     return type === 'async' || type == 'sync';
+}
+
+function getConstructor(jsonInterfaces) {
+    if ( !isArray(jsonInterfaces) ) {
+        if (jsonInterfaces.type === 'constructor') {
+            return jsonInterfaces;
+        }
+    }
+
+    for (let i=0; i<jsonInterfaces.length; i++) {
+        if (jsonInterfaces[i].type === 'constructor') {
+            return jsonInterfaces[i];
+        }
+    }
 }
