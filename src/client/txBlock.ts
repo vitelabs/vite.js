@@ -366,7 +366,7 @@ export default class tx {
     }
 
     async mintage({
-        accountAddress, tokenName, totalSupply, decimals, tokenSymbol, height, prevHash, snapshotHash
+        accountAddress, tokenName, isReIssuable, maxSupply, ownerBurnOnly, totalSupply, decimals, tokenSymbol, height, prevHash, snapshotHash
     }, requestType = 'async') {
 
     }
