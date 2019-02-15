@@ -365,24 +365,34 @@ export default class tx {
         });
     }
 
-    async mintage() {
+    async mintage({
+        accountAddress, tokenName, totalSupply, decimals, tokenSymbol, height, prevHash, snapshotHash
+    }, requestType = 'async') {
 
     }
 
-    async mintageIssue() {
+    async mintageIssue({
+        accountAddress, tokenId, amount, beneficial, height, prevHash, snapshotHash
+    }, requestType = 'async') {
 
     }
 
-    async mintageBurn() {
+    async mintageBurn({
+        accountAddress, height, prevHash, snapshotHash
+    }, requestType = 'async') {
         
     }
 
-    async changeTokenType() {
+    async changeTokenType({
+        accountAddress, tokenId, height, prevHash, snapshotHash
+    }, requestType = 'async') {
 
     }
 
-    async changeTransferOwner() {
-        
+    async changeTransferOwner({
+        accountAddress, ownerAddress, tokenId, height, prevHash, snapshotHash
+    }, requestType = 'async') {
+
     }
 }
 
