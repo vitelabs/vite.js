@@ -351,7 +351,7 @@ export default class tx {
     async callContract({
         accountAddress, toAddress, tokenId, amount, jsonInterface, params=[], height, prevHash, snapshotHash
     }: callContractBlock, requestType = 'async') {
-        let err = checkParams({ toAddress, jsonInterface }, ['toAddress', 'jsonInterface','tokenId', 'amount']);
+        let err = checkParams({ toAddress, jsonInterface }, ['toAddress', 'jsonInterface']);
         if (err) {
             return Promise.reject(err);
         }
