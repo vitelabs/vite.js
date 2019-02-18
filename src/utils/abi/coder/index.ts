@@ -28,7 +28,7 @@ export function encodeParameter(typeStr, params) {
     let typeObj = formatType(typeStr);
     if (typeObj.isArr && !isArray(params) ||
         (!typeObj.isArr && typeof params !== 'string')) {
-        throw 'Illegal format params.';
+        throw `Illegal types or params. type: ${typeObj.type}, params: ${params}`;
     }
 
     if (!typeObj.isArr) {
@@ -40,7 +40,7 @@ export function encodeParameter(typeStr, params) {
 
 export function encodeParameters(types, params) {
     if (!isArray(types) || !isArray(params) || types.length !== params.length) {
-        throw 'Illegal types and params.';
+        throw 'Illegal types or params. Is array? Length?';
     }
 
     let tempResult = [];
