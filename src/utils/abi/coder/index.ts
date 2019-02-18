@@ -27,7 +27,7 @@ const decode = {
 export function encodeParameter(typeStr, params) {
     let typeObj = formatType(typeStr);
     if (typeObj.isArr && !isArray(params) ||
-        (!typeObj.isArr && typeof params !== 'string')) {
+        (!typeObj.isArr && ['string', 'boolean', 'number'].indexOf(typeof params) === -1)) {
         throw `Illegal types or params. type: ${typeObj.type}, params: ${params}`;
     }
 
