@@ -318,7 +318,7 @@ export default class tx {
     }
 
     async createContract({
-        accountAddress, tokenId, amount, fee, hexCode, abi, params, height, prevHash, snapshotHash
+        accountAddress, tokenId, amount, fee, hexCode, abi, height, prevHash, snapshotHash
     }: createContractBlock, requestType = 'async') {
         let err = checkParams({ hexCode, abi, tokenId, amount, fee}, ['hexCode', 'abi', 'tokenId', 'amount', 'fee']);
         if (err) {
@@ -351,7 +351,7 @@ export default class tx {
     async callContract({
         accountAddress, toAddress, tokenId, amount, jsonInterface, params=[], height, prevHash, snapshotHash
     }: callContractBlock, requestType = 'async') {
-        let err = checkParams({ toAddress, jsonInterface, tokenId, amount }, ['toAddress', 'jsonInterface','tokenId', 'amount']);
+        let err = checkParams({ toAddress, jsonInterface }, ['toAddress', 'jsonInterface','tokenId', 'amount']);
         if (err) {
             return Promise.reject(err);
         }
