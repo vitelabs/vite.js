@@ -149,16 +149,15 @@ export function getBlockHash(accountBlock: SignBlock) {
 
 export function signAccountBlock(accountBlock: SignBlock, privKey: string) {
     let hashHex = getBlockHash(accountBlock);
-
     let _privKey = Buffer.from(privKey, 'hex');
     let pubKey = getPublicKey(_privKey);
     let signature = sign(hashHex, _privKey);
 
-    let _accountBlock: AccountBlock = Object.assign({
+    let _accountBlock: AccountBlock = Object.assign({}, accountBlock, {
         hash: hashHex, 
         signature: Buffer.from(signature, 'hex').toString('base64'),
         publicKey: Buffer.from(pubKey).toString('base64')
-    }, accountBlock);
+    });
 
     return _accountBlock;
 }
