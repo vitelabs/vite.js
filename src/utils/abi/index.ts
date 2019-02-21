@@ -1,5 +1,5 @@
 import { isArray } from 'utils/encoder';
-import encodeFunction from './encodeFunction';
+import { encodeFunction, getFunction } from './encodeFunction';
 import { encodeParameter as _encodeParameter, encodeParameters as _encodeParameters, decodeParameter as _decodeParameter, decodeParameters as _decodeParameters } from './coder';
 
 
@@ -12,13 +12,18 @@ export function encodeParameter(type, param) {
 export const encodeParameters = _encodeParameters
 export const decodeParameter = _decodeParameter
 export const decodeParameters = _decodeParameters
-export function encodeFunctionCall(jsonInterface, params) {
-    let inputs = jsonInterface.inputs;
+export function encodeFunctionCall(jsonInterface, params, methodName?) {
+    if (!methodName && isArray(jsonInterface)) {
+        throw 'No methodName, jsonInterface should be jsonObject.'
+    }
+
+    let func = getFunction(jsonInterface, methodName);
+    let inputs = func.inputs;
     let types = [];
     inputs.forEach(({ type }) => {
         types.push(type);
     });
-    return encodeFunctionSignature(jsonInterface) + encodeParameters(types, params)
+    return encodeFunctionSignature(func) + encodeParameters(types, params)
 }
 
 

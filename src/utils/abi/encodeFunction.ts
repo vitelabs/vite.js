@@ -1,7 +1,7 @@
 import { isArray, isObject, blake2bHex  } from 'utils/encoder';
 import { validType  } from './inputsType';
 
-function encodeFunction(jsonFunction, mehtodName?) {
+export function encodeFunction(jsonFunction, mehtodName?) {
     let isArr = isArray(jsonFunction);
     let _jsonFunction = isArr ? getFunction(jsonFunction, mehtodName) : jsonFunction;
     let result = jsonFunctionToString(_jsonFunction);
@@ -32,7 +32,11 @@ function jsonFunctionToString(jsonFunction) {
     return jsonFunction.name + '(' + types.join(',') + ')';
 }
 
-function getFunction(jsonFunction, mehtodName?) {
+export function getFunction(jsonFunction, mehtodName?) {
+    if (!isArray(jsonFunction) && isObject(jsonFunction)) {
+        return jsonFunction;
+    }
+
     if (jsonFunction.length !== 1 && !mehtodName) {
         throw '[Error] Param(s) missing, methodName.';
     }
@@ -47,5 +51,3 @@ function getFunction(jsonFunction, mehtodName?) {
         }
     }
 }
-
-export default encodeFunction;

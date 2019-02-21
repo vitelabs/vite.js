@@ -5,7 +5,7 @@ import { RPCresponse, SBPregBlock, block8, block7, revokeVotingBlock, quotaBlock
 import { checkParams, validNodeName } from "utils/tools";
 import { formatAccountBlock, validReqAccountBlock } from "utils/builtin";
 import { getAccountBlock as _getAccountBlock, getSendTxBlock, getReceiveTxBlock } from 'utils/accountBlock';
-import { encodeFunctionCall } from "utils/abi";
+import { encodeFunctionCall, encodeParameters } from "utils/abi";
 import { isArray } from 'utils/encoder';
 
 import client from '.';
@@ -318,7 +318,7 @@ export default class tx {
     }
 
     async createContract({
-        accountAddress, tokenId, amount, fee, hexCode, abi, height, prevHash, snapshotHash
+        accountAddress, tokenId, amount, fee, hexCode, abi, params, height, prevHash, snapshotHash
     }: createContractBlock, requestType = 'async') {
         let err = checkParams({ hexCode, abi, tokenId, amount, fee}, ['hexCode', 'abi', 'tokenId', 'amount', 'fee']);
         if (err) {
@@ -342,6 +342,7 @@ export default class tx {
             inputs.forEach(({ type }) => {
                 types.push(type);
             });
+            data += encodeParameters(types, params);
         }
 
         block.data = Buffer.from(data, 'hex').toString('base64');
@@ -349,14 +350,14 @@ export default class tx {
     }
 
     async callContract({
-        accountAddress, toAddress, tokenId, amount, jsonInterface, params=[], height, prevHash, snapshotHash
+        accountAddress, toAddress, tokenId, amount, abi, methodName, params=[], height, prevHash, snapshotHash
     }: callContractBlock, requestType = 'async') {
-        let err = checkParams({ toAddress, jsonInterface, tokenId }, ['toAddress', 'jsonInterface', 'tokenId']);
+        let err = checkParams({ toAddress, abi, tokenId }, ['toAddress', 'abi', 'tokenId']);
         if (err) {
             return Promise.reject(err);
         }
 
-        let data = encodeFunctionCall(jsonInterface, params);
+        let data = encodeFunctionCall(abi, params, methodName);
         return this[`${requestType}AccountBlock`]({
             blockType: 2,
             accountAddress,

@@ -107,8 +107,7 @@ export default class ledger {
         let _accountBlock = signAccountBlock(accountBlock, privateKey);
 
         try {
-            let _result = await this._client.tx.sendRawTx(_accountBlock);
-            return _result;
+            return await this._client.tx.sendRawTx(_accountBlock);
         } catch(err) {
             let _err = err;
             _err.accountBlock = _accountBlock;
