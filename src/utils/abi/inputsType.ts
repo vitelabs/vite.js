@@ -51,7 +51,7 @@ function formatType(typeStr) {
 
 function validType(typeStr) {
     if (typeof typeStr !== 'string') {
-        throw '[Error] Illegal type. Should be type-string, like \'uint32\'.'
+        throw `[Error] Illegal type ${JSON.stringify(typeStr)}. Should be type-string, like \'uint32\'.`
     }
 
     let isArr = /^\w+(\[\d*\])+$/g.test(typeStr);

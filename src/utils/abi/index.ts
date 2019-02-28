@@ -11,8 +11,7 @@ export function encodeFunctionSignature(jsonFunction, mehtodName?) {
     return result.slice(0, 8);
 }
 export function encodeFunctionCall(jsonInterface, params, methodName?) {
-    let func = getFunction(jsonInterface, methodName);
-    return encodeFunctionSignature(func) + encodeParameters(getTypes(func), params)
+    return encodeFunctionSignature(jsonInterface, methodName) + encodeParameters(jsonInterface, params, methodName)
 }
 
 export function encodeParameter(type, param) {
@@ -20,21 +19,31 @@ export function encodeParameter(type, param) {
 }
 export const decodeParameter = _decodeParameter;
 
-export function encodeParameters(types, params) {
+export function encodeParameters(types, params, mehtodName?) {
+    try {
+        let func = getFunction(types, mehtodName);
+        types = getTypes(func);
+    } catch(err) {}
+
     return _encodeParameters(getTypes(types), params);
 }
-export function decodeParameters(types, params) {
+export function decodeParameters(types, params, mehtodName?) {
+    try {
+        let func = getFunction(types, mehtodName);
+        types = getTypes(func);
+    } catch(err) {}
+
     return _decodeParameters(getTypes(types), params);
 } 
 
-export function decodeLog(inputs, data = '', topics) {
+export function decodeLog(inputs, data = '', topics, mehtodName?) {
     let topicCount = 0;
     topics = isArray(topics) ? topics : [topics];
 
     const notIndexedInputsShow = [];
     const indexedParams = [];
 
-    inputs = getInputs(inputs);
+    inputs = getInputs(inputs, mehtodName);
     inputs.forEach((input, i) => {
         indexedParams[i] = input;
 
@@ -69,9 +78,14 @@ export function decodeLog(inputs, data = '', topics) {
 
 
 
-function getInputs(inputs) {
+function getInputs(inputs, mehtodName?) {
+    try {
+        let func = getFunction(inputs, mehtodName);
+        func && (inputs = func)
+    } catch(err) {}
+
     if (!isArray(inputs) && !isObject(inputs)) {
-        throw '[Error] decodeLog: Illegal inputs ${inputes}. Should be Array or JsonInterface.';
+        throw `[Error] decodeLog: Illegal inputs ${JSON.stringify(inputs)}. Should be Array or JsonInterface.`;
     }
 
     inputs = isArray(inputs) ? inputs : inputs.inputs;
