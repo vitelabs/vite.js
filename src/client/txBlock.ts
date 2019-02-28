@@ -353,7 +353,7 @@ export default class tx {
     }
 
     async mintage({
-        accountAddress, tokenName, isReIssuable, maxSupply, ownerBurnOnly, totalSupply, decimals, tokenSymbol, height, prevHash, snapshotHash
+        accountAddress, amount, tokenName, isReIssuable, maxSupply, ownerBurnOnly, totalSupply, decimals, tokenSymbol, height, prevHash, snapshotHash
     }, requestType = 'async') {
         let err = checkParams({ tokenName, isReIssuable, maxSupply, ownerBurnOnly, totalSupply, decimals, tokenSymbol, requestType }, 
             ['tokenName', 'isReIssuable', 'maxSupply', 'ownerBurnOnly', 'totalSupply', 'decimals', 'tokenSymbol'], 
@@ -365,7 +365,7 @@ export default class tx {
             return Promise.reject(err);
         }
 
-        const fee = '1e19';
+        const fee = '1e21'; // || amount = '100000Vite'
         let block = requestType === 'async' ? await this.asyncAccountBlock({
             blockType: 1, toAddress: Mintage_Addr, accountAddress, height, prevHash, snapshotHash, fee
         }) : _getAccountBlock({
