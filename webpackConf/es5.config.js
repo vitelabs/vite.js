@@ -19,14 +19,16 @@ module.exports = {
     entry: {
         client: path.resolve(baseDir, 'client/index.ts'),
         const: path.resolve(baseDir, 'const/index.ts'),
-        provider: path.resolve(baseDir, 'provider/index.ts'),
-        WSprovider: path.resolve(baseDir, 'provider/WS.js'),
-        HTTPprovider: path.resolve(baseDir, 'provider/HTTP.js'),
-        IPCprovider: path.resolve(baseDir, 'provider/IPC.js'),
+        providers: path.resolve(baseDir, 'provider/index.ts'),
+        WS: path.resolve(baseDir, 'provider/WS.js'),
+        HTTP: path.resolve(baseDir, 'provider/HTTP.js'),
+        IPC: path.resolve(baseDir, 'provider/IPC.js'),
         utils: path.resolve(baseDir, 'utils/index.ts'),
         wallet: path.resolve(baseDir, 'wallet/index.ts'),
     },
     output: {
+        libraryTarget: 'umd',
+        umdNamedDefine: true,
         filename:'[name].js',
         path: path.join(__dirname, '../dist/es5'),
     },
@@ -39,10 +41,7 @@ module.exports = {
                     reuseExistingChunk: true
                 }
             }
-        },
-        // minimizer: [new TerserPlugin({
-        //     test: /\.j|ts(\?.*)?$/i
-        // })]
+        }
     },
     module: {
         rules: [{

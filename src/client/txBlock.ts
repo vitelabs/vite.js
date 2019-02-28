@@ -185,6 +185,8 @@ export default class tx {
             return Promise.reject(err);
         }
 
+        console.log(await this._client.register.getRegisterData(Snapshot_Gid, nodeName, toAddress)) 
+
         return this.callContract({
             accountAddress,
             abi: Register_Abi,
@@ -209,6 +211,8 @@ export default class tx {
         if (err) {
             return Promise.reject(err);
         }
+
+        console.log(await this._client.register.getUpdateRegistrationData(Snapshot_Gid, nodeName, toAddress)) 
 
         return this.callContract({
             accountAddress,
@@ -235,6 +239,8 @@ export default class tx {
             return Promise.reject(err);
         }
 
+        console.log(await this._client.register.getCancelRegisterData(Snapshot_Gid, nodeName)); 
+
         return this.callContract({
             accountAddress,
             abi: CancelRegister_Abi,
@@ -259,6 +265,9 @@ export default class tx {
         if (err) {
             return Promise.reject(err);
         }
+
+        console.log(await this._client.register.getRewardData(Snapshot_Gid, nodeName, toAddress)); 
+
 
         return this.callContract({
             accountAddress,
@@ -329,7 +338,7 @@ export default class tx {
             abi: Pledge_Abi,
             toAddress: Quota_Addr, 
             params: [toAddress],
-            accountAddress, tokenId, height, prevHash, snapshotHash
+            accountAddress, tokenId, height, prevHash, snapshotHash, amount
         }, requestType);
     }
     
