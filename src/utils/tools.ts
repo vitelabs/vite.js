@@ -1,5 +1,18 @@
 const blake = require('blakejs/blake2b');
 import { paramsMissing, paramsFormat } from "const/error";
+import {stringify} from 'qs';
+
+export function uriStringify(o:{schema:String,prefix:String,target_address:String,chain_id:Number,function_name:String,params:Object}) {
+    const {schema,prefix,target_address,chain_id,function_name,params}=o;
+    const _schema=schema?`${schema}:`:'vite:';
+    const _prefix=prefix===undefined?'':`${prefix}-`;
+    const _target_address=target_address||'';
+    const _chain_id=chain_id?`@${chain_id}`:'';
+    const _function_name=function_name?`/${function_name}`:'';
+    const _params=params?`?${stringify(params,{encode:false})}`:'';
+    const str=`${_schema}${_prefix}${_target_address}${_chain_id}${_function_name}${_params}`;
+    return str;
+}
 
 export function checkParams(params, requiredP:Array<string> = [], validFunc:Array<{ name, func, msg? }> =[]) {
     if (!params) {
