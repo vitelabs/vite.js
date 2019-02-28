@@ -4,7 +4,7 @@ import { Vite_TokenId, Snapshot_Gid,
     Register_Abi, UpdateRegistration_Abi, CancelRegister_Abi, 
     Reward_Abi, Vote_Abi, CancelVote_Abi, Pledge_Abi, CancelPledge_Abi,
     Mint_Abi, Issue_Abi, Burn_Abi, ChangeTokenType_Abi, TransferOwner_Abi } from "const/contract";
-import { RPCresponse, SBPregBlock, block8, block7, revokeVotingBlock, quotaBlock, sendTxBlock, receiveTxBlock, formatBlock, createContractBlock, callContractBlock } from "const/type";
+import { SBPregBlock, block8, block7, revokeVotingBlock, quotaBlock, sendTxBlock, receiveTxBlock, formatBlock, createContractBlock, callContractBlock } from "const/type";
 
 import { checkParams, validNodeName } from "utils/tools";
 import { formatAccountBlock, validReqAccountBlock, getCreateContractData } from "utils/builtin";
@@ -12,6 +12,7 @@ import { getAccountBlock as _getAccountBlock, getSendTxBlock, getReceiveTxBlock 
 import { encodeFunctionCall } from "utils/abi";
 
 import client from '.';
+import { type } from "os";
 
 export default class tx {
     _client: client
@@ -353,28 +354,32 @@ export default class tx {
     }
 
     async mintage({
-        accountAddress, amount, tokenName, isReIssuable, maxSupply, ownerBurnOnly, totalSupply, decimals, tokenSymbol, height, prevHash, snapshotHash
+        accountAddress, spendType = 'fee', tokenName, isReIssuable, maxSupply, ownerBurnOnly, totalSupply, decimals, tokenSymbol, height, prevHash, snapshotHash
     }, requestType = 'async') {
-        let err = checkParams({ tokenName, isReIssuable, maxSupply, ownerBurnOnly, totalSupply, decimals, tokenSymbol, requestType }, 
+        let err = checkParams({ tokenName, isReIssuable, maxSupply, ownerBurnOnly, totalSupply, decimals, tokenSymbol, requestType, spendType}, 
             ['tokenName', 'isReIssuable', 'maxSupply', 'ownerBurnOnly', 'totalSupply', 'decimals', 'tokenSymbol'], 
-            [{
-                name: 'requestType',
-                func: validReqType
-            }]);
+            [{ name: 'requestType', func: validReqType },
+             { name: 'spendType', func: (type) => {
+                return type === 'amount' || type === 'fee'
+             }}
+            ]);
         if (err) {
             return Promise.reject(err);
         }
 
-        const fee = '1e21'; // || amount = '100000Vite'
-        let block = requestType === 'async' ? await this.asyncAccountBlock({
-            blockType: 1, toAddress: Mintage_Addr, accountAddress, height, prevHash, snapshotHash, fee
-        }) : _getAccountBlock({
-            blockType: 1, toAddress: Mintage_Addr, accountAddress, height, prevHash, snapshotHash, fee
-        });
+        const spendAmount = '10000000000000000000000';
+        const spendFee = '1e21';
+
+        let requestBlock = {
+            blockType: 2, toAddress: Mintage_Addr, accountAddress, height, prevHash, snapshotHash
+        }
+        requestBlock[spendType] = spendType === 'fee' ? spendFee : spendAmount;
+        let block = requestType === 'async' ? await this.asyncAccountBlock(requestBlock) : _getAccountBlock(requestBlock);
 
         let tokenId = await this._client.mintage.newTokenId(accountAddress, block.height, block.prevHash, block.snapshotHash);
         let data = encodeFunctionCall(Mint_Abi, [isReIssuable, tokenId, tokenName, tokenSymbol, totalSupply, decimals, maxSupply, ownerBurnOnly]);
         block.data = data;
+        
         return block;
     }
 

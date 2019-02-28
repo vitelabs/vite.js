@@ -1,7 +1,7 @@
 const BigNumber = require('bn.js');
 
 import { SignBlock, formatBlock } from 'const/type';
-import { Default_Hash, Delegate_Gid } from 'const/contract';
+import { Vite_TokenId, Default_Hash, Delegate_Gid } from 'const/contract';
 import { paramsMissing, paramsConflict } from "const/error";
 import { isValidHexAddr } from 'utils/address/privToAddr';
 import { checkParams, validInteger } from "utils/tools";
@@ -9,7 +9,7 @@ import { encodeParameters } from "utils/abi";
 import { isArray } from 'utils/encoder';
 
 export function formatAccountBlock({
-    blockType, fromBlockHash, accountAddress, message, data, height, prevHash, snapshotHash, tokenId, fee, toAddress, amount, nonce
+    blockType, fromBlockHash, accountAddress, message, data, height, prevHash, snapshotHash, tokenId = Vite_TokenId, fee, toAddress, amount, nonce
 }: formatBlock) {
     let _height = height ? new BigNumber(height).add(new BigNumber(1)).toString() : '1';
     let _prevHash = prevHash || Default_Hash;
