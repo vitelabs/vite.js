@@ -13,7 +13,7 @@
         "build": "rm -rf ./dist && npm run build:browser && npm run build:node && npm run build:provider",
         "test:rpc": "cross-env NODE_ENV=test nyc mocha --compilers ts:ts-node/register -r tsconfig-paths/register test/RPC/index.js --no-timeouts",
         "test:w": "cross-env NODE_ENV=testWatch mocha --compilers ts:ts-node/register -r tsconfig-paths/register test/index.js --require @babel/register -w --no-timeouts",
-        "test": "cross-env NODE_ENV=test nyc mocha --compilers ts:ts-node/register -r tsconfig-paths/register test/index.js  --no-timeouts",
+        "test": "cross-env NODE_ENV=test nyc mocha ts:ts-node/register -r tsconfig-paths/register test/index.js --no-timeouts",
         "coverage": "nyc report --reporter=text-lcov | coveralls",
         "rpc": "node test/bin/startRPC",
         "lint": "eslint ./ --cache",
@@ -96,13 +96,24 @@
     },
     "nyc": {
         "require": [
+            "ts-node/register",
             "@babel/register"
+        ],        
+        "extension": [
+            ".js",
+            ".ts"
+        ],
+        "include": [
+            "src"
+        ],
+        "exclude": [
+            "*.d.ts"
         ],
         "reporter": [
             "html",
             "text"
         ],
         "sourceMap": false,
-        "instrument": false
+        "instrument": true
     }
 }

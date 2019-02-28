@@ -12,7 +12,6 @@ import { getAccountBlock as _getAccountBlock, getSendTxBlock, getReceiveTxBlock 
 import { encodeFunctionCall } from "utils/abi";
 
 import client from '.';
-import { type } from "os";
 
 export default class tx {
     _client: client
@@ -379,8 +378,14 @@ export default class tx {
         let tokenId = await this._client.mintage.newTokenId(accountAddress, block.height, block.prevHash, block.snapshotHash);
         let data = encodeFunctionCall(Mint_Abi, [isReIssuable, tokenId, tokenName, tokenSymbol, totalSupply, decimals, maxSupply, ownerBurnOnly]);
         block.data = data;
-        
+
         return block;
+    }
+
+    async mintageCancel({
+
+    }) {
+        return null;
     }
 
     async mintageIssue({
