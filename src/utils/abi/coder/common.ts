@@ -15,13 +15,13 @@ export function encode(typeObj, params) {
 export function encodeBytesData(typeObj, Bytes_Data) {
     const Actual_Byte_Len = typeObj.actualByteLen;
     if (Actual_Byte_Len < Bytes_Data.length) {
-        throw 'Illegal length.';
+        throw lengthError(typeObj, Bytes_Data.length);
     }
 
     const Byte_Len = typeObj.byteLength;
     const Offset = Byte_Len - Bytes_Data.length;
     if (Offset < 0) {
-        throw 'Illegal length.';
+        throw lengthError(typeObj, Bytes_Data.length);
     }
 
     let result = new Uint8Array(Byte_Len);
@@ -35,7 +35,7 @@ export function encodeBytesData(typeObj, Bytes_Data) {
 
 export function decodeToHexData(typeObj, params) {
     if ( typeof params !== 'string' || !/^[0-9a-fA-F]+$/.test(params) ) {
-        throw 'Need hex-string.';
+        throw '[Error] decode, params should be hex-string.';
     }
 
     const Byte_Len = typeObj.byteLength;
@@ -43,13 +43,13 @@ export function decodeToHexData(typeObj, params) {
     const Data_Len = _params.length / 2;
 
     if (Byte_Len !== Data_Len) {
-        throw 'Illegal length.';
+        throw lengthError(typeObj, Data_Len);
     }
 
     const Actual_Byte_Len = typeObj.actualByteLen;
     const Offset = Byte_Len - Actual_Byte_Len;
     if (Data_Len < Offset) {
-        throw 'Illegal length.';
+        throw lengthError(typeObj, Actual_Byte_Len);
     }
 
     return {
@@ -103,14 +103,14 @@ function getBytesData(type, params) {
 function formatAddr(address) {
     let addr = getAddrFromHexAddr(address);
     if (!addr) {
-        throw 'Illegal address.';
+        throw `[Error] Illegal address. ${address}`;
     }
     return Buffer.from(addr, 'hex');
 }
 
 function formatGid(gid) {
     if (!gid || !/^[0-9a-fA-F]+$/.test(gid) || gid.length !== 20 ) {
-        throw 'Illegal gid.';
+        throw `[Error] Illegal gid. ${gid}`;
     }
     return Buffer.from(gid, 'hex');
 }
@@ -122,7 +122,7 @@ function formatNumber(params) {
 function fomatTokenId(tokenId) {
     let rawTokenId = getRawTokenid(tokenId);
     if (!rawTokenId) {
-        throw 'Illegal tokenId.';
+        throw `[Error] Illegal tokenId. ${tokenId}`;
     }
     return Buffer.from(rawTokenId, 'hex');
 }
@@ -130,7 +130,7 @@ function fomatTokenId(tokenId) {
 function showAddr(address) {
     let addr = getHexAddrFromAddr(address);
     if (!addr) {
-        throw 'Illegal address.';
+        throw `[Error] Illegal address. ${address}`;
     }
     return addr;
 }
@@ -142,7 +142,12 @@ function showNumber(str) {
 function showTokenId(rawTokenId) {
     let tokenId = getTokenIdFromRaw(rawTokenId);
     if (!tokenId) {
-        throw 'Illegal tokenId.';
+        throw `[Error] Illegal tokenId. ${rawTokenId}`;
     }
     return tokenId;
+}
+
+
+function lengthError(typeObj, length) {
+    return `[Error] Illegal length. ${JSON.stringify(typeObj)}, data length: ${length}`;
 }

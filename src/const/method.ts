@@ -55,7 +55,8 @@ export const enum mintage {
     getMintageCancelPledgeData = "mintage_getMintageCancelPledgeData",
     getTokenInfoList = "mintage_getTokenInfoList",
     getTokenInfoById = "mintage_getTokenInfoById",
-    getTokenInfoListByOwner = "mintage_getTokenInfoListByOwner"
+    getTokenInfoListByOwner = "mintage_getTokenInfoListByOwner",
+    newTokenId = 'mintage_newTokenId'
 }
 export const enum consensusGroup { 
     getConditionRegisterOfPledge = "consensusGroup_getConditionRegisterOfPledge",
@@ -135,7 +136,8 @@ export type mintageFunc = {
     getMintageCancelPledgeData: Function
     getTokenInfoList: Function,
     getTokenInfoById: Function,
-    getTokenInfoListByOwner: Function
+    getTokenInfoListByOwner: Function,
+    newTokenId: Function
 }
 export type consensusGroupFunc = { 
     getConditionRegisterOfPledge: Function

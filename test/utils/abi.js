@@ -1,8 +1,7 @@
 const assert = require('assert');
 
 import * as abi from 'utils/abi/index';
-import { Delegate_Gid } from 'const/contract';
-import { isArray } from 'utils/encoder';
+import { getCreateContractData } from 'utils/builtin';
 
 describe('utils/tools', function () {
     it('encodeParameter', function () {
@@ -342,7 +341,9 @@ describe('utils/tools', function () {
     });
 
     it('encodeParameters', function() {
-        let encodeParametersResult1 = abi.encodeParameters(['uint8[]','bytes'], [['34','43'], '0x324567ff']);
+        let encodeParametersResult1 = abi.encodeParameters({'type':'constructor','inputs':[
+            {'type':'uint8[]'}, {'type': 'bytes'}
+        ]}, [['34','43'], '324567ff']);
         assert.equal('000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000022000000000000000000000000000000000000000000000000000000000000002b0000000000000000000000000000000000000000000000000000000000000004324567ff00000000000000000000000000000000000000000000000000000000', encodeParametersResult1);
 
         let encodeParametersResult2 = abi.encodeParameters(['address','uint8[]'], ['vite_010000000000000000000000000000000000000063bef3da00', [1,2]]);
@@ -362,7 +363,9 @@ describe('utils/tools', function () {
     });
 
     it('decodeParameters', function() {
-        let encodeParametersResult1 = abi.decodeParameters(['uint8[]','bytes'], '000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000022000000000000000000000000000000000000000000000000000000000000002b0000000000000000000000000000000000000000000000000000000000000004324567ff00000000000000000000000000000000000000000000000000000000');
+        let encodeParametersResult1 = abi.decodeParameters({'type':'constructor','inputs':[
+            {'type':'uint8[]'}, {'type': 'bytes'}
+        ]}, '000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000022000000000000000000000000000000000000000000000000000000000000002b0000000000000000000000000000000000000000000000000000000000000004324567ff00000000000000000000000000000000000000000000000000000000');
         assert.deepEqual([['34','43'], '324567ff'], encodeParametersResult1);
 
         let encodeParametersResult2 = abi.decodeParameters(['address','uint8[]'], '00000000000000000000000001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000002');
@@ -414,11 +417,11 @@ describe('utils/tools', function () {
     });
 
     it('decodeLog', function() {
-        let decodeResult1 = abi.decodeLog([
+        let decodeResult1 = abi.decodeLog({'type':'constructor','inputs':[
             {type:'string',name:'myString'},
             {type:'uint256',name:'myNumber',indexed: true},
             {type: 'uint8',name: 'mySmallNumber',indexed: true}
-        ], 
+        ]}, 
         '0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000748656c6c6f252100000000000000000000000000000000000000000000000000',
         ['000000000000000000000000000000000000000000000000000000000000f310', '0000000000000000000000000000000000000000000000000000000000000010']);
         assert.deepEqual({
@@ -501,19 +504,10 @@ describe('utils/tools', function () {
         let hexCode = '60806040526040516020806101628339810180604052602081101561002357600080fd5b81019080805190602001909291905050508073ffffffffffffffffffffffffffffffffffffffff164669ffffffffffffffffffff163460405160405180820390838587f1505050505060e88061007a6000396000f3fe608060405260043610603f576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff168063c5896333146041575b005b608060048036036020811015605557600080fd5b81019080803573ffffffffffffffffffffffffffffffffffffffff1690602001909291905050506082565b005b8073ffffffffffffffffffffffffffffffffffffffff164669ffffffffffffffffffff163460405160405180820390838587f1505050505056fea165627a7a72305820542e4d5867963dc6c5e6f1a1414861c5f38ccba0a5fb62649070bca2fda34cbe';
         let params = ['vite_0000000000000000000000000000000000000000a4f3a0cb58'];
         
-        let jsonInterface = getConstructor([
-            {'type':'constructor','inputs':[{'type':'address'}]}
-        ]);
-        let _data = Delegate_Gid + '01' + hexCode;
-        if (jsonInterface) {
-            let inputs = jsonInterface.inputs;
-            let types = [];
-            inputs.forEach(({ type }) => {
-                types.push(type);
-            });
-            _data += abi.encodeParameters(types, params);
-        }
-        _data = Buffer.from(_data, 'hex').toString('base64');
+        let _data = getCreateContractData({
+            abi: [{'type':'constructor','inputs':[{'type':'address'}]}],
+            hexCode, params
+        });
     
         assert.equal(data, _data);
     });
@@ -522,16 +516,3 @@ describe('utils/tools', function () {
 
 
 
-function getConstructor(jsonInterfaces) {
-    if ( !isArray(jsonInterfaces) ) {
-        if (jsonInterfaces.type === 'constructor') {
-            return jsonInterfaces;
-        }
-    }
-
-    for (let i=0; i<jsonInterfaces.length; i++) {
-        if (jsonInterfaces[i].type === 'constructor') {
-            return jsonInterfaces[i];
-        }
-    }
-}

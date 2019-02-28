@@ -1,4 +1,5 @@
 import { ADDR_SIZE } from 'utils/address/vars';
+import { isArray, isObject } from 'utils/encoder';
 
 const getNum = new RegExp(/(\d+)/g);
 const typePre = ['uint', 'int', 'address', 'bool', 'bytes', 'string', 'tokenId', 'gid'];
@@ -50,19 +51,19 @@ function formatType(typeStr) {
 
 function validType(typeStr) {
     if (typeof typeStr !== 'string') {
-        throw 'Need type-string, like \'uint32\'.'
+        throw '[Error] Illegal type. Should be type-string, like \'uint32\'.'
     }
 
     let isArr = /^\w+(\[\d*\])+$/g.test(typeStr);
     let isSingle = /^\w+\d*$/g.test(typeStr);
     if (!isArr && !isSingle) {
-        throw 'Illegal type-string';
+        throw `[Error] Illegal type. ${typeStr}`;
     }
 
     let _type = typeStr.match(/^[a-zA-Z]+/g);
     let type = _type && _type[0] ? _type[0] : '';
     if (!type || typePre.indexOf(type) === -1) {
-        throw 'Illegal type';
+        throw `[Error] Illegal type. ${typeStr}`;
     }
 
     // int uint ==> int
@@ -79,12 +80,12 @@ function validType(typeStr) {
 
     // bytes
     if (type === 'bytes' && size && !(size > 0 && size <= 32)) {
-        throw 'Binary type of M bytes, 0 < M <= 32. Or dynamic sized byte sequence.';
+        throw `[Error] Illegal type. ${typeStr}: Binary type of M bytes, 0 < M <= 32. Or dynamic sized byte sequence.`;
     }
 
     // int
     if (type === 'number' && size && !(size > 0 && size <= 256 && size%8 === 0)) {
-        throw 'Unsigned integer type of M bits, 0 < M <= 256, M % 8 == 0. e.g. uint32, uint8, uint256.'
+        throw `[Error] Illegal type. ${typeStr}: Unsigned integer type of M bits, 0 < M <= 256, M % 8 == 0. e.g. uint32, uint8, uint256.`
     }
 
     return {
@@ -92,6 +93,23 @@ function validType(typeStr) {
     };
 }
 
+function getTypes(jsonInterface) {
+    if ( isArray(jsonInterface) ) {
+        return jsonInterface;
+    }
+
+    if ( !isObject(jsonInterface) ) {
+        throw `[Error] Illegal types: ${jsonInterface}. Should be Array<string> or JsonInterface.`;
+    }
+
+    let types = [];
+    jsonInterface.inputs && jsonInterface.inputs.forEach(function(param) {
+        validType(param.type);
+        types.push(param.type);
+    });
+    return types;
+}
+
 export {
-    validType, formatType
+    validType, formatType, getTypes
 }

@@ -111,7 +111,6 @@ export declare type SBPregBlock = {
     tokenId: TokenId,
     amount: BigInt,
 
-    Gid?: string,
     prevHash?: Hex,
     height?: Uint64,
     snapshotHash?: Hex
@@ -123,7 +122,6 @@ export declare type block8 = {
     toAddress: Address,
     tokenId: TokenId,
 
-    Gid?: string,
     prevHash?: Hex,
     height?: Uint64,
     snapshotHash?: Hex
@@ -134,7 +132,6 @@ export declare type block7 = {
     nodeName: string,
     tokenId: TokenId,
 
-    Gid?: string,
     prevHash?: Hex,
     height?: Uint64,
     snapshotHash?: Hex
@@ -144,7 +141,6 @@ export declare type revokeVotingBlock = {
     accountAddress: Address,
     tokenId: TokenId,
 
-    Gid?: string,
     prevHash?: Hex,
     height?: Uint64,
     snapshotHash?: Hex
@@ -232,9 +228,9 @@ export declare type callContractBlock = {
     toAddress: Address,
     abi: object, 
     methodName?: string,
-    tokenId: TokenId,
-    amount: BigInt,
-    params?: [],
+    tokenId?: TokenId,
+    amount?: BigInt,
+    params?: Array<string>,
     prevHash?: Hex,
     height?: Uint64,
     snapshotHash?: Hex

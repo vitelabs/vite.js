@@ -1,10 +1,12 @@
 const BigNumber = require('bn.js');
 
 import { SignBlock, formatBlock } from 'const/type';
-import { Default_Hash } from 'const/contract';
+import { Default_Hash, Delegate_Gid } from 'const/contract';
 import { paramsMissing, paramsConflict } from "const/error";
 import { isValidHexAddr } from 'utils/address/privToAddr';
 import { checkParams, validInteger } from "utils/tools";
+import { encodeParameters } from "utils/abi";
+import { isArray } from 'utils/encoder';
 
 export function formatAccountBlock({
     blockType, fromBlockHash, accountAddress, message, data, height, prevHash, snapshotHash, tokenId, fee, toAddress, amount, nonce
@@ -87,4 +89,32 @@ export function validReqAccountBlock({
     }
 
     return null;
+}
+
+export function getCreateContractData({
+    abi, hexCode, params
+}) {
+    let jsonInterface = getConstructor(abi);
+    let data = Delegate_Gid + '01' + hexCode;
+    if (jsonInterface) {
+        data += encodeParameters(jsonInterface, params);
+    }
+    return Buffer.from(data, 'hex').toString('base64');
+}
+
+
+
+
+function getConstructor(jsonInterfaces) {
+    if ( !isArray(jsonInterfaces) ) {
+        if (jsonInterfaces.type === 'constructor') {
+            return jsonInterfaces;
+        }
+    }
+
+    for (let i=0; i<jsonInterfaces.length; i++) {
+        if (jsonInterfaces[i].type === 'constructor') {
+            return jsonInterfaces[i];
+        }
+    }
 }

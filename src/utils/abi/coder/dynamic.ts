@@ -49,20 +49,21 @@ function getRawData(type, params) {
 
 function getBytesData(type, params) {
     if ( typeof params !== 'string' ) {
-        throw 'Illegal params. Should be string'; 
+        throw '[Error] Illegal params. Should be String'; 
     }
 
-    let isHex = /^0x[0-9a-fA-F]+$/.test(params) ;
-    if (isHex && params.length % 2 !== 0) {
-        throw 'Illegal hex-string.'; 
-    }
+    let isHex = /^0x[0-9a-fA-F]+$/.test(params) && params.length % 2 === 0;
+    let isCommonHex = /^[0-9a-fA-F]+$/.test(params) && params.length % 2 === 0;
 
-    if (type === 'bytes' && !isHex ) {
-        throw 'Illegal bytes-type params.'; 
+    if (type === 'bytes' && !isCommonHex && !isHex) {
+        throw '[Error] Illegal params. Should be hex-string.'; 
     }
 
     if (isHex) {
         return Buffer.from(params.substring(2), 'hex');
+    }
+    if (isCommonHex) {
+        return Buffer.from(params, 'hex');
     }
     return Buffer.from(params, 'utf8');
 }

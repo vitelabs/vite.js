@@ -28,7 +28,7 @@ export function encodeParameter(typeStr, params) {
     let typeObj = formatType(typeStr);
     if (typeObj.isArr && !isArray(params) ||
         (!typeObj.isArr && ['string', 'boolean', 'number'].indexOf(typeof params) === -1)) {
-        throw `Illegal types or params. type: ${typeObj.type}, params: ${params}`;
+        throw `[Error] Illegal type or params. type: ${typeObj.type}, params: ${params}`;
     }
 
     if (!typeObj.isArr) {
@@ -40,7 +40,7 @@ export function encodeParameter(typeStr, params) {
 
 export function encodeParameters(types, params) {
     if (!isArray(types) || !isArray(params) || types.length !== params.length) {
-        throw 'Illegal types or params. Is array? Length?';
+        throw '[Error] Illegal types or params. Types and params should be array.';
     }
 
     let tempResult = [];
@@ -94,7 +94,7 @@ export function decodeParameter(typeStr, params) {
 
 export function decodeParameters(types, params) {
     if (!isArray(types)) {
-        throw 'Illegal types and params.';
+        throw '[Error] Illegal types. Should be array.';
     }
 
     let _params = params;
@@ -160,7 +160,7 @@ export function decodeParameters(types, params) {
 
 function encodeArr(typeObj, arrLen, params) {
     if (!params || (arrLen && params.length !== +arrLen)) {
-        throw 'Params-length !== arr-length';
+        throw  `[Error] Params.length !== arr.length. Params: ${JSON.stringify(params)}. ${JSON.stringify(typeObj)}`;
     }
     
     let result = '';
