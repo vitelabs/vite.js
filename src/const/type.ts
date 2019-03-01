@@ -236,6 +236,55 @@ export declare type callContractBlock = {
     snapshotHash?: Hex
 }
 
+export declare type mintageBlock = {
+    accountAddress: Address, 
+    spendType: string, 
+    tokenName: string, 
+    isReIssuable: boolean, 
+    maxSupply: string, 
+    ownerBurnOnly: string, 
+    totalSupply: string, 
+    decimals: string, 
+    tokenSymbol: string, 
+    prevHash?: Hex,
+    height?: Uint64,
+    snapshotHash?: Hex
+}
+
+export declare type mintageIssueBlock = {
+    accountAddress: Address, 
+    tokenId: TokenId,
+    amount: BigInt,
+    beneficial: Address, 
+    prevHash?: Hex,
+    height?: Uint64,
+    snapshotHash?: Hex
+}
+
+export declare type mintageBurnBlock = {
+    accountAddress: Address, 
+    prevHash?: Hex,
+    height?: Uint64,
+    snapshotHash?: Hex
+}
+
+export declare type changeTokenTypeBlock = {
+    accountAddress: Address, 
+    tokenId: TokenId,
+    prevHash?: Hex,
+    height?: Uint64,
+    snapshotHash?: Hex
+}
+
+export declare type changeTransferOwnerBlock = {
+    accountAddress: Address, 
+    tokenId: TokenId,
+    ownerAddress: Address,
+    prevHash?: Hex,
+    height?: Uint64,
+    snapshotHash?: Hex
+}
+
 export declare type AddrObj = {
     addr: string, 
     pubKey: Hex, 

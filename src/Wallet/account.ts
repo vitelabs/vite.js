@@ -300,6 +300,53 @@ class Account {
         });
         return this._client.buildinLedger.sendRawTx(_callContractBlock, this.privateKey);
     }
+
+    async mintage({
+        spendType = 'fee', tokenName, isReIssuable, maxSupply, ownerBurnOnly, totalSupply, decimals, tokenSymbol
+    }) {
+        const _callContractBlock = await this._client.buildinTxBlock.mintage({
+            accountAddress: this.address, 
+            spendType, tokenName, isReIssuable, maxSupply, ownerBurnOnly, totalSupply, decimals, tokenSymbol
+        });
+        return this._client.buildinLedger.sendRawTx(_callContractBlock, this.privateKey);
+    }
+    
+    async mintageIssue({
+        tokenId, amount, beneficial
+    }) {
+        const _callContractBlock = await this._client.buildinTxBlock.mintageIssue({
+            accountAddress: this.address, 
+            tokenId, amount, beneficial
+        });
+        return this._client.buildinLedger.sendRawTx(_callContractBlock, this.privateKey);
+    }
+
+    async mintageBurn() {
+        const _callContractBlock = await this._client.buildinTxBlock.mintageBurn({
+            accountAddress: this.address,
+        });
+        return this._client.buildinLedger.sendRawTx(_callContractBlock, this.privateKey);
+    }
+
+    async changeTokenType({
+        tokenId
+    }) {
+        const _callContractBlock = await this._client.buildinTxBlock.changeTokenType({
+            accountAddress: this.address,
+            tokenId
+        });
+        return this._client.buildinLedger.sendRawTx(_callContractBlock, this.privateKey);
+    }
+
+    async changeTransferOwner({
+        ownerAddress, tokenId
+    }) {
+        const _callContractBlock = await this._client.buildinTxBlock.changeTransferOwner({
+            accountAddress: this.address,
+            tokenId, ownerAddress
+        });
+        return this._client.buildinLedger.sendRawTx(_callContractBlock, this.privateKey);
+    }
 }
 
 export default Account;

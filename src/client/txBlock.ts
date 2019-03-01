@@ -4,7 +4,10 @@ import { Vite_TokenId, Snapshot_Gid,
     Register_Abi, UpdateRegistration_Abi, CancelRegister_Abi, 
     Reward_Abi, Vote_Abi, CancelVote_Abi, Pledge_Abi, CancelPledge_Abi,
     Mint_Abi, Issue_Abi, Burn_Abi, ChangeTokenType_Abi, TransferOwner_Abi } from "const/contract";
-import { SBPregBlock, block8, block7, revokeVotingBlock, quotaBlock, sendTxBlock, receiveTxBlock, formatBlock, createContractBlock, callContractBlock } from "const/type";
+import { SBPregBlock, block8, block7, revokeVotingBlock, quotaBlock, 
+        sendTxBlock, receiveTxBlock, formatBlock, 
+        createContractBlock, callContractBlock,
+        mintageBlock, mintageIssueBlock, mintageBurnBlock, changeTokenTypeBlock, changeTransferOwnerBlock } from "const/type";
 
 import { checkParams, validNodeName } from "utils/tools";
 import { formatAccountBlock, validReqAccountBlock, getCreateContractData } from "utils/builtin";
@@ -185,8 +188,6 @@ export default class tx {
             return Promise.reject(err);
         }
 
-        console.log(await this._client.register.getRegisterData(Snapshot_Gid, nodeName, toAddress)) 
-
         return this.callContract({
             accountAddress,
             abi: Register_Abi,
@@ -211,8 +212,6 @@ export default class tx {
         if (err) {
             return Promise.reject(err);
         }
-
-        console.log(await this._client.register.getUpdateRegistrationData(Snapshot_Gid, nodeName, toAddress)) 
 
         return this.callContract({
             accountAddress,
@@ -239,8 +238,6 @@ export default class tx {
             return Promise.reject(err);
         }
 
-        console.log(await this._client.register.getCancelRegisterData(Snapshot_Gid, nodeName)); 
-
         return this.callContract({
             accountAddress,
             abi: CancelRegister_Abi,
@@ -265,9 +262,6 @@ export default class tx {
         if (err) {
             return Promise.reject(err);
         }
-
-        console.log(await this._client.register.getRewardData(Snapshot_Gid, nodeName, toAddress)); 
-
 
         return this.callContract({
             accountAddress,
@@ -363,7 +357,7 @@ export default class tx {
 
     async mintage({
         accountAddress, spendType = 'fee', tokenName, isReIssuable, maxSupply, ownerBurnOnly, totalSupply, decimals, tokenSymbol, height, prevHash, snapshotHash
-    }, requestType = 'async') {
+    }: mintageBlock, requestType = 'async') {
         let err = checkParams({ tokenName, isReIssuable, maxSupply, ownerBurnOnly, totalSupply, decimals, tokenSymbol, requestType, spendType}, 
             ['tokenName', 'isReIssuable', 'maxSupply', 'ownerBurnOnly', 'totalSupply', 'decimals', 'tokenSymbol'], 
             [{ name: 'requestType', func: validReqType },
@@ -399,7 +393,7 @@ export default class tx {
 
     async mintageIssue({
         accountAddress, tokenId, amount, beneficial, height, prevHash, snapshotHash
-    }, requestType = 'async') {
+    }: mintageIssueBlock, requestType = 'async') {
         let err = checkParams({ tokenId, amount, beneficial, requestType }, 
             ['tokenId', 'amount', 'beneficial'], 
             [{
@@ -420,7 +414,7 @@ export default class tx {
 
     async mintageBurn({
         accountAddress, height, prevHash, snapshotHash
-    }, requestType = 'async') {
+    }: mintageBurnBlock, requestType = 'async') {
         return this.callContract({
             abi: Burn_Abi,
             toAddress: Mintage_Addr,
@@ -430,9 +424,10 @@ export default class tx {
 
     async changeTokenType({
         accountAddress, tokenId, height, prevHash, snapshotHash
-    }, requestType = 'async') {
+    }: changeTokenTypeBlock, requestType = 'async') {
         return this.callContract({
             abi: ChangeTokenType_Abi,
+            params: [tokenId],
             toAddress: Mintage_Addr,
             accountAddress, height, prevHash, snapshotHash
         }, requestType);
@@ -440,7 +435,7 @@ export default class tx {
 
     async changeTransferOwner({
         accountAddress, ownerAddress, tokenId, height, prevHash, snapshotHash
-    }, requestType = 'async') {
+    }: changeTransferOwnerBlock, requestType = 'async') {
         let err = checkParams({ tokenId, ownerAddress, requestType }, ['tokenId', 'ownerAddress'], [{
             name: 'requestType',
             func: validReqType
