@@ -265,7 +265,6 @@ export declare type SBPregBlock = {
     tokenId: TokenId,
     amount: BigInt,
 
-    Gid?: string,
     prevHash?: Hex,
     height?: Uint64,
     snapshotHash?: Hex
@@ -277,7 +276,6 @@ export declare type block8 = {
     toAddress: Address,
     tokenId: TokenId,
 
-    Gid?: string,
     prevHash?: Hex,
     height?: Uint64,
     snapshotHash?: Hex
@@ -288,7 +286,6 @@ export declare type block7 = {
     nodeName: string,
     tokenId: TokenId,
 
-    Gid?: string,
     prevHash?: Hex,
     height?: Uint64,
     snapshotHash?: Hex
@@ -298,7 +295,6 @@ export declare type revokeVotingBlock = {
     accountAddress: Address,
     tokenId: TokenId,
 
-    Gid?: string,
     prevHash?: Hex,
     height?: Uint64,
     snapshotHash?: Hex
@@ -344,11 +340,11 @@ export declare type syncFormatBlock = {
     height?: Uint64
     fromBlockHash?: Hex
     data?: Base64
-    fee?: BigInt
     message?: string
     toAddress?: Address
     tokenId?: TokenId
     amount?: BigInt,
+    fee?: BigInt,
     nonce?: Base64
 }
 
@@ -361,8 +357,8 @@ export declare type formatBlock = {
     toAddress?: Address,
     tokenId?: TokenId,
     amount?: BigInt,
-    prevHash?: Hex,
     fee?: BigInt,
+    prevHash?: Hex,
     height?: Uint64,
     snapshotHash?: Hex,
     nonce?: Base64
@@ -384,11 +380,12 @@ export declare type createContractBlock = {
 export declare type callContractBlock = {
     accountAddress: Address, 
     toAddress: Address,
-    abi: string, 
+    abi: object, 
+    methodName?: string,
+    fee?: BigInt,
     tokenId?: TokenId,
     amount?: BigInt,
     params?: Array<string>,
-    methodName?: string,
     prevHash?: Hex,
     height?: Uint64,
     snapshotHash?: Hex
@@ -421,6 +418,8 @@ export declare type mintageIssueBlock = {
 
 export declare type mintageBurnBlock = {
     accountAddress: Address, 
+    amount: BigInt,
+    tokenId: TokenId,
     prevHash?: Hex,
     height?: Uint64,
     snapshotHash?: Hex

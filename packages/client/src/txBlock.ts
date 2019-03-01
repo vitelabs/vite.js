@@ -134,7 +134,7 @@ export default class tx {
     }
 
     async callContract({
-        accountAddress, toAddress, tokenId = Vite_TokenId, amount, abi, methodName, params=[], height, prevHash, snapshotHash
+        accountAddress, toAddress, tokenId = Vite_TokenId, amount, abi, methodName, params=[], fee, height, prevHash, snapshotHash
     }: callContractBlock, requestType = 'async') {
         let err = checkParams({ toAddress, abi }, ['toAddress', 'abi']);
         if (err) {
@@ -147,7 +147,7 @@ export default class tx {
             accountAddress,
             toAddress,
             data: Buffer.from(data, 'hex').toString('base64'),
-            height, prevHash, snapshotHash, tokenId, amount
+            height, fee, prevHash, snapshotHash, tokenId, amount
         });
     }
 
@@ -435,11 +435,18 @@ export default class tx {
     }
 
     async mintageBurn({
-        accountAddress, height, prevHash, snapshotHash
+        accountAddress, tokenId, amount, height, prevHash, snapshotHash
     }: mintageBurnBlock, requestType = 'async') {
+        let err = checkParams({ amount, requestType }, ['amount'], [{ name: 'requestType', func: validReqType }]);
+        if (err) {
+            return Promise.reject(err);
+        }
+
         return this.callContract({
             abi: Burn_Abi,
             toAddress: Mintage_Addr,
+            fee: '0',
+            amount, tokenId,
             accountAddress, height, prevHash, snapshotHash
         }, requestType);
     }
