@@ -8,8 +8,8 @@
     "scripts": {
         "build:browser": "build_target=web webpack",
         "build:node": "build_target=node webpack",
-        "build:es5": "build_target=web NODE_ENV=es5 webpack",
-        "build": "rm -rf ./dist && npm run build:browser && npm run build:node && npm run build:es5",
+        "build:providers": "build_target=web NODE_ENV=providers webpack",
+        "build": "rm -rf ./dist && npm run build:browser && npm run build:node && npm run build:providers",
         "test:rpc": "cross-env NODE_ENV=test nyc mocha --compilers ts:ts-node/register -r tsconfig-paths/register test/RPC/index.js --no-timeouts",
         "test:w": "cross-env NODE_ENV=testWatch mocha --compilers ts:ts-node/register -r tsconfig-paths/register test/index.js --require @babel/register -w --no-timeouts",
         "test": "cross-env NODE_ENV=test nyc mocha --compilers ts:ts-node/register -r tsconfig-paths/register test/index.js  --no-timeouts",

@@ -228,6 +228,7 @@ export declare type callContractBlock = {
     toAddress: Address,
     abi: object, 
     methodName?: string,
+    fee?: BigInt,
     tokenId?: TokenId,
     amount?: BigInt,
     params?: Array<string>,
@@ -263,6 +264,8 @@ export declare type mintageIssueBlock = {
 
 export declare type mintageBurnBlock = {
     accountAddress: Address, 
+    amount: BigInt,
+    tokenId: TokenId,
     prevHash?: Hex,
     height?: Uint64,
     snapshotHash?: Hex
