@@ -314,6 +314,16 @@ class Account {
         });
         return this._client.buildinLedger.sendRawTx(_callContractBlock, this.privateKey);
     }
+
+    async mintageCancelPledge({
+        tokenId
+    }) {
+        const _callContractBlock = await this._client.buildinTxBlock.mintageCancelPledge({
+            accountAddress: this.address, 
+            tokenId
+        });
+        return this._client.buildinLedger.sendRawTx(_callContractBlock, this.privateKey);
+    }
     
     async mintageIssue({
         tokenId, amount, beneficial
