@@ -1,5 +1,5 @@
 import { ledger as _ledger, onroad } from 'const/method';
-import { RPCresponse, RPCrequest, BuiltinTxType, Address } from "const/type";
+import { RPCrequest, BuiltinTxType, Address } from "const/type";
 import { checkParams } from 'utils/tools';
 import { validReqAccountBlock } from 'utils/builtin';
 import { isValidHexAddr } from 'utils/address/privToAddr';

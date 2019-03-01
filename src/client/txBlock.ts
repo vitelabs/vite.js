@@ -3,7 +3,7 @@ import { Vite_TokenId, Snapshot_Gid,
     Quota_Addr, Vote_Addr, Register_Addr, Mintage_Addr,
     Register_Abi, UpdateRegistration_Abi, CancelRegister_Abi, 
     Reward_Abi, Vote_Abi, CancelVote_Abi, Pledge_Abi, CancelPledge_Abi,
-    Mint_Abi, Issue_Abi, Burn_Abi, ChangeTokenType_Abi, TransferOwner_Abi } from "const/contract";
+    Mint_Abi, Issue_Abi, Burn_Abi, ChangeTokenType_Abi, TransferOwner_Abi, Mint_CancelPledge_Abi } from "const/contract";
 import { SBPregBlock, block8, block7, revokeVotingBlock, quotaBlock, 
         sendTxBlock, receiveTxBlock, formatBlock, 
         createContractBlock, callContractBlock,
@@ -127,9 +127,9 @@ export default class tx {
     }
 
     async callContract({
-        accountAddress, toAddress, tokenId, amount, abi, methodName, params=[], height, prevHash, snapshotHash
+        accountAddress, toAddress, tokenId = Vite_TokenId, amount, abi, methodName, params=[], height, prevHash, snapshotHash
     }: callContractBlock, requestType = 'async') {
-        let err = checkParams({ toAddress, abi, tokenId }, ['toAddress', 'abi', 'tokenId']);
+        let err = checkParams({ toAddress, abi }, ['toAddress', 'abi']);
         if (err) {
             return Promise.reject(err);
         }
@@ -369,8 +369,8 @@ export default class tx {
             return Promise.reject(err);
         }
 
-        const spendAmount = '10000000000000000000000';
-        const spendFee = '1e21';
+        const spendAmount = '100000000000000000000000';
+        const spendFee = '1000000000000000000000';
 
         let requestBlock = {
             blockType: 2, toAddress: Mintage_Addr, accountAddress, height, prevHash, snapshotHash
@@ -378,17 +378,32 @@ export default class tx {
         requestBlock[spendType] = spendType === 'fee' ? spendFee : spendAmount;
         let block = requestType === 'async' ? await this.asyncAccountBlock(requestBlock) : _getAccountBlock(requestBlock);
 
-        let tokenId = await this._client.mintage.newTokenId(accountAddress, block.height, block.prevHash, block.snapshotHash);
+        let tokenId = await this._client.mintage.newTokenId({
+            selfAddr: accountAddress, 
+            height: block.height, 
+            prevHash: block.prevHash, 
+            snapshotHash: block.snapshotHash
+        });
         let data = encodeFunctionCall(Mint_Abi, [isReIssuable, tokenId, tokenName, tokenSymbol, totalSupply, decimals, maxSupply, ownerBurnOnly]);
-        block.data = data;
+        block.data = Buffer.from(data, 'hex').toString('base64');
 
         return block;
     }
 
-    async mintageCancel({
+    async mintageCancelPledge({
+        accountAddress, tokenId, height, prevHash, snapshotHash
+    }: changeTokenTypeBlock, requestType = 'async') {
+        let err = checkParams({ tokenId }, ['tokenId'], [{ name: 'requestType', func: validReqType }]);
+        if (err) {
+            return Promise.reject(err);
+        }
 
-    }) {
-        return null;
+        return this.callContract({
+            abi: Mint_CancelPledge_Abi,
+            params: [tokenId],
+            toAddress: Mintage_Addr,
+            accountAddress, height, prevHash, snapshotHash
+        }, requestType);
     }
 
     async mintageIssue({
@@ -408,7 +423,7 @@ export default class tx {
             abi: Issue_Abi,
             toAddress: Mintage_Addr, 
             params: [tokenId, amount, beneficial],
-            accountAddress, height, prevHash, snapshotHash
+            accountAddress, amount: '0', height, prevHash, snapshotHash
         }, requestType);
     }
 
