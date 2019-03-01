@@ -76,6 +76,7 @@ export const enum tx {
 
 export declare type Methods = wallet | net | onroad | contract | pledge | contract | register | vote | mintage | consensusGroup | ledger | tx
 
+
 export type walletFunc = {
     listEntropyFilesInStandardDir: Function
     listAllEntropyFiles: Function
@@ -104,7 +105,7 @@ export type onroadFunc = {
     startAutoReceive: Function
     stopAutoReceive: Function
 }
-export type contractFunc = {     
+export type contractFunc = { 
     getCreateContractToAddress: Function
     getCreateContractData: Function
     getCallContractData: Function
@@ -131,10 +132,13 @@ export type voteFunc = {
 export type mintageFunc = { 
     getMintageData: Function
     getMintageCancelPledgeData: Function
+    getTokenInfoList: Function,
+    getTokenInfoById: Function,
+    getTokenInfoListByOwner: Function,
+    newTokenId: Function
 }
 export type consensusGroupFunc = { 
     getConditionRegisterOfPledge: Function
-    getConditionVoteOfDefault: Function
     getConditionVoteOfKeepToken: Function
     getCreateConsensusGroupData: Function
     getCancelConsensusGroupData: Function
@@ -381,10 +385,59 @@ export declare type callContractBlock = {
     accountAddress: Address, 
     toAddress: Address,
     abi: string, 
+    tokenId?: TokenId,
+    amount?: BigInt,
+    params?: Array<string>,
+    methodName?: string,
+    prevHash?: Hex,
+    height?: Uint64,
+    snapshotHash?: Hex
+}
+
+export declare type mintageBlock = {
+    accountAddress: Address, 
+    spendType: string, 
+    tokenName: string, 
+    isReIssuable: boolean, 
+    maxSupply: string, 
+    ownerBurnOnly: string, 
+    totalSupply: string, 
+    decimals: string, 
+    tokenSymbol: string, 
+    prevHash?: Hex,
+    height?: Uint64,
+    snapshotHash?: Hex
+}
+
+export declare type mintageIssueBlock = {
+    accountAddress: Address, 
     tokenId: TokenId,
     amount: BigInt,
-    methodName: string,
-    params?: string,
+    beneficial: Address, 
+    prevHash?: Hex,
+    height?: Uint64,
+    snapshotHash?: Hex
+}
+
+export declare type mintageBurnBlock = {
+    accountAddress: Address, 
+    prevHash?: Hex,
+    height?: Uint64,
+    snapshotHash?: Hex
+}
+
+export declare type changeTokenTypeBlock = {
+    accountAddress: Address, 
+    tokenId: TokenId,
+    prevHash?: Hex,
+    height?: Uint64,
+    snapshotHash?: Hex
+}
+
+export declare type changeTransferOwnerBlock = {
+    accountAddress: Address, 
+    tokenId: TokenId,
+    ownerAddress: Address,
     prevHash?: Hex,
     height?: Uint64,
     snapshotHash?: Hex

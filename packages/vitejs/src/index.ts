@@ -6,6 +6,7 @@ import * as error from "@vite/vitejs-error";
 
 import * as _utils from "@vite/vitejs-utils";
 import * as accountBlock from "@vite/vitejs-accountblock";
+import * as abi from "@vite/vitejs-abi";
 
 import * as _keysotre from "@vite/vitejs-keystore";
 

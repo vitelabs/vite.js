@@ -1,5 +1,6 @@
 const assert = require('assert');
-import { getAccountBlock, getSendTxBlock, getReceiveTxBlock, getBuiltinTxType, signAccountBlock } from '../packages/accountBlock/src/index';
+
+import { getAccountBlock, getSendTxBlock, getReceiveTxBlock, getBuiltinTxType, signAccountBlock, getBlockHash } from '../packages/accountBlock/src/index';
 import { BlockType } from '../packages/accountBlock/src/type';
 import { Default_Hash } from '../packages/constant/src/index';
 
@@ -79,7 +80,6 @@ describe('getAccountBlock', function () {
 
     testAccBlockCase(reqAccBlock, getAccountBlock);
 });
-
 
 describe('getSendTxBlock', function () {
     let reqAccBlock = [{
@@ -239,13 +239,12 @@ describe('signAccountBlock', function () {
             'blockType':4,
             'fromBlockHash':'382c9d11894aa45d18bb02edf4b520a281341e686915c750adbbb0655c8ba6ec',
             'nonce':'xjpCTkxYBfA=',
-            'publicKey':'79e0fbc083681e636fef9b389d91c5700ae5d401438158e5c7798b76232cdf88',
+            'publicKey':'eeD7wINoHmNv75s4nZHFcArl1AFDgVjlx3mLdiMs34g=',
             'hash':'2b39c5c1e3f70eee84679914aedea5585b3990c2d922cd7f8d31b49b759ab8eb',
-            'signature':'cad7e04fe1a1184df1394d73cee27ef79b6b6a9b52a82b9bcf546cd9e96adf53423149a33a856c6220f7745bd7c1512bd1e6fc21f9a4dd878dd50ac44e596200'
+            'signature':'ytfgT+GhGE3xOU1zzuJ+95traptSqCubz1Rs2elq31NCMUmjOoVsYiD3dFvXwVEr0eb8Ifmk3YeN1QrETlliAA=='
         };
 
         let { hash, signature, publicKey } = signAccountBlock(accountBlock, privKey);
-
         assert.equal(hash, accountBlock.hash);
         assert.equal(publicKey, accountBlock.publicKey);
         assert.equal(signature, accountBlock.signature);
@@ -276,6 +275,45 @@ describe('signAccountBlock', function () {
         assert.equal(hash, accountBlock.hash);
         assert.equal(publicKey, accountBlock.publicKey);
         assert.equal(signature, accountBlock.signature);
+    });
+});
+
+describe('accountBlockHash', function () {
+    it('test_hash_1', function() {
+        let accountBlock = {
+            accountAddress: 'vite_17db10f302569b79adbb31f7dd96a11f09f740459c2e0d8638',
+            blockType: 4,
+            difficulty: '67108864',
+            fromBlockHash: '516292ddb370a93fe3528998854e82f8a6fd4b87b6bcf9ddea0849dd375e32f0',
+            hash: 'd855cbfe45c6b5f7eec3c42ba68735b11e580733ba04b6b813103e2e5917973a',
+            height: '4',
+            nonce: '3BLqA3PGYHk=',
+            prevHash: 'cf76d50711533b150672f432ae8cf12e73305b3f50923da21c40b995649670b3',
+            publicKey: 'kuzthX/o/WfqSQy+cA+TFFPIrJpaf6+74LAnQhUmoVM=',
+            signature: 'FdH5DUWd7YQ0MQrKlscr5l44TJ1I2+FoaNxLTQlVjEouYqyU8oNNFv6Bfw/oqI9bgIxgiCxU/VvBTyQIgnn9Dg==',
+            snapshotHash: '8c607d885b9f5c2399e8a3dcafdd89f05b046100a9c62ba678a416d2762cf971',
+            timestamp: 1550559560
+        };
+        let hash = getBlockHash(accountBlock);
+        assert.equal(hash, accountBlock.hash);
+    });
+    it('test_hash_2', function() {
+        let accountBlock = {
+            accountAddress: 'vite_17db10f302569b79adbb31f7dd96a11f09f740459c2e0d8638',
+            blockType: 4,
+            difficulty: '67108864',
+            fromBlockHash: '2d920fc4b216e495ea95cdfd5c73a4e88fcad9770a08b017e92868c72cf6164c',
+            hash: '3bfe4a1e4093d3a7a0195d1042e65008d03d202b03aaa4e2a18cb10dbd03325b',
+            height: '5',
+            nonce: '8UwDEt0cBsE=',
+            prevHash: 'd855cbfe45c6b5f7eec3c42ba68735b11e580733ba04b6b813103e2e5917973a',
+            publicKey: 'kuzthX/o/WfqSQy+cA+TFFPIrJpaf6+74LAnQhUmoVM=',
+            signature: 'PpVUN7xpbBoHSUovJGry8FN/J3+TGXA/QadjKrbdKS4X4Y/2rJWvPBbXuvB3wrvgRSbYz+8048i8QXPHnHbnDA==',
+            snapshotHash: '68c550ce1fa1d22e4be03d0bfef6c1cae768531fdb781828062eea59d1f47220',
+            timestamp: 1550560184
+        };
+        let hash = getBlockHash(accountBlock);
+        assert.equal(hash, accountBlock.hash);
     });
 });
 

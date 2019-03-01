@@ -5,7 +5,7 @@ import { getAddrFromHexAddr } from '@vite/vitejs-privtoaddr';
 import { paramsMissing, paramsFormat } from '@vite/vitejs-error';
 import { Default_Hash } from '@vite/vitejs-constant';
 
-import { formatAccountBlock, validReqAccountBlock } from "./builtin";
+import { formatAccountBlock, validReqAccountBlock, getCreateContractData } from "./builtin";
 import { AccountBlock, BlockType, SignBlock, sendTxBlock, receiveTxBlock, syncFormatBlock } from "./type";
 
 const { getPublicKey, sign } = ed25519;
@@ -151,16 +151,15 @@ export function getBlockHash(accountBlock: SignBlock) {
 
 export function signAccountBlock(accountBlock: SignBlock, privKey: string) {
     let hashHex = getBlockHash(accountBlock);
-
     let _privKey = Buffer.from(privKey, 'hex');
     let pubKey = getPublicKey(_privKey);
     let signature = sign(hashHex, _privKey);
 
-    let _accountBlock: AccountBlock = Object.assign({
+    let _accountBlock: AccountBlock = Object.assign({}, accountBlock, {
         hash: hashHex, 
         signature: Buffer.from(signature, 'hex').toString('base64'),
         publicKey: Buffer.from(pubKey).toString('base64')
-    }, accountBlock);
+    });
 
     return _accountBlock;
 }
@@ -168,3 +167,5 @@ export function signAccountBlock(accountBlock: SignBlock, privKey: string) {
 export const _formatAccountBlock = formatAccountBlock;
 
 export const _validReqAccountBlock = validReqAccountBlock;
+
+export const _getCreateContractData = getCreateContractData;

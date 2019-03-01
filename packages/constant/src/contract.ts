@@ -1,7 +1,4 @@
-import * as _method from "./method";
-
 export const Vite_TokenId = 'tti_5649544520544f4b454e6e40';
-
 export const Default_Hash = '0000000000000000000000000000000000000000000000000000000000000000'; // A total of 64 0
 
 export const Snapshot_Gid = '00000000000000000001';
@@ -32,43 +29,3 @@ export const Issue_Abi = {"type":"function","name":"Issue","inputs":[{"name":"to
 export const Burn_Abi = {"type":"function","name":"Burn","inputs":[]};
 export const TransferOwner_Abi = {"type":"function","name":"TransferOwner","inputs":[{"name":"tokenId","type":"tokenId"},{"name":"newOwner","type":"address"}]};
 export const ChangeTokenType_Abi = {"type":"function","name":"ChangeTokenType","inputs":[{"name":"tokenId","type":"tokenId"}]};
-
-
-export enum BlockType {
-    CreateContractReq = 1,
-    TxReq,
-    RewardReq,
-    TxRes,
-    TxResFail
-}
-
-export enum BuiltinTxType {
-    SBPreg = 0,
-    UpdateReg,
-    RevokeReg,
-    RetrieveReward,
-    Voting,
-    RevokeVoting,
-    GetQuota,
-    WithdrawalOfQuota,
-    TokenIssuance,
-    WithdrawalOfToken,
-    CreateContractReq,
-    TxReq,
-    RewardReq,
-    TxRes,
-    TxResFail
-}
-
-export enum LangList {
-    english = 'english',
-    japanese = 'japanese',
-    chineseSimplified = 'chinese_simplified',
-    chineseTraditional = 'chinese_traditional',
-    french = 'french',
-    italian = 'italian',
-    korean = 'korean',
-    spanish = 'spanish'
-}
-
-export const method = _method;

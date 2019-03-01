@@ -52,7 +52,11 @@ export const enum vote {
 }
 export const enum mintage { 
     getMintageData = "mintage_getMintageData", 
-    getMintageCancelPledgeData = "mintage_getMintageCancelPledgeData" 
+    getMintageCancelPledgeData = "mintage_getMintageCancelPledgeData",
+    getTokenInfoList = "mintage_getTokenInfoList",
+    getTokenInfoById = "mintage_getTokenInfoById",
+    getTokenInfoListByOwner = "mintage_getTokenInfoListByOwner",
+    newTokenId = 'mintage_newTokenId'
 }
 export const enum consensusGroup { 
     getConditionRegisterOfPledge = "consensusGroup_getConditionRegisterOfPledge",

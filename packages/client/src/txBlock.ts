@@ -1,4 +1,8 @@
-import { Quota_Addr, Vote_Addr, Register_Addr, Snapshot_Gid, Delegate_Gid } from '@vite/vitejs-constant';
+import { Vite_TokenId, Snapshot_Gid,
+    Quota_Addr, Vote_Addr, Register_Addr, Mintage_Addr,
+    Register_Abi, UpdateRegistration_Abi, CancelRegister_Abi, 
+    Reward_Abi, Vote_Abi, CancelVote_Abi, Pledge_Abi, CancelPledge_Abi,
+    Mint_Abi, Issue_Abi, Burn_Abi, ChangeTokenType_Abi, TransferOwner_Abi} from '@vite/vitejs-constant';
 import { tools } from '@vite/vitejs-utils';
 import { no } from '@vite/vitejs-error';
 import { 
@@ -6,14 +10,18 @@ import {
     getSendTxBlock, 
     getReceiveTxBlock, 
     _validReqAccountBlock as validReqAccountBlock, 
-    _formatAccountBlock as formatAccountBlock 
+    _formatAccountBlock as formatAccountBlock,
+    _getCreateContractData as getCreateContractData
 } from '@vite/vitejs-accountblock';
+import { encodeFunctionCall } from "@vite/vitejs-abi";
 
-import { RPCresponse, SBPregBlock, block8, block7, revokeVotingBlock, quotaBlock, sendTxBlock, receiveTxBlock, formatBlock, createContractBlock, callContractBlock } from "./type";
+import { SBPregBlock, block8, block7, revokeVotingBlock, quotaBlock, 
+        sendTxBlock, receiveTxBlock, formatBlock, 
+        createContractBlock, callContractBlock,
+        mintageBlock, mintageIssueBlock, mintageBurnBlock, changeTokenTypeBlock, changeTransferOwnerBlock } from "./type";
 import client from '.';
 
 const { checkParams, validNodeName } = tools;
-
 
 export default class tx {
     _client: client
@@ -48,7 +56,7 @@ export default class tx {
     }
 
     async asyncAccountBlock({
-        blockType, fromBlockHash, accountAddress, message, data, height, prevHash, snapshotHash, toAddress, tokenId, amount, fee
+        blockType, fromBlockHash, accountAddress, message, data, height, prevHash, snapshotHash, toAddress, tokenId = Vite_TokenId, amount, fee
     }: formatBlock) {
         let reject = (error, errMsg = '') => {
             let message = `${error.msg} ${errMsg}`;
@@ -103,194 +111,43 @@ export default class tx {
         });
     }
 
-    async SBPreg({
-        accountAddress, nodeName, toAddress, amount, tokenId, Gid = Snapshot_Gid, height, prevHash, snapshotHash
-    }: SBPregBlock, requestType = 'async') {
-        let err = checkParams({ 
-            toAddress, nodeName, tokenId, amount, requestType
-        }, ['toAddress', 'nodeName', 'tokenId', 'amount'], [{
-            name: 'nodeName',
-            func: validNodeName
-        }, {
-            name: 'requestType',
-            func: validReqType
-        }]);
+    async createContract({
+        accountAddress, tokenId, amount, fee, hexCode, abi, params, height, prevHash, snapshotHash
+    }: createContractBlock, requestType = 'async') {
+        let err = checkParams({ hexCode, abi, tokenId, amount, fee}, ['hexCode', 'abi', 'tokenId', 'amount', 'fee']);
         if (err) {
             return Promise.reject(err);
         }
 
-        const result:RPCresponse = await this._client.register.getRegisterData(Gid, nodeName, toAddress);
+        let block = requestType === 'async' ? await this.asyncAccountBlock({
+            blockType: 1, accountAddress, height, prevHash, snapshotHash, tokenId, amount, fee
+        }) : _getAccountBlock({
+            blockType: 1, accountAddress, height, prevHash, snapshotHash, tokenId, amount, fee
+        });
+
+        let toAddress = await this._client.contract.getCreateContractToAddress(accountAddress, block.height, block.prevHash, block.snapshotHash);
+        block.toAddress = toAddress;
+        block.data = getCreateContractData({
+            abi, hexCode, params
+        });
+        return block;
+    }
+
+    async callContract({
+        accountAddress, toAddress, tokenId, amount, abi, methodName, params=[], height, prevHash, snapshotHash
+    }: callContractBlock, requestType = 'async') {
+        let err = checkParams({ toAddress, abi, tokenId }, ['toAddress', 'abi', 'tokenId']);
+        if (err) {
+            return Promise.reject(err);
+        }
+
+        let data = encodeFunctionCall(abi, params, methodName);
         return this[`${requestType}AccountBlock`]({
             blockType: 2,
             accountAddress,
-            toAddress: Register_Addr,
-            data: result,
-            tokenId, amount, height, prevHash, snapshotHash
-        });
-    }
-
-    async updateReg({
-        accountAddress, nodeName, toAddress, tokenId, Gid = Snapshot_Gid, height, prevHash, snapshotHash
-    }: block8, requestType = 'async') {
-        let err = checkParams({ 
-            toAddress, nodeName, tokenId, requestType
-        }, ['toAddress', 'nodeName', 'tokenId'], [{
-            name: 'nodeName',
-            func: validNodeName
-        }, {
-            name: 'requestType',
-            func: validReqType
-        }]);
-        if (err) {
-            return Promise.reject(err);
-        }
-
-        const result:RPCresponse = await this._client.register.getUpdateRegistrationData(Gid, nodeName, toAddress);
-        return this[`${requestType}AccountBlock`]({
-            blockType: 2,
-            accountAddress,
-            toAddress: Register_Addr,
-            data: result,
-            tokenId, height, prevHash, snapshotHash
-        });
-    }
-
-    async revokeReg({
-        accountAddress, nodeName, tokenId, Gid = Snapshot_Gid, height, prevHash, snapshotHash
-    }: block7, requestType = 'async') {
-        let err = checkParams({ 
-            nodeName, tokenId, requestType
-        }, ['nodeName', 'tokenId'], [{
-            name: 'nodeName',
-            func: validNodeName
-        }, {
-            name: 'requestType',
-            func: validReqType
-        }]);
-        if (err) {
-            return Promise.reject(err);
-        }
-
-        const result:RPCresponse = await this._client.register.getCancelRegisterData(Gid, nodeName);
-        return this[`${requestType}AccountBlock`]({
-            blockType: 2,
-            accountAddress,
-            toAddress: Register_Addr,
-            data: result,
-            tokenId, height, prevHash, snapshotHash
-        });
-    }
-
-    async retrieveReward({
-        accountAddress, nodeName, toAddress, tokenId, Gid = Snapshot_Gid, height, prevHash, snapshotHash
-    }: block8, requestType = 'async') {
-        let err = checkParams({ 
-            toAddress, nodeName, tokenId, requestType
-        }, ['toAddress', 'nodeName', 'tokenId'], [{
-            name: 'nodeName',
-            func: validNodeName
-        }, {
-            name: 'requestType',
-            func: validReqType
-        }]);
-        if (err) {
-            return Promise.reject(err);
-        }
-
-        const result:RPCresponse = await this._client.register.getRewardData(Gid, nodeName, toAddress);
-        return this[`${requestType}AccountBlock`]({
-            blockType: 2,
-            accountAddress,
-            toAddress: Register_Addr,
-            data: result,
-            tokenId, height, prevHash, snapshotHash
-        });
-    }
-
-    async voting({
-        accountAddress, nodeName, tokenId, Gid = Snapshot_Gid, height, prevHash, snapshotHash
-    }: block7, requestType = 'async') {
-        let err = checkParams({ 
-            nodeName, tokenId, requestType
-        }, ['nodeName', 'tokenId'], [{
-            name: 'nodeName',
-            func: validNodeName
-        }, {
-            name: 'requestType',
-            func: validReqType
-        }]);
-        if (err) {
-            return Promise.reject(err);
-        }
-
-        const result:RPCresponse = await this._client.vote.getVoteData(Gid, nodeName);
-        return this[`${requestType}AccountBlock`]({
-            blockType: 2,
-            accountAddress,
-            toAddress: Vote_Addr,
-            data: result,
-            tokenId, height, prevHash, snapshotHash
-        });
-    }
-
-    async revokeVoting({
-        accountAddress, tokenId, Gid = Snapshot_Gid, height, prevHash, snapshotHash
-    }: revokeVotingBlock, requestType = 'async') {
-        let err = checkParams({ tokenId, requestType }, ['tokenId'], [{
-            name: 'requestType',
-            func: validReqType
-        }]);
-        if (err) {
-            return Promise.reject(err);
-        }
-
-        const result:RPCresponse = await this._client.vote.getCancelVoteData(Gid);
-        return this[`${requestType}AccountBlock`]({
-            blockType: 2,
-            accountAddress,
-            toAddress: Vote_Addr,
-            data: result,
-            tokenId, height, prevHash, snapshotHash
-        });
-    }
-    
-    async getQuota({
-        accountAddress, toAddress, tokenId, amount, height, prevHash, snapshotHash
-    }: quotaBlock, requestType = 'async') {
-        let err = checkParams({ toAddress, tokenId, amount, requestType }, ['toAddress', 'tokenId', 'amount'], [{
-            name: 'requestType',
-            func: validReqType
-        }]);
-        if (err) {
-            return Promise.reject(err);
-        }
-
-        const result:RPCresponse = await this._client.pledge.getPledgeData(toAddress);
-        return this[`${requestType}AccountBlock`]({
-            blockType: 2,
-            toAddress: Quota_Addr,
-            data: result,
-            accountAddress, tokenId, amount, height, prevHash, snapshotHash
-        });
-    }
-
-    async withdrawalOfQuota({
-        accountAddress, toAddress, tokenId, amount, height, prevHash, snapshotHash
-    }: quotaBlock, requestType = 'async') {
-        let err = checkParams({ toAddress, tokenId, amount, requestType }, ['toAddress', 'tokenId', 'amount'], [{
-            name: 'requestType',
-            func: validReqType
-        }]);
-        if (err) {
-            return Promise.reject(err);
-        }
-
-        const result:RPCresponse = await this._client.pledge.getCancelPledgeData(toAddress, amount);
-        return this[`${requestType}AccountBlock`]({
-            blockType: 2,
-            toAddress: Quota_Addr,
-            data: result,
-            accountAddress, tokenId, height, prevHash, snapshotHash
+            toAddress,
+            data: Buffer.from(data, 'hex').toString('base64'),
+            height, prevHash, snapshotHash, tokenId, amount
         });
     }
 
@@ -322,47 +179,287 @@ export default class tx {
         });
     }
 
-    async createContract({
-        accountAddress, tokenId, amount, fee, hexCode, abi, params, height, prevHash, snapshotHash
-    }: createContractBlock, requestType = 'async') {
-        let err = checkParams({ hexCode, abi, tokenId, amount, fee}, ['hexCode', 'abi', 'tokenId', 'amount', 'fee']);
+    async SBPreg({
+        accountAddress, nodeName, toAddress, amount, tokenId, height, prevHash, snapshotHash
+    }: SBPregBlock, requestType = 'async') {
+        let err = checkParams({ 
+            toAddress, nodeName, tokenId, amount, requestType
+        }, ['toAddress', 'nodeName', 'tokenId', 'amount'], [{
+            name: 'nodeName',
+            func: validNodeName
+        }, {
+            name: 'requestType',
+            func: validReqType
+        }]);
         if (err) {
             return Promise.reject(err);
         }
 
-        let block = requestType === 'async' ? await this.asyncAccountBlock({
-            blockType: 1, accountAddress, height, prevHash, snapshotHash, tokenId, amount, fee
-        }) : _getAccountBlock({
-            blockType: 1, accountAddress, height, prevHash, snapshotHash, tokenId, amount, fee
-        });
+        return this.callContract({
+            accountAddress,
+            abi: Register_Abi,
+            toAddress: Register_Addr, 
+            params: [Snapshot_Gid, nodeName, toAddress],
+            tokenId, amount, height, prevHash, snapshotHash
+        }, requestType);
+    }
 
-        let toAddress = await this._client.contract.getCreateContractToAddress(accountAddress, block.height, block.prevHash, block.snapshotHash);
-        block.toAddress = toAddress;
+    async updateReg({
+        accountAddress, nodeName, toAddress, tokenId, height, prevHash, snapshotHash
+    }: block8, requestType = 'async') {
+        let err = checkParams({ 
+            toAddress, nodeName, tokenId, requestType
+        }, ['toAddress', 'nodeName', 'tokenId'], [{
+            name: 'nodeName',
+            func: validNodeName
+        }, {
+            name: 'requestType',
+            func: validReqType
+        }]);
+        if (err) {
+            return Promise.reject(err);
+        }
 
-        let data = await this._client.contract.getCreateContractData(Delegate_Gid, hexCode, abi, params);
+        return this.callContract({
+            accountAddress,
+            abi: UpdateRegistration_Abi,
+            toAddress: Register_Addr, 
+            params: [Snapshot_Gid, nodeName, toAddress],
+            tokenId, height, prevHash, snapshotHash
+        }, requestType);
+    }
+
+    async revokeReg({
+        accountAddress, nodeName, tokenId, height, prevHash, snapshotHash
+    }: block7, requestType = 'async') {
+        let err = checkParams({ 
+            nodeName, tokenId, requestType
+        }, ['nodeName', 'tokenId'], [{
+            name: 'nodeName',
+            func: validNodeName
+        }, {
+            name: 'requestType',
+            func: validReqType
+        }]);
+        if (err) {
+            return Promise.reject(err);
+        }
+
+        return this.callContract({
+            accountAddress,
+            abi: CancelRegister_Abi,
+            toAddress: Register_Addr, 
+            params: [Snapshot_Gid, nodeName],
+            tokenId, height, prevHash, snapshotHash
+        }, requestType);
+    }
+
+    async retrieveReward({
+        accountAddress, nodeName, toAddress, tokenId, height, prevHash, snapshotHash
+    }: block8, requestType = 'async') {
+        let err = checkParams({ 
+            toAddress, nodeName, tokenId, requestType
+        }, ['toAddress', 'nodeName', 'tokenId'], [{
+            name: 'nodeName',
+            func: validNodeName
+        }, {
+            name: 'requestType',
+            func: validReqType
+        }]);
+        if (err) {
+            return Promise.reject(err);
+        }
+
+        return this.callContract({
+            accountAddress,
+            abi: Reward_Abi,
+            toAddress: Register_Addr, 
+            params: [Snapshot_Gid, nodeName, toAddress],
+            tokenId, height, prevHash, snapshotHash
+        }, requestType);
+    }
+
+    async voting({
+        accountAddress, nodeName, tokenId, height, prevHash, snapshotHash
+    }: block7, requestType = 'async') {
+        let err = checkParams({ 
+            nodeName, tokenId, requestType
+        }, ['nodeName', 'tokenId'], [{
+            name: 'nodeName',
+            func: validNodeName
+        }, {
+            name: 'requestType',
+            func: validReqType
+        }]);
+        if (err) {
+            return Promise.reject(err);
+        }
+
+        return this.callContract({
+            accountAddress,
+            abi: Vote_Abi,
+            toAddress: Vote_Addr, 
+            params: [Snapshot_Gid, nodeName],
+            tokenId, height, prevHash, snapshotHash
+        }, requestType);
+    }
+
+    async revokeVoting({
+        accountAddress, tokenId, height, prevHash, snapshotHash
+    }: revokeVotingBlock, requestType = 'async') {
+        let err = checkParams({ tokenId, requestType }, ['tokenId'], [{
+            name: 'requestType',
+            func: validReqType
+        }]);
+        if (err) {
+            return Promise.reject(err);
+        }
+
+        return this.callContract({
+            accountAddress,
+            abi: CancelVote_Abi,
+            toAddress: Vote_Addr, 
+            params: [Snapshot_Gid],
+            tokenId, height, prevHash, snapshotHash
+        }, requestType);
+    }
+
+    async getQuota({
+        accountAddress, toAddress, tokenId, amount, height, prevHash, snapshotHash
+    }: quotaBlock, requestType = 'async') {
+        let err = checkParams({ toAddress, tokenId, amount, requestType }, ['toAddress', 'tokenId', 'amount'], [{
+            name: 'requestType',
+            func: validReqType
+        }]);
+        if (err) {
+            return Promise.reject(err);
+        }
+
+        return this.callContract({
+            abi: Pledge_Abi,
+            toAddress: Quota_Addr, 
+            params: [toAddress],
+            accountAddress, tokenId, height, prevHash, snapshotHash, amount
+        }, requestType);
+    }
+    
+    async withdrawalOfQuota({
+        accountAddress, toAddress, tokenId, amount, height, prevHash, snapshotHash
+    }: quotaBlock, requestType = 'async') {
+        let err = checkParams({ toAddress, tokenId, amount, requestType }, ['toAddress', 'tokenId', 'amount'], [{
+            name: 'requestType',
+            func: validReqType
+        }]);
+        if (err) {
+            return Promise.reject(err);
+        }
+
+        return this.callContract({
+            abi: CancelPledge_Abi,
+            toAddress: Quota_Addr, 
+            params: [toAddress, amount],
+            accountAddress, tokenId, height, prevHash, snapshotHash
+        }, requestType);
+    }
+
+    async mintage({
+        accountAddress, spendType = 'fee', tokenName, isReIssuable, maxSupply, ownerBurnOnly, totalSupply, decimals, tokenSymbol, height, prevHash, snapshotHash
+    }: mintageBlock, requestType = 'async') {
+        let err = checkParams({ tokenName, isReIssuable, maxSupply, ownerBurnOnly, totalSupply, decimals, tokenSymbol, requestType, spendType}, 
+            ['tokenName', 'isReIssuable', 'maxSupply', 'ownerBurnOnly', 'totalSupply', 'decimals', 'tokenSymbol'], 
+            [{ name: 'requestType', func: validReqType },
+             { name: 'spendType', func: (type) => {
+                return type === 'amount' || type === 'fee'
+             }}
+            ]);
+        if (err) {
+            return Promise.reject(err);
+        }
+
+        const spendAmount = '10000000000000000000000';
+        const spendFee = '1e21';
+
+        let requestBlock = {
+            blockType: 2, toAddress: Mintage_Addr, accountAddress, height, prevHash, snapshotHash
+        }
+        requestBlock[spendType] = spendType === 'fee' ? spendFee : spendAmount;
+        let block = requestType === 'async' ? await this.asyncAccountBlock(requestBlock) : _getAccountBlock(requestBlock);
+
+        let tokenId = await this._client.mintage.newTokenId(accountAddress, block.height, block.prevHash, block.snapshotHash);
+        let data = encodeFunctionCall(Mint_Abi, [isReIssuable, tokenId, tokenName, tokenSymbol, totalSupply, decimals, maxSupply, ownerBurnOnly]);
         block.data = data;
 
         return block;
     }
 
-    async callContract({
-        accountAddress, toAddress, tokenId, amount, abi, methodName, params, height, prevHash, snapshotHash
-    }: callContractBlock, requestType = 'async') {
-        let err = checkParams({ toAddress, abi, methodName, tokenId, amount }, ['toAddress', 'abi', 'methodName', 'tokenId', 'amount']);
+    async mintageCancel({
+
+    }) {
+        return null;
+    }
+
+    async mintageIssue({
+        accountAddress, tokenId, amount, beneficial, height, prevHash, snapshotHash
+    }: mintageIssueBlock, requestType = 'async') {
+        let err = checkParams({ tokenId, amount, beneficial, requestType }, 
+            ['tokenId', 'amount', 'beneficial'], 
+            [{
+                name: 'requestType',
+                func: validReqType
+            }]);
         if (err) {
             return Promise.reject(err);
         }
 
-        const result:RPCresponse = await this._client.contract.getCallContractData(abi, methodName, params);
-        return this[`${requestType}AccountBlock`]({
-            blockType: 2,
-            accountAddress,
-            toAddress,
-            data: result,
-            height, prevHash, snapshotHash, tokenId, amount
-        });
+        return this.callContract({
+            abi: Issue_Abi,
+            toAddress: Mintage_Addr, 
+            params: [tokenId, amount, beneficial],
+            accountAddress, height, prevHash, snapshotHash
+        }, requestType);
+    }
+
+    async mintageBurn({
+        accountAddress, height, prevHash, snapshotHash
+    }: mintageBurnBlock, requestType = 'async') {
+        return this.callContract({
+            abi: Burn_Abi,
+            toAddress: Mintage_Addr,
+            accountAddress, height, prevHash, snapshotHash
+        }, requestType);
+    }
+
+    async changeTokenType({
+        accountAddress, tokenId, height, prevHash, snapshotHash
+    }: changeTokenTypeBlock, requestType = 'async') {
+        return this.callContract({
+            abi: ChangeTokenType_Abi,
+            params: [tokenId],
+            toAddress: Mintage_Addr,
+            accountAddress, height, prevHash, snapshotHash
+        }, requestType);
+    }
+
+    async changeTransferOwner({
+        accountAddress, ownerAddress, tokenId, height, prevHash, snapshotHash
+    }: changeTransferOwnerBlock, requestType = 'async') {
+        let err = checkParams({ tokenId, ownerAddress, requestType }, ['tokenId', 'ownerAddress'], [{
+            name: 'requestType',
+            func: validReqType
+        }]);
+        if (err) {
+            return Promise.reject(err);
+        }
+
+        return this.callContract({
+            abi: TransferOwner_Abi,
+            toAddress: Mintage_Addr, 
+            params: [tokenId, ownerAddress],
+            accountAddress, height, prevHash, snapshotHash
+        }, requestType);
     }
 }
+
 
 
 

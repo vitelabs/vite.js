@@ -8,6 +8,10 @@ describe('Utils Test: packages/utils', function () {
     require('./utils/tools');
 });
 
+describe('Utils Test: packages/abi', function () {
+    require('./abi');
+});
+
 describe('AccountBlock Test: packages/accountBlock', function () {
     require('./accountBlock');
 });

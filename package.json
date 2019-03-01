@@ -1,19 +1,20 @@
 {
     "name": "@vite/vitejs",
-    "version": "1.1.3",
+    "version": "1.1.5-10",
     "description": "",
     "scripts": {
         "postinstall": "lerna bootstrap",
         "build": "yarn run postinstall && lerna run build",
         "rpc": "node test/bin/startRPC",
         "test:rpc": "cross-env NODE_ENV=test nyc mocha --compilers ts:ts-node/register -r tsconfig-paths/register test/RPC/index.js --no-timeouts",
-        "test": "yarn run build && cross-env NODE_ENV=test nyc mocha --compilers ts:ts-node/register -r tsconfig-paths/register test/index.js  --no-timeouts",
+        "test:only": "cross-env NODE_ENV=test nyc mocha --compilers ts:ts-node/register -r tsconfig-paths/register test/index.js  --no-timeouts",
+        "test": "yarn run build && yarn run test:only",
         "coverage": "nyc report --reporter=text-lcov | coveralls",
         "lint": "eslint ./ --cache",
         "lint:all": "eslint ./",
-        "prerelease-alpha": "npm run build && npm version prerelease",
+        "prepublish-alpha": "npm run build && npm version prerelease",
         "publish-alpha": "npm publish --access-public --tag alpha",
-        "publish": "npm dist-tag add @vite/vitejs@alpha latest"
+        "pub": "npm dist-tag add @vite/vitejs@alpha latest"
     },
     "repository": {
         "type": "git",
@@ -74,13 +75,24 @@
     },
     "nyc": {
         "require": [
+            "ts-node/register",
             "@babel/register"
+        ],
+        "extension": [
+            ".js",
+            ".ts"
+        ],
+        "include": [
+            "packages/**/src/*"
+        ],
+        "exclude": [
+            "*.d.ts"
         ],
         "reporter": [
             "html",
             "text"
         ],
         "sourceMap": false,
-        "instrument": false
+        "instrument": true
     }
 }
