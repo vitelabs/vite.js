@@ -29,3 +29,4 @@ export const Issue_Abi = {"type":"function","name":"Issue","inputs":[{"name":"to
 export const Burn_Abi = {"type":"function","name":"Burn","inputs":[]};
 export const TransferOwner_Abi = {"type":"function","name":"TransferOwner","inputs":[{"name":"tokenId","type":"tokenId"},{"name":"newOwner","type":"address"}]};
 export const ChangeTokenType_Abi = {"type":"function","name":"ChangeTokenType","inputs":[{"name":"tokenId","type":"tokenId"}]};
+export const Mint_CancelPledge_Abi = {"type":"function","name":"CancelPledge","inputs":[{"name":"tokenId","type":"tokenId"}]};
