@@ -3501,9 +3501,9 @@ jsonparse@^1.2.0:
   version "1.3.1"
   resolved "https://registry.yarnpkg.com/jsonparse/-/jsonparse-1.3.1.tgz#3f4dae4a91fac315f71062f8521cc239f1366280"
 
-jsonrpc-lite@^1.3.1:
-  version "1.3.1"
-  resolved "https://registry.yarnpkg.com/jsonrpc-lite/-/jsonrpc-lite-1.3.1.tgz#5c33086071793a0806e6c96e7c1ae92f4460ac50"
+jsonrpc-lite@^2.0.3:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/jsonrpc-lite/-/jsonrpc-lite-2.0.3.tgz#119d70d532b97645d96cebbde38d3d3e23543042"
 
 jsprim@^1.2.2:
   version "1.4.1"

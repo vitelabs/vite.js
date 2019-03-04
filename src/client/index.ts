@@ -3,6 +3,7 @@ import { requestTimeout } from 'const/error';
 import { RPCrequest, RPCresponse, Methods } from "const/type";
 import txBlock from './txBlock';
 import ledger from './ledger';
+import eventEmitter from './eventEmitter';
 
 export default class client {
     _provider: any
@@ -23,6 +24,8 @@ export default class client {
     ledger: _methods.ledgerFunc
     tx: _methods.txFunc
 
+    subscriptionList: Array<eventEmitter>
+
     constructor(provider: any, firstConnect: Function) {
         this._provider = provider;
         this.buildinTxBlock = new txBlock(this);
@@ -32,6 +35,8 @@ export default class client {
         this.isConnected = false;
         this.connectedOnce(firstConnect);
         this.requestList = [];
+
+        this.subscriptionList = [];
     }
 
     setProvider(provider, firstConnect, abort) {
@@ -159,21 +164,72 @@ export default class client {
         return reps;
     }
 
-    async subscribe(...args) {
-        if (!this.isConnected) {
-            return this._onReq('request', 'subscribe_subscribe', ...args);
+    private subscribeCallback(jsonEvent) {
+        if (!jsonEvent || !jsonEvent.method || jsonEvent.method !== 'subscribe_subscription') {
+            return;
         }
 
-        const rep: RPCresponse = await this._provider.request('subscribe_subscribe', ...args);
-        if (rep.error) { 
-            throw rep.error 
-        };
+        let id = jsonEvent.params && jsonEvent.params.subscription ? jsonEvent.params.subscription : '';
+        if (!id) {
+            return;
+        }
 
-        // const subscription = rep.result;
-        // this._provider.on()
+        this.subscriptionList && this.subscriptionList.forEach((s) => {
+            if (s.id === id) {
+                s.emit(jsonEvent.params.result || null);
+            }
+        });
     }
 
-    async unSubscribe() {
+    async subscribe(methodName, ...args) {
+        if (!this._provider.subscribe) {
+            throw '[Error] Not supported subscribe.';
+        }
 
+        if (!this.isConnected) {
+            return this._onReq('request', 'subscribe_subscribe', [methodName, ...args]);
+        }
+
+        const rep: RPCresponse = await this._provider.request('subscribe_subscribe', [methodName, ...args]);
+        if (rep.error) {
+            throw rep.error;
+        };
+        const subscription = rep.result;
+        
+        if (!this.subscriptionList || !this.subscriptionList.length) {
+            this.subscriptionList = [];
+            this._provider.subscribe((jsonEvent) => {
+                this.subscribeCallback(jsonEvent);
+            });
+        }
+
+        let event = new eventEmitter(subscription, this);
+        this.subscriptionList.push(event);
+        return event;
+    }
+
+    async unSubscribe(event) {
+        let i;
+
+        for(i = 0; i<this.subscriptionList.length; i++) {
+            if (this.subscriptionList[i] === event) {
+                break;
+            }
+        }
+
+        if (i >= this.subscriptionList.length) {
+            return;
+        }
+
+        this.subscriptionList.splice(i, 1);
+
+        if (!this.subscriptionList || !this.subscriptionList.length) {
+            this._provider.unSubscribe();
+        }
+    }
+
+    clearSubscriptions() {
+        this.subscriptionList = [];
+        this._provider.unSubscribe();
     }
 }

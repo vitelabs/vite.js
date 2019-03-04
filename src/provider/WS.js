@@ -60,49 +60,8 @@ class WS_RPC extends IPC_WS {
         };
     }
 
-    // _send(payloads) {
-    //     if (!this.connectStatus) {
-    //         return Promise.reject( this.ERRORS.CONNECT(this.path) );
-    //     }
-    //     this.socket.send( JSON.stringify(payloads) );
-    //     return this._onSend(payloads);
-    // }
-
     disconnect() {
         this.socket && this.socket.close && this.socket.close();
-    }
-
-    request(methodName, params) {
-        let requestObj = this._getRequestPayload(methodName, params);
-        
-        if (requestObj instanceof Error) {
-            return Promise.reject(requestObj);
-        }
-        return this._send(requestObj);
-    }
-
-    notification(methodName, params) {
-        let requestObj = this._getNotificationPayload(methodName, params);
-
-        if (requestObj instanceof Error) {
-            return requestObj;
-        }
-
-        this._send(requestObj);
-    }
-
-    /**
-     * batch
-     * @param {*} requests [{type, methodName, params}]
-     */
-    batch(requests = []) {
-        let _requests = this._getBatchPayload(requests);
-
-        if (_requests instanceof Error) {
-            return Promise.reject(_requests);
-        }
-
-        return this._send(_requests);
     }
 }
 
