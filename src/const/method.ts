@@ -1,3 +1,5 @@
+import { type } from "os";
+
 export const enum wallet {
     listEntropyFilesInStandardDir = "wallet_listEntropyFilesInStandardDir", 
     listAllEntropyFiles = "wallet_listAllEntropyFiles", 
@@ -77,6 +79,23 @@ export const enum ledger {
 }
 export const enum tx { 
     sendRawTx = "tx_sendRawTx" 
+}
+export const enum subscribe {
+    newAccountBlocksFilter = 'subscribe_newAccountBlocksFilter',
+    newLogsFilter = 'subscribe_newLogsFilter',
+    uninstallFilter = 'subscribe_uninstallFilter',
+    getFilterChanges = 'subscribe_getFilterChanges',
+    newAccountBlocks = 'subscribe_newAccountBlocks',
+    newLogs = 'subscribe_newLogs'
+}
+
+export type subscribeFunc = {
+    newAccountBlocksFilter: Function
+    newLogsFilter: Function
+    uninstallFilter: Function
+    getFilterChanges: Function
+    newAccountBlocks: Function
+    newLogs: Function
 }
 
 export type walletFunc = {
@@ -160,6 +179,6 @@ export type txFunc = {
     sendRawTx: Function
 }
 
-type methods = wallet | net | onroad | contract | pledge | contract | register | vote | mintage | consensusGroup | ledger | tx
+type methods = subscribe | wallet | net | onroad | contract | pledge | contract | register | vote | mintage | consensusGroup | ledger | tx
 
 export default methods;

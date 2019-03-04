@@ -239,7 +239,7 @@ export declare type callContractBlock = {
 
 export declare type mintageBlock = {
     accountAddress: Address, 
-    spendType: string, 
+    feeType: string, 
     tokenName: string, 
     isReIssuable: boolean, 
     maxSupply: string, 

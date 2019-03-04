@@ -23,6 +23,7 @@ export default class client {
     consensusGroup: _methods.consensusGroupFunc
     ledger: _methods.ledgerFunc
     tx: _methods.txFunc
+    subscribeFunc: _methods.subscribeFunc
 
     subscriptionList: Array<eventEmitter>
 
@@ -41,6 +42,7 @@ export default class client {
 
     setProvider(provider, firstConnect, abort) {
         abort && this._provider.abort(abort);
+        this.clearSubscriptions();
         this._provider = provider;
 
         this.isConnected = false;
@@ -82,16 +84,18 @@ export default class client {
                 continue;
             }
 
-            if (this[namespace]) {
+            let _namespace = namespace === 'subscribe' ? 'subscribeFunc' : namespace;
+
+            if (this[_namespace]) {
                 continue;
             }
 
             let spaceMethods = _methods[namespace];
-            this[namespace] = {};
+            this[_namespace] = {};
 
             for (let methodName in spaceMethods) {
                 let name = spaceMethods[methodName]
-                this[namespace][methodName] = (...args: any[]) => {
+                this[_namespace][methodName] = (...args: any[]) => {
                     return this.request(name, ...args);
                 }
             }
@@ -116,8 +120,10 @@ export default class client {
             let _q = () => {
                 this[type](methods, ...args).then((data) => {
                     clearTimeout(_timeout);
+                    this._offReq(_q);
                     res(data);
                 }).catch((err) => {
+                    this._offReq(_q);
                     clearTimeout(_timeout);
                     rej(err);
                 });
@@ -139,7 +145,7 @@ export default class client {
 
         const rep: RPCresponse = await this._provider.request(methods, args);
         if (rep.error) { 
-            throw rep.error 
+            throw rep.error;
         };
         return rep.result;
     }
@@ -165,45 +171,51 @@ export default class client {
     }
 
     private subscribeCallback(jsonEvent) {
-        if (!jsonEvent || !jsonEvent.method || jsonEvent.method !== 'subscribe_subscription') {
+        if (!jsonEvent) {
             return;
         }
 
-        let id = jsonEvent.params && jsonEvent.params.subscription ? jsonEvent.params.subscription : '';
+        let id = jsonEvent.params && jsonEvent.params.subscription ? jsonEvent.params.subscription : jsonEvent.id || '';
         if (!id) {
             return;
         }
 
         this.subscriptionList && this.subscriptionList.forEach((s) => {
             if (s.id === id) {
-                s.emit(jsonEvent.params.result || null);
+                let result = jsonEvent.params && jsonEvent.params.result ? jsonEvent.params.result : jsonEvent;
+                s.emit(result || null);
             }
         });
     }
 
     async subscribe(methodName, ...args) {
-        if (!this._provider.subscribe) {
-            throw '[Error] Not supported subscribe.';
-        }
+        let subMethodName = this._provider.subscribe ? 'subscribe_subscribe' : `subscribe_${methodName}Filter`;
+        let params = this._provider.subscribe ? [methodName, ...args] : args;
 
+        let rep;
         if (!this.isConnected) {
-            return this._onReq('request', 'subscribe_subscribe', [methodName, ...args]);
+            rep = await this._onReq('request', subMethodName, ...params);
+        } else {
+            rep = await this._provider.request(subMethodName, params);
+            rep = rep.result;
         }
 
-        const rep: RPCresponse = await this._provider.request('subscribe_subscribe', [methodName, ...args]);
-        if (rep.error) {
-            throw rep.error;
-        };
-        const subscription = rep.result;
-        
+        let subscription = rep;
+
         if (!this.subscriptionList || !this.subscriptionList.length) {
             this.subscriptionList = [];
-            this._provider.subscribe((jsonEvent) => {
+            this._provider.subscribe && this._provider.subscribe((jsonEvent) => {
                 this.subscribeCallback(jsonEvent);
             });
         }
 
         let event = new eventEmitter(subscription, this);
+        if (!this._provider.subscribe) {
+            event.startLoop((jsonEvent) => {
+                this.subscribeCallback(jsonEvent);
+            });
+        }
+
         this.subscriptionList.push(event);
         return event;
     }
@@ -221,15 +233,19 @@ export default class client {
             return;
         }
 
+        event && event.stopLoop();
         this.subscriptionList.splice(i, 1);
 
         if (!this.subscriptionList || !this.subscriptionList.length) {
-            this._provider.unSubscribe();
+            this._provider.unSubscribe && this._provider.unSubscribe();
         }
     }
 
     clearSubscriptions() {
+        this.subscriptionList.forEach((s) => {
+            s.stopLoop();
+        });
         this.subscriptionList = [];
-        this._provider.unSubscribe();
+        this._provider.unSubscribe && this._provider.unSubscribe();
     }
 }
