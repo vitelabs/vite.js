@@ -2,7 +2,7 @@ import IPC_WS from './Communication/ipc_ws';
 const websocket = require('websocket').w3cwebsocket;
 
 class WS_RPC extends IPC_WS {
-    constructor(url = 'ws://localhost:31420', timeout = 60000, options = {
+    constructor(path = 'ws://localhost:31420', timeout = 60000, options = {
         protocol: '',
         headers: '',
         clientConfig: '',
@@ -11,16 +11,15 @@ class WS_RPC extends IPC_WS {
     }) {
         super({
             onEventTypes: ['error', 'close', 'connect'],
-            sendFuncName: 'send'
+            sendFuncName: 'send',
+            path
         });
 
-        if (!url) {
-            console.error( this.ERRORS.CONNECT(url) );
-            return this.ERRORS.CONNECT(url);
+        if (!path) {
+            console.error( this.ERRORS.CONNECT(path) );
+            return this.ERRORS.CONNECT(path);
         }
 
-        this.type = 'ws';
-        this.url = url;
         this.timeout = timeout;
         this.protocol = options.protocol;
         this.headers = options.headers;
@@ -45,7 +44,7 @@ class WS_RPC extends IPC_WS {
     }
 
     reconnect() {
-        this.socket = new websocket(this.url, this.protocol, undefined, this.headers, undefined, this.clientConfig);
+        this.socket = new websocket(this.path, this.protocol, undefined, this.headers, undefined, this.clientConfig);
         this.socket.onopen = () => {
             (this.socket.readyState === this.socket.OPEN) && this._connected();
         };
@@ -61,13 +60,13 @@ class WS_RPC extends IPC_WS {
         };
     }
 
-    _send(payloads) {
-        if (!this.connectStatus) {
-            return Promise.reject( this.ERRORS.CONNECT(this.url) );
-        }
-        this.socket.send( JSON.stringify(payloads) );
-        return this._onSend(payloads);
-    }
+    // _send(payloads) {
+    //     if (!this.connectStatus) {
+    //         return Promise.reject( this.ERRORS.CONNECT(this.path) );
+    //     }
+    //     this.socket.send( JSON.stringify(payloads) );
+    //     return this._onSend(payloads);
+    // }
 
     disconnect() {
         this.socket && this.socket.close && this.socket.close();

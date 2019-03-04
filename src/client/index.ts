@@ -159,8 +159,18 @@ export default class client {
         return reps;
     }
 
-    async subscribe() {
+    async subscribe(...args) {
+        if (!this.isConnected) {
+            return this._onReq('request', 'subscribe_subscribe', ...args);
+        }
 
+        const rep: RPCresponse = await this._provider.request('subscribe_subscribe', ...args);
+        if (rep.error) { 
+            throw rep.error 
+        };
+
+        // const subscription = rep.result;
+        // this._provider.on()
     }
 
     async unSubscribe() {

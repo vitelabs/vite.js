@@ -2,10 +2,11 @@ import Communication from './index.js';
 
 class IPC_WS extends Communication {
     constructor({
-        onEventTypes, sendFuncName
+        onEventTypes, sendFuncName, path
     }) {
         super();
 
+        this.path = path;
         this._onEventTypes = onEventTypes || [];
         this._sendFuncName = sendFuncName;
 
@@ -42,6 +43,7 @@ class IPC_WS extends Communication {
 
             try {
                 let res = JSON.parse(ele);
+                // console.log('ele', ele);
                 if ( !(res instanceof Array) && res.result ) {
                     // Compatible: somtimes data.result is a json string, sometimes not.
                     try {
@@ -49,6 +51,8 @@ class IPC_WS extends Communication {
                     } catch (e) {
                         // console.log(e);
                     }
+                } else {
+                    // console.log('res', res);
                 }
                 
                 results.push(res);
@@ -143,6 +147,14 @@ class IPC_WS extends Communication {
                 return rej( this.ERRORS.TIMEOUT(this.timeout) );
             }, this.timeout) : null;
         });
+    }
+
+    _send(payloads) {
+        if (!this.connectStatus) {
+            return Promise.reject( this.ERRORS.CONNECT(this.path) );
+        }
+        this.socket[this._sendFuncName]( JSON.stringify(payloads) );
+        return this._onSend(payloads);
     }
 
     on (type, cb) {

@@ -9,7 +9,8 @@ class IPC_RPC extends IPC_WS {
     }) {
         super({
             onEventTypes: ['error', 'end', 'timeout', 'data', 'close', 'connect'],
-            sendFuncName: 'write'
+            sendFuncName: 'write',
+            path
         });
 
         if (!path) {
@@ -18,7 +19,6 @@ class IPC_RPC extends IPC_WS {
         }
 
         this.type = 'ipc';
-        this.path = path;
         this.timeout = timeout;
         this.delimiter = options.delimiter;
 
@@ -66,13 +66,13 @@ class IPC_RPC extends IPC_WS {
         });
     }
 
-    _send(payloads) {
-        if (!this.connectStatus) {
-            return Promise.reject( this.ERRORS.CONNECT(this.path) );
-        }
-        this.socket.write( JSON.stringify(payloads) );
-        return this._onSend(payloads);
-    }
+    // _send(payloads) {
+    //     if (!this.connectStatus) {
+    //         return Promise.reject( this.ERRORS.CONNECT(this.path) );
+    //     }
+    //     this.socket.write( JSON.stringify(payloads) );
+    //     return this._onSend(payloads);
+    // }
 
     reconnect() {
         this.socket.connect({ path: this.path });

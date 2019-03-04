@@ -53,7 +53,7 @@ function getBytesData(type, params) {
     }
 
     let isHex = /^0x[0-9a-fA-F]+$/.test(params) && params.length % 2 === 0;
-    let isCommonHex = /^[0-9a-fA-F]+$/.test(params) && params.length % 2 === 0;
+    let isCommonHex = /^[0-9a-fA-F]+$/.test(params) && params.length % 2 === 0 && type === 'bytes';
 
     if (type === 'bytes' && !isCommonHex && !isHex) {
         throw '[Error] Illegal params. Should be hex-string.'; 
