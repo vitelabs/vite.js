@@ -37,6 +37,7 @@ export enum BlockType {
     SendRefund
 }
 
+
 export enum BuiltinTxType {
     SBPreg = 0,
     UpdateReg,
@@ -46,16 +47,22 @@ export enum BuiltinTxType {
     RevokeVoting,
     GetQuota,
     WithdrawalOfQuota,
-    TokenIssuance,
-    WithdrawalOfToken,
+    Mintage,
+    MintageIssue,
+    MintageBurn,
+    MintageTransferOwner,
+    MintageChangeTokenType,
+    MintageCancelPledge,
+    DexFundUserDeposit,
+    DexFundUserWithdraw,
+    DexFundNewOrder,
+    DexTradeCancelOrder,
     CreateContractReq,
     TxReq,
     RewardReq,
     TxRes,
-    TxResFail,
-    SendRefund
+    TxResFail
 }
-
 export enum LangList {
     english = 'english',
     japanese = 'japanese',
