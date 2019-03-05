@@ -7,7 +7,15 @@ export const Delegate_Gid = "00000000000000000002";
 export const Quota_Addr = 'vite_000000000000000000000000000000000000000309508ba646';
 export const Vote_Addr = 'vite_000000000000000000000000000000000000000270a48cc491';
 export const Register_Addr = 'vite_0000000000000000000000000000000000000001c9e9f25417';
-export const Mintage_Addr = 'vite_00000000000000000000000000000000000000056ad6d26692'
+export const Mintage_Addr = 'vite_00000000000000000000000000000000000000056ad6d26692';
+export const DexFund_Addr = 'vite_000000000000000000000000000000000000000617d47459a8';
+export const DexTrade_Addr = 'vite_000000000000000000000000000000000000000768ef0e6238';
+
+// DEX
+export const DexFundUserDeposit_Abi = {'type':'function','name':'DexFundUserWithdraw', 'inputs':[{'name':'token','type':'tokenId'},{'name':'amount','type':'uint256'}]};
+export const DexFundUserWithdraw_Abi = {'type':'function','name':'DexFundUserWithdraw', 'inputs':[{'name':'token','type':'tokenId'},{'name':'amount','type':'uint256'}]};
+export const DexTradeCancelOrder_Abi = {'type':'function','name':'DexTradeCancelOrder', 'inputs':[{'name':'orderId','type':'bytes'}, {'name':'tradeToken','type':'tokenId'}, {'name':',quoteToken','type':'tokenId'}, {'name':'side', 'type':'bool'}]};
+export const DexFundNewOrder_Abi = {'type':'function','name':'DexFundNewOrder', 'inputs':[{'name':'orderId','type':'bytes'}, {'name':'tradeToken','type':'tokenId'}, {'name':'quoteToken','type':'tokenId'}, {'name':'side', 'type':'bool'}, {'name':'orderType', 'type':'uint32'}, {'name':'price', 'type':'string'}, {'name':'quantity', 'type':'uint256'}]};
 
 // SBP
 export const Register_Abi = {"type":"function","name":"Register", "inputs":[{"name":"gid","type":"gid"},{"name":"name","type":"string"},{"name":"nodeAddr","type":"address"}]};
