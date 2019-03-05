@@ -5,11 +5,13 @@ class EventEmitter {
     callback: Function
     client: client
     timeLoop: any
+    isSubscribe: boolean
 
-    constructor(subscription, client) {
+    constructor(subscription, client, isSubscribe) {
         this.id = subscription;
         this.callback = null;
         this.client = client;
+        this.isSubscribe = isSubscribe;
 
         this.timeLoop = null;
     }

@@ -144,7 +144,7 @@ export default class client {
         }
 
         const rep: RPCresponse = await this._provider.request(methods, args);
-        if (rep.error) { 
+        if (rep.error) {
             throw rep.error;
         };
         return rep.result;
@@ -175,20 +175,28 @@ export default class client {
             return;
         }
 
-        let id = jsonEvent.params && jsonEvent.params.subscription ? jsonEvent.params.subscription : jsonEvent.id || '';
+        let id = jsonEvent.params && jsonEvent.params.subscription ? jsonEvent.params.subscription : jsonEvent.subscription || '';
         if (!id) {
             return;
         }
 
         this.subscriptionList && this.subscriptionList.forEach((s) => {
-            if (s.id === id) {
-                let result = jsonEvent.params && jsonEvent.params.result ? jsonEvent.params.result : jsonEvent;
-                s.emit(result || null);
+            if (s.id !== id) {
+                return;
             }
+
+            let result = jsonEvent.params && jsonEvent.params.result ? jsonEvent.params.result : jsonEvent.result || null;
+            if (!result) {
+                return;
+            }
+
+            s.emit(result);
         });
     }
 
     async subscribe(methodName, ...args) {
+        // this._provider.subscribe = null;
+
         let subMethodName = this._provider.subscribe ? 'subscribe_subscribe' : `subscribe_${methodName}Filter`;
         let params = this._provider.subscribe ? [methodName, ...args] : args;
 
@@ -209,7 +217,7 @@ export default class client {
             });
         }
 
-        let event = new eventEmitter(subscription, this);
+        let event = new eventEmitter(subscription, this, !!this._provider.subscribe);
         if (!this._provider.subscribe) {
             event.startLoop((jsonEvent) => {
                 this.subscribeCallback(jsonEvent);
