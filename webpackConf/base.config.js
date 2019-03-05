@@ -66,7 +66,8 @@ module.exports = {
             client: path.resolve(__dirname, '../src/client/'),
             const: path.resolve(__dirname, '../src/const/'),
             utils: path.resolve(__dirname, '../src/utils/'),
-            provider: path.resolve(__dirname, '../src/provider/')
+            provider: path.resolve(__dirname, '../src/provider/'),
+            netProcessor: path.resolve(__dirname, '../src/netProcessor/')
         },
         extensions: ['.js', '.json', '.ts']
     }

@@ -1,16 +1,18 @@
-import client from './index';
+import netProcessor from './index';
+import { subscribe } from 'const/method';
+
 
 class EventEmitter {
     id: string
     callback: Function
-    client: client
+    netProcessor: netProcessor
     timeLoop: any
     isSubscribe: boolean
 
-    constructor(subscription, client, isSubscribe) {
+    constructor(subscription, netProcessor, isSubscribe) {
         this.id = subscription;
         this.callback = null;
-        this.client = client;
+        this.netProcessor = netProcessor;
         this.isSubscribe = isSubscribe;
 
         this.timeLoop = null;
@@ -22,7 +24,7 @@ class EventEmitter {
 
     off() {
         this.stopLoop();
-        this.client.unSubscribe(this);
+        this.netProcessor.unSubscribe(this);
     }
 
     emit(result) {
@@ -32,7 +34,7 @@ class EventEmitter {
     startLoop(cb, time = 2000) {
         let loop = () => {
             this.timeLoop = setTimeout(() => {
-                this.client.subscribeFunc.getFilterChanges(this.id).then((data) => {
+                this.netProcessor.request(subscribe.getFilterChanges, this.id).then((data) => {
                     cb && cb(data);
                     loop();
                 }).catch(err => {
@@ -49,7 +51,7 @@ class EventEmitter {
         }
         clearTimeout(this.timeLoop);
         this.timeLoop = null;
-        this.client.subscribeFunc.uninstallFilter(this.id);
+        this.netProcessor.request(subscribe.uninstallFilter, this.id);
     }
 }
 
