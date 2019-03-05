@@ -15,8 +15,8 @@
         "test": "cross-env NODE_ENV=test nyc mocha --compilers ts:ts-node/register -r tsconfig-paths/register test/index.js  --no-timeouts",
         "coverage": "nyc report --reporter=text-lcov | coveralls",
         "rpc": "node test/bin/startRPC",
-        "lint": "eslint ./ --cache",
-        "lint-all": "eslint ./",
+        "lint": "eslint --ext js,ts --cache",
+        "lint-all": "eslint --ext js,ts",
         "prepublish-alpha": "npm run build && npm version prerelease",
         "publish-alpha": "npm publish --access-public --tag alpha",
         "pub": "npm dist-tag add @vite/vitejs@alpha latest"
