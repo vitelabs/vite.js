@@ -1,7 +1,6 @@
 import netProcessor from './index';
 import { subscribe } from 'const/method';
 
-
 class EventEmitter {
     id: string
     callback: Function
