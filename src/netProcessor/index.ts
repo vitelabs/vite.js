@@ -141,8 +141,6 @@ export default class netProcessor {
 
 
     async subscribe(methodName, ...args) {
-        // this._provider.subscribe = null;
-
         let subMethodName = this._provider.subscribe ? 'subscribe_subscribe' : `subscribe_${methodName}Filter`;
         let params = this._provider.subscribe ? [methodName, ...args] : args;
 
