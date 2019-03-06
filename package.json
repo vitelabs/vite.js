@@ -1,17 +1,17 @@
 {
     "name": "@vite/vitejs",
-    "version": "1.1.5-11",
+    "version": "1.2.1",
     "description": "",
     "scripts": {
         "postinstall": "lerna bootstrap",
-        "build": "yarn run postinstall && lerna run build",
+        "build": "node build.js && yarn run postinstall && lerna run build",
         "rpc": "node test/bin/startRPC",
         "test:rpc": "cross-env NODE_ENV=test nyc mocha --compilers ts:ts-node/register -r tsconfig-paths/register test/RPC/index.js --no-timeouts",
         "test:only": "cross-env NODE_ENV=test nyc mocha --compilers ts:ts-node/register -r tsconfig-paths/register test/index.js  --no-timeouts",
         "test": "yarn run build && yarn run test:only",
         "coverage": "nyc report --reporter=text-lcov | coveralls",
-        "lint": "eslint ./ --cache",
-        "lint:all": "eslint ./",
+        "lint": "eslint --ext js,ts --cache",
+        "lint-all": "eslint --ext js,ts",
         "prepublish-alpha": "npm run build && npm version prerelease",
         "publish-alpha": "npm publish --access-public --tag alpha",
         "pub": "npm dist-tag add @vite/vitejs@alpha latest"
@@ -63,9 +63,7 @@
         "vinyl-source-stream": "~2.0.0",
         "webpack": "^4.25.1",
         "webpack-cli": "^3.1.2",
-        "webpack-merge": "^4.1.4"
-    },
-    "dependencies": {
+        "webpack-merge": "^4.1.4",
         "bip39": "^2.5.0",
         "eslint-config-standard": "^12.0.0",
         "eslint-plugin-import": "^2.14.0",

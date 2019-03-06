@@ -78,3 +78,12 @@ export const enum ledger {
 export const enum tx { 
     sendRawTx = "tx_sendRawTx" 
 }
+
+export const enum subscribe {
+    newAccountBlocksFilter = 'subscribe_newAccountBlocksFilter',
+    newLogsFilter = 'subscribe_newLogsFilter',
+    uninstallFilter = 'subscribe_uninstallFilter',
+    getFilterChanges = 'subscribe_getFilterChanges',
+    newAccountBlocks = 'subscribe_newAccountBlocks',
+    newLogs = 'subscribe_newLogs'
+}

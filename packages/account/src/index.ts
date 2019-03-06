@@ -306,11 +306,11 @@ class Account {
     }
 
     async mintage({
-        spendType = 'fee', tokenName, isReIssuable, maxSupply, ownerBurnOnly, totalSupply, decimals, tokenSymbol
+        feeType = 'burn', tokenName, isReIssuable, maxSupply, ownerBurnOnly, totalSupply, decimals, tokenSymbol
     }) {
         const _callContractBlock = await this._client.buildinTxBlock.mintage({
             accountAddress: this.address, 
-            spendType, tokenName, isReIssuable, maxSupply, ownerBurnOnly, totalSupply, decimals, tokenSymbol
+            feeType, tokenName, isReIssuable, maxSupply, ownerBurnOnly, totalSupply, decimals, tokenSymbol
         });
         return this._client.buildinLedger.sendRawTx(_callContractBlock, this.privateKey);
     }

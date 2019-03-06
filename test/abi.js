@@ -588,6 +588,11 @@ describe('utils/tools', function () {
     
         assert.equal(data, _data);
     });
+
+    it('encode2decode', function() {
+        let result = abi.encodeParameter('string', '15');
+        assert.equal('15', abi.decodeParameter('string', result));
+    });
 });
 
 

@@ -4,7 +4,7 @@ import { newHexAddr, isValidHexAddr as _isValidHexAddr, getAddrFromHexAddr as _g
 import { paramsFormat } from '@vite/vitejs-error';
 import { tools, encoder } from '@vite/vitejs-utils';
 
-import { AddrObj, Hex, LangList } from './type';
+import { AddrObj, Hex, LangList } from "./type";
 import { ROOT_PATH  } from './vars';
 
 const { checkParams } = tools;

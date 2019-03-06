@@ -5,7 +5,7 @@ import { isValidHexAddr } from '@vite/vitejs-privtoaddr';
 import { tools, encoder } from '@vite/vitejs-utils';
 import { encodeParameters } from '@vite/vitejs-abi';
 
-import { SignBlock, formatBlock } from './type';
+import { SignBlock, formatBlock } from "./type";
 
 const { checkParams, validInteger } = tools;
 const { isArray } = encoder;

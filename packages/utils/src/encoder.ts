@@ -1,5 +1,5 @@
 const blake = require('blakejs/blake2b');
-import { Hex } from './type';
+import { Hex } from "./type";
 import { checkParams } from './tools';
 
 declare const enum Charset {

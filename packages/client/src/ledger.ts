@@ -4,7 +4,7 @@ import { isValidHexAddr } from '@vite/vitejs-privtoaddr';
 import { getBuiltinTxType, signAccountBlock, _validReqAccountBlock as validReqAccountBlock } from '@vite/vitejs-accountblock';
 
 import client from '.';
-import { RPCrequest, BuiltinTxType, Address } from "./type";
+import { RPCrequest, BuiltinTxType, Address } from "@vite/vitejs-netprocessor/src/type";
 
 const { onroad } = method;
 const { checkParams } = tools;

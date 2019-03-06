@@ -3,29 +3,16 @@ const BigNumber = require('bn.js');
 import { ed25519, encoder, tools } from '@vite/vitejs-utils';
 import { getAddrFromHexAddr } from '@vite/vitejs-privtoaddr';
 import { paramsMissing, paramsFormat } from '@vite/vitejs-error';
-import { Default_Hash } from '@vite/vitejs-constant';
+import { Default_Hash, contractAddrs, abiFuncSignature } from '@vite/vitejs-constant';
 
-import { formatAccountBlock, validReqAccountBlock, getCreateContractData } from "./builtin";
+import { formatAccountBlock as _formatAccountBlock, validReqAccountBlock as _validReqAccountBlock, getCreateContractData as _getCreateContractData } from "./builtin";
 import { AccountBlock, BlockType, SignBlock, sendTxBlock, receiveTxBlock, syncFormatBlock } from "./type";
 
 const { getPublicKey, sign } = ed25519;
 const { bytesToHex, blake2b } = encoder;
 const { checkParams, getRawTokenid } = tools;
 
-
-enum txType {
-    'f29c6ce2_vite_0000000000000000000000000000000000000001c9e9f25417' = 'SBPreg',
-    '3b7bdf74_vite_0000000000000000000000000000000000000001c9e9f25417' = 'UpdateReg',
-    '60862fe2_vite_0000000000000000000000000000000000000001c9e9f25417' = 'RevokeReg',
-    'ce1f27a7_vite_0000000000000000000000000000000000000001c9e9f25417' = 'RetrieveReward',
-    'fdc17f25_vite_000000000000000000000000000000000000000270a48cc491' = 'Voting',
-    'a629c531_vite_000000000000000000000000000000000000000270a48cc491' = 'RevokeVoting',
-    '8de7dcfd_vite_000000000000000000000000000000000000000309508ba646' = 'GetQuota',
-    '9ff9c7b6_vite_000000000000000000000000000000000000000309508ba646' = 'WithdrawalOfQuota',
-    '46d0ce8b_vite_00000000000000000000000000000000000000056ad6d26692' = 'TokenIssuance',
-    '9b9125f5_vite_00000000000000000000000000000000000000056ad6d26692' = 'WithdrawalOfToken'
-};
-
+const txType = enumTxType();
 
 export function getAccountBlock({
     blockType, fromBlockHash, accountAddress, message, data, height, prevHash, snapshotHash, toAddress, tokenId, amount, nonce
@@ -164,8 +151,44 @@ export function signAccountBlock(accountBlock: SignBlock, privKey: string) {
     return _accountBlock;
 }
 
-export const _formatAccountBlock = formatAccountBlock;
+export const formatAccountBlock = _formatAccountBlock;
 
-export const _validReqAccountBlock = validReqAccountBlock;
+export const validReqAccountBlock = _validReqAccountBlock;
 
-export const _getCreateContractData = getCreateContractData;
+export const getCreateContractData = _getCreateContractData;
+
+
+
+function enumTxType () {
+    let txType = {};
+
+    // Register
+    txType[`${abiFuncSignature.Register}_${contractAddrs.Register}`] = 'SBPreg';
+    txType[`${abiFuncSignature.UpdateRegistration}_${contractAddrs.Register}`] = 'UpdateReg';
+    txType[`${abiFuncSignature.CancelRegister}_${contractAddrs.Register}`] = 'RevokeReg';
+    txType[`${abiFuncSignature.Reward}_${contractAddrs.Register}`] = 'RetrieveReward';
+
+    // Vote
+    txType[`${abiFuncSignature.Vote}_${contractAddrs.Vote}`] = 'Voting';
+    txType[`${abiFuncSignature.CancelVote}_${contractAddrs.Vote}`] = 'RevokeVoting';
+
+    // Quota
+    txType[`${abiFuncSignature.Pledge}_${contractAddrs.Quota}`] = 'GetQuota';
+    txType[`${abiFuncSignature.CancelPledge}_${contractAddrs.Quota}`] = 'WithdrawalOfQuota';
+    
+    // Mintage
+    txType[`${abiFuncSignature.Mint}_${contractAddrs.Mintage}`] = 'Mintage';
+    txType[`${abiFuncSignature.Issue}_${contractAddrs.Mintage}`] = 'MintageIssue';
+    txType[`${abiFuncSignature.Burn}_${contractAddrs.Mintage}`] = 'MintageBurn';
+    txType[`${abiFuncSignature.TransferOwner}_${contractAddrs.Mintage}`] = 'MintageTransferOwner';
+    txType[`${abiFuncSignature.ChangeTokenType}_${contractAddrs.Mintage}`] = 'MintageChangeTokenType';
+    txType[`${abiFuncSignature.Mint_CancelPledge}_${contractAddrs.Mintage}`] = 'MintageCancelPledge';
+    
+    // Dex
+    txType[`${abiFuncSignature.DexFundUserDeposit}_${contractAddrs.DexFund}`] = 'DexFundUserDeposit';
+    txType[`${abiFuncSignature.DexFundUserWithdraw}_${contractAddrs.DexFund}`] = 'DexFundUserWithdraw';
+    txType[`${abiFuncSignature.DexFundNewOrder}_${contractAddrs.DexFund}`] = 'DexFundNewOrder';
+    txType[`${abiFuncSignature.DexTradeCancelOrder}_${contractAddrs.DexTrade}`] = 'DexTradeCancelOrder';
+
+    return txType;
+}

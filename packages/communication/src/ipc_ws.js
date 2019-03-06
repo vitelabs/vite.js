@@ -2,10 +2,11 @@ import Communication from './communication';
 
 class IPC_WS extends Communication {
     constructor({
-        onEventTypes, sendFuncName
+        onEventTypes, sendFuncName, path
     }) {
         super();
 
+        this.path = path;
         this._onEventTypes = onEventTypes || [];
         this._sendFuncName = sendFuncName;
 
@@ -17,6 +18,8 @@ class IPC_WS extends Communication {
         this._connectTimeout = null;
         this._connectConnect = null;
         this._connectClose = null;
+
+        this.subscribeMethod = null;
     }
 
     _connected() {
@@ -59,6 +62,7 @@ class IPC_WS extends Communication {
 
         results.forEach((ele) => {
             if ( !(ele instanceof Array) && !ele.id) {
+                this.subscribeMethod && this.subscribeMethod(ele);
                 return;
             }
 
@@ -69,6 +73,7 @@ class IPC_WS extends Communication {
 
             for(let i=0; i<ele.length; i++) {
                 if (!ele[i].id) {
+                    this.subscribeMethod && this.subscribeMethod(ele[i]);
                     continue;
                 }
 
@@ -145,6 +150,14 @@ class IPC_WS extends Communication {
         });
     }
 
+    _send(payloads) {
+        if (!this.connectStatus) {
+            return Promise.reject( this.ERRORS.CONNECT(this.path) );
+        }
+        this.socket[this._sendFuncName]( JSON.stringify(payloads) );
+        return this._onSend(payloads);
+    }
+
     on (type, cb) {
         let eventType = this._checkOnType(type);
         if ( eventType < 0 ) {
@@ -160,9 +173,56 @@ class IPC_WS extends Communication {
         let eventType = this._checkOnType(type);
         eventType && (this[eventType] = null);
     }
+
+
+    request(methodName, params) {
+        let requestObj = this._getRequestPayload(methodName, params);
+        
+        if (requestObj instanceof Error) {
+            return Promise.reject(requestObj);
+        }
+        return this._send(requestObj);
+    }
+
+    notification(methodName, params) {
+        let requestObj = this._getNotificationPayload(methodName, params);
+
+        if (requestObj instanceof Error) {
+            return requestObj;
+        }
+
+        this._send(requestObj);
+    }
+
+    /**
+     * batch
+     * @param {*} requests [{type, methodName, params}]
+     */
+    batch(requests = []) {
+        let _requests = this._getBatchPayload(requests);
+
+        if (_requests instanceof Error) {
+            return Promise.reject(_requests);
+        }
+
+        return this._send(_requests);
+    }
+
+    subscribe(callback) {
+        if (typeof callback !== 'function') {
+            throw '[Error] callback should be a function.';
+        }
+        this.subscribeMethod = callback;
+    }
+
+    unSubscribe() {
+        this.subscribeMethod = null;
+    }
 }
 
 export default IPC_WS;
+
+
 
 function getIdFromPayloads(payloads) {
     let id;

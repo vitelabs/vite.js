@@ -1,5 +1,5 @@
 const nacl = require('@sisi/tweetnacl-blake2b');
-import { Hex } from './type';
+import { Hex } from "./type";
 import { checkParams } from './tools';
 
 export function keyPair() {

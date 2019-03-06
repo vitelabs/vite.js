@@ -9,16 +9,16 @@ import {
     getAccountBlock as _getAccountBlock, 
     getSendTxBlock, 
     getReceiveTxBlock, 
-    _validReqAccountBlock as validReqAccountBlock, 
-    _formatAccountBlock as formatAccountBlock,
-    _getCreateContractData as getCreateContractData
+    validReqAccountBlock, 
+    formatAccountBlock,
+    getCreateContractData
 } from '@vite/vitejs-accountblock';
 import { encodeFunctionCall } from "@vite/vitejs-abi";
 
 import { SBPregBlock, block8, block7, revokeVotingBlock, quotaBlock, 
         sendTxBlock, receiveTxBlock, formatBlock, 
         createContractBlock, callContractBlock,
-        mintageBlock, mintageIssueBlock, mintageBurnBlock, changeTokenTypeBlock, changeTransferOwnerBlock } from "./type";
+        mintageBlock, mintageIssueBlock, mintageBurnBlock, changeTokenTypeBlock, changeTransferOwnerBlock } from "@vite/vitejs-netprocessor/src/type";
 import client from '.';
 
 const { checkParams, validNodeName } = tools;
@@ -363,13 +363,13 @@ export default class tx {
     }
 
     async mintage({
-        accountAddress, spendType = 'fee', tokenName, isReIssuable, maxSupply, ownerBurnOnly, totalSupply, decimals, tokenSymbol, height, prevHash, snapshotHash
+        accountAddress, feeType = 'burn', tokenName, isReIssuable, maxSupply, ownerBurnOnly, totalSupply, decimals, tokenSymbol, height, prevHash, snapshotHash
     }: mintageBlock, requestType = 'async') {
-        let err = checkParams({ tokenName, isReIssuable, maxSupply, ownerBurnOnly, totalSupply, decimals, tokenSymbol, requestType, spendType}, 
+        let err = checkParams({ tokenName, isReIssuable, maxSupply, ownerBurnOnly, totalSupply, decimals, tokenSymbol, requestType, feeType}, 
             ['tokenName', 'isReIssuable', 'maxSupply', 'ownerBurnOnly', 'totalSupply', 'decimals', 'tokenSymbol'], 
             [{ name: 'requestType', func: validReqType },
-             { name: 'spendType', func: (type) => {
-                return type === 'amount' || type === 'fee'
+             { name: 'feeType', func: (type) => {
+                return type === 'burn' || type === 'stake'
              }}
             ]);
         if (err) {
@@ -378,11 +378,12 @@ export default class tx {
 
         const spendAmount = '100000000000000000000000';
         const spendFee = '1000000000000000000000';
+        feeType = feeType === 'burn' ? 'fee' : 'amount';
 
         let requestBlock = {
             blockType: 2, toAddress: Mintage_Addr, accountAddress, height, prevHash, snapshotHash
         }
-        requestBlock[spendType] = spendType === 'fee' ? spendFee : spendAmount;
+        requestBlock[feeType] = feeType === 'fee' ? spendFee : spendAmount;
         let block = requestType === 'async' ? await this.asyncAccountBlock(requestBlock) : _getAccountBlock(requestBlock);
 
         let tokenId = await this._client.mintage.newTokenId({

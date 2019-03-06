@@ -15,5 +15,8 @@
     "bugs": {
         "url": "https://github.com/vitelabs/vite.js/issues"
     },
-    "homepage": "https://github.com/vitelabs/vite.js#readme"
+    "homepage": "https://github.com/vitelabs/vite.js#readme",
+    "dependencies": {
+        "@vite/vitejs-abi": "^1.1.0-1"
+    }
 }
