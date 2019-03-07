@@ -1,7 +1,6 @@
 const path = require('path');
 const webpack = require('webpack');
 
-const baseDir = path.resolve(process.cwd(), './src');
 const target = process.env.build_target;
 
 module.exports = {
@@ -13,16 +12,14 @@ module.exports = {
     target,
     mode: 'production',
     entry: {
-        providers: path.resolve(baseDir, 'provider/index.ts'),
-        WS: path.resolve(baseDir, 'provider/WS.js'),
-        HTTP: path.resolve(baseDir, 'provider/HTTP.js'),
-        IPC: path.resolve(baseDir, 'provider/IPC.js')
+        index: path.join(__dirname, './src/index.js')
     },
     output: {
+        filename: `[name].${target}.js`,
+        path: path.join(__dirname, './dist'),
         libraryTarget: 'umd',
-        umdNamedDefine: true,
-        filename:'[name].js',
-        path: path.join(__dirname, '../dist/providers'),
+        library: 'http',
+        umdNamedDefine: true
     },
     optimization: {
         splitChunks: {
@@ -33,7 +30,10 @@ module.exports = {
                     reuseExistingChunk: true
                 }
             }
-        }
+        },
+        // minimizer: [new TerserPlugin({
+        //     test: /\.j|ts(\?.*)?$/i
+        // })]
     },
     module: {
         rules: [{
@@ -57,12 +57,6 @@ module.exports = {
         }],
     },
     resolve: {
-        alias: {
-            client: path.resolve(__dirname, '../src/client/'),
-            const: path.resolve(__dirname, '../src/const/'),
-            utils: path.resolve(__dirname, '../src/utils/'),
-            provider: path.resolve(__dirname, '../src/provider/')
-        },
         extensions: ['.js', '.json', '.ts']
     }
 };

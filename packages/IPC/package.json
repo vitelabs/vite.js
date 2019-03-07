@@ -6,7 +6,9 @@
     "typings": "src/index.d.ts",
     "scripts": {
         "prebuild": "rm -rf ./dist",
-        "build": "tsc"
+        "build:node": "build_target=node webpack",
+        "build:web": "build_target=web webpack",
+        "build": "yarn run build:node && yarn run build:web"
     },
     "repository": {
         "type": "git",

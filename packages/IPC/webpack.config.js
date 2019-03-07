@@ -1,27 +1,24 @@
 const path = require('path');
 const webpack = require('webpack');
 
-const baseDir = path.resolve(process.cwd(), './src');
-const Buffer_Path = path.join(__dirname, '../node_modules/buffer/index.js');
+const target = process.env.build_target;
 
 module.exports = {
     plugins:[
-        new webpack.NormalModuleReplacementPlugin(/\/buffer\//, function(resource) {
-            resource.request = Buffer_Path;
-        }),
         new webpack.DefinePlugin({
             'processSilence': process.env.NODE_ENV && process.env.NODE_ENV.indexOf('test') === 0 ? 0 : 1
         }),
     ],
+    target,
     mode: 'production',
-    entry: {
-        index: path.resolve(baseDir, './browser.js')
+    entry: {        
+        index: path.join(__dirname, './src/index.js')
     },
     output: {
-        filename:'[name].min.js',
-        path: path.join(__dirname, '../dist'),
+        filename: `[name].${target}.js`,
+        path: path.join(__dirname, './dist'),
         libraryTarget: 'umd',
-        library: 'vitejs',
+        library: 'ipc',
         umdNamedDefine: true
     },
     optimization: {
@@ -60,13 +57,6 @@ module.exports = {
         }],
     },
     resolve: {
-        alias: {
-            client: path.resolve(__dirname, '../src/client/'),
-            const: path.resolve(__dirname, '../src/const/'),
-            utils: path.resolve(__dirname, '../src/utils/'),
-            provider: path.resolve(__dirname, '../src/provider/'),
-            netProcessor: path.resolve(__dirname, '../src/netProcessor/')
-        },
         extensions: ['.js', '.json', '.ts']
     }
 };
