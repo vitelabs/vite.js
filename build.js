@@ -1,7 +1,8 @@
 var fs = require('fs');
 var path = require('path');
 
-const typePath = path.join(__dirname, 'type.ts');
+const typePath = path.join(__dirname, '/common/type.ts');
+var tsconfigContent = require('./common/tsconfig.js');
 
 traversing('./packages', (fPath) => {
     let stats = fs.statSync(fPath);
@@ -10,16 +11,13 @@ traversing('./packages', (fPath) => {
     }
 
     let toFile = path.join(fPath, '/src/type.ts');
-    let toFileIndex = path.join(fPath, '/src/index.d.ts');
+    let tsconfigFile = path.join(fPath, '/tsconfig.json');
 
     fs.existsSync(toFile) && fs.unlinkSync(toFile);
     fs.writeFileSync(toFile, fs.readFileSync(typePath));
-    fs.writeFileSync(toFile, fs.readFileSync(typePath));
 
-    fs.existsSync(toFileIndex) && fs.unlinkSync(toFileIndex);
-    // fs.writeFileSync(toFileIndex, fs.readFileSync(typePath));
-    // fs.writeFileSync(toFileIndex, fs.readFileSync(typePath));
-    // console.log(toFile, val);
+    fs.existsSync(tsconfigFile) && fs.unlinkSync(tsconfigFile);
+    fs.writeFileSync(tsconfigFile, JSON.stringify(tsconfigContent));
 });
 
 
