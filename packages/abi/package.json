@@ -1,6 +1,6 @@
 {
     "name": "@vite/vitejs-abi",
-    "version": "2.0.0-alpha.5",
+    "version": "2.0.0-alpha.4",
     "main": "dist/index.js",
     "typings": "src/index.d.ts",
     "scripts": {
@@ -17,8 +17,8 @@
     },
     "homepage": "https://github.com/vitelabs/vite.js#readme",
     "dependencies": {
-        "@vite/vitejs-privtoaddr": "^2.0.0-alpha.5",
-        "@vite/vitejs-utils": "^2.0.0-alpha.5"
+        "@vite/vitejs-privtoaddr": "^2.0.0-alpha.4",
+        "@vite/vitejs-utils": "^2.0.0-alpha.4"
     },
     "gitHead": "fd0d929b392b9db0c2d6d091d59ea6e9ec3c286e",
     "publishConfig": {
