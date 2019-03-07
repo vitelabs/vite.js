@@ -1,6 +1,6 @@
 {
     "name": "@vite/vitejs-ws",
-    "version": "2.0.0-alpha.2",
+    "version": "2.0.0-alpha.3",
     "description": "",
     "main": "dist/index.js",
     "typings": "src/index.d.ts",
@@ -22,7 +22,7 @@
         "buffer": "~5.2.1"
     },
     "dependencies": {
-        "@vite/vitejs-communication": "^2.0.0-alpha.2",
+        "@vite/vitejs-communication": "^2.0.0-alpha.3",
         "websocket": "^1.0.26"
     },
     "gitHead": "fd0d929b392b9db0c2d6d091d59ea6e9ec3c286e",
