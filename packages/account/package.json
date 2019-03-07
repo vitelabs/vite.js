@@ -5,7 +5,7 @@
     "typings": "src/index.d.ts",
     "scripts": {
         "prebuild": "rm -rf ./dist",
-        "build": "yarn run prebuild && tsc"
+        "build": "tsc"
     },
     "repository": {
         "type": "git",
@@ -22,5 +22,6 @@
         "@vite/vitejs-error": "^2.0.0-alpha.0",
         "@vite/vitejs-privtoaddr": "^2.0.0-alpha.0",
         "@vite/vitejs-utils": "^2.0.0-alpha.0"
-    }
+    },
+    "gitHead": "3a71dcb0bd066768bafc83fd3f2d2f9a13be02d8"
 }
