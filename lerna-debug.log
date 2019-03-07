@@ -1,0 +1,599 @@
+0 silly argv { _: [ 'publish' ],
+0 silly argv   'dist-tag': 'alpha',
+0 silly argv   distTag: 'alpha',
+0 silly argv   composed: 'publish',
+0 silly argv   lernaVersion: '3.8.4',
+0 silly argv   '$0': '/usr/local/bin/lerna' }
+1 notice cli v3.8.4
+2 verbose rootPath /Users/sisi/workspace/vite.js
+3 verbose session 22320c45e124ce84
+4 verbose user-agent lerna/3.8.4/node@v11.4.0+x64 (darwin)
+5 silly argv { _: [ 'publish' ],
+5 silly argv   'dist-tag': 'alpha',
+5 silly argv   distTag: 'alpha',
+5 silly argv   composed: 'publish',
+5 silly argv   lernaVersion: '3.8.4' }
+6 verbose rootPath /Users/sisi/workspace/vite.js
+7 info current version 2.0.0-alpha.0
+8 silly isAnythingCommitted
+9 verbose isAnythingCommitted 1
+10 silly currentBranch
+11 verbose currentBranch dev/2.0.0
+12 silly remoteBranchExists
+13 silly isBehindUpstream
+14 silly isBehindUpstream dev/2.0.0 is behind origin/dev/2.0.0 by 0 commit(s) and ahead by 1
+15 silly hasTags
+16 verbose hasTags true
+17 silly git-describe.sync "v2.0.0-alpha.0-2-g915d904" => {"lastTagName":"v2.0.0-alpha.0","lastVersion":"v2.0.0-alpha.0","refCount":"2","sha":"915d904","isDirty":false}
+18 info Looking for changed packages since v2.0.0-alpha.0
+19 verbose updated @vite/vitejs-http
+20 verbose updated @vite/vitejs-ipc
+21 verbose updated @vite/vitejs-ws
+22 verbose updated @vite/vitejs-abi
+23 verbose updated @vite/vitejs-account
+24 verbose updated @vite/vitejs-accountblock
+25 verbose updated @vite/vitejs-addraccount
+26 verbose updated @vite/vitejs-client
+27 verbose updated @vite/vitejs-communication
+28 verbose updated @vite/vitejs-constant
+29 verbose updated @vite/vitejs-error
+30 verbose updated @vite/vitejs-hdaccount
+31 verbose updated @vite/vitejs-hdaddr
+32 verbose updated @vite/vitejs-keystore
+33 verbose updated @vite/vitejs-netprocessor
+34 verbose updated @vite/vitejs-privtoaddr
+35 verbose updated @vite/vitejs-utils
+36 verbose updated @vite/vitejs
+37 verbose git-describe undefined => "v2.0.0-alpha.0-2-g915d904"
+38 silly git-describe parsed => {"lastTagName":"v2.0.0-alpha.0","lastVersion":"v2.0.0-alpha.0","refCount":"2","sha":"915d904","isDirty":false}
+39 silly batched [ PackageGraphNode {
+39 silly batched     name: '@vite/vitejs-communication',
+39 silly batched     externalDependencies: Map { 'jsonrpc-lite' => [Object] },
+39 silly batched     localDependencies: Map {},
+39 silly batched     localDependents:
+39 silly batched      Map {
+39 silly batched        '@vite/vitejs-http' => [PackageGraphNode],
+39 silly batched        '@vite/vitejs-ipc' => [PackageGraphNode],
+39 silly batched        '@vite/vitejs-ws' => [PackageGraphNode] } },
+39 silly batched   PackageGraphNode {
+39 silly batched     name: '@vite/vitejs-error',
+39 silly batched     externalDependencies: Map {},
+39 silly batched     localDependencies: Map {},
+39 silly batched     localDependents:
+39 silly batched      Map {
+39 silly batched        '@vite/vitejs-account' => [PackageGraphNode],
+39 silly batched        '@vite/vitejs-accountblock' => [PackageGraphNode],
+39 silly batched        '@vite/vitejs-client' => [PackageGraphNode],
+39 silly batched        '@vite/vitejs-hdaccount' => [PackageGraphNode],
+39 silly batched        '@vite/vitejs-hdaddr' => [PackageGraphNode],
+39 silly batched        '@vite/vitejs-keystore' => [PackageGraphNode],
+39 silly batched        '@vite/vitejs-netprocessor' => [PackageGraphNode],
+39 silly batched        '@vite/vitejs-utils' => [PackageGraphNode],
+39 silly batched        '@vite/vitejs' => [PackageGraphNode] } } ]
+40 silly batched [ PackageGraphNode {
+40 silly batched     name: '@vite/vitejs-http',
+40 silly batched     externalDependencies: Map { 'xhr2' => [Object] },
+40 silly batched     localDependencies: Map {},
+40 silly batched     localDependents: Map {} },
+40 silly batched   PackageGraphNode {
+40 silly batched     name: '@vite/vitejs-ipc',
+40 silly batched     externalDependencies: Map { 'net' => [Object] },
+40 silly batched     localDependencies: Map {},
+40 silly batched     localDependents: Map {} },
+40 silly batched   PackageGraphNode {
+40 silly batched     name: '@vite/vitejs-ws',
+40 silly batched     externalDependencies: Map { 'websocket' => [Object] },
+40 silly batched     localDependencies: Map {},
+40 silly batched     localDependents: Map {} },
+40 silly batched   PackageGraphNode {
+40 silly batched     name: '@vite/vitejs-utils',
+40 silly batched     externalDependencies:
+40 silly batched      Map { '@sisi/tweetnacl-blake2b' => [Object], 'blakejs' => [Object] },
+40 silly batched     localDependencies: Map {},
+40 silly batched     localDependents:
+40 silly batched      Map {
+40 silly batched        '@vite/vitejs-abi' => [PackageGraphNode],
+40 silly batched        '@vite/vitejs-account' => [PackageGraphNode],
+40 silly batched        '@vite/vitejs-accountblock' => [PackageGraphNode],
+40 silly batched        '@vite/vitejs-client' => [PackageGraphNode],
+40 silly batched        '@vite/vitejs-hdaccount' => [PackageGraphNode],
+40 silly batched        '@vite/vitejs-hdaddr' => [PackageGraphNode],
+40 silly batched        '@vite/vitejs-keystore' => [PackageGraphNode],
+40 silly batched        '@vite/vitejs-privtoaddr' => [PackageGraphNode],
+40 silly batched        '@vite/vitejs' => [PackageGraphNode] } } ]
+41 silly batched [ PackageGraphNode {
+41 silly batched     name: '@vite/vitejs-privtoaddr',
+41 silly batched     externalDependencies: Map { 'blakejs' => [Object] },
+41 silly batched     localDependencies: Map {},
+41 silly batched     localDependents:
+41 silly batched      Map {
+41 silly batched        '@vite/vitejs-abi' => [PackageGraphNode],
+41 silly batched        '@vite/vitejs-account' => [PackageGraphNode],
+41 silly batched        '@vite/vitejs-accountblock' => [PackageGraphNode],
+41 silly batched        '@vite/vitejs-addraccount' => [PackageGraphNode],
+41 silly batched        '@vite/vitejs-client' => [PackageGraphNode],
+41 silly batched        '@vite/vitejs-hdaddr' => [PackageGraphNode],
+41 silly batched        '@vite/vitejs-keystore' => [PackageGraphNode],
+41 silly batched        '@vite/vitejs' => [PackageGraphNode] } } ]
+42 silly batched [ PackageGraphNode {
+42 silly batched     name: '@vite/vitejs-abi',
+42 silly batched     externalDependencies: Map {},
+42 silly batched     localDependencies: Map {},
+42 silly batched     localDependents:
+42 silly batched      Map {
+42 silly batched        '@vite/vitejs-accountblock' => [PackageGraphNode],
+42 silly batched        '@vite/vitejs-client' => [PackageGraphNode],
+42 silly batched        '@vite/vitejs-constant' => [PackageGraphNode],
+42 silly batched        '@vite/vitejs' => [PackageGraphNode] } },
+42 silly batched   PackageGraphNode {
+42 silly batched     name: '@vite/vitejs-hdaddr',
+42 silly batched     externalDependencies:
+42 silly batched      Map {
+42 silly batched        '@sisi/ed25519-blake2b-hd-key' => [Object],
+42 silly batched        'bip39' => [Object] },
+42 silly batched     localDependencies: Map {},
+42 silly batched     localDependents:
+42 silly batched      Map {
+42 silly batched        '@vite/vitejs-hdaccount' => [PackageGraphNode],
+42 silly batched        '@vite/vitejs' => [PackageGraphNode] } },
+42 silly batched   PackageGraphNode {
+42 silly batched     name: '@vite/vitejs-keystore',
+42 silly batched     externalDependencies:
+42 silly batched      Map {
+42 silly batched        'browserify-aes' => [Object],
+42 silly batched        'pure-uuid' => [Object],
+42 silly batched        'scryptsy' => [Object] },
+42 silly batched     localDependencies: Map {},
+42 silly batched     localDependents: Map { '@vite/vitejs' => [PackageGraphNode] } } ]
+43 silly batched [ PackageGraphNode {
+43 silly batched     name: '@vite/vitejs-constant',
+43 silly batched     externalDependencies: Map {},
+43 silly batched     localDependencies: Map {},
+43 silly batched     localDependents:
+43 silly batched      Map {
+43 silly batched        '@vite/vitejs-accountblock' => [PackageGraphNode],
+43 silly batched        '@vite/vitejs-addraccount' => [PackageGraphNode],
+43 silly batched        '@vite/vitejs-client' => [PackageGraphNode],
+43 silly batched        '@vite/vitejs-netprocessor' => [PackageGraphNode],
+43 silly batched        '@vite/vitejs' => [PackageGraphNode] } } ]
+44 silly batched [ PackageGraphNode {
+44 silly batched     name: '@vite/vitejs-accountblock',
+44 silly batched     externalDependencies:
+44 silly batched      Map {
+44 silly batched        '@sisi/tweetnacl-blake2b' => [Object],
+44 silly batched        'blakejs' => [Object],
+44 silly batched        'bn.js' => [Object] },
+44 silly batched     localDependencies: Map {},
+44 silly batched     localDependents:
+44 silly batched      Map {
+44 silly batched        '@vite/vitejs-client' => [PackageGraphNode],
+44 silly batched        '@vite/vitejs' => [PackageGraphNode] } },
+44 silly batched   PackageGraphNode {
+44 silly batched     name: '@vite/vitejs-netprocessor',
+44 silly batched     externalDependencies: Map {},
+44 silly batched     localDependencies: Map {},
+44 silly batched     localDependents:
+44 silly batched      Map {
+44 silly batched        '@vite/vitejs-client' => [PackageGraphNode],
+44 silly batched        '@vite/vitejs' => [PackageGraphNode] } } ]
+45 silly batched [ PackageGraphNode {
+45 silly batched     name: '@vite/vitejs-client',
+45 silly batched     externalDependencies: Map {},
+45 silly batched     localDependencies: Map {},
+45 silly batched     localDependents:
+45 silly batched      Map {
+45 silly batched        '@vite/vitejs-account' => [PackageGraphNode],
+45 silly batched        '@vite/vitejs-addraccount' => [PackageGraphNode],
+45 silly batched        '@vite/vitejs-hdaccount' => [PackageGraphNode],
+45 silly batched        '@vite/vitejs' => [PackageGraphNode] } } ]
+46 silly batched [ PackageGraphNode {
+46 silly batched     name: '@vite/vitejs-addraccount',
+46 silly batched     externalDependencies: Map {},
+46 silly batched     localDependencies: Map {},
+46 silly batched     localDependents:
+46 silly batched      Map {
+46 silly batched        '@vite/vitejs-account' => [PackageGraphNode],
+46 silly batched        '@vite/vitejs' => [PackageGraphNode] } } ]
+47 silly batched [ PackageGraphNode {
+47 silly batched     name: '@vite/vitejs-account',
+47 silly batched     externalDependencies: Map {},
+47 silly batched     localDependencies: Map {},
+47 silly batched     localDependents:
+47 silly batched      Map {
+47 silly batched        '@vite/vitejs-hdaccount' => [PackageGraphNode],
+47 silly batched        '@vite/vitejs' => [PackageGraphNode] } } ]
+48 silly batched [ PackageGraphNode {
+48 silly batched     name: '@vite/vitejs-hdaccount',
+48 silly batched     externalDependencies: Map {},
+48 silly batched     localDependencies: Map {},
+48 silly batched     localDependents: Map { '@vite/vitejs' => [PackageGraphNode] } } ]
+49 silly batched [ PackageGraphNode {
+49 silly batched     name: '@vite/vitejs',
+49 silly batched     externalDependencies:
+49 silly batched      Map {
+49 silly batched        '@babel/polyfill' => [Object],
+49 silly batched        'buffer' => [Object],
+49 silly batched        'es6-promise' => [Object] },
+49 silly batched     localDependencies: Map {},
+49 silly batched     localDependents: Map {} } ]
+50 silly lifecycle No script for "preversion" in "@vite/vitejs", continuing
+51 silly lifecycle No script for "preversion" in "@vite/vitejs-communication", continuing
+52 silly lifecycle No script for "preversion" in "@vite/vitejs-error", continuing
+53 silly lifecycle No script for "version" in "@vite/vitejs-error", continuing
+54 silly lifecycle No script for "version" in "@vite/vitejs-communication", continuing
+55 silly lifecycle No script for "preversion" in "@vite/vitejs-http", continuing
+56 silly lifecycle No script for "preversion" in "@vite/vitejs-ipc", continuing
+57 silly lifecycle No script for "preversion" in "@vite/vitejs-ws", continuing
+58 silly lifecycle No script for "preversion" in "@vite/vitejs-utils", continuing
+59 silly lifecycle No script for "version" in "@vite/vitejs-http", continuing
+60 silly lifecycle No script for "version" in "@vite/vitejs-ipc", continuing
+61 silly lifecycle No script for "version" in "@vite/vitejs-ws", continuing
+62 silly lifecycle No script for "version" in "@vite/vitejs-utils", continuing
+63 silly lifecycle No script for "preversion" in "@vite/vitejs-privtoaddr", continuing
+64 silly lifecycle No script for "version" in "@vite/vitejs-privtoaddr", continuing
+65 silly lifecycle No script for "preversion" in "@vite/vitejs-abi", continuing
+66 silly lifecycle No script for "preversion" in "@vite/vitejs-hdaddr", continuing
+67 silly lifecycle No script for "preversion" in "@vite/vitejs-keystore", continuing
+68 silly lifecycle No script for "version" in "@vite/vitejs-keystore", continuing
+69 silly lifecycle No script for "version" in "@vite/vitejs-hdaddr", continuing
+70 silly lifecycle No script for "version" in "@vite/vitejs-abi", continuing
+71 silly lifecycle No script for "preversion" in "@vite/vitejs-constant", continuing
+72 silly lifecycle No script for "version" in "@vite/vitejs-constant", continuing
+73 silly lifecycle No script for "preversion" in "@vite/vitejs-accountblock", continuing
+74 silly lifecycle No script for "preversion" in "@vite/vitejs-netprocessor", continuing
+75 silly lifecycle No script for "version" in "@vite/vitejs-netprocessor", continuing
+76 silly lifecycle No script for "version" in "@vite/vitejs-accountblock", continuing
+77 silly lifecycle No script for "preversion" in "@vite/vitejs-client", continuing
+78 silly lifecycle No script for "version" in "@vite/vitejs-client", continuing
+79 silly lifecycle No script for "preversion" in "@vite/vitejs-addraccount", continuing
+80 silly lifecycle No script for "version" in "@vite/vitejs-addraccount", continuing
+81 silly lifecycle No script for "preversion" in "@vite/vitejs-account", continuing
+82 silly lifecycle No script for "version" in "@vite/vitejs-account", continuing
+83 silly lifecycle No script for "preversion" in "@vite/vitejs-hdaccount", continuing
+84 silly lifecycle No script for "version" in "@vite/vitejs-hdaccount", continuing
+85 silly lifecycle No script for "preversion" in "@vite/vitejs", continuing
+86 silly lifecycle No script for "version" in "@vite/vitejs", continuing
+87 silly lifecycle No script for "version" in "@vite/vitejs", continuing
+88 silly gitAdd [ '/Users/sisi/workspace/vite.js/packages/error/package.json',
+88 silly gitAdd   '/Users/sisi/workspace/vite.js/packages/communication/package.json',
+88 silly gitAdd   '/Users/sisi/workspace/vite.js/packages/HTTP/package.json',
+88 silly gitAdd   '/Users/sisi/workspace/vite.js/packages/IPC/package.json',
+88 silly gitAdd   '/Users/sisi/workspace/vite.js/packages/WS/package.json',
+88 silly gitAdd   '/Users/sisi/workspace/vite.js/packages/utils/package.json',
+88 silly gitAdd   '/Users/sisi/workspace/vite.js/packages/privToAddr/package.json',
+88 silly gitAdd   '/Users/sisi/workspace/vite.js/packages/keystore/package.json',
+88 silly gitAdd   '/Users/sisi/workspace/vite.js/packages/hdAddr/package.json',
+88 silly gitAdd   '/Users/sisi/workspace/vite.js/packages/abi/package.json',
+88 silly gitAdd   '/Users/sisi/workspace/vite.js/packages/constant/package.json',
+88 silly gitAdd   '/Users/sisi/workspace/vite.js/packages/netProcessor/package.json',
+88 silly gitAdd   '/Users/sisi/workspace/vite.js/packages/accountBlock/package.json',
+88 silly gitAdd   '/Users/sisi/workspace/vite.js/packages/client/package.json',
+88 silly gitAdd   '/Users/sisi/workspace/vite.js/packages/addrAccount/package.json',
+88 silly gitAdd   '/Users/sisi/workspace/vite.js/packages/account/package.json',
+88 silly gitAdd   '/Users/sisi/workspace/vite.js/packages/hdAccount/package.json',
+88 silly gitAdd   '/Users/sisi/workspace/vite.js/packages/vitejs/package.json',
+88 silly gitAdd   '/Users/sisi/workspace/vite.js/lerna.json' ]
+89 silly gitCommit v2.0.0-alpha.1
+90 verbose git [ 'commit', '-m', 'v2.0.0-alpha.1' ]
+91 silly gitTag v2.0.0-alpha.1
+92 verbose git [ 'tag', 'v2.0.0-alpha.1', '-m', 'v2.0.0-alpha.1' ]
+93 silly lifecycle No script for "postversion" in "@vite/vitejs-http", continuing
+94 silly lifecycle No script for "postversion" in "@vite/vitejs-ipc", continuing
+95 silly lifecycle No script for "postversion" in "@vite/vitejs-ws", continuing
+96 silly lifecycle No script for "postversion" in "@vite/vitejs-abi", continuing
+97 silly lifecycle No script for "postversion" in "@vite/vitejs-account", continuing
+98 silly lifecycle No script for "postversion" in "@vite/vitejs-accountblock", continuing
+99 silly lifecycle No script for "postversion" in "@vite/vitejs-addraccount", continuing
+100 silly lifecycle No script for "postversion" in "@vite/vitejs-client", continuing
+101 silly lifecycle No script for "postversion" in "@vite/vitejs-communication", continuing
+102 silly lifecycle No script for "postversion" in "@vite/vitejs-constant", continuing
+103 silly lifecycle No script for "postversion" in "@vite/vitejs-error", continuing
+104 silly lifecycle No script for "postversion" in "@vite/vitejs-hdaccount", continuing
+105 silly lifecycle No script for "postversion" in "@vite/vitejs-hdaddr", continuing
+106 silly lifecycle No script for "postversion" in "@vite/vitejs-keystore", continuing
+107 silly lifecycle No script for "postversion" in "@vite/vitejs-netprocessor", continuing
+108 silly lifecycle No script for "postversion" in "@vite/vitejs-privtoaddr", continuing
+109 silly lifecycle No script for "postversion" in "@vite/vitejs-utils", continuing
+110 silly lifecycle No script for "postversion" in "@vite/vitejs", continuing
+111 silly lifecycle No script for "postversion" in "@vite/vitejs", continuing
+112 info git Pushing tags...
+113 silly gitPush origin dev/2.0.0
+114 silly batched [ PackageGraphNode {
+114 silly batched     name: '@vite/vitejs-communication',
+114 silly batched     externalDependencies: Map { 'jsonrpc-lite' => [Object] },
+114 silly batched     localDependencies: Map {},
+114 silly batched     localDependents:
+114 silly batched      Map {
+114 silly batched        '@vite/vitejs-http' => [PackageGraphNode],
+114 silly batched        '@vite/vitejs-ipc' => [PackageGraphNode],
+114 silly batched        '@vite/vitejs-ws' => [PackageGraphNode] } },
+114 silly batched   PackageGraphNode {
+114 silly batched     name: '@vite/vitejs-error',
+114 silly batched     externalDependencies: Map {},
+114 silly batched     localDependencies: Map {},
+114 silly batched     localDependents:
+114 silly batched      Map {
+114 silly batched        '@vite/vitejs-account' => [PackageGraphNode],
+114 silly batched        '@vite/vitejs-accountblock' => [PackageGraphNode],
+114 silly batched        '@vite/vitejs-client' => [PackageGraphNode],
+114 silly batched        '@vite/vitejs-hdaccount' => [PackageGraphNode],
+114 silly batched        '@vite/vitejs-hdaddr' => [PackageGraphNode],
+114 silly batched        '@vite/vitejs-keystore' => [PackageGraphNode],
+114 silly batched        '@vite/vitejs-netprocessor' => [PackageGraphNode],
+114 silly batched        '@vite/vitejs-utils' => [PackageGraphNode],
+114 silly batched        '@vite/vitejs' => [PackageGraphNode] } } ]
+115 silly batched [ PackageGraphNode {
+115 silly batched     name: '@vite/vitejs-http',
+115 silly batched     externalDependencies: Map { 'xhr2' => [Object] },
+115 silly batched     localDependencies: Map {},
+115 silly batched     localDependents: Map {} },
+115 silly batched   PackageGraphNode {
+115 silly batched     name: '@vite/vitejs-ipc',
+115 silly batched     externalDependencies: Map { 'net' => [Object] },
+115 silly batched     localDependencies: Map {},
+115 silly batched     localDependents: Map {} },
+115 silly batched   PackageGraphNode {
+115 silly batched     name: '@vite/vitejs-ws',
+115 silly batched     externalDependencies: Map { 'websocket' => [Object] },
+115 silly batched     localDependencies: Map {},
+115 silly batched     localDependents: Map {} },
+115 silly batched   PackageGraphNode {
+115 silly batched     name: '@vite/vitejs-utils',
+115 silly batched     externalDependencies:
+115 silly batched      Map { '@sisi/tweetnacl-blake2b' => [Object], 'blakejs' => [Object] },
+115 silly batched     localDependencies: Map {},
+115 silly batched     localDependents:
+115 silly batched      Map {
+115 silly batched        '@vite/vitejs-abi' => [PackageGraphNode],
+115 silly batched        '@vite/vitejs-account' => [PackageGraphNode],
+115 silly batched        '@vite/vitejs-accountblock' => [PackageGraphNode],
+115 silly batched        '@vite/vitejs-client' => [PackageGraphNode],
+115 silly batched        '@vite/vitejs-hdaccount' => [PackageGraphNode],
+115 silly batched        '@vite/vitejs-hdaddr' => [PackageGraphNode],
+115 silly batched        '@vite/vitejs-keystore' => [PackageGraphNode],
+115 silly batched        '@vite/vitejs-privtoaddr' => [PackageGraphNode],
+115 silly batched        '@vite/vitejs' => [PackageGraphNode] } } ]
+116 silly batched [ PackageGraphNode {
+116 silly batched     name: '@vite/vitejs-privtoaddr',
+116 silly batched     externalDependencies: Map { 'blakejs' => [Object] },
+116 silly batched     localDependencies: Map {},
+116 silly batched     localDependents:
+116 silly batched      Map {
+116 silly batched        '@vite/vitejs-abi' => [PackageGraphNode],
+116 silly batched        '@vite/vitejs-account' => [PackageGraphNode],
+116 silly batched        '@vite/vitejs-accountblock' => [PackageGraphNode],
+116 silly batched        '@vite/vitejs-addraccount' => [PackageGraphNode],
+116 silly batched        '@vite/vitejs-client' => [PackageGraphNode],
+116 silly batched        '@vite/vitejs-hdaddr' => [PackageGraphNode],
+116 silly batched        '@vite/vitejs-keystore' => [PackageGraphNode],
+116 silly batched        '@vite/vitejs' => [PackageGraphNode] } } ]
+117 silly batched [ PackageGraphNode {
+117 silly batched     name: '@vite/vitejs-abi',
+117 silly batched     externalDependencies: Map {},
+117 silly batched     localDependencies: Map {},
+117 silly batched     localDependents:
+117 silly batched      Map {
+117 silly batched        '@vite/vitejs-accountblock' => [PackageGraphNode],
+117 silly batched        '@vite/vitejs-client' => [PackageGraphNode],
+117 silly batched        '@vite/vitejs-constant' => [PackageGraphNode],
+117 silly batched        '@vite/vitejs' => [PackageGraphNode] } },
+117 silly batched   PackageGraphNode {
+117 silly batched     name: '@vite/vitejs-hdaddr',
+117 silly batched     externalDependencies:
+117 silly batched      Map {
+117 silly batched        '@sisi/ed25519-blake2b-hd-key' => [Object],
+117 silly batched        'bip39' => [Object] },
+117 silly batched     localDependencies: Map {},
+117 silly batched     localDependents:
+117 silly batched      Map {
+117 silly batched        '@vite/vitejs-hdaccount' => [PackageGraphNode],
+117 silly batched        '@vite/vitejs' => [PackageGraphNode] } },
+117 silly batched   PackageGraphNode {
+117 silly batched     name: '@vite/vitejs-keystore',
+117 silly batched     externalDependencies:
+117 silly batched      Map {
+117 silly batched        'browserify-aes' => [Object],
+117 silly batched        'pure-uuid' => [Object],
+117 silly batched        'scryptsy' => [Object] },
+117 silly batched     localDependencies: Map {},
+117 silly batched     localDependents: Map { '@vite/vitejs' => [PackageGraphNode] } } ]
+118 silly batched [ PackageGraphNode {
+118 silly batched     name: '@vite/vitejs-constant',
+118 silly batched     externalDependencies: Map {},
+118 silly batched     localDependencies: Map {},
+118 silly batched     localDependents:
+118 silly batched      Map {
+118 silly batched        '@vite/vitejs-accountblock' => [PackageGraphNode],
+118 silly batched        '@vite/vitejs-addraccount' => [PackageGraphNode],
+118 silly batched        '@vite/vitejs-client' => [PackageGraphNode],
+118 silly batched        '@vite/vitejs-netprocessor' => [PackageGraphNode],
+118 silly batched        '@vite/vitejs' => [PackageGraphNode] } } ]
+119 silly batched [ PackageGraphNode {
+119 silly batched     name: '@vite/vitejs-accountblock',
+119 silly batched     externalDependencies:
+119 silly batched      Map {
+119 silly batched        '@sisi/tweetnacl-blake2b' => [Object],
+119 silly batched        'blakejs' => [Object],
+119 silly batched        'bn.js' => [Object] },
+119 silly batched     localDependencies: Map {},
+119 silly batched     localDependents:
+119 silly batched      Map {
+119 silly batched        '@vite/vitejs-client' => [PackageGraphNode],
+119 silly batched        '@vite/vitejs' => [PackageGraphNode] } },
+119 silly batched   PackageGraphNode {
+119 silly batched     name: '@vite/vitejs-netprocessor',
+119 silly batched     externalDependencies: Map {},
+119 silly batched     localDependencies: Map {},
+119 silly batched     localDependents:
+119 silly batched      Map {
+119 silly batched        '@vite/vitejs-client' => [PackageGraphNode],
+119 silly batched        '@vite/vitejs' => [PackageGraphNode] } } ]
+120 silly batched [ PackageGraphNode {
+120 silly batched     name: '@vite/vitejs-client',
+120 silly batched     externalDependencies: Map {},
+120 silly batched     localDependencies: Map {},
+120 silly batched     localDependents:
+120 silly batched      Map {
+120 silly batched        '@vite/vitejs-account' => [PackageGraphNode],
+120 silly batched        '@vite/vitejs-addraccount' => [PackageGraphNode],
+120 silly batched        '@vite/vitejs-hdaccount' => [PackageGraphNode],
+120 silly batched        '@vite/vitejs' => [PackageGraphNode] } } ]
+121 silly batched [ PackageGraphNode {
+121 silly batched     name: '@vite/vitejs-addraccount',
+121 silly batched     externalDependencies: Map {},
+121 silly batched     localDependencies: Map {},
+121 silly batched     localDependents:
+121 silly batched      Map {
+121 silly batched        '@vite/vitejs-account' => [PackageGraphNode],
+121 silly batched        '@vite/vitejs' => [PackageGraphNode] } } ]
+122 silly batched [ PackageGraphNode {
+122 silly batched     name: '@vite/vitejs-account',
+122 silly batched     externalDependencies: Map {},
+122 silly batched     localDependencies: Map {},
+122 silly batched     localDependents:
+122 silly batched      Map {
+122 silly batched        '@vite/vitejs-hdaccount' => [PackageGraphNode],
+122 silly batched        '@vite/vitejs' => [PackageGraphNode] } } ]
+123 silly batched [ PackageGraphNode {
+123 silly batched     name: '@vite/vitejs-hdaccount',
+123 silly batched     externalDependencies: Map {},
+123 silly batched     localDependencies: Map {},
+123 silly batched     localDependents: Map { '@vite/vitejs' => [PackageGraphNode] } } ]
+124 silly batched [ PackageGraphNode {
+124 silly batched     name: '@vite/vitejs',
+124 silly batched     externalDependencies:
+124 silly batched      Map {
+124 silly batched        '@babel/polyfill' => [Object],
+124 silly batched        'buffer' => [Object],
+124 silly batched        'es6-promise' => [Object] },
+124 silly batched     localDependencies: Map {},
+124 silly batched     localDependents: Map {} } ]
+125 info publish Publishing packages to npm...
+126 info Verifying npm credentials
+127 verbose Retrieving npm user profile
+128 http fetch GET 200 https://registry.npmjs.org/-/npm/v1/user 2434ms
+129 silly npm profile get received {"tfa":false,"name":"sisi","email":"chensi@vite.org","email_verified":true,"created":"2018-09-07T11:12:28.537Z","updated":"2018-10-18T04:45:18.923Z","cidr_whitelist":null,"fullname":"si "}
+130 silly npm whoami received {"username":"sisi"}
+131 silly verifyNpmPackageAccess
+132 http fetch GET 200 https://registry.npmjs.org/-/org/sisi/package?format=cli 839ms
+133 warn ENOLICENSE Packages @vite/vitejs-http, @vite/vitejs-ipc, @vite/vitejs-ws, @vite/vitejs-abi, @vite/vitejs-account, @vite/vitejs-accountblock, @vite/vitejs-addraccount, @vite/vitejs-client, @vite/vitejs-communication, @vite/vitejs-constant, @vite/vitejs-error, @vite/vitejs-hdaccount, @vite/vitejs-hdaddr, @vite/vitejs-keystore, @vite/vitejs-netprocessor, @vite/vitejs-privtoaddr, @vite/vitejs-utils, @vite/vitejs are missing a license
+134 silly getCurrentSHA
+135 verbose getCurrentSHA fd0d929b392b9db0c2d6d091d59ea6e9ec3c286e
+136 silly lifecycle No script for "prepublish" in "@vite/vitejs", continuing
+137 silly lifecycle No script for "prepare" in "@vite/vitejs", continuing
+138 silly lifecycle No script for "prepublishOnly" in "@vite/vitejs", continuing
+139 silly lifecycle No script for "prepack" in "@vite/vitejs", continuing
+140 verbose pack-directory packages/communication
+141 verbose pack-directory packages/error
+142 silly lifecycle No script for "prepublish" in "@vite/vitejs-communication", continuing
+143 silly lifecycle No script for "prepublish" in "@vite/vitejs-error", continuing
+144 silly lifecycle No script for "prepare" in "@vite/vitejs-communication", continuing
+145 silly lifecycle No script for "prepare" in "@vite/vitejs-error", continuing
+146 silly lifecycle No script for "prepublishOnly" in "@vite/vitejs-error", continuing
+147 silly lifecycle No script for "prepublishOnly" in "@vite/vitejs-communication", continuing
+148 silly lifecycle No script for "prepack" in "@vite/vitejs-error", continuing
+149 silly lifecycle No script for "prepack" in "@vite/vitejs-communication", continuing
+150 silly lifecycle No script for "postpack" in "@vite/vitejs-error", continuing
+151 silly lifecycle No script for "postpack" in "@vite/vitejs-communication", continuing
+152 verbose pack-directory packages/HTTP
+153 verbose pack-directory packages/IPC
+154 verbose pack-directory packages/WS
+155 verbose pack-directory packages/utils
+156 silly lifecycle No script for "prepublish" in "@vite/vitejs-http", continuing
+157 silly lifecycle No script for "prepublish" in "@vite/vitejs-ipc", continuing
+158 silly lifecycle No script for "prepublish" in "@vite/vitejs-ws", continuing
+159 silly lifecycle No script for "prepublish" in "@vite/vitejs-utils", continuing
+160 silly lifecycle No script for "prepare" in "@vite/vitejs-http", continuing
+161 silly lifecycle No script for "prepare" in "@vite/vitejs-ipc", continuing
+162 silly lifecycle No script for "prepare" in "@vite/vitejs-ws", continuing
+163 silly lifecycle No script for "prepare" in "@vite/vitejs-utils", continuing
+164 silly lifecycle No script for "prepublishOnly" in "@vite/vitejs-http", continuing
+165 silly lifecycle No script for "prepublishOnly" in "@vite/vitejs-utils", continuing
+166 silly lifecycle No script for "prepublishOnly" in "@vite/vitejs-ipc", continuing
+167 silly lifecycle No script for "prepublishOnly" in "@vite/vitejs-ws", continuing
+168 silly lifecycle No script for "prepack" in "@vite/vitejs-http", continuing
+169 silly lifecycle No script for "prepack" in "@vite/vitejs-ipc", continuing
+170 silly lifecycle No script for "prepack" in "@vite/vitejs-utils", continuing
+171 silly lifecycle No script for "prepack" in "@vite/vitejs-ws", continuing
+172 silly lifecycle No script for "postpack" in "@vite/vitejs-http", continuing
+173 silly lifecycle No script for "postpack" in "@vite/vitejs-ws", continuing
+174 silly lifecycle No script for "postpack" in "@vite/vitejs-ipc", continuing
+175 silly lifecycle No script for "postpack" in "@vite/vitejs-utils", continuing
+176 verbose pack-directory packages/privToAddr
+177 silly lifecycle No script for "prepublish" in "@vite/vitejs-privtoaddr", continuing
+178 silly lifecycle No script for "prepare" in "@vite/vitejs-privtoaddr", continuing
+179 silly lifecycle No script for "prepublishOnly" in "@vite/vitejs-privtoaddr", continuing
+180 silly lifecycle No script for "prepack" in "@vite/vitejs-privtoaddr", continuing
+181 silly lifecycle No script for "postpack" in "@vite/vitejs-privtoaddr", continuing
+182 verbose pack-directory packages/abi
+183 verbose pack-directory packages/hdAddr
+184 verbose pack-directory packages/keystore
+185 silly lifecycle No script for "prepublish" in "@vite/vitejs-abi", continuing
+186 silly lifecycle No script for "prepublish" in "@vite/vitejs-hdaddr", continuing
+187 silly lifecycle No script for "prepublish" in "@vite/vitejs-keystore", continuing
+188 silly lifecycle No script for "prepare" in "@vite/vitejs-abi", continuing
+189 silly lifecycle No script for "prepare" in "@vite/vitejs-hdaddr", continuing
+190 silly lifecycle No script for "prepare" in "@vite/vitejs-keystore", continuing
+191 silly lifecycle No script for "prepublishOnly" in "@vite/vitejs-abi", continuing
+192 silly lifecycle No script for "prepublishOnly" in "@vite/vitejs-hdaddr", continuing
+193 silly lifecycle No script for "prepublishOnly" in "@vite/vitejs-keystore", continuing
+194 silly lifecycle No script for "prepack" in "@vite/vitejs-abi", continuing
+195 silly lifecycle No script for "prepack" in "@vite/vitejs-keystore", continuing
+196 silly lifecycle No script for "prepack" in "@vite/vitejs-hdaddr", continuing
+197 silly lifecycle No script for "postpack" in "@vite/vitejs-hdaddr", continuing
+198 silly lifecycle No script for "postpack" in "@vite/vitejs-keystore", continuing
+199 silly lifecycle No script for "postpack" in "@vite/vitejs-abi", continuing
+200 verbose pack-directory packages/constant
+201 silly lifecycle No script for "prepublish" in "@vite/vitejs-constant", continuing
+202 silly lifecycle No script for "prepare" in "@vite/vitejs-constant", continuing
+203 silly lifecycle No script for "prepublishOnly" in "@vite/vitejs-constant", continuing
+204 silly lifecycle No script for "prepack" in "@vite/vitejs-constant", continuing
+205 silly lifecycle No script for "postpack" in "@vite/vitejs-constant", continuing
+206 verbose pack-directory packages/accountBlock
+207 verbose pack-directory packages/netProcessor
+208 silly lifecycle No script for "prepublish" in "@vite/vitejs-accountblock", continuing
+209 silly lifecycle No script for "prepublish" in "@vite/vitejs-netprocessor", continuing
+210 silly lifecycle No script for "prepare" in "@vite/vitejs-accountblock", continuing
+211 silly lifecycle No script for "prepare" in "@vite/vitejs-netprocessor", continuing
+212 silly lifecycle No script for "prepublishOnly" in "@vite/vitejs-accountblock", continuing
+213 silly lifecycle No script for "prepublishOnly" in "@vite/vitejs-netprocessor", continuing
+214 silly lifecycle No script for "prepack" in "@vite/vitejs-accountblock", continuing
+215 silly lifecycle No script for "prepack" in "@vite/vitejs-netprocessor", continuing
+216 silly lifecycle No script for "postpack" in "@vite/vitejs-accountblock", continuing
+217 silly lifecycle No script for "postpack" in "@vite/vitejs-netprocessor", continuing
+218 verbose pack-directory packages/client
+219 silly lifecycle No script for "prepublish" in "@vite/vitejs-client", continuing
+220 silly lifecycle No script for "prepare" in "@vite/vitejs-client", continuing
+221 silly lifecycle No script for "prepublishOnly" in "@vite/vitejs-client", continuing
+222 silly lifecycle No script for "prepack" in "@vite/vitejs-client", continuing
+223 silly lifecycle No script for "postpack" in "@vite/vitejs-client", continuing
+224 verbose pack-directory packages/addrAccount
+225 silly lifecycle No script for "prepublish" in "@vite/vitejs-addraccount", continuing
+226 silly lifecycle No script for "prepare" in "@vite/vitejs-addraccount", continuing
+227 silly lifecycle No script for "prepublishOnly" in "@vite/vitejs-addraccount", continuing
+228 silly lifecycle No script for "prepack" in "@vite/vitejs-addraccount", continuing
+229 silly lifecycle No script for "postpack" in "@vite/vitejs-addraccount", continuing
+230 verbose pack-directory packages/account
+231 silly lifecycle No script for "prepublish" in "@vite/vitejs-account", continuing
+232 silly lifecycle No script for "prepare" in "@vite/vitejs-account", continuing
+233 silly lifecycle No script for "prepublishOnly" in "@vite/vitejs-account", continuing
+234 silly lifecycle No script for "prepack" in "@vite/vitejs-account", continuing
+235 silly lifecycle No script for "postpack" in "@vite/vitejs-account", continuing
+236 verbose pack-directory packages/hdAccount
+237 silly lifecycle No script for "prepublish" in "@vite/vitejs-hdaccount", continuing
+238 silly lifecycle No script for "prepare" in "@vite/vitejs-hdaccount", continuing
+239 silly lifecycle No script for "prepublishOnly" in "@vite/vitejs-hdaccount", continuing
+240 silly lifecycle No script for "prepack" in "@vite/vitejs-hdaccount", continuing
+241 silly lifecycle No script for "postpack" in "@vite/vitejs-hdaccount", continuing
+242 verbose pack-directory packages/vitejs
+243 silly lifecycle No script for "prepublish" in "@vite/vitejs", continuing
+244 silly lifecycle No script for "prepare" in "@vite/vitejs", continuing
+245 silly lifecycle No script for "prepublishOnly" in "@vite/vitejs", continuing
+246 silly lifecycle No script for "prepack" in "@vite/vitejs", continuing
+247 silly lifecycle No script for "postpack" in "@vite/vitejs", continuing
+248 silly lifecycle No script for "postpack" in "@vite/vitejs", continuing
+249 verbose publish @vite/vitejs-communication
+250 verbose publish @vite/vitejs-error
+251 http fetch PUT 402 https://registry.npmjs.org/@vite%2fvitejs-error 503ms
+252 error Error: 402 Payment Required - PUT https://registry.npmjs.org/@vite%2fvitejs-error - You must sign up for private packages
+252 error     at res.buffer.catch.then.body (/Users/sisi/.config/yarn/global/node_modules/npm-registry-fetch/check-response.js:104:15)

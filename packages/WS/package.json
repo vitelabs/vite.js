@@ -23,5 +23,8 @@
         "@vite/vitejs-communication": "^2.0.0-alpha.1",
         "websocket": "^1.0.26"
     },
-    "gitHead": "3a71dcb0bd066768bafc83fd3f2d2f9a13be02d8"
+    "gitHead": "fd0d929b392b9db0c2d6d091d59ea6e9ec3c286e",
+    "publishConfig": {
+        "access": "public"
+    }
 }
