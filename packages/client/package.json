@@ -1,6 +1,6 @@
 {
     "name": "@vite/vitejs-client",
-    "version": "2.0.0-alpha.0",
+    "version": "2.0.0-alpha.1",
     "main": "dist/index.js",
     "typings": "src/index.d.ts",
     "scripts": {
@@ -17,13 +17,13 @@
     },
     "homepage": "https://github.com/vitelabs/vite.js#readme",
     "dependencies": {
-        "@vite/vitejs-abi": "^2.0.0-alpha.0",
-        "@vite/vitejs-accountblock": "^2.0.0-alpha.0",
-        "@vite/vitejs-constant": "^2.0.0-alpha.0",
-        "@vite/vitejs-error": "^2.0.0-alpha.0",
-        "@vite/vitejs-netprocessor": "^2.0.0-alpha.0",
-        "@vite/vitejs-privtoaddr": "^2.0.0-alpha.0",
-        "@vite/vitejs-utils": "^2.0.0-alpha.0"
+        "@vite/vitejs-abi": "^2.0.0-alpha.1",
+        "@vite/vitejs-accountblock": "^2.0.0-alpha.1",
+        "@vite/vitejs-constant": "^2.0.0-alpha.1",
+        "@vite/vitejs-error": "^2.0.0-alpha.1",
+        "@vite/vitejs-netprocessor": "^2.0.0-alpha.1",
+        "@vite/vitejs-privtoaddr": "^2.0.0-alpha.1",
+        "@vite/vitejs-utils": "^2.0.0-alpha.1"
     },
     "gitHead": "3a71dcb0bd066768bafc83fd3f2d2f9a13be02d8"
 }

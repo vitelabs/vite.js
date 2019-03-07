@@ -1,6 +1,6 @@
 {
     "name": "@vite/vitejs-http",
-    "version": "2.0.0-alpha.0",
+    "version": "2.0.0-alpha.1",
     "description": "",
     "main": "dist/index.js",
     "typings": "src/index.d.ts",
@@ -18,7 +18,7 @@
     },
     "homepage": "https://github.com/vitelabs/vite.js#readme",
     "dependencies": {
-        "@vite/vitejs-communication": "^2.0.0-alpha.0",
+        "@vite/vitejs-communication": "^2.0.0-alpha.1",
         "xhr2": "^0.1.4"
     },
     "gitHead": "3a71dcb0bd066768bafc83fd3f2d2f9a13be02d8"
