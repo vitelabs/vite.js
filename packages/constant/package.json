@@ -1,6 +1,6 @@
 {
     "name": "@vite/vitejs-constant",
-    "version": "2.0.0-alpha.1",
+    "version": "2.0.0-alpha.2",
     "main": "dist/index.js",
     "typings": "src/index.d.ts",
     "scripts": {
@@ -17,7 +17,7 @@
     },
     "homepage": "https://github.com/vitelabs/vite.js#readme",
     "dependencies": {
-        "@vite/vitejs-abi": "^2.0.0-alpha.1"
+        "@vite/vitejs-abi": "^2.0.0-alpha.2"
     },
     "gitHead": "fd0d929b392b9db0c2d6d091d59ea6e9ec3c286e",
     "publishConfig": {
