@@ -1,6 +1,6 @@
 {
     "name": "@vite/vitejs-ipc",
-    "version": "2.0.0-alpha.3",
+    "version": "2.0.0-alpha.4",
     "description": "",
     "main": "dist/vitejs/index.node.js",
     "browser": "dist/vitejs/index.web.js",
@@ -21,7 +21,7 @@
     },
     "homepage": "https://github.com/vitelabs/vite.js#readme",
     "dependencies": {
-        "@vite/vitejs-communication": "^2.0.0-alpha.3",
+        "@vite/vitejs-communication": "^2.0.0-alpha.4",
         "net": "^1.0.2"
     },
     "gitHead": "fd0d929b392b9db0c2d6d091d59ea6e9ec3c286e",
