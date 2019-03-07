@@ -1,6 +1,6 @@
 {
     "name": "@vite/vitejs-accountblock",
-    "version": "2.0.0-alpha.4",
+    "version": "2.0.0-y.0",
     "main": "dist/index.js",
     "typings": "src/index.d.ts",
     "scripts": {
@@ -18,11 +18,11 @@
     "homepage": "https://github.com/vitelabs/vite.js#readme",
     "dependencies": {
         "@sisi/tweetnacl-blake2b": "^1.0.0",
-        "@vite/vitejs-abi": "^2.0.0-alpha.4",
-        "@vite/vitejs-constant": "^2.0.0-alpha.4",
-        "@vite/vitejs-error": "^2.0.0-alpha.4",
-        "@vite/vitejs-privtoaddr": "^2.0.0-alpha.4",
-        "@vite/vitejs-utils": "^2.0.0-alpha.4",
+        "@vite/vitejs-abi": "^2.0.0-y.0",
+        "@vite/vitejs-constant": "^2.0.0-y.0",
+        "@vite/vitejs-error": "^2.0.0-y.0",
+        "@vite/vitejs-privtoaddr": "^2.0.0-y.0",
+        "@vite/vitejs-utils": "^2.0.0-y.0",
         "blakejs": "^1.1.0",
         "bn.js": "^4.11.8"
     },
