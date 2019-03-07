@@ -1,6 +1,6 @@
 {
     "name": "@vite/vitejs-hdaddr",
-    "version": "1.1.0-1",
+    "version": "2.0.0-alpha.0",
     "description": "",
     "main": "dist/index.js",
     "typings": "src/index.d.ts",
@@ -19,9 +19,9 @@
     "homepage": "https://github.com/vitelabs/vite.js#readme",
     "dependencies": {
         "@sisi/ed25519-blake2b-hd-key": "^1.0.2",
-        "@vite/vitejs-privtoaddr": "^1.1.0-1",
-        "@vite/vitejs-error": "^1.1.0-1",
-        "@vite/vitejs-utils": "^1.1.0-1",
+        "@vite/vitejs-error": "^2.0.0-alpha.0",
+        "@vite/vitejs-privtoaddr": "^2.0.0-alpha.0",
+        "@vite/vitejs-utils": "^2.0.0-alpha.0",
         "bip39": "^2.5.0"
     }
 }
