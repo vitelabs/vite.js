@@ -273,14 +273,15 @@ export enum BlockType {
     TxResFail
 }
 
-export const enum wallet {
+export enum wallet {
     listEntropyFilesInStandardDir = "wallet_listEntropyFilesInStandardDir", 
     listAllEntropyFiles = "wallet_listAllEntropyFiles", 
     unlock = "wallet_unlock", 
     lock = "wallet_lock", 
     listEntropyStoreAddresses = "wallet_listEntropyStoreAddresses", 
     newMnemonicAndEntropyStore = "wallet_newMnemonicAndEntropyStore", 
-    deriveForIndexPath = "wallet_deriveForIndexPath", 
+    deriveByIndex = "wallet_deriveByIndex", 
+    deriveByFullPath = "wallet_deriveByFullPath",
     recoverEntropyStoreFromMnemonic = "wallet_recoverEntropyStoreFromMnemonic", 
     globalCheckAddrUnlocked = "wallet_globalCheckAddrUnlocked", 
     isAddrUnlocked = "wallet_isAddrUnlocked", 
@@ -290,65 +291,85 @@ export const enum wallet {
     createTxWithPassphrase = "wallet_createTxWithPassphrase", 
     addEntropyStore = "wallet_addEntropyStore" 
 }
-export const enum net { 
-    syncInfo = "net_syncInfo", 
-    peers = "net_peers" 
-}
-export const enum onroad { 
+
+export enum onroad { 
     getOnroadBlocksByAddress = "onroad_getOnroadBlocksByAddress", 
     getAccountOnroadInfo = "onroad_getAccountOnroadInfo", 
     listWorkingAutoReceiveWorker = "onroad_listWorkingAutoReceiveWorker", 
     startAutoReceive = "onroad_startAutoReceive", 
     stopAutoReceive = "onroad_stopAutoReceive" 
 }
-export const enum contract { 
-    getCreateContractToAddress = "contract_getCreateContractToAddress" 
+
+export enum tx { 
+    sendRawTx = "tx_sendRawTx" 
 }
-export const enum pledge { 
-    getPledgeData = "pledge_getPledgeData", 
-    getCancelPledgeData = "pledge_getCancelPledgeData", 
-    getPledgeQuota = "pledge_getPledgeQuota", 
-    getPledgeList = "pledge_getPledgeList" 
-}
-export const enum register { 
-    getRegistrationList = "register_getRegistrationList", 
-    getRegisterData = "register_getRegisterData", 
-    getCancelRegisterData = "register_getCancelRegisterData", 
-    getRewardData = "register_getRewardData", 
-    getUpdateRegistrationData = "register_getUpdateRegistrationData", 
-    getCandidateList = "register_getCandidateList" 
-}
-export const enum vote { 
-    getVoteData = "vote_getVoteData", 
-    getCancelVoteData = "vote_getCancelVoteData", 
-    getVoteInfo = "vote_getVoteInfo" 
-}
-export const enum mintage { 
-    getMintageData = "mintage_getMintageData", 
-    getMintageCancelPledgeData = "mintage_getMintageCancelPledgeData" 
-}
-export const enum consensusGroup { 
-    getConditionRegisterOfPledge = "consensusGroup_getConditionRegisterOfPledge", 
-    getConditionVoteOfDefault = "consensusGroup_getConditionVoteOfDefault", 
-    getConditionVoteOfKeepToken = "consensusGroup_getConditionVoteOfKeepToken", 
-    getCreateConsensusGroupData = "consensusGroup_getCreateConsensusGroupData", 
-    getCancelConsensusGroupData = "consensusGroup_getCancelConsensusGroupData", 
-    getReCreateConsensusGroupData = "consensusGroup_getReCreateConsensusGroupData" 
-}
-export const enum ledger { 
+
+export enum ledger { 
     getBlocksByAccAddr = "ledger_getBlocksByAccAddr", 
     getAccountByAccAddr = "ledger_getAccountByAccAddr", 
     getLatestSnapshotChainHash = "ledger_getLatestSnapshotChainHash", 
     getLatestBlock = "ledger_getLatestBlock", 
     getTokenMintage = "ledger_getTokenMintage", 
+    getBlockByHeight = "ledger_getBlockByHeight",
     getBlocksByHash = "ledger_getBlocksByHash", 
+    getBlocksByHashInToken = "ledger_getBlocksByHashInToken",
     getSnapshotChainHeight = "ledger_getSnapshotChainHeight", 
+    getVmLogList = "ledger_getVmLogList",
     getFittestSnapshotHash = "ledger_getFittestSnapshotHash" 
 }
-export const enum tx { 
-    sendRawTx = "tx_sendRawTx" 
+
+export enum consensusGroup { 
+    getConditionRegisterOfPledge = "consensusGroup_getConditionRegisterOfPledge",
+    getConditionVoteOfKeepToken = "consensusGroup_getConditionVoteOfKeepToken", 
+    getCreateConsensusGroupData = "consensusGroup_getCreateConsensusGroupData", 
+    getCancelConsensusGroupData = "consensusGroup_getCancelConsensusGroupData", 
+    getReCreateConsensusGroupData = "consensusGroup_getReCreateConsensusGroupData" 
 }
-export const enum subscribe {
+
+export enum contract { 
+    getCreateContractToAddress = "contract_getCreateContractToAddress" ,
+    getCreateContractData = "contract_getCreateContractData",
+    getCallContractData = "contract_getCallContractData"
+}
+
+export enum pledge { 
+    getPledgeData = "pledge_getPledgeData", 
+    getCancelPledgeData = "pledge_getCancelPledgeData", 
+    getPledgeQuota = "pledge_getPledgeQuota", 
+    getPledgeList = "pledge_getPledgeList" 
+}
+
+export enum register { 
+    getRegisterData = "register_getRegisterData", 
+    getCancelRegisterData = "register_getCancelRegisterData", 
+    getRewardData = "register_getRewardData", 
+    getUpdateRegistrationData = "register_getUpdateRegistrationData", 
+    getRegistrationList = "register_getRegistrationList", 
+    getCandidateList = "register_getCandidateList" 
+}
+
+export enum vote { 
+    getVoteData = "vote_getVoteData", 
+    getCancelVoteData = "vote_getCancelVoteData", 
+    getVoteInfo = "vote_getVoteInfo" 
+}
+
+export enum mintage { 
+    getMintageData = "mintage_getMintageData", 
+    getMintageCancelPledgeData = "mintage_getMintageCancelPledgeData",
+    getTokenInfoList = "mintage_getTokenInfoList",
+    getTokenInfoById = "mintage_getTokenInfoById",
+    getTokenInfoListByOwner = "mintage_getTokenInfoListByOwner",
+    newTokenId = 'mintage_newTokenId'
+}
+
+export enum net { 
+    syncInfo = "net_syncInfo", 
+    peers = "net_peers",
+    peersCount = "net_peersCount"
+}
+
+export enum subscribe {
     newAccountBlocksFilter = 'subscribe_newAccountBlocksFilter',
     newLogsFilter = 'subscribe_newLogsFilter',
     uninstallFilter = 'subscribe_uninstallFilter',
@@ -357,7 +378,9 @@ export const enum subscribe {
     newLogs = 'subscribe_newLogs'
 }
 
-export declare type Methods = subscribe | wallet | net | onroad | contract | pledge | contract | register | vote | mintage | consensusGroup | ledger | tx
+export const _methods = { wallet, onroad, tx, ledger, consensusGroup, contract, pledge, register, vote, mintage, net, subscribe };
+
+export declare type Methods = wallet | onroad | tx | ledger | consensusGroup | contract | pledge | register | vote | mintage | net | subscribe;
 
 export type walletFunc = {
     listEntropyFilesInStandardDir: Function
@@ -431,6 +454,7 @@ export type ledgerFunc = {
     getAccountByAccAddr: Function
     getLatestSnapshotChainHash: Function
     getLatestBlock: Function
+    getBlockByHeight: Function
     getTokenMintage: Function
     getBlocksByHash: Function
     getSnapshotChainHeight: Function

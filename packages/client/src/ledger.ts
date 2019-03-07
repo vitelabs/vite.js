@@ -1,4 +1,4 @@
-import { method } from '@vite/vitejs-constant';
+import { methods } from '@vite/vitejs-constant';
 import { tools } from '@vite/vitejs-utils';
 import { isValidHexAddr } from '@vite/vitejs-privtoaddr';
 import { getBuiltinTxType, signAccountBlock, _validReqAccountBlock as validReqAccountBlock } from '@vite/vitejs-accountblock';
@@ -6,9 +6,9 @@ import { getBuiltinTxType, signAccountBlock, _validReqAccountBlock as validReqAc
 import client from '.';
 import { RPCrequest, BuiltinTxType, Address } from "@vite/vitejs-netprocessor/src/type";
 
-const { onroad } = method;
+const { onroad } = methods;
 const { checkParams } = tools;
-const _ledger =  method.ledger;
+const _ledger =  methods.ledger;
 
 
 export default class ledger {

@@ -34,6 +34,7 @@
         "@vite/vitejs-hdaccount": "^1.1.0-1",
         "@vite/vitejs-accountblock": "^1.1.0-1",
         "@vite/vitejs-abi": "^1.1.0-1",
-        "@vite/vitejs-netprocessor": "^1.1.0-1"
+        "@vite/vitejs-netprocessor": "^1.1.0-1",
+        "@vite/vitejs-addraccount": "^1.1.0-1"
     }
 }

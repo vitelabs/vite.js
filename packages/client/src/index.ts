@@ -1,8 +1,8 @@
 import txBlock from './txBlock';
 import ledger from './ledger';
-import { subscribeFunc, walletFunc, netFunc, onroadFunc, contractFunc, pledgeFunc, registerFunc, voteFunc, mintageFunc, consensusGroupFunc, ledgerFunc, txFunc } from "@vite/vitejs-netprocessor/src//type";
+import { subscribeFunc, walletFunc, netFunc, onroadFunc, contractFunc, pledgeFunc, registerFunc, voteFunc, mintageFunc, consensusGroupFunc, ledgerFunc, txFunc } from "@vite/vitejs-netprocessor/src/type";
 
-import { method as _methods }  from '@vite/vitejs-constant';
+import { methods as _methods } from '@vite/vitejs-constant';
 import netProcessor from "@vite/vitejs-netprocessor/src/index";
 
 

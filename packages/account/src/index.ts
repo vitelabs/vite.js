@@ -2,20 +2,18 @@ import * as privToAddr from '@vite/vitejs-privtoaddr';
 import { paramsMissing }  from '@vite/vitejs-error';
 import { tools, ed25519 }  from '@vite/vitejs-utils';
 import client from '@vite/vitejs-client';
+import addrAccount from '@vite/vitejs-addraccount/src/index';
 
-import { Hex, Address, SBPregBlock, block8, block7, revokeVotingBlock, quotaBlock, sendTxBlock, receiveTxBlock } from "./type";
+import { Hex, SBPregBlock, block8, block7, revokeVotingBlock, quotaBlock, sendTxBlock, receiveTxBlock } from "./type";
 
 const { checkParams } = tools;
 const { sign, getPublicKey } = ed25519;
 
 
-class Account {
-    address: Address
-    realAddress: string
+class Account extends addrAccount {
     privateKey: Hex
     publicKey: Hex
     balance
-    _client: client
     _lock: Boolean
     _autoReceive: Boolean
 
@@ -30,12 +28,14 @@ class Account {
         let {
             addr, pubKey, privKey, hexAddr
         } = privToAddr.newHexAddr(privateKey);
+
+        super({ 
+            address: hexAddr, client, realAddress: addr
+        });
+
         this.privateKey = privKey;
         this.publicKey = pubKey;
-        this.address = hexAddr;
-        this.realAddress = addr;
 
-        this._client = client;
         this._lock = true;
         this._autoReceive = false;
         this.balance = null;
@@ -74,7 +74,9 @@ class Account {
                 }, intervals);
             }
 
-            this.getBalance().then(() => {
+            this.getBalance().then((balance) => {
+                this.balance = balance;
+                
                 let onroad = this.balance && this.balance.onroad ? this.balance.onroad : null;
                 let balanceInfos = onroad && onroad.tokenBalanceInfoMap ? onroad.tokenBalanceInfoMap : null;
 
@@ -152,13 +154,6 @@ class Account {
 
     stopAutoReceiveTx() {
         this._autoReceive = false;
-    }
-
-    getBalance() {
-        return this._client.buildinLedger.getBalance(this.address).then((balance) => {
-            this.balance = balance;
-            return balance;
-        });
     }
 
     sendRawTx(accountBlock) {

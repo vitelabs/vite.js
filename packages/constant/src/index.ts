@@ -1,5 +1,5 @@
 import { encodeFunctionSignature } from '@vite/vitejs-abi';
-import * as _method from "./method";
+import { _methods } from './type';
 
 export const Vite_TokenId = 'tti_5649544520544f4b454e6e40';
 
@@ -118,4 +118,4 @@ export const abiFuncSignature = {
     DexTradeCancelOrder: encodeFunctionSignature(DexTradeCancelOrder_Abi)
 }
 
-export const method = _method;
+export const methods = _methods;

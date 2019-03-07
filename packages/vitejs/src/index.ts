@@ -11,6 +11,7 @@ import * as _privToAddr from "@vite/vitejs-privtoaddr";
 import * as _hdAddr from "@vite/vitejs-hdaddr";
 import _netProcessor from '@vite/vitejs-netprocessor';
 import _client from '@vite/vitejs-client';
+import _addrAccount from '@vite/vitejs-addraccount';
 import _account from '@vite/vitejs-account';
 import _hdAccount from '@vite/vitejs-hdaccount';
 
@@ -23,6 +24,7 @@ export const privToAddr = _privToAddr;
 export const hdAddr = _hdAddr;
 export const netProcessor = _netProcessor;
 export const client = _client;
+export const addrAccount = _addrAccount;
 export const account = _account;
 export const hdAccount = _hdAccount;
 export const abi = _abi;
