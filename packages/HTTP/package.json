@@ -2,8 +2,9 @@
     "name": "@vite/vitejs-http",
     "version": "2.0.0-alpha.3",
     "description": "",
-    "main": "dist/index.js",
-    "typings": "src/index.d.ts",
+    "main": "dist/vitejs/index.node.js",
+    "browser": "dist/vitejs/index.web.js",
+    "typings": "src/type.ts",
     "scripts": {
         "prebuild": "rm -rf ./dist",
         "build:node": "build_target=node webpack",

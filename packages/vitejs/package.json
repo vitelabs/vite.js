@@ -1,8 +1,9 @@
 {
     "name": "@vite/vitejs",
     "version": "2.0.0-alpha.3",
-    "main": "dist/index.js",
-    "typings": "index.d.ts",
+    "main": "dist/vitejs/index.node.js",
+    "browser": "dist/vitejs/index.web.js",
+    "typings": "src/type.ts",
     "scripts": {
         "prebuild": "rm -rf ./dist",
         "build:node": "build_target=node webpack",
