@@ -1,0 +1,1 @@
+{"name":"@vite/vitejs-client","version":"2.0.0-alpha.5","main":"index.node.js","browser":"index.web.js","typings":"type.ts","repository":{"type":"git","url":"git+https://github.com/vitelabs/vite.js.git"},"license":"ISC","bugs":{"url":"https://github.com/vitelabs/vite.js/issues"},"homepage":"https://github.com/vitelabs/vite.js#readme","publishConfig":{"access":"public"}}
