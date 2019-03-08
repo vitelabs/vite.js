@@ -1,24 +1,37 @@
 var fs = require('fs');
 var path = require('path');
 
-const typePath = path.join(__dirname, '/common/type.ts');
-var tsconfigContent = require('./common/tsconfig.js');
+const typePath = path.join(__dirname, '/src/type.ts');
+const packageJsonContent = require('./common/package.json');
 
-traversing('./packages', (fPath) => {
+traversing('./packages/dist', (fPath, next, name) => {
     let stats = fs.statSync(fPath);
-    if (stats.isFile()) {
+    if (!stats.isFile()) {
         return;
     }
 
-    let toFile = path.join(fPath, '/src/type.ts');
-    let tsconfigFile = path.join(fPath, '/tsconfig.json');
+    let packageName = name.split('.')[0];
+    let packagePath = `packages/${packageName}`;
+    
+    if ( fs.existsSync(packagePath) ) {
+        return;
+    }
 
-    fs.existsSync(toFile) && fs.unlinkSync(toFile);
-    fs.writeFileSync(toFile, fs.readFileSync(typePath));
-
-    fs.existsSync(tsconfigFile) && fs.unlinkSync(tsconfigFile);
-    fs.writeFileSync(tsconfigFile, JSON.stringify(tsconfigContent));
+    fs.mkdirSync(packagePath);
+    fs.writeFileSync(`${packagePath}/index.node.js`, fs.readFileSync(`packages/dist/${packageName}.node.js`));
+    fs.writeFileSync(`${packagePath}/index.web.js`, fs.readFileSync(`packages/dist/${packageName}.web.js`));
+    copyFile({
+        fromPath: packagePath,
+        name: `@vite/vitejs-${packageName.toLowerCase()}`
+    });
 });
+
+traversing('./packages/dist', (fPath) => {
+    fs.unlinkSync(fPath);
+});
+fs.rmdirSync('./packages/dist');
+
+
 
 
 function traversing (startPath, cb) {
@@ -31,4 +44,14 @@ function traversing (startPath, cb) {
         });
     }
     readdirSync(startPath);
+}
+
+function copyFile({ fromPath, name }) {
+    packageJsonContent.name = name;
+
+    let typeFile = path.join(fromPath, '/type.ts');
+    fs.writeFileSync(typeFile, fs.readFileSync(typePath));
+
+    let packageFile = path.join(fromPath, '/package.json');
+    fs.writeFileSync(packageFile, JSON.stringify(packageJsonContent));
 }

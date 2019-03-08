@@ -1,6 +1,6 @@
 const assert = require('assert');
 
-import { hexToBytes, utf8ToBytes, bytesToHex, getBytesSize }from '../../packages/utils/src/encoder';
+import { hexToBytes, utf8ToBytes, bytesToHex, getBytesSize }from '../../src/utils/encoder';
 
 describe('strToUtf8', function () {
     it('test1', function () {

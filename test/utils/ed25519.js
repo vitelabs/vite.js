@@ -1,5 +1,5 @@
-import { verify, getPublicKey, sign } from '../../packages/utils/src/ed25519';
-import { bytesToHex } from '../../packages/utils/src/encoder';
+import { verify, getPublicKey, sign } from '../../src/utils/ed25519';
+import { bytesToHex } from '../../src/utils/encoder';
 
 const assert = require('assert');
 

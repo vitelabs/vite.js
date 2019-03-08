@@ -1,7 +1,7 @@
 const assert = require('assert');
 
-import { newHexAddr, isValidHexAddr, getAddrFromHexAddr, getHexAddrFromAddr } from '../packages/privToAddr/src/index';
-import * as hdAddr from '../packages/hdAddr/src/index';
+import { newHexAddr, isValidHexAddr, getAddrFromHexAddr, getHexAddrFromAddr } from '../src/privToAddr/index';
+import * as hdAddr from '../src/hdAddr/index';
 
 describe('newHexAddr', function () {
     it('test', function () {

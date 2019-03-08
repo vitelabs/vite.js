@@ -1,7 +1,7 @@
 const assert = require('assert');
 
-import { isValid, decrypt, encrypt, encryptV1ToV3, encryptOldKeystore } from '../packages/keystore/src/index';
-import { newHexAddr } from '../packages/privToAddr/src/index';
+import { isValid, decrypt, encrypt, encryptV1ToV3, encryptOldKeystore } from '../src/keystore/index';
+import { newHexAddr } from '../src/privToAddr/index';
 
 const OLD_PWD = '1';
 const oldKeyJSON = {

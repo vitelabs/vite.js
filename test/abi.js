@@ -1,7 +1,7 @@
 const assert = require('assert');
 
-import * as abi from '../packages/abi/src/index';
-import { getCreateContractData } from '../packages/accountBlock/src/builtin';
+import * as abi from '../src/abi/index';
+import { getCreateContractData } from '../src/accountBlock/builtin';
 
 describe('utils/tools', function () {
     it('encodeParameter', function () {

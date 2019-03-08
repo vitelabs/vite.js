@@ -7,19 +7,20 @@
         "noImplicitAny": false,
         "removeComments": true,
         "preserveConstEnums": true,
-        "sourceMap": true,
+        "sourceMap": false,
         "moduleResolution": "node",
         "resolveJsonModule": true,
-        "baseUrl": "./packages",
+        "baseUrl": "./src",
         "lib": [
             "es5",
             "es2017",
             "es2015",
             "es2017.typedarrays"
-        ]
+        ],
+        "outDir": "./dist/es5"
     },
     "include": [
-        "packages/**/*"
+        "src/*"
     ],
     "exclude": [
         "node_modules",

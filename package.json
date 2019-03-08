@@ -1,20 +1,19 @@
 {
     "name": "@vite/vitejs",
-    "version": "1.2.1",
+    "version": "2.0.0",
     "description": "",
     "scripts": {
-        "postinstall": "lerna bootstrap",
-        "build": "node build.js && yarn run postinstall && lerna run build",
+        "prebuild:test": "rm -rf packages",
+        "build:node": "build_target=node webpack",
+        "build:web": "build_target=web webpack",
+        "build": "yarn run build:node && yarn run build:web && node build",
         "rpc": "node test/bin/startRPC",
         "test:rpc": "cross-env NODE_ENV=test nyc mocha --compilers ts:ts-node/register -r tsconfig-paths/register test/RPC/index.js --no-timeouts",
-        "test:only": "cross-env NODE_ENV=test nyc mocha --compilers ts:ts-node/register -r tsconfig-paths/register test/index.js  --no-timeouts",
-        "test": "yarn run build && yarn run test:only",
+        "test": "cross-env NODE_ENV=test nyc mocha --compilers ts:ts-node/register -r tsconfig-paths/register test/index.js  --no-timeouts",
         "coverage": "nyc report --reporter=text-lcov | coveralls",
         "lint": "eslint --ext js,ts --cache",
         "lint-all": "eslint --ext js,ts",
-        "prepublish-alpha": "npm run build && npm version prerelease",
-        "publish-alpha": "npm publish --access-public --tag alpha",
-        "pub": "npm dist-tag add @vite/vitejs@alpha latest"
+        "publish-alpha": "yarn run build && lerna publish --dist-tag alpha"
     },
     "repository": {
         "type": "git",
@@ -36,11 +35,12 @@
         "@types/bn.js": "^4.11.3",
         "@types/buffers": "^0.1.31",
         "@types/core-js": "^2.5.0",
-        "@types/mocha": "^5.2.5",
         "@types/node": "^10.12.10",
-        "babel-loader": "^8.0.4",
         "babel-plugin-istanbul": "^5.0.1",
+        "babelify": "^10.0.0-beta.1",
         "browser-builtins": "^3.3.1",
+        "browserify": "~16.2.2",
+        "browserify-replace": "^0.9.3",
         "chai": "^4.1.2",
         "core-js": "^2.5.7",
         "coveralls": "^3.0.2",
@@ -49,27 +49,42 @@
         "exorcist": "~1.0.1",
         "install": "~0.11.0",
         "jayson": "~2.0.6",
-        "lerna": "^3.8.4",
         "mocha": "^5.2.0",
         "nyc": "^13.0.1",
         "pre-commit": "~1.2.2",
         "regenerator-runtime": "^0.12.1",
         "terser-webpack-plugin": "^1.1.0",
         "ts-loader": "^5.3.0",
-        "ts-node": "^7.0.1",
         "tsconfig-paths": "^3.7.0",
         "typedoc": "^0.13.0",
         "typedoc-webpack-plugin": "^1.1.4",
         "vinyl-source-stream": "~2.0.0",
         "webpack": "^4.25.1",
         "webpack-cli": "^3.1.2",
-        "webpack-merge": "^4.1.4",
+        "webpack-merge": "^4.1.4"
+    },
+    "dependencies": {
+        "@sisi/ed25519-blake2b-hd-key": "^1.0.2",
+        "@sisi/tweetnacl-blake2b": "^1.0.0",
+        "@types/mocha": "^5.2.5",
+        "babel-loader": "^8.0.4",
         "bip39": "^2.5.0",
-        "eslint-config-standard": "^12.0.0",
-        "eslint-plugin-import": "^2.14.0",
-        "eslint-plugin-node": "^8.0.0",
-        "eslint-plugin-promise": "^4.0.1",
-        "eslint-plugin-standard": "^4.0.0"
+        "blake2b": "^2.1.3",
+        "blakejs": "^1.1.0",
+        "bn.js": "^4.11.8",
+        "browserify-aes": "^1.2.0",
+        "buffer": "~5.2.1",
+        "create-hmac": "^1.1.7",
+        "es6-promise": "^4.2.5",
+        "jsonrpc-lite": "^2.0.3",
+        "lerna": "^3.13.1",
+        "net": "^1.0.2",
+        "pure-uuid": "^1.5.3",
+        "qs": "^6.6.0",
+        "scryptsy": "^2.0.0",
+        "ts-node": "^7.0.1",
+        "websocket": "^1.0.26",
+        "xhr2": "^0.1.4"
     },
     "nyc": {
         "require": [
@@ -81,7 +96,7 @@
             ".ts"
         ],
         "include": [
-            "packages/**/src/*"
+            "src/*"
         ],
         "exclude": [
             "*.d.ts"

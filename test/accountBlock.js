@@ -1,8 +1,8 @@
 const assert = require('assert');
 
-import { getAccountBlock, getSendTxBlock, getReceiveTxBlock, getBuiltinTxType, signAccountBlock, getBlockHash } from '../packages/accountBlock/src/index';
-import { BlockType } from '../packages/accountBlock/src/type';
-import { Default_Hash } from '../packages/constant/src/index';
+import { getAccountBlock, getSendTxBlock, getReceiveTxBlock, getBuiltinTxType, signAccountBlock, getBlockHash } from '../src/accountBlock/index';
+import { BlockType } from '../src/type';
+import { Default_Hash } from '../src/constant/index';
 
 // let block = {
 //     accountAddress: 'vite_155e4e83fb0499dcc3047e0458bbfae77f2ac1270e38c176f8',
