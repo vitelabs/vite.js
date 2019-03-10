@@ -11,16 +11,27 @@
         "moduleResolution": "node",
         "resolveJsonModule": true,
         "baseUrl": "./src",
+        "paths": {
+            "const": [
+                "./const"
+            ],
+            "utils": [
+                "./utils"
+            ],
+            "provider": [
+                "./provider"
+            ]
+        },
         "lib": [
             "es5",
             "es2017",
             "es2015",
             "es2017.typedarrays"
         ],
-        "outDir": "./dist/es5"
+        "outDir": "./packages/vitejs/es5"
     },
     "include": [
-        "src/*"
+        "src/**/*"
     ],
     "exclude": [
         "node_modules",

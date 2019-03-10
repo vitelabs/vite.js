@@ -3,10 +3,10 @@
     "version": "2.0.0",
     "description": "",
     "scripts": {
-        "prebuild:test": "rm -rf packages",
+        "prebuild": "rm -rf ./packages",
         "build:node": "build_target=node webpack",
         "build:web": "build_target=web webpack",
-        "build": "yarn run build:node && yarn run build:web && node build",
+        "build": "yarn run build:node && yarn run build:web && node build && tsc",
         "rpc": "node test/bin/startRPC",
         "test:rpc": "cross-env NODE_ENV=test nyc mocha --compilers ts:ts-node/register -r tsconfig-paths/register test/RPC/index.js --no-timeouts",
         "test": "cross-env NODE_ENV=test nyc mocha --compilers ts:ts-node/register -r tsconfig-paths/register test/index.js  --no-timeouts",

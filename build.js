@@ -20,9 +20,10 @@ traversing('./packages/dist', (fPath, next, name) => {
     fs.mkdirSync(packagePath);
     fs.writeFileSync(`${packagePath}/index.node.js`, fs.readFileSync(`packages/dist/${packageName}.node.js`));
     fs.writeFileSync(`${packagePath}/index.web.js`, fs.readFileSync(`packages/dist/${packageName}.web.js`));
+
     copyFile({
         fromPath: packagePath,
-        name: `@vite/vitejs-${packageName.toLowerCase()}`
+        name: packageName.toLowerCase() === 'vitejs' ? '@vite/vitejs' : `@vite/vitejs-${packageName.toLowerCase()}`
     });
 });
 
