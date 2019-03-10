@@ -21,7 +21,7 @@ module.exports = {
         account: path.join(baseDir, '/account/index.ts'),
         accountBlock: path.join(baseDir, '/accountBlock/index.ts'),
         client: path.join(baseDir, '/client/index.ts'),
-        // communication: path.join(baseDir, '/communication/index.js'),
+        communication: path.join(baseDir, '/communication/index.js'),
         constant: path.join(baseDir, '/constant/index.ts'),
         error: path.join(baseDir, '/error/index.ts'),
         hdAccount: path.join(baseDir, '/hdAccount/index.ts'),
