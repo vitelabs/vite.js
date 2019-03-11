@@ -12,15 +12,23 @@
         "resolveJsonModule": true,
         "baseUrl": "./src",
         "paths": {
-            "const": [
-                "./const"
-            ],
-            "utils": [
-                "./utils"
-            ],
-            "provider": [
-                "./provider"
-            ]
+            "abi": ["abi/index.ts"],
+            "account": ["account/index.ts"],
+            "accountBlock": ["accountBlock/index.ts"],
+            "client": ["client/index.ts"],
+            "communication": ["communication/index.ts"],
+            "constant": ["constant/index.ts"],
+            "error": ["error/index.ts"],
+            "hdAccount": ["hdAccount/index.ts"],
+            "hdAddr": ["hdAddr/index.ts"],
+            "keystore": ["keystore/index.ts"],
+            "netProcessor": ["netProcessor/index.ts"],
+            "privToAddr": ["privToAddr/index.ts"],
+            "utils": ["utils/index.ts"],
+            "vitejs": ["vitejs/index.ts"],
+            "WS": ["WS/index.js"],
+            "HTTP": ["HTTP/index.js"],
+            "IPC": ["IPC/index.js"]
         },
         "lib": [
             "es5",
