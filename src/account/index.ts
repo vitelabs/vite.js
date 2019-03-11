@@ -26,11 +26,11 @@ class Account extends addrAccount {
         }
 
         let {
-            addr, pubKey, privKey, hexAddr
+            pubKey, privKey, hexAddr
         } = privToAddr.newHexAddr(privateKey);
 
         super({ 
-            address: hexAddr, client, realAddress: addr
+            address: hexAddr, client
         });
 
         this.privateKey = privKey;

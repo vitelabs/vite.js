@@ -2,22 +2,22 @@ import * as privToAddr from 'privToAddr';
 import client from 'client';
 import { Snapshot_Gid } from 'constant';
 
-import { Hex, Address } from "../type";
+import { Address } from "../type";
 
 export default class AddrAccount {
     address: Address
     realAddress: string
     _client: client
 
-    constructor({ address, client, realAddress }: {
-        address: Address, client: client, realAddress: Hex
+    constructor({ address, client }: {
+        address: Address, client: client
     }) {
         if (!privToAddr.isValidHexAddr(address)) {
             throw `Illegal address ${address}.`;
         }
 
         this.address = address;
-        this.realAddress = realAddress ? realAddress : privToAddr.getAddrFromHexAddr(this.address);
+        this.realAddress = privToAddr.getAddrFromHexAddr(this.address);
 
         this._client = client;
     }
