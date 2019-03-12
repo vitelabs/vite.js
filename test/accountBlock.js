@@ -197,7 +197,22 @@ describe('getBuiltinTxType', function () {
         data: 'QnapywAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMJpWDkEPPlm83AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAVklURSBUT0tFTgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABTl1L8Zdh6mfYIzQeegkraivGtApAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACMTUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=',        
         toAddress: 'vite_000000000000000000000000000000000000000617d47459a8'
     };
-
+    let DexTradeCancelOrder = {
+        blockType: 2,
+        data: '8tmWHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMJpWDkEPPlm83AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAVklURSBUT0tFTgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABTjcaJPGE2zj/epXeg2UNZEzi7HBAAAAAAAAAAAAAAAAA==',        
+        toAddress: 'vite_000000000000000000000000000000000000000768ef0e6238'
+    };
+    let DexFundUserWithdraw = {
+        blockType: 2,
+        data: 'zDKRaQAAAAAAAAAAAAAAAAAAAAAAAAAAAABWSVRFIFRPS0VOAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAfOZsUOKEAAA=',        
+        toAddress: 'vite_000000000000000000000000000000000000000617d47459a8'
+    };
+    let DexFundUserDeposit = {
+        blockType: 2,
+        data: 'nftn/w==',        
+        toAddress: 'vite_000000000000000000000000000000000000000617d47459a8'
+    };
+    
     it('RevokeVoting', function() {
         assert.equal( getBuiltinTxType(RevokeVoting.toAddress, RevokeVoting.data, RevokeVoting.blockType), 'RevokeVoting' );
     });
@@ -239,6 +254,15 @@ describe('getBuiltinTxType', function () {
     });
     it('DexFundNewOrder', function() {
         assert.equal( getBuiltinTxType(DexFundNewOrder.toAddress, DexFundNewOrder.data, DexFundNewOrder.blockType), 'DexFundNewOrder');
+    });
+    it('DexTradeCancelOrder', function() {
+        assert.equal( getBuiltinTxType(DexTradeCancelOrder.toAddress, DexTradeCancelOrder.data, DexTradeCancelOrder.blockType), 'DexTradeCancelOrder');
+    });
+    it('DexFundUserWithdraw', function() {
+        assert.equal( getBuiltinTxType(DexFundUserWithdraw.toAddress, DexFundUserWithdraw.data, DexFundUserWithdraw.blockType), 'DexFundUserWithdraw');
+    });
+    it('DexFundUserDeposit', function() {
+        assert.equal( getBuiltinTxType(DexFundUserDeposit.toAddress, DexFundUserDeposit.data, DexFundUserDeposit.blockType), 'DexFundUserDeposit');
     });
 });
 
