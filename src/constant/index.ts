@@ -38,7 +38,6 @@ export const ChangeTokenType_Abi = {"type":"function","name":"ChangeTokenType","
 export const Mint_CancelPledge_Abi = {"type":"function","name":"CancelPledge","inputs":[{"name":"tokenId","type":"tokenId"}]};
 
 // DEX
-
 export const DexFundUserDeposit_Abi = {'type':'function','name':'DexFundUserDeposit', 'inputs':[]};
 export const DexFundUserWithdraw_Abi = {'type':'function','name':'DexFundUserWithdraw', 'inputs':[{'name':'token','type':'tokenId'},{'name':'amount','type':'uint256'}]};
 export const DexTradeCancelOrder_Abi = {'type':'function','name':'DexTradeCancelOrder', 'inputs':[{'name':'orderId','type':'bytes'}, {'name':'tradeToken','type':'tokenId'}, {'name':',quoteToken','type':'tokenId'}, {'name':'side', 'type':'bool'}]};
