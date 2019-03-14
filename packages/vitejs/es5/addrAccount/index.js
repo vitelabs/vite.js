@@ -4,12 +4,12 @@ var privToAddr = require("privToAddr");
 var constant_1 = require("constant");
 var AddrAccount = (function () {
     function AddrAccount(_a) {
-        var address = _a.address, client = _a.client, realAddress = _a.realAddress;
+        var address = _a.address, client = _a.client;
         if (!privToAddr.isValidHexAddr(address)) {
             throw "Illegal address " + address + ".";
         }
         this.address = address;
-        this.realAddress = realAddress ? realAddress : privToAddr.getAddrFromHexAddr(this.address);
+        this.realAddress = privToAddr.getAddrFromHexAddr(this.address);
         this._client = client;
     }
     AddrAccount.prototype.getBalance = function () {

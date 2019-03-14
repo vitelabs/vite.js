@@ -63,9 +63,9 @@ var Account = (function (_super) {
             console.error(new Error(error_1.paramsMissing.message + " Client."));
             return;
         }
-        var _c = privToAddr.newHexAddr(privateKey), addr = _c.addr, pubKey = _c.pubKey, privKey = _c.privKey, hexAddr = _c.hexAddr;
+        var _c = privToAddr.newHexAddr(privateKey), pubKey = _c.pubKey, privKey = _c.privKey, hexAddr = _c.hexAddr;
         _this = _super.call(this, {
-            address: hexAddr, client: client, realAddress: addr
+            address: hexAddr, client: client
         }) || this;
         _this.privateKey = privKey;
         _this.publicKey = pubKey;
