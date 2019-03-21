@@ -48,12 +48,12 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var privToAddr = require("privToAddr");
-var error_1 = require("error");
-var utils_1 = require("utils");
-var addrAccount_1 = require("addrAccount");
-var checkParams = utils_1.tools.checkParams;
-var sign = utils_1.ed25519.sign, getPublicKey = utils_1.ed25519.getPublicKey;
+var privToAddr = require("./../privtoaddr");
+var vitejs_error_1 = require("./../error");
+var vitejs_utils_1 = require("./../utils");
+var vitejs_addraccount_1 = require("./../addraccount");
+var checkParams = vitejs_utils_1.tools.checkParams;
+var sign = vitejs_utils_1.ed25519.sign, getPublicKey = vitejs_utils_1.ed25519.getPublicKey;
 var Account = (function (_super) {
     __extends(Account, _super);
     function Account(_b) {
@@ -61,7 +61,7 @@ var Account = (function (_super) {
         var _this = this;
         if (!client) {
             _this = _super.call(this) || this;
-            throw new Error(error_1.paramsMissing.message + " Client.");
+            throw new Error(vitejs_error_1.paramsMissing.message + " Client.");
         }
         var _c = privToAddr.newHexAddr(privateKey), pubKey = _c.pubKey, privKey = _c.privKey, hexAddr = _c.hexAddr;
         _this = _super.call(this, { address: hexAddr, client: client }) || this;
@@ -553,5 +553,5 @@ var Account = (function (_super) {
         });
     };
     return Account;
-}(addrAccount_1.default));
+}(vitejs_addraccount_1.default));
 exports.default = Account;

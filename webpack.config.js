@@ -69,21 +69,21 @@ module.exports = {
     },
     resolve: {
         alias: {
-            abi: path.join(__dirname, '/src/abi/'),
-            account: path.join(__dirname, '/src/account/'),
-            addrAccount: path.join(__dirname, '/src/addrAccount/'),
-            accountBlock: path.join(__dirname, '/src/accountBlock/'),
-            client: path.join(__dirname, '/src/client/'),
-            communication: path.join(__dirname, '/src/communication/'),
-            constant: path.join(__dirname, '/src/constant/'),
-            error: path.join(__dirname, '/src/error/'),
-            hdAccount: path.join(__dirname, '/src/hdAccount/'),
-            hdAddr: path.join(__dirname, '/src/hdAddr/'),
-            keystore: path.join(__dirname, '/src/keystore/'),
-            netProcessor: path.join(__dirname, '/src/netProcessor/'),
-            privToAddr: path.join(__dirname, '/src/privToAddr/'),
-            utils: path.join(__dirname, '/src/utils/'),
-            vitejs: path.join(__dirname, '/src/vitejs/')
+            '~@vite/vitejs-abi': path.join(__dirname, '/src/abi/'),
+            '~@vite/vitejs-account': path.join(__dirname, '/src/account/'),
+            '~@vite/vitejs-addraccount': path.join(__dirname, '/src/addrAccount/'),
+            '~@vite/vitejs-accountblock': path.join(__dirname, '/src/accountBlock/'),
+            '~@vite/vitejs-client': path.join(__dirname, '/src/client/'),
+            '~@vite/vitejs-communication': path.join(__dirname, '/src/communication/'),
+            '~@vite/vitejs-constant': path.join(__dirname, '/src/constant/'),
+            '~@vite/vitejs-error': path.join(__dirname, '/src/error/'),
+            '~@vite/vitejs-hdaccount': path.join(__dirname, '/src/hdAccount/'),
+            '~@vite/vitejs-hdaddr': path.join(__dirname, '/src/hdAddr/'),
+            '~@vite/vitejs-keystore': path.join(__dirname, '/src/keystore/'),
+            '~@vite/vitejs-netprocessor': path.join(__dirname, '/src/netProcessor/'),
+            '~@vite/vitejs-privtoaddr': path.join(__dirname, '/src/privToAddr/'),
+            '~@vite/vitejs-utils': path.join(__dirname, '/src/utils/'),
+            '~@vite/vitejs': path.join(__dirname, '/src/vitejs/')
         },
         extensions: [ '.js', '.json', '.ts' ]
     }

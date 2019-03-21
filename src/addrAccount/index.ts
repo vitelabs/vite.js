@@ -1,6 +1,6 @@
-import * as privToAddr from 'privToAddr';
-import client from 'client';
-import { Snapshot_Gid } from 'constant';
+import * as privToAddr from '~@vite/vitejs-privtoaddr';
+import client from '~@vite/vitejs-client';
+import { Snapshot_Gid } from '~@vite/vitejs-constant';
 
 import { Address } from '../type';
 

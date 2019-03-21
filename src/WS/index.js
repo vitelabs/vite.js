@@ -1,4 +1,4 @@
-import IPC_WS from 'communication/ipc_ws';
+import IPC_WS from '~@vite/vitejs-communication/ipc_ws';
 const Websocket = require('websocket').w3cwebsocket;
 
 class WsRpc extends IPC_WS {

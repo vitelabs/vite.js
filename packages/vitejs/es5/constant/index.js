@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var abi_1 = require("abi");
+var vitejs_abi_1 = require("./../abi");
 var type_1 = require("../type");
 exports.Vite_TokenId = 'tti_5649544520544f4b454e6e40';
 exports.Default_Hash = '0000000000000000000000000000000000000000000000000000000000000000';
@@ -86,24 +86,24 @@ exports.contractAddrs = {
     DexTrade: exports.DexTrade_Addr
 };
 exports.abiFuncSignature = {
-    Register: abi_1.encodeFunctionSignature(exports.Register_Abi),
-    UpdateRegistration: abi_1.encodeFunctionSignature(exports.UpdateRegistration_Abi),
-    CancelRegister: abi_1.encodeFunctionSignature(exports.CancelRegister_Abi),
-    Reward: abi_1.encodeFunctionSignature(exports.Reward_Abi),
-    Vote: abi_1.encodeFunctionSignature(exports.Vote_Abi),
-    CancelVote: abi_1.encodeFunctionSignature(exports.CancelVote_Abi),
-    Pledge: abi_1.encodeFunctionSignature(exports.Pledge_Abi),
-    CancelPledge: abi_1.encodeFunctionSignature(exports.CancelPledge_Abi),
-    Mint: abi_1.encodeFunctionSignature(exports.Mint_Abi),
-    Issue: abi_1.encodeFunctionSignature(exports.Issue_Abi),
-    Burn: abi_1.encodeFunctionSignature(exports.Burn_Abi),
-    TransferOwner: abi_1.encodeFunctionSignature(exports.TransferOwner_Abi),
-    ChangeTokenType: abi_1.encodeFunctionSignature(exports.ChangeTokenType_Abi),
-    Mint_CancelPledge: abi_1.encodeFunctionSignature(exports.Mint_CancelPledge_Abi),
-    DexFundUserDeposit: abi_1.encodeFunctionSignature(exports.DexFundUserDeposit_Abi),
-    DexFundUserWithdraw: abi_1.encodeFunctionSignature(exports.DexFundUserWithdraw_Abi),
-    DexFundNewOrder: abi_1.encodeFunctionSignature(exports.DexFundNewOrder_Abi),
-    DexTradeCancelOrder: abi_1.encodeFunctionSignature(exports.DexTradeCancelOrder_Abi),
-    DexFundNewMarket: abi_1.encodeFunctionSignature(exports.DexFundNewMarket_Abi)
+    Register: vitejs_abi_1.encodeFunctionSignature(exports.Register_Abi),
+    UpdateRegistration: vitejs_abi_1.encodeFunctionSignature(exports.UpdateRegistration_Abi),
+    CancelRegister: vitejs_abi_1.encodeFunctionSignature(exports.CancelRegister_Abi),
+    Reward: vitejs_abi_1.encodeFunctionSignature(exports.Reward_Abi),
+    Vote: vitejs_abi_1.encodeFunctionSignature(exports.Vote_Abi),
+    CancelVote: vitejs_abi_1.encodeFunctionSignature(exports.CancelVote_Abi),
+    Pledge: vitejs_abi_1.encodeFunctionSignature(exports.Pledge_Abi),
+    CancelPledge: vitejs_abi_1.encodeFunctionSignature(exports.CancelPledge_Abi),
+    Mint: vitejs_abi_1.encodeFunctionSignature(exports.Mint_Abi),
+    Issue: vitejs_abi_1.encodeFunctionSignature(exports.Issue_Abi),
+    Burn: vitejs_abi_1.encodeFunctionSignature(exports.Burn_Abi),
+    TransferOwner: vitejs_abi_1.encodeFunctionSignature(exports.TransferOwner_Abi),
+    ChangeTokenType: vitejs_abi_1.encodeFunctionSignature(exports.ChangeTokenType_Abi),
+    Mint_CancelPledge: vitejs_abi_1.encodeFunctionSignature(exports.Mint_CancelPledge_Abi),
+    DexFundUserDeposit: vitejs_abi_1.encodeFunctionSignature(exports.DexFundUserDeposit_Abi),
+    DexFundUserWithdraw: vitejs_abi_1.encodeFunctionSignature(exports.DexFundUserWithdraw_Abi),
+    DexFundNewOrder: vitejs_abi_1.encodeFunctionSignature(exports.DexFundNewOrder_Abi),
+    DexTradeCancelOrder: vitejs_abi_1.encodeFunctionSignature(exports.DexTradeCancelOrder_Abi),
+    DexFundNewMarket: vitejs_abi_1.encodeFunctionSignature(exports.DexFundNewMarket_Abi)
 };
 exports.methods = type_1._methods;

@@ -1,8 +1,8 @@
-import * as privToAddr from 'privToAddr';
-import { paramsMissing } from 'error';
-import { tools, ed25519 } from 'utils';
-import client from 'client';
-import addrAccount from 'addrAccount';
+import * as privToAddr from '~@vite/vitejs-privtoaddr';
+import { paramsMissing } from '~@vite/vitejs-error';
+import { tools, ed25519 } from '~@vite/vitejs-utils';
+import client from '~@vite/vitejs-client';
+import addrAccount from '~@vite/vitejs-addraccount';
 
 import { Hex, SBPregBlock, block8, block7, revokeVotingBlock, quotaBlock, sendTxBlock, receiveTxBlock } from '../type';
 

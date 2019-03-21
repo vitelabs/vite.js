@@ -13,10 +13,10 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
+var vitejs_constant_1 = require("./../constant");
+var vitejs_netprocessor_1 = require("./../netprocessor");
 var txBlock_1 = require("./txBlock");
 var ledger_1 = require("./ledger");
-var constant_1 = require("constant");
-var netProcessor_1 = require("netProcessor");
 var Client = (function (_super) {
     __extends(Client, _super);
     function Client(provider, firstConnect) {
@@ -37,8 +37,8 @@ var Client = (function (_super) {
     Client.prototype._setMethodsName = function () {
         var _this = this;
         var providerType = (this._provider.type || 'http').toLowerCase();
-        for (var namespace in constant_1.methods) {
-            if (!Object.prototype.hasOwnProperty.call(constant_1.methods, namespace)) {
+        for (var namespace in vitejs_constant_1.methods) {
+            if (!Object.prototype.hasOwnProperty.call(vitejs_constant_1.methods, namespace)) {
                 continue;
             }
             if (providerType === 'ipc' && namespace === 'wallet') {
@@ -49,7 +49,7 @@ var Client = (function (_super) {
             if (this[_namespace]) {
                 continue;
             }
-            var spaceMethods = constant_1.methods[namespace];
+            var spaceMethods = vitejs_constant_1.methods[namespace];
             this[_namespace] = {};
             var _loop_1 = function (methodName) {
                 if (!Object.prototype.hasOwnProperty.call(spaceMethods, namespace)) {
@@ -71,5 +71,5 @@ var Client = (function (_super) {
         }
     };
     return Client;
-}(netProcessor_1.default));
+}(vitejs_netprocessor_1.default));
 exports.default = Client;

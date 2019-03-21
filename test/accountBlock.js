@@ -212,6 +212,11 @@ describe('getBuiltinTxType', function () {
         data: 'nftn/w==',
         toAddress: 'vite_000000000000000000000000000000000000000617d47459a8'
     };
+    const DexFundNewMarket = {
+        blockType: 2,
+        data: 'Kuf4wQAAAAAAAAAAAAAAAAAAAAAAAAAAAAC29wGYeP37IZCKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFZJVEUgVE9LRU4=',
+        toAddress: 'vite_000000000000000000000000000000000000000617d47459a8'
+    };
 
     it('RevokeVoting', function () {
         assert.equal(getBuiltinTxType(RevokeVoting.toAddress, RevokeVoting.data, RevokeVoting.blockType), 'RevokeVoting');
@@ -263,6 +268,9 @@ describe('getBuiltinTxType', function () {
     });
     it('DexFundUserDeposit', function () {
         assert.equal(getBuiltinTxType(DexFundUserDeposit.toAddress, DexFundUserDeposit.data, DexFundUserDeposit.blockType), 'DexFundUserDeposit');
+    });
+    it('DexFundNewMarket', function () {
+        assert.equal(getBuiltinTxType(DexFundNewMarket.toAddress, DexFundNewMarket.data, DexFundNewMarket.blockType), 'DexFundNewMarket');
     });
 });
 

@@ -1,8 +1,8 @@
 const UUID = require('pure-uuid');
 
-import { tools, ed25519, encoder } from 'utils';
-import { newHexAddr } from 'privToAddr';
-import { paramsFormat } from 'error';
+import { tools, ed25519, encoder } from '~@vite/vitejs-utils';
+import { newHexAddr } from '~@vite/vitejs-privtoaddr';
+import { paramsFormat } from '~@vite/vitejs-error';
 
 import isValid from './validated';
 import { cipheriv, encryptPwd } from './tools';

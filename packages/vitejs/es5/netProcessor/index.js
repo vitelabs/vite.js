@@ -35,7 +35,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var error_1 = require("error");
+var vitejs_error_1 = require("./../error");
 var eventEmitter_1 = require("./eventEmitter");
 var NetProcessor = (function () {
     function NetProcessor(provider, firstConnect) {
@@ -227,7 +227,7 @@ var NetProcessor = (function () {
             _this.requestList.push(_q);
             var _timeout = setTimeout(function () {
                 _this._offReq(_q);
-                rej(error_1.requestTimeout);
+                rej(vitejs_error_1.requestTimeout);
             }, _this._provider._timeout || 30000);
         });
     };

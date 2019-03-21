@@ -1,4 +1,4 @@
-import { requestTimeout } from 'error';
+import { requestTimeout } from '~@vite/vitejs-error';
 
 import { RPCrequest, RPCresponse, Methods } from '../type';
 import EventEmitter from './eventEmitter';

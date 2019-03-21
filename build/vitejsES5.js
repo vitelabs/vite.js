@@ -1,0 +1,27 @@
+const fs = require('fs');
+const traversing = require('./traversing');
+
+traversing('./packages/vitejs/es5', (fPath, next, val, folderLevel) => {
+    const stats = fs.statSync(fPath);
+
+    if (stats.isDirectory()) {
+        next(fPath, `${ folderLevel }../`);
+        return;
+    }
+
+    if (stats.isFile()) {
+        formatFile(fPath, folderLevel);
+    }
+}, './');
+
+
+function formatFile(filePath, folderLevel) {
+    let fileStr = fs.readFileSync(filePath, { encoding: 'utf8' });
+
+    if (!fileStr.match(/(\~@vite\/vitejs\-)/)) {
+        return;
+    }
+
+    fileStr = fileStr.replace(/(\~@vite\/vitejs-)/g, folderLevel);
+    fs.writeFileSync(filePath, fileStr, 'utf8');
+}

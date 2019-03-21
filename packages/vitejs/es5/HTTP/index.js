@@ -13,7 +13,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var Communication_js_1 = require("communication/Communication.js");
+var Communication_js_1 = require("./../communication/Communication.js");
 var XMLHttpRequest = typeof window !== 'undefined' && window.XMLHttpRequest
     ? window.XMLHttpRequest : require('xhr2');
 var HttpRpc = (function (_super) {

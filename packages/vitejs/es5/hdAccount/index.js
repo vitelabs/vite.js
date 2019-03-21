@@ -1,18 +1,18 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var hdAddr_1 = require("hdAddr");
-var account_1 = require("account");
-var error_1 = require("error");
-var utils_1 = require("utils");
+var vitejs_hdaddr_1 = require("./../hdaddr");
+var vitejs_account_1 = require("./../account");
+var vitejs_error_1 = require("./../error");
+var vitejs_utils_1 = require("./../utils");
 var type_1 = require("../type");
-var checkParams = utils_1.tools.checkParams;
+var checkParams = vitejs_utils_1.tools.checkParams;
 var Wallet = (function () {
     function Wallet(_a, _b) {
         var client = _a.client, mnemonic = _a.mnemonic, _c = _a.bits, bits = _c === void 0 ? 256 : _c, _d = _a.addrNum, addrNum = _d === void 0 ? 1 : _d, _e = _a.lang, lang = _e === void 0 ? type_1.LangList.english : _e, _f = _a.pwd, pwd = _f === void 0 ? '' : _f;
         var _g = _b.addrTotalNum, addrTotalNum = _g === void 0 ? 10 : _g, _h = _b.addrStartInx, addrStartInx = _h === void 0 ? 0 : _h;
         var err = checkParams({ mnemonic: mnemonic, client: client }, ['client'], [{
                 name: 'mnemonic',
-                func: function (_mnemonic) { return hdAddr_1.validateMnemonic(_mnemonic, lang); }
+                func: function (_mnemonic) { return vitejs_hdaddr_1.validateMnemonic(_mnemonic, lang); }
             }]);
         if (err) {
             console.error(new Error(err.message));
@@ -27,16 +27,16 @@ var Wallet = (function () {
         this.pwd = pwd;
         if (mnemonic) {
             this.mnemonic = mnemonic;
-            this.entropy = hdAddr_1.getEntropyFromMnemonic(mnemonic, this.lang);
+            this.entropy = vitejs_hdaddr_1.getEntropyFromMnemonic(mnemonic, this.lang);
         }
         else {
-            var _j = hdAddr_1.newAddr(bits, this.lang, this.pwd), entropy = _j.entropy, mnemonic_1 = _j.mnemonic;
+            var _j = vitejs_hdaddr_1.newAddr(bits, this.lang, this.pwd), entropy = _j.entropy, mnemonic_1 = _j.mnemonic;
             this.mnemonic = mnemonic_1;
             this.entropy = entropy;
         }
         this.addrStartInx = addrStartInx;
-        this.addrList = hdAddr_1.getAddrsFromMnemonic(this.mnemonic, addrStartInx, this.addrNum, this.lang, this.pwd);
-        this.id = hdAddr_1.getId(this.mnemonic, this.lang);
+        this.addrList = vitejs_hdaddr_1.getAddrsFromMnemonic(this.mnemonic, addrStartInx, this.addrNum, this.lang, this.pwd);
+        this.id = vitejs_hdaddr_1.getId(this.mnemonic, this.lang);
         this.activeAccountList = [];
     }
     Wallet.prototype.activateAccount = function (_a, _b) {
@@ -48,7 +48,7 @@ var Wallet = (function () {
             return null;
         }
         var addrObj = this.addrList[index];
-        var activeAccount = new account_1.default({
+        var activeAccount = new vitejs_account_1.default({
             privateKey: addrObj.privKey,
             client: this._client
         });
@@ -80,7 +80,7 @@ var Wallet = (function () {
         if (index >= this.addrTotalNum) {
             return null;
         }
-        var addrObj = hdAddr_1.getAddrFromMnemonic(this.mnemonic, index, this.lang, this.pwd);
+        var addrObj = vitejs_hdaddr_1.getAddrFromMnemonic(this.mnemonic, index, this.lang, this.pwd);
         if (!addrObj) {
             return null;
         }
@@ -93,11 +93,11 @@ exports.default = Wallet;
 function validAddrParams(_a) {
     var address = _a.address, _b = _a.index, index = _b === void 0 ? this.addrStartInx : _b;
     if (!address && !index && index !== 0) {
-        console.error(new Error(error_1.paramsMissing.message + " Address or index."));
+        console.error(new Error(vitejs_error_1.paramsMissing.message + " Address or index."));
         return null;
     }
-    if (address && !hdAddr_1.isValidHexAddr) {
-        console.error(new Error("" + error_1.addressIllegal.message));
+    if (address && !vitejs_hdaddr_1.isValidHexAddr) {
+        console.error(new Error("" + vitejs_error_1.addressIllegal.message));
         return null;
     }
     if (!address) {
@@ -110,7 +110,7 @@ function validAddrParams(_a) {
         }
     }
     if (i === this.addrList.length) {
-        console.error(new Error("" + error_1.addressMissing.message));
+        console.error(new Error("" + vitejs_error_1.addressMissing.message));
         return null;
     }
     return i;

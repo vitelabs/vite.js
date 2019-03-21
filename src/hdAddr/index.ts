@@ -1,8 +1,8 @@
 const bip39 = require('bip39');
 const hd = require('@sisi/ed25519-blake2b-hd-key');
-import { newHexAddr, isValidHexAddr as _isValidHexAddr, getAddrFromHexAddr as _getAddrFromHexAddr } from 'privToAddr';
-import { paramsFormat } from 'error';
-import { tools, encoder } from 'utils';
+import { newHexAddr, isValidHexAddr as _isValidHexAddr, getAddrFromHexAddr as _getAddrFromHexAddr } from '~@vite/vitejs-privtoaddr';
+import { paramsFormat } from '~@vite/vitejs-error';
+import { tools, encoder } from '~@vite/vitejs-utils';
 
 import { AddrObj, Hex, LangList } from '../type';
 

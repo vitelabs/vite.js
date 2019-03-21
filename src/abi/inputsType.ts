@@ -1,4 +1,4 @@
-import { encoder } from 'utils';
+import { encoder } from '~@vite/vitejs-utils';
 
 const { isArray, isObject } = encoder;
 const ADDR_SIZE = 20;

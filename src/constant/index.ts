@@ -1,4 +1,4 @@
-import { encodeFunctionSignature } from 'abi';
+import { encodeFunctionSignature } from '~@vite/vitejs-abi';
 import { _methods } from '../type';
 
 export const Vite_TokenId = 'tti_5649544520544f4b454e6e40';

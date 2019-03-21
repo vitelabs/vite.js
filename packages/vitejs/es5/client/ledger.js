@@ -35,14 +35,14 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var constant_1 = require("constant");
-var utils_1 = require("utils");
-var privToAddr_1 = require("privToAddr");
-var accountBlock_1 = require("accountBlock");
+var vitejs_constant_1 = require("./../constant");
+var vitejs_utils_1 = require("./../utils");
+var vitejs_privtoaddr_1 = require("./../privtoaddr");
+var vitejs_accountblock_1 = require("./../accountblock");
 var type_1 = require("../type");
-var onroad = constant_1.methods.onroad;
-var checkParams = utils_1.tools.checkParams;
-var _ledger = constant_1.methods.ledger;
+var onroad = vitejs_constant_1.methods.onroad;
+var checkParams = vitejs_utils_1.tools.checkParams;
+var _ledger = vitejs_constant_1.methods.ledger;
 var Ledger = (function () {
     function Ledger(client) {
         this._client = client;
@@ -55,7 +55,7 @@ var Ledger = (function () {
                     case 0:
                         err = checkParams({ addr: addr }, ['addr'], [{
                                 name: 'addr',
-                                func: privToAddr_1.isValidHexAddr
+                                func: vitejs_privtoaddr_1.isValidHexAddr
                             }]);
                         if (err) {
                             return [2, Promise.reject(err)];
@@ -89,7 +89,7 @@ var Ledger = (function () {
                     case 0:
                         err = checkParams({ addr: addr, index: index }, ['addr', 'index'], [{
                                 name: 'addr',
-                                func: privToAddr_1.isValidHexAddr
+                                func: vitejs_privtoaddr_1.isValidHexAddr
                             }]);
                         if (err) {
                             return [2, Promise.reject(err)];
@@ -120,7 +120,7 @@ var Ledger = (function () {
                         });
                         list = [];
                         rawList.forEach(function (item) {
-                            var txType = accountBlock_1.getBuiltinTxType(item.toAddress, item.data, Number(item.blockType));
+                            var txType = vitejs_accountblock_1.getBuiltinTxType(item.toAddress, item.data, Number(item.blockType));
                             item.txType = type_1.BuiltinTxType[txType];
                             list.push(item);
                         });
@@ -137,12 +137,12 @@ var Ledger = (function () {
                     case 0:
                         err = checkParams({ accountBlock: accountBlock, privateKey: privateKey }, ['accountBlock', 'privateKey'], [{
                                 name: 'accountBlock',
-                                func: function (_a) { return !accountBlock_1.validReqAccountBlock(_a); }
+                                func: function (_a) { return !vitejs_accountblock_1.validReqAccountBlock(_a); }
                             }]);
                         if (err) {
                             return [2, Promise.reject(err)];
                         }
-                        _accountBlock = accountBlock_1.signAccountBlock(accountBlock, privateKey);
+                        _accountBlock = vitejs_accountblock_1.signAccountBlock(accountBlock, privateKey);
                         _b.label = 1;
                     case 1:
                         _b.trys.push([1, 3, , 4]);

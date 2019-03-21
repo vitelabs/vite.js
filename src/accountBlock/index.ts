@@ -1,9 +1,9 @@
 const BigNumber = require('bn.js');
 
-import { ed25519, encoder, tools } from 'utils';
-import { getAddrFromHexAddr } from 'privToAddr';
-import { paramsMissing, paramsFormat } from 'error';
-import { Default_Hash, contractAddrs, abiFuncSignature } from 'constant';
+import { ed25519, encoder, tools } from '~@vite/vitejs-utils';
+import { getAddrFromHexAddr } from '~@vite/vitejs-privtoaddr';
+import { paramsMissing, paramsFormat } from '~@vite/vitejs-error';
+import { Default_Hash, contractAddrs, abiFuncSignature } from '~@vite/vitejs-constant';
 
 import { formatAccountBlock as _formatAccountBlock, validReqAccountBlock as _validReqAccountBlock, getCreateContractData as _getCreateContractData } from './builtin';
 import { AccountBlock, BlockType, SignBlock, sendTxBlock, receiveTxBlock, syncFormatBlock } from '../type';

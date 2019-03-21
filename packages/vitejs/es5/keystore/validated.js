@@ -1,11 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var UUID = require('pure-uuid');
-var utils_1 = require("utils");
-var privToAddr_1 = require("privToAddr");
+var vitejs_utils_1 = require("./../utils");
+var vitejs_privtoaddr_1 = require("./../privtoaddr");
 var vars_1 = require("./vars");
-var checkParams = utils_1.tools.checkParams;
-var hexToBytes = utils_1.encoder.hexToBytes;
+var checkParams = vitejs_utils_1.tools.checkParams;
+var hexToBytes = vitejs_utils_1.encoder.hexToBytes;
 function isValidVersion1(keyJson) {
     if (!keyJson.scryptparams
         || !keyJson.encryptp
@@ -86,7 +86,7 @@ function isValidOldKeystore(keyJson) {
     if (!keyJson.id
         || !keyJson.crypto
         || !keyJson.hexaddress
-        || !privToAddr_1.isValidHexAddr(keyJson.hexaddress)) {
+        || !vitejs_privtoaddr_1.isValidHexAddr(keyJson.hexaddress)) {
         return false;
     }
     var crypto = keyJson.crypto;

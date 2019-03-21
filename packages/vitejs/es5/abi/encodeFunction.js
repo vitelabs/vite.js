@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var utils_1 = require("utils");
+var vitejs_utils_1 = require("./../utils");
 var inputsType_1 = require("./inputsType");
-var isArray = utils_1.encoder.isArray, isObject = utils_1.encoder.isObject, blake2bHex = utils_1.encoder.blake2bHex;
+var isArray = vitejs_utils_1.encoder.isArray, isObject = vitejs_utils_1.encoder.isObject, blake2bHex = vitejs_utils_1.encoder.blake2bHex;
 function encodeFunction(jsonFunction, mehtodName) {
     var isArr = isArray(jsonFunction);
     var _jsonFunction = isArr ? getFunction(jsonFunction, mehtodName) : jsonFunction;

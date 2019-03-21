@@ -4,9 +4,9 @@ import {
     Register_Abi, UpdateRegistration_Abi, CancelRegister_Abi,
     Reward_Abi, Vote_Abi, CancelVote_Abi, Pledge_Abi, CancelPledge_Abi,
     Mint_Abi, Issue_Abi, Burn_Abi, ChangeTokenType_Abi, TransferOwner_Abi, Mint_CancelPledge_Abi
-} from 'constant';
-import { tools } from 'utils';
-import { no } from 'error';
+} from '~@vite/vitejs-constant';
+import { tools } from '~@vite/vitejs-utils';
+import { no } from '~@vite/vitejs-error';
 import {
     getAccountBlock as _getAccountBlock,
     getSendTxBlock,
@@ -14,8 +14,8 @@ import {
     validReqAccountBlock,
     formatAccountBlock,
     getCreateContractData
-} from 'accountBlock';
-import { encodeFunctionCall } from 'abi';
+} from '~@vite/vitejs-accountblock';
+import { encodeFunctionCall } from '~@vite/vitejs-abi';
 
 import {
     SBPregBlock, block8, block7, revokeVotingBlock, quotaBlock,

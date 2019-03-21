@@ -1,4 +1,4 @@
-import { encoder } from 'utils';
+import { encoder } from '~@vite/vitejs-utils';
 import { getTypes } from './inputsType';
 
 const { isArray, isObject, blake2bHex } = encoder;

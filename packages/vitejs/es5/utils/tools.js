@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var blake = require('blakejs/blake2b');
 var qs_1 = require("qs");
-var error_1 = require("error");
+var vitejs_error_1 = require("./../error");
 function uriStringify(o) {
     var schema = o.schema, prefix = o.prefix, target_address = o.target_address, chain_id = o.chain_id, function_name = o.function_name, params = o.params;
     var _schema = schema ? schema + ":" : 'vite:';
@@ -28,8 +28,8 @@ function checkParams(params, requiredP, validFunc) {
         var name = requiredP[i];
         if (!isHave(name)) {
             return {
-                code: error_1.paramsMissing.code,
-                message: error_1.paramsMissing.message + " " + name + "."
+                code: vitejs_error_1.paramsMissing.code,
+                message: vitejs_error_1.paramsMissing.message + " " + name + "."
             };
         }
     }
@@ -40,8 +40,8 @@ function checkParams(params, requiredP, validFunc) {
         }
         if (!func(params[name])) {
             return {
-                code: error_1.paramsFormat.code,
-                message: error_1.paramsFormat.message + " Illegal " + name + ". " + (msg || '')
+                code: vitejs_error_1.paramsFormat.code,
+                message: vitejs_error_1.paramsFormat.message + " Illegal " + name + ". " + (msg || '')
             };
         }
     }

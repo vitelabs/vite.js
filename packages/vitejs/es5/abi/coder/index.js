@@ -1,10 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var utils_1 = require("utils");
+var vitejs_utils_1 = require("./../../utils");
 var inputsType_1 = require("../inputsType");
 var common_1 = require("./common");
 var dynamic_1 = require("./dynamic");
-var isArray = utils_1.encoder.isArray;
+var isArray = vitejs_utils_1.encoder.isArray;
 var encode = {
     address: common_1.encode,
     gid: common_1.encode,

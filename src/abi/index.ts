@@ -1,4 +1,4 @@
-import { encoder } from 'utils';
+import { encoder } from '~@vite/vitejs-utils';
 
 import { encodeFunction, getFunction } from './encodeFunction';
 import { encodeParameter as _encodeParameter, encodeParameters as _encodeParameters, decodeParameter as _decodeParameter, decodeParameters as _decodeParameters } from './coder';

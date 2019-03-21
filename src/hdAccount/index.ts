@@ -1,8 +1,8 @@
-import { newAddr, getId, validateMnemonic, getEntropyFromMnemonic, getAddrsFromMnemonic, isValidHexAddr, getAddrFromMnemonic } from 'hdAddr';
-import Account from 'account';
-import client from 'client';
-import { paramsMissing, addressIllegal, addressMissing } from 'error';
-import { tools } from 'utils';
+import { newAddr, getId, validateMnemonic, getEntropyFromMnemonic, getAddrsFromMnemonic, isValidHexAddr, getAddrFromMnemonic } from '~@vite/vitejs-hdaddr';
+import Account from '~@vite/vitejs-account';
+import client from '~@vite/vitejs-client';
+import { paramsMissing, addressIllegal, addressMissing } from '~@vite/vitejs-error';
+import { tools } from '~@vite/vitejs-utils';
 
 import { Address, AddrObj, Hex, LangList } from '../type';
 

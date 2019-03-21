@@ -1,15 +1,15 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var UUID = require('pure-uuid');
-var utils_1 = require("utils");
-var privToAddr_1 = require("privToAddr");
-var error_1 = require("error");
+var vitejs_utils_1 = require("./../utils");
+var vitejs_privtoaddr_1 = require("./../privtoaddr");
+var vitejs_error_1 = require("./../error");
 var validated_1 = require("./validated");
 var tools_1 = require("./tools");
 var vars_1 = require("./vars");
-var random = utils_1.ed25519.random;
-var checkParams = utils_1.tools.checkParams;
-var hexToBytes = utils_1.encoder.hexToBytes, bytesToHex = utils_1.encoder.bytesToHex;
+var random = vitejs_utils_1.ed25519.random;
+var checkParams = vitejs_utils_1.tools.checkParams;
+var hexToBytes = vitejs_utils_1.encoder.hexToBytes, bytesToHex = vitejs_utils_1.encoder.bytesToHex;
 var n = vars_1.defaultScryptParams.n;
 var p = vars_1.defaultScryptParams.p;
 var r = vars_1.defaultScryptParams.r;
@@ -52,7 +52,7 @@ function encryptV1ToV3(key, keystore) {
     }
     var keyJson = validated_1.default(keystore);
     if (!keyJson) {
-        console.error(new Error(error_1.paramsFormat.message + " Illegal keystore."));
+        console.error(new Error(vitejs_error_1.paramsFormat.message + " Illegal keystore."));
         return false;
     }
     var scryptParams = keyJson.scryptparams;
@@ -72,7 +72,7 @@ function encryptOldKeystore(privKey, pwd, selfScryptsy) {
         console.error(new Error(err.message));
         return false;
     }
-    var key = privToAddr_1.newHexAddr(privKey);
+    var key = vitejs_privtoaddr_1.newHexAddr(privKey);
     var scryptParams = {
         n: n,
         r: r,

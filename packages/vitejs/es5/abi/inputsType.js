@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var utils_1 = require("utils");
-var isArray = utils_1.encoder.isArray, isObject = utils_1.encoder.isObject;
+var vitejs_utils_1 = require("./../utils");
+var isArray = vitejs_utils_1.encoder.isArray, isObject = vitejs_utils_1.encoder.isObject;
 var ADDR_SIZE = 20;
 var getNum = new RegExp(/(\d+)/g);
 var typePre = ['uint', 'int', 'address', 'bool', 'bytes', 'string', 'tokenId', 'gid'];

@@ -1,7 +1,7 @@
-import { methods } from 'constant';
-import { tools } from 'utils';
-import { isValidHexAddr } from 'privToAddr';
-import { getBuiltinTxType, signAccountBlock, validReqAccountBlock } from 'accountBlock';
+import { methods } from '~@vite/vitejs-constant';
+import { tools } from '~@vite/vitejs-utils';
+import { isValidHexAddr } from '~@vite/vitejs-privtoaddr';
+import { getBuiltinTxType, signAccountBlock, validReqAccountBlock } from '~@vite/vitejs-accountblock';
 
 import client from '.';
 import { RPCrequest, BuiltinTxType, Address } from '../type';

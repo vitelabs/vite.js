@@ -13,7 +13,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var ipc_ws_1 = require("communication/ipc_ws");
+var ipc_ws_1 = require("./../communication/ipc_ws");
 var Websocket = require('websocket').w3cwebsocket;
 var WsRpc = (function (_super) {
     __extends(WsRpc, _super);

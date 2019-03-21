@@ -2,13 +2,13 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var bip39 = require('bip39');
 var hd = require('@sisi/ed25519-blake2b-hd-key');
-var privToAddr_1 = require("privToAddr");
-var error_1 = require("error");
-var utils_1 = require("utils");
+var vitejs_privtoaddr_1 = require("./../privtoaddr");
+var vitejs_error_1 = require("./../error");
+var vitejs_utils_1 = require("./../utils");
 var type_1 = require("../type");
 var ROOT_PATH = 'm/44\'/666666\'';
-var checkParams = utils_1.tools.checkParams;
-var bytesToHex = utils_1.encoder.bytesToHex, blake2b = utils_1.encoder.blake2b;
+var checkParams = vitejs_utils_1.tools.checkParams;
+var bytesToHex = vitejs_utils_1.encoder.bytesToHex, blake2b = vitejs_utils_1.encoder.blake2b;
 function validateMnemonic(mnemonic, lang) {
     if (lang === void 0) { lang = type_1.LangList.english; }
     return mnemonic && bip39.validateMnemonic(mnemonic, getWordList(lang));
@@ -68,7 +68,7 @@ function getAddrFromMnemonic(mnemonic, index, lang, pwd) {
         return null;
     }
     if (index < 0) {
-        console.warn(error_1.paramsFormat.message + " Index must greater than 0.");
+        console.warn(vitejs_error_1.paramsFormat.message + " Index must greater than 0.");
         index = 0;
     }
     var path = getPath(index);
@@ -90,7 +90,7 @@ function getAddrsFromMnemonic(mnemonic, start, num, lang, pwd) {
         return null;
     }
     if (start < 0) {
-        console.warn(error_1.paramsFormat.message + " Start must greater than 0 or equal to 0.");
+        console.warn(vitejs_error_1.paramsFormat.message + " Start must greater than 0 or equal to 0.");
         start = 0;
     }
     if (num <= 0) {
@@ -122,13 +122,13 @@ function getId(mnemonic, lang) {
     return Buffer.from(idByte).toString('hex');
 }
 exports.getId = getId;
-exports.getAddrFromHexAddr = privToAddr_1.getAddrFromHexAddr;
-exports.isValidHexAddr = privToAddr_1.isValidHexAddr;
+exports.getAddrFromHexAddr = vitejs_privtoaddr_1.getAddrFromHexAddr;
+exports.isValidHexAddr = vitejs_privtoaddr_1.isValidHexAddr;
 function getAddrFromPath(path, seed) {
     var key = hd.derivePath(path, seed).key;
     var privateKey = hd.getPublicKey(key).privateKey;
     var priv = bytesToHex(privateKey);
-    return privToAddr_1.newHexAddr(priv);
+    return vitejs_privtoaddr_1.newHexAddr(priv);
 }
 function getPath(index) {
     return ROOT_PATH + "/" + index + "'";

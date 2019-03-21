@@ -1,11 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var error_1 = require("error");
-var utils_1 = require("utils");
+var vitejs_error_1 = require("./../error");
+var vitejs_utils_1 = require("./../utils");
 var tools_1 = require("./tools");
 var vars_1 = require("./vars");
 var validated_1 = require("./validated");
-var checkParams = utils_1.tools.checkParams;
+var checkParams = vitejs_utils_1.tools.checkParams;
 var n = vars_1.defaultScryptParams.n;
 var p = vars_1.defaultScryptParams.p;
 var r = vars_1.defaultScryptParams.r;
@@ -62,8 +62,8 @@ function decrypt(keystore, pwd, selfScryptsy) {
     var keyJson = validated_1.default(keystore);
     if (!keyJson) {
         return Promise.reject({
-            code: error_1.paramsFormat.code,
-            message: error_1.paramsFormat.message + " Illegal keystore."
+            code: vitejs_error_1.paramsFormat.code,
+            message: vitejs_error_1.paramsFormat.message + " Illegal keystore."
         });
     }
     if (keyJson.version) {

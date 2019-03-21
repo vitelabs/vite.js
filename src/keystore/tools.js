@@ -1,6 +1,6 @@
 const scryptsy = require('scryptsy');
 const crypto = typeof window === 'undefined' ? require('crypto') : require('browserify-aes');
-import { encoder } from 'utils';
+import { encoder } from '~@vite/vitejs-utils';
 
 const { hexToBytes } = encoder;
 

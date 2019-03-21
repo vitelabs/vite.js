@@ -1,8 +1,8 @@
 // address bool gid number
 
 const BigNumber = require('bn.js');
-import { getHexAddrFromAddr, getAddrFromHexAddr } from 'privToAddr';
-import { tools } from 'utils';
+import { getHexAddrFromAddr, getAddrFromHexAddr } from '~@vite/vitejs-privtoaddr';
+import { tools } from '~@vite/vitejs-utils';
 
 const { getRawTokenid, getTokenIdFromRaw } = tools;
 

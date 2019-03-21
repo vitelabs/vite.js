@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var BigNumber = require('bn.js');
-var privToAddr_1 = require("privToAddr");
-var utils_1 = require("utils");
-var getRawTokenid = utils_1.tools.getRawTokenid, getTokenIdFromRaw = utils_1.tools.getTokenIdFromRaw;
+var vitejs_privtoaddr_1 = require("./../../privtoaddr");
+var vitejs_utils_1 = require("./../../utils");
+var getRawTokenid = vitejs_utils_1.tools.getRawTokenid, getTokenIdFromRaw = vitejs_utils_1.tools.getTokenIdFromRaw;
 function encode(typeObj, params) {
     var Bytes_Data = getBytesData(typeObj.type, params);
     return encodeBytesData(typeObj, Bytes_Data);
@@ -85,7 +85,7 @@ function getBytesData(type, params) {
     }
 }
 function formatAddr(address) {
-    var addr = privToAddr_1.getAddrFromHexAddr(address);
+    var addr = vitejs_privtoaddr_1.getAddrFromHexAddr(address);
     if (!addr) {
         throw new Error("[Error] Illegal address. " + address);
     }
@@ -108,7 +108,7 @@ function fomatTokenId(tokenId) {
     return Buffer.from(rawTokenId, 'hex');
 }
 function showAddr(address) {
-    var addr = privToAddr_1.getHexAddrFromAddr(address);
+    var addr = vitejs_privtoaddr_1.getHexAddrFromAddr(address);
     if (!addr) {
         throw new Error("[Error] Illegal address. " + address);
     }

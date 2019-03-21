@@ -1,10 +1,9 @@
+import { methods as _methods } from '~@vite/vitejs-constant';
+import netProcessor from '~@vite/vitejs-netprocessor';
+
 import TxBlock from './txBlock';
 import Ledger from './ledger';
 import { subscribeFunc, walletFunc, netFunc, onroadFunc, contractFunc, pledgeFunc, registerFunc, voteFunc, mintageFunc, consensusGroupFunc, ledgerFunc, txFunc } from '../type';
-
-import { methods as _methods } from 'constant';
-import netProcessor from 'netProcessor';
-
 
 export default class Client extends netProcessor {
     buildinTxBlock: TxBlock

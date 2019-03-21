@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var privToAddr = require("privToAddr");
-var constant_1 = require("constant");
+var privToAddr = require("./../privtoaddr");
+var vitejs_constant_1 = require("./../constant");
 var AddrAccount = (function () {
     function AddrAccount(_a) {
         var _b = _a === void 0 ? { address: null, client: null } : _a, address = _b.address, client = _b.client;
@@ -54,10 +54,10 @@ var AddrAccount = (function () {
         return this._client.pledge.getPledgeList(this.address, index, pageCount);
     };
     AddrAccount.prototype.getRegistrationList = function () {
-        return this._client.register.getRegistrationList(constant_1.Snapshot_Gid, this.address);
+        return this._client.register.getRegistrationList(vitejs_constant_1.Snapshot_Gid, this.address);
     };
     AddrAccount.prototype.getVoteInfo = function () {
-        return this._client.vote.getVoteInfo(constant_1.Snapshot_Gid, this.address);
+        return this._client.vote.getVoteInfo(vitejs_constant_1.Snapshot_Gid, this.address);
     };
     AddrAccount.prototype.getTxList = function (_a) {
         var index = _a.index, _b = _a.pageCount, pageCount = _b === void 0 ? 50 : _b, _c = _a.totalNum, totalNum = _c === void 0 ? null : _c;

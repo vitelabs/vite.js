@@ -1,4 +1,4 @@
-import Communication from 'communication/Communication.js';
+import Communication from '~@vite/vitejs-communication/Communication.js';
 const XMLHttpRequest = typeof window !== 'undefined' && window.XMLHttpRequest
     ? window.XMLHttpRequest : require('xhr2');
 

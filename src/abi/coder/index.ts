@@ -1,4 +1,4 @@
-import { encoder } from 'utils';
+import { encoder } from '~@vite/vitejs-utils';
 import { formatType } from '../inputsType';
 
 import { encode as commonEncode, decode as commonDecode } from './common';

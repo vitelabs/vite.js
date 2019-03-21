@@ -1,9 +1,11 @@
 const fs = require('fs');
 const path = require('path');
+const traversing = require('./traversing');
 
-const typePath = path.join(__dirname, '/src/type.ts');
-const packageJsonContent = require('./common/package.json');
+const typePath = path.join(__dirname, '../src/type.ts');
+const packageJsonContent = require('../common/package.json');
 
+// Change `packages/dist/${packageName}.${"node"||"web"}.js` to `${packageName}/index.${"node"||"web"}.js`
 traversing('./packages/dist', (fPath, next, name) => {
     const stats = fs.statSync(fPath);
     if (!stats.isFile()) {
@@ -11,7 +13,7 @@ traversing('./packages/dist', (fPath, next, name) => {
     }
 
     const packageName = name.split('.')[0];
-    const packagePath = `packages/${ packageName }`;
+    const packagePath = path.join(__dirname, `../packages/${ packageName }`);
 
     if (fs.existsSync(packagePath)) {
         return;
@@ -22,35 +24,25 @@ traversing('./packages/dist', (fPath, next, name) => {
     fs.writeFileSync(`${ packagePath }/index.web.js`, fs.readFileSync(`packages/dist/${ packageName }.web.js`));
 
     copyFile({
-        fromPath: packagePath,
+        fromPath: `./packages/${ packageName }`,
         name: packageName.toLowerCase() === 'vitejs' ? '@vite/vitejs' : `@vite/vitejs-${ packageName.toLowerCase() }`
     });
 });
 
+// Delete packages/dist
 traversing('./packages/dist', fPath => {
     fs.unlinkSync(fPath);
 });
 fs.rmdirSync('./packages/dist');
 
 
-function traversing(startPath, cb) {
-    function readdirSync(startPath) {
-        const files = fs.readdirSync(startPath);
-
-        files.forEach(val => {
-            const fPath = path.join(startPath, val);
-            cb && cb(fPath, readdirSync, val);
-        });
-    }
-    readdirSync(startPath);
-}
 
 function copyFile({ fromPath, name }) {
     packageJsonContent.name = name;
 
-    const typeFile = path.join(fromPath, '/type.ts');
+    const typeFile = path.join(fromPath, './type.ts');
     fs.writeFileSync(typeFile, fs.readFileSync(typePath));
 
-    const packageFile = path.join(fromPath, '/package.json');
+    const packageFile = path.join(fromPath, './package.json');
     fs.writeFileSync(packageFile, JSON.stringify(packageJsonContent));
 }

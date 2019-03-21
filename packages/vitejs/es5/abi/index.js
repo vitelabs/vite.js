@@ -1,10 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var utils_1 = require("utils");
+var vitejs_utils_1 = require("./../utils");
 var encodeFunction_1 = require("./encodeFunction");
 var coder_1 = require("./coder");
 var inputsType_1 = require("./inputsType");
-var isArray = utils_1.encoder.isArray, isObject = utils_1.encoder.isObject;
+var isArray = vitejs_utils_1.encoder.isArray, isObject = vitejs_utils_1.encoder.isObject;
 function encodeLogSignature(jsonFunction, mehtodName) {
     return encodeFunction_1.encodeFunction(jsonFunction, mehtodName);
 }

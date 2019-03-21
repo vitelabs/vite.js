@@ -1,11 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var blake = require('blakejs/blake2b');
-var utils_1 = require("utils");
+var vitejs_utils_1 = require("./../utils");
 var vars_1 = require("./vars");
-var checkParams = utils_1.tools.checkParams;
-var keyPair = utils_1.ed25519.keyPair, getPublicKey = utils_1.ed25519.getPublicKey;
-var bytesToHex = utils_1.encoder.bytesToHex, hexToBytes = utils_1.encoder.hexToBytes;
+var checkParams = vitejs_utils_1.tools.checkParams;
+var keyPair = vitejs_utils_1.ed25519.keyPair, getPublicKey = vitejs_utils_1.ed25519.getPublicKey;
+var bytesToHex = vitejs_utils_1.encoder.bytesToHex, hexToBytes = vitejs_utils_1.encoder.hexToBytes;
 function newHexAddr(priv) {
     var _a = newAddr(priv), addr = _a.addr, privKey = _a.privKey;
     var checkSum = getAddrCheckSum(addr);

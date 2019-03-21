@@ -2,8 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var scryptsy = require('scryptsy');
 var crypto = typeof window === 'undefined' ? require('crypto') : require('browserify-aes');
-var utils_1 = require("utils");
-var hexToBytes = utils_1.encoder.hexToBytes;
+var vitejs_utils_1 = require("./../utils");
+var hexToBytes = vitejs_utils_1.encoder.hexToBytes;
 var TAG_LEN = 32;
 function cipheriv(_a, additionData) {
     var rawText = _a.rawText, pwd = _a.pwd, nonce = _a.nonce, algorithm = _a.algorithm;

@@ -1,9 +1,9 @@
 const BigNumber = require('bn.js');
-import { paramsMissing, paramsConflict } from 'error';
-import { Vite_TokenId, Default_Hash, Delegate_Gid } from 'constant';
-import { isValidHexAddr } from 'privToAddr';
-import { tools, encoder } from 'utils';
-import { encodeParameters } from 'abi';
+import { paramsMissing, paramsConflict } from '~@vite/vitejs-error';
+import { Vite_TokenId, Default_Hash, Delegate_Gid } from '~@vite/vitejs-constant';
+import { isValidHexAddr } from '~@vite/vitejs-privtoaddr';
+import { tools, encoder } from '~@vite/vitejs-utils';
+import { encodeParameters } from '~@vite/vitejs-abi';
 
 import { SignBlock, formatBlock } from '../type';
 

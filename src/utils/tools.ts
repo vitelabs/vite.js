@@ -1,7 +1,7 @@
 
 const blake = require('blakejs/blake2b');
 import { stringify } from 'qs';
-import { paramsMissing, paramsFormat } from 'error';
+import { paramsMissing, paramsFormat } from '~@vite/vitejs-error';
 
 export function uriStringify(o: {
     schema: String; prefix: String; target_address: String; chain_id: Number; function_name: String; params: Object;
