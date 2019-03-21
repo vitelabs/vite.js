@@ -44,12 +44,9 @@ export default class Client extends netProcessor {
 
     private _setMethodsName() {
         const providerType = (this._provider.type || 'http').toLowerCase();
-        for (const namespace in _methods) {
-            if (!Object.prototype.hasOwnProperty.call(_methods, namespace)) {
-                continue;
-            }
 
-            if (providerType === 'ipc' && namespace === 'wallet') {
+        for (const namespace in _methods) {
+            if (providerType !== 'ipc' && namespace === 'wallet') {
                 this.wallet = null;
                 continue;
             }
@@ -63,10 +60,6 @@ export default class Client extends netProcessor {
             this[_namespace] = {};
 
             for (const methodName in spaceMethods) {
-                if (!Object.prototype.hasOwnProperty.call(spaceMethods, namespace)) {
-                    continue;
-                }
-
                 const name = spaceMethods[methodName];
                 this[_namespace][methodName] = (...args: any[]) => this.request(name, ...args);
             }

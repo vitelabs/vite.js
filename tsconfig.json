@@ -17,7 +17,7 @@
             "~@vite/vitejs-account": ["account/index.ts"],
             "~@vite/vitejs-accountblock": ["accountBlock/index.ts"],
             "~@vite/vitejs-client": ["client/index.ts"],
-            "~@vite/vitejs-communication": ["communication/index.ts"],
+            "~@vite/vitejs-communication/*": ["communication/*"],
             "~@vite/vitejs-constant": ["constant/index.ts"],
             "~@vite/vitejs-error": ["error/index.ts"],
             "~@vite/vitejs-hdaccount": ["hdAccount/index.ts"],

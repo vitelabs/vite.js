@@ -14,8 +14,7 @@ class IpcRpc extends IPC_WS {
         });
 
         if (!path) {
-            console.error(this.ERRORS.CONNECT());
-            return this.ERRORS.CONNECT();
+            throw this.ERRORS.CONNECT();
         }
 
         this.type = 'ipc';

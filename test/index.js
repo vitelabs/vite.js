@@ -23,3 +23,7 @@ describe('Address Test', function () {
 describe('Keystore Test: packages/keystore', function () {
     require('./keystore');
 });
+
+describe('Client Test: packages/client', function () {
+    require('./client');
+});

@@ -32,7 +32,7 @@ export default class NetProcessor {
     connectedOnce(cb) {
         const connectedCB = () => {
             this.isConnected = true;
-            this.requestList.forEach(_q => {
+            this.requestList && this.requestList.forEach(_q => {
                 _q && _q();
             });
             cb && cb(this);
@@ -43,7 +43,7 @@ export default class NetProcessor {
             return;
         }
 
-        this._provider.on('connect', () => {
+        this._provider.on && this._provider.on('connect', () => {
             connectedCB();
             this._provider.remove('connect');
         });

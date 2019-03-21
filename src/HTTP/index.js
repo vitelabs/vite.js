@@ -3,7 +3,7 @@ const XMLHttpRequest = typeof window !== 'undefined' && window.XMLHttpRequest
     ? window.XMLHttpRequest : require('xhr2');
 
 class HttpRpc extends Communication {
-    constructor(host = 'http://localhost:8415', timeout = 60000, options = { headers: {}}) {
+    constructor(host = 'http://localhost:8415', timeout = 60000, options = { headers: [] }) {
         super();
 
         this.type = 'http';

@@ -28,6 +28,7 @@ module.exports = {
         'eslint-config-alloy/typescript'
     ],
     "rules": {
+        "guard-for-in": "off",
         "prefer-promise-reject-errors": "off",
         "eqeqeq": "error",
         "no-else-return": "error",
