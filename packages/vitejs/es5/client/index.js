@@ -38,10 +38,7 @@ var Client = (function (_super) {
         var _this = this;
         var providerType = (this._provider.type || 'http').toLowerCase();
         for (var namespace in vitejs_constant_1.methods) {
-            if (!Object.prototype.hasOwnProperty.call(vitejs_constant_1.methods, namespace)) {
-                continue;
-            }
-            if (providerType === 'ipc' && namespace === 'wallet') {
+            if (providerType !== 'ipc' && namespace === 'wallet') {
                 this.wallet = null;
                 continue;
             }
@@ -52,9 +49,6 @@ var Client = (function (_super) {
             var spaceMethods = vitejs_constant_1.methods[namespace];
             this[_namespace] = {};
             var _loop_1 = function (methodName) {
-                if (!Object.prototype.hasOwnProperty.call(spaceMethods, namespace)) {
-                    return "continue";
-                }
                 var name = spaceMethods[methodName];
                 this_1[_namespace][methodName] = function () {
                     var args = [];

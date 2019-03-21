@@ -21,7 +21,7 @@ var HttpRpc = (function (_super) {
     function HttpRpc(host, timeout, options) {
         if (host === void 0) { host = 'http://localhost:8415'; }
         if (timeout === void 0) { timeout = 60000; }
-        if (options === void 0) { options = { headers: {} }; }
+        if (options === void 0) { options = { headers: [] }; }
         var _this = _super.call(this) || this;
         _this.type = 'http';
         _this.host = host;

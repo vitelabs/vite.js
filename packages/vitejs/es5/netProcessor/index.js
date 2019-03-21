@@ -56,7 +56,7 @@ var NetProcessor = (function () {
         var _this = this;
         var connectedCB = function () {
             _this.isConnected = true;
-            _this.requestList.forEach(function (_q) {
+            _this.requestList && _this.requestList.forEach(function (_q) {
                 _q && _q();
             });
             cb && cb(_this);
@@ -65,7 +65,7 @@ var NetProcessor = (function () {
             connectedCB();
             return;
         }
-        this._provider.on('connect', function () {
+        this._provider.on && this._provider.on('connect', function () {
             connectedCB();
             _this._provider.remove('connect');
         });

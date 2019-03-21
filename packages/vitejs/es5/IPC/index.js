@@ -31,8 +31,7 @@ var IpcRpc = (function (_super) {
             path: path
         }) || this;
         if (!path) {
-            console.error(_this.ERRORS.CONNECT());
-            return _this.ERRORS.CONNECT();
+            throw _this.ERRORS.CONNECT();
         }
         _this.type = 'ipc';
         _this.timeout = timeout;
