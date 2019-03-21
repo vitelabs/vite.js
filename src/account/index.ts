@@ -14,8 +14,8 @@ class Account extends addrAccount {
     privateKey: Hex
     publicKey: Hex
     balance
-    _lock: Boolean
-    _autoReceive: Boolean
+    private _lock: Boolean
+    private _autoReceive: Boolean
 
     constructor({ privateKey, client }: {
         privateKey?: Hex | Buffer; client: client;
@@ -75,14 +75,13 @@ class Account extends addrAccount {
 
                 const onroad = this.balance && this.balance.onroad ? this.balance.onroad : null;
                 const balanceInfos = onroad && onroad.tokenBalanceInfoMap ? onroad.tokenBalanceInfoMap : null;
+                _t();
 
                 if (balanceInfos) {
                     this.autoReceiveTx(intervals, receiveFailAction);
                     return;
                 }
-
                 this.stopAutoReceiveTx();
-                _t();
             }).catch(() => {
                 _t();
             });

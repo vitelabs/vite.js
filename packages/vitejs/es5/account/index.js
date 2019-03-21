@@ -106,12 +106,12 @@ var Account = (function (_super) {
                 _this.balance = balance;
                 var onroad = _this.balance && _this.balance.onroad ? _this.balance.onroad : null;
                 var balanceInfos = onroad && onroad.tokenBalanceInfoMap ? onroad.tokenBalanceInfoMap : null;
+                _t();
                 if (balanceInfos) {
                     _this.autoReceiveTx(intervals, receiveFailAction);
                     return;
                 }
                 _this.stopAutoReceiveTx();
-                _t();
             }).catch(function () {
                 _t();
             });
