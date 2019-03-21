@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var scryptsy = require('scryptsy');
-var crypto = typeof window !== 'undefined' ? require('browserify-aes') : require('crypto');
+var crypto = typeof window === 'undefined' ? require('crypto') : require('browserify-aes');
 var utils_1 = require("utils");
 var hexToBytes = utils_1.encoder.hexToBytes;
 var TAG_LEN = 32;
@@ -33,8 +33,8 @@ exports.decipheriv = decipheriv;
 function encryptPwd(pwd, scryptParams, selfScryptsy) {
     var salt = hexToBytes(scryptParams.salt);
     if (!selfScryptsy) {
-        return Promise.resolve(scryptsy(pwd, Buffer.from(salt), +scryptParams.n, +scryptParams.r, +scryptParams.p, +scryptParams.keylen));
+        return Promise.resolve(scryptsy(pwd, Buffer.from(salt), Number(scryptParams.n), Number(scryptParams.r), Number(scryptParams.p), Number(scryptParams.keylen)));
     }
-    return selfScryptsy(pwd, Array.from(salt), +scryptParams.n, +scryptParams.r, +scryptParams.p, +scryptParams.keylen);
+    return selfScryptsy(pwd, Array.from(salt), Number(scryptParams.n), Number(scryptParams.r), Number(scryptParams.p), Number(scryptParams.keylen));
 }
 exports.encryptPwd = encryptPwd;

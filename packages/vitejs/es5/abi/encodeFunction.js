@@ -14,7 +14,7 @@ function jsonFunctionToString(jsonFunction) {
     var isObj = isObject(jsonFunction);
     var isRightStr = /\w+\((\w\,\w)*|(\w*)\)/g;
     if (!isObj && !isRightStr.test(jsonFunction)) {
-        throw "[Error] Illegal jsonFunction. " + JSON.stringify(jsonFunction);
+        throw new Error("[Error] Illegal jsonFunction. " + JSON.stringify(jsonFunction));
     }
     if (isRightStr.test(jsonFunction)) {
         return jsonFunction;
@@ -23,14 +23,14 @@ function jsonFunctionToString(jsonFunction) {
         return jsonFunction.name;
     }
     var types = inputsType_1.getTypes(jsonFunction);
-    return jsonFunction.name + '(' + types.join(',') + ')';
+    return jsonFunction.name + "(" + types.join(',') + ")";
 }
 function getFunction(jsonFunction, mehtodName) {
     if (!isArray(jsonFunction) && isObject(jsonFunction)) {
         return jsonFunction;
     }
     if (jsonFunction.length !== 1 && !mehtodName) {
-        throw "[Error] Param(s) missing, methodName.";
+        throw new Error('[Error] Param(s) missing, methodName.');
     }
     if (!mehtodName && jsonFunction.length === 1) {
         return jsonFunction[0];

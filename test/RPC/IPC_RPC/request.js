@@ -1,6 +1,6 @@
-import ipcProvider from 'provider/IPC_RPC';
+import IpcProvider from 'provider/IPC_RPC';
 
-const IPC_RPC = new ipcProvider({
+const IPC_RPC = new IpcProvider({
     path: '/Users/sisi/viteisbest/vite.ipc',
     timeout: 200
 });
@@ -9,7 +9,7 @@ let resultCount = 0;
 
 function addResCount() {
     resultCount++;
-    if (resultCount ===  2) {
+    if (resultCount === 2) {
         IPC_RPC.disconnect();
     }
 }
@@ -20,25 +20,25 @@ describe('ipc_rpc_request', function () {
         IPC_RPC.request().then(() => {
             addResCount();
             done('the test case don\'t have param \'methodName\', should return error, but now, return success.');
-        }).catch(() => {                
+        }).catch(() => {
             addResCount();
             done();
         });
     });
-    
+
     it('request_success', function (done) {
         IPC_RPC.request('wallet_listAddress').then(() => {
             addResCount();
             done();
-        }).catch((err) => {
+        }).catch(err => {
             addResCount();
             done(err);
         });
     });
-    
+
     it('request_timeout_error', function (done) {
-        const Params = [1, 2];
-        IPC_RPC.request('jsonrpcTimeoutError', Params).then((res) => {
+        const Params = [ 1, 2 ];
+        IPC_RPC.request('jsonrpcTimeoutError', Params).then(res => {
             addResCount();
             done(res);
         }).catch(() => {

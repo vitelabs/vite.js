@@ -15,9 +15,9 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var ipc_ws_1 = require("communication/ipc_ws");
 var net = require('net');
-var IPC_RPC = (function (_super) {
-    __extends(IPC_RPC, _super);
-    function IPC_RPC(path, timeout, options) {
+var IpcRpc = (function (_super) {
+    __extends(IpcRpc, _super);
+    function IpcRpc(path, timeout, options) {
         if (path === void 0) { path = ''; }
         if (timeout === void 0) { timeout = 60000; }
         if (options === void 0) { options = {
@@ -76,12 +76,13 @@ var IPC_RPC = (function (_super) {
         });
         return _this;
     }
-    IPC_RPC.prototype.reconnect = function () {
+    IpcRpc.prototype.reconnect = function () {
         this.socket.connect({ path: this.path });
     };
-    IPC_RPC.prototype.disconnect = function () {
+    IpcRpc.prototype.disconnect = function () {
         this.socket && this.socket.destroy && this.socket.destroy();
     };
-    return IPC_RPC;
+    return IpcRpc;
 }(ipc_ws_1.default));
+var IPC_RPC = IpcRpc;
 exports.default = IPC_RPC;

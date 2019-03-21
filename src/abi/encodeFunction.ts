@@ -1,13 +1,12 @@
 import { encoder } from 'utils';
-
 import { getTypes } from './inputsType';
 
 const { isArray, isObject, blake2bHex } = encoder;
 
 export function encodeFunction(jsonFunction, mehtodName?) {
-    let isArr = isArray(jsonFunction);
-    let _jsonFunction = isArr ? getFunction(jsonFunction, mehtodName) : jsonFunction;
-    let result = jsonFunctionToString(_jsonFunction);
+    const isArr = isArray(jsonFunction);
+    const _jsonFunction = isArr ? getFunction(jsonFunction, mehtodName) : jsonFunction;
+    const result = jsonFunctionToString(_jsonFunction);
     return blake2bHex(result, null, 32);
 }
 
@@ -16,7 +15,7 @@ function jsonFunctionToString(jsonFunction) {
     const isRightStr = /\w+\((\w\,\w)*|(\w*)\)/g;
 
     if (!isObj && !isRightStr.test(jsonFunction)) {
-        throw `[Error] Illegal jsonFunction. ${JSON.stringify(jsonFunction)}`
+        throw new Error(`[Error] Illegal jsonFunction. ${ JSON.stringify(jsonFunction) }`);
     }
 
     if (isRightStr.test(jsonFunction)) {
@@ -27,8 +26,8 @@ function jsonFunctionToString(jsonFunction) {
         return jsonFunction.name;
     }
 
-    let types = getTypes(jsonFunction);
-    return jsonFunction.name + '(' + types.join(',') + ')';
+    const types = getTypes(jsonFunction);
+    return `${ jsonFunction.name }(${ types.join(',') })`;
 }
 
 export function getFunction(jsonFunction, mehtodName?) {
@@ -37,14 +36,14 @@ export function getFunction(jsonFunction, mehtodName?) {
     }
 
     if (jsonFunction.length !== 1 && !mehtodName) {
-        throw `[Error] Param(s) missing, methodName.`;
+        throw new Error('[Error] Param(s) missing, methodName.');
     }
 
     if (!mehtodName && jsonFunction.length === 1) {
         return jsonFunction[0];
     }
 
-    for (let i=0; i<jsonFunction.length; i++) {
+    for (let i = 0; i < jsonFunction.length; i++) {
         if (jsonFunction[i].name === mehtodName) {
             return jsonFunction[i];
         }

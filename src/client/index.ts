@@ -1,14 +1,14 @@
-import txBlock from './txBlock';
-import ledger from './ledger';
-import { subscribeFunc, walletFunc, netFunc, onroadFunc, contractFunc, pledgeFunc, registerFunc, voteFunc, mintageFunc, consensusGroupFunc, ledgerFunc, txFunc } from "../type";
+import TxBlock from './txBlock';
+import Ledger from './ledger';
+import { subscribeFunc, walletFunc, netFunc, onroadFunc, contractFunc, pledgeFunc, registerFunc, voteFunc, mintageFunc, consensusGroupFunc, ledgerFunc, txFunc } from '../type';
 
 import { methods as _methods } from 'constant';
-import netProcessor from "netProcessor";
+import netProcessor from 'netProcessor';
 
 
-export default class client extends netProcessor {
-    buildinTxBlock: txBlock
-    buildinLedger: ledger
+export default class Client extends netProcessor {
+    buildinTxBlock: TxBlock
+    buildinLedger: Ledger
 
     wallet: walletFunc
     net: netFunc
@@ -26,8 +26,8 @@ export default class client extends netProcessor {
     constructor(provider: any, firstConnect: Function) {
         super(provider, firstConnect);
 
-        this.buildinTxBlock = new txBlock(this);
-        this.buildinLedger = new ledger(this);
+        this.buildinTxBlock = new TxBlock(this);
+        this.buildinLedger = new Ledger(this);
 
         this._setMethodsName();
     }
@@ -35,7 +35,7 @@ export default class client extends netProcessor {
     setProvider(provider, firstConnect, abort) {
         this._setProvider(provider, firstConnect, abort);
 
-        let providerType = this._provider.type || 'http';
+        const providerType = this._provider.type || 'http';
         if (providerType.toLowerCase !== 'ipc' || this.wallet) {
             return;
         }
@@ -44,27 +44,32 @@ export default class client extends netProcessor {
     }
 
     private _setMethodsName() {
-        let providerType = (this._provider.type || 'http').toLowerCase();
-        for (let namespace in _methods) {
+        const providerType = (this._provider.type || 'http').toLowerCase();
+        for (const namespace in _methods) {
+            if (!Object.prototype.hasOwnProperty.call(_methods, namespace)) {
+                continue;
+            }
+
             if (providerType === 'ipc' && namespace === 'wallet') {
                 this.wallet = null;
                 continue;
             }
 
-            let _namespace = namespace === 'subscribe' ? 'subscribeFunc' : namespace;
-
+            const _namespace = namespace === 'subscribe' ? 'subscribeFunc' : namespace;
             if (this[_namespace]) {
                 continue;
             }
 
-            let spaceMethods = _methods[namespace];
+            const spaceMethods = _methods[namespace];
             this[_namespace] = {};
 
-            for (let methodName in spaceMethods) {
-                let name = spaceMethods[methodName]
-                this[_namespace][methodName] = (...args: any[]) => {
-                    return this.request(name, ...args);
+            for (const methodName in spaceMethods) {
+                if (!Object.prototype.hasOwnProperty.call(spaceMethods, namespace)) {
+                    continue;
                 }
+
+                const name = spaceMethods[methodName];
+                this[_namespace][methodName] = (...args: any[]) => this.request(name, ...args);
             }
         }
     }

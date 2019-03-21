@@ -1,9 +1,7 @@
 const assert = require('assert');
-import httpProvider from 'provider/HTTP_RPC';
+import HttpProvider from 'provider/HTTP_RPC';
 
-const HTTP_RPC = new httpProvider({
-    timeout: 200
-});
+const HTTP_RPC = new HttpProvider({ timeout: 200 });
 
 describe('http_rpc_reset', function () {
     it('reset_finish_requests', function (done) {
@@ -11,23 +9,23 @@ describe('http_rpc_reset', function () {
             {
                 type: 'request',
                 methodName: 'jsonrpcSuccess',
-                params: [1, 2]
+                params: [ 1, 2 ]
             }, {
                 type: 'request',
                 methodName: 'jsonrpcSuccess',
-                params: [5, 6]
+                params: [ 5, 6 ]
             }, {
                 type: 'request',
                 methodName: 'jsonrpcSuccess',
-                params: ['ok', 'no']
+                params: [ 'ok', 'no' ]
             }, {
                 type: 'request',
                 methodName: 'jsonrpcSuccess',
-                params: [1, 2]
+                params: [ 1, 2 ]
             }
         ]).then(() => {
             done();
-        }).catch((err) => {
+        }).catch(err => {
             done(err);
         });
     });
@@ -41,23 +39,23 @@ describe('http_rpc_reset', function () {
             {
                 type: 'request',
                 methodName: 'jsonrpcTimeoutSuccess',
-                params: [1, 2]
+                params: [ 1, 2 ]
             }, {
                 type: 'request',
                 methodName: 'jsonrpcTimeoutSuccess',
-                params: [5, 6]
+                params: [ 5, 6 ]
             }, {
                 type: 'request',
                 methodName: 'jsonrpcTimeoutSuccess',
-                params: ['ok', 'no']
+                params: [ 'ok', 'no' ]
             }, {
                 type: 'request',
                 methodName: 'jsonrpcSuccess',
-                params: [1, 2]
+                params: [ 1, 2 ]
             }
         ]).then(() => {
             done('already reset: request should be aborted');
-        }).catch((err) => {
+        }).catch(err => {
             assert.equal(err.message, HTTP_RPC.ERRORS.ABORT().message);
             done();
         });
@@ -68,16 +66,16 @@ describe('http_rpc_reset', function () {
         let doneResult = null;
 
         let testCount = 0;
-        let pushResult = (request, result) => {
-            let errList = ['batchTimeout', 'notificationTimeout', 'requestTimeout'];
-            let successList = ['requestSuccess'];
+        const pushResult = (request, result) => {
+            const errList = [ 'batchTimeout', 'notificationTimeout', 'requestTimeout' ];
+            const successList = ['requestSuccess'];
 
             if (doneResult) {
                 return;
             }
 
             if (errList.indexOf(request) !== -1 && !result) {
-                doneResult = `${request} should be aborted, but it is success`;
+                doneResult = `${ request } should be aborted, but it is success`;
                 done(doneResult);
             } else if (errList.indexOf(request) !== -1 && result !== errMsg) {
                 doneResult = result;
@@ -95,43 +93,43 @@ describe('http_rpc_reset', function () {
             HTTP_RPC.reset();
         }, 50);
 
-        HTTP_RPC.batch([{
+        HTTP_RPC.batch([ {
             type: 'request',
             methodName: 'jsonrpcTimeoutError',
-            params: [1, 2]
+            params: [ 1, 2 ]
         }, {
             type: 'request',
             methodName: 'jsonrpcTimeoutSuccess',
-            params: [5, 6]
+            params: [ 5, 6 ]
         }, {
             type: 'request',
             methodName: 'jsonrpcTimeoutSuccess',
-            params: ['ok', 'no']
+            params: [ 'ok', 'no' ]
         }, {
             type: 'request',
             methodName: 'jsonrpcSuccess',
-            params: [1, 2]
-        }]).then(() => {
+            params: [ 1, 2 ]
+        } ]).then(() => {
             pushResult('batchTimeout');
-        }).catch((err) => {
+        }).catch(err => {
             pushResult('batchTimeout', err.message);
         });
 
-        HTTP_RPC.notification('jsonrpcTimeoutSuccess', [1, 2]).then(() => {
+        HTTP_RPC.notification('jsonrpcTimeoutSuccess', [ 1, 2 ]).then(() => {
             pushResult('notificationTimeout');
-        }).catch((err) => {            
+        }).catch(err => {
             pushResult('notificationTimeout', err.message);
         });
 
-        HTTP_RPC.request('jsonrpcTimeoutSuccess', [1, 2]).then(() => {
+        HTTP_RPC.request('jsonrpcTimeoutSuccess', [ 1, 2 ]).then(() => {
             pushResult('requestTimeout');
-        }).catch((err) => {
+        }).catch(err => {
             pushResult('requestTimeout', err.message);
         });
 
-        HTTP_RPC.request('jsonrpcSuccess', [1, 2]).then(() => {
+        HTTP_RPC.request('jsonrpcSuccess', [ 1, 2 ]).then(() => {
             pushResult('requestSuccess');
-        }).catch((err) => {
+        }).catch(err => {
             pushResult('requestSuccess', err.message);
         });
     });

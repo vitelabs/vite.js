@@ -13,8 +13,8 @@ const encode = {
     number: commonEncode,
     bool: commonEncode,
     string: dynamicEncode,
-    bytes: dynamicEncode,
-}
+    bytes: dynamicEncode
+};
 
 const decode = {
     address: commonDecode,
@@ -24,13 +24,13 @@ const decode = {
     bool: commonDecode,
     string: dynamicDecode,
     bytes: dynamicDecode
-}
+};
 
 export function encodeParameter(typeStr, params) {
-    let typeObj = formatType(typeStr);
-    if (typeObj.isArr && !isArray(params) ||
-        (!typeObj.isArr && ['string', 'boolean', 'number'].indexOf(typeof params) === -1)) {
-        throw `[Error] Illegal type or params. type: ${typeObj.type}, params: ${params}`;
+    const typeObj = formatType(typeStr);
+    if (typeObj.isArr && !isArray(params)
+        || (!typeObj.isArr && [ 'string', 'boolean', 'number' ].indexOf(typeof params) === -1)) {
+        throw new Error(`[Error] Illegal type or params. type: ${ typeObj.type }, params: ${ params }`);
     }
 
     if (!typeObj.isArr) {
@@ -42,15 +42,15 @@ export function encodeParameter(typeStr, params) {
 
 export function encodeParameters(types, params) {
     if (!isArray(types) || !isArray(params) || types.length !== params.length) {
-        throw '[Error] Illegal types or params. Types and params should be array.';
+        throw new Error('[Error] Illegal types or params. Types and params should be array.');
     }
 
-    let tempResult = [];
-    let dynamicRes = [];
+    const tempResult = [];
+    const dynamicRes = [];
     let totalLength = 0;
-    
+
     types.forEach((type, i) => {
-        let _res = encodeParameter(type, params[i]);
+        const _res = encodeParameter(type, params[i]);
 
         if (!_res.typeObj.isDynamic) {
             totalLength += _res.result.length;
@@ -70,16 +70,14 @@ export function encodeParameters(types, params) {
 
     let result = '';
     let dynamicResult = '';
-    tempResult.forEach((_r) => {
+    tempResult.forEach(_r => {
         if (_r) {
             result += _r;
             return;
         }
 
-        let index = (totalLength + dynamicResult.length) / 2;
-        result += encode.number({
-            type: 'number', byteLength: 32, isArr: false
-        }, index).result;
+        const index = (totalLength + dynamicResult.length) / 2;
+        result += encode.number({ type: 'number', byteLength: 32, isArr: false }, index).result;
         dynamicResult += dynamicRes.shift();
     });
 
@@ -87,7 +85,7 @@ export function encodeParameters(types, params) {
 }
 
 export function decodeParameter(typeStr, params) {
-    let typeObj = formatType(typeStr);
+    const typeObj = formatType(typeStr);
     if (!typeObj.isArr) {
         return decode[typeObj.type](typeObj, params).result;
     }
@@ -96,18 +94,18 @@ export function decodeParameter(typeStr, params) {
 
 export function decodeParameters(types, params) {
     if (!isArray(types)) {
-        throw '[Error] Illegal types. Should be array.';
+        throw new Error('[Error] Illegal types. Should be array.');
     }
 
     let _params = params;
-    let resArr = [];
-    let indexArr = [];
+    const resArr = [];
+    const indexArr = [];
 
-    types.forEach((type) => {
-        let typeObj = formatType(type);
+    types.forEach(type => {
+        const typeObj = formatType(type);
 
         if (!typeObj.isDynamic) {
-            let _res = decode[typeObj.type](typeObj, _params);
+            const _res = decode[typeObj.type](typeObj, _params);
             _params = _res.params;
             resArr.push({
                 isDynamic: false,
@@ -116,20 +114,18 @@ export function decodeParameters(types, params) {
             return;
         }
 
-        let _res = decode.number({
-            type: 'number', byteLength: 32, isArr: false
-        }, _params);
-        let index = _res.result;
+        const _res = decode.number({ type: 'number', byteLength: 32, isArr: false }, _params);
+        const index = _res.result;
         _params = _res.params;
         indexArr.push(index * 2);
         resArr.push({
             isDynamic: true,
-            typeObj, 
+            typeObj,
             index: index * 2
         });
     });
 
-    let result = [];
+    const result = [];
     let currentInx = 0;
     resArr.forEach((_res, i) => {
         if (!_res.isDynamic) {
@@ -138,117 +134,108 @@ export function decodeParameters(types, params) {
         }
 
         let _p;
-        if ((currentInx + 1) !== indexArr.length) {
-            _p = params.slice(_res.index, indexArr[currentInx+1]);
-        } else {
+        if ((currentInx + 1) === indexArr.length) {
             _p = params.slice(_res.index);
+        } else {
+            _p = params.slice(_res.index, indexArr[currentInx + 1]);
         }
 
         if (_res.typeObj.type === 'bytes' && !_res.typeObj.isArr) {
-            let len = 32 * Math.ceil(_p.length / 2 / 32);
-            _p = encode.number({
-                type: 'number', byteLength: 32
-            }, len).result + _p;
+            const len = 32 * Math.ceil(_p.length / 2 / 32);
+            _p = encode.number({ type: 'number', byteLength: 32 }, len).result + _p;
         }
         currentInx++;
 
-        result.push( decodeParameter(types[i], _p) );
+        result.push(decodeParameter(types[i], _p));
     });
 
     return result;
 }
 
 
-
 function encodeArr(typeObj, arrLen, params) {
-    if (!params || (arrLen && params.length !== +arrLen)) {
-        throw  `[Error] Params.length !== arr.length. Params: ${JSON.stringify(params)}. ${JSON.stringify(typeObj)}`;
+    if (!params || (arrLen && params.length !== Number(arrLen))) {
+        throw new Error(`[Error] Params.length !== arr.length. Params: ${ JSON.stringify(params) }. ${ JSON.stringify(typeObj) }`);
     }
-    
+
     let result = '';
-    params.forEach((_param) => {
-        let res = encode[typeObj.type](typeObj, _param);
+    params.forEach(_param => {
+        const res = encode[typeObj.type](typeObj, _param);
         result += res.result;
     });
 
-    let bytesArrLen = arrLen ? '' : 
-        encode.number({
-            type: 'number', byteLength: 32, isArr: false
-        }, params.length).result;
+    const bytesArrLen = arrLen ? ''
+        : encode.number({ type: 'number', byteLength: 32, isArr: false }, params.length).result;
 
     return bytesArrLen + result;
 }
 
 function encodeArrs(typeObj, params) {
     let result = '';
-    let lenArr = typeObj.arrLen;
+    const lenArr = typeObj.arrLen;
 
-    let loop = (params, i = 0) => {
+    const loop = (params, i = 0) => {
         if (i === lenArr.length - 1) {
             result += encodeArr(typeObj, lenArr[lenArr.length - i - 1], params);
             return;
         }
         i++;
-        isArray(params) && params.forEach((_p) => {
+        isArray(params) && params.forEach(_p => {
             loop(_p, i);
         });
-    }
+    };
 
     loop(params);
-    return {
-        typeObj, result
-    };
+    return { typeObj, result };
 }
 
 function decodeArr(typeObj, arrLen, params) {
     let _param = params;
     if (typeObj.isDynamic) {
-        let len = params.substring(0, 64);
-        arrLen = decode.number({
-            type: 'number', byteLength: 32, isArr: false
-        }, len).result;
+        const len = params.substring(0, 64);
+        arrLen = decode.number({ type: 'number', byteLength: 32, isArr: false }, len).result;
         _param = params.substring(64);
     }
 
-    let result = [];
-    for(let i=0; i<arrLen; i++) {
-        let res = decode[typeObj.type](typeObj, _param);
+    const result = [];
+    for (let i = 0; i < arrLen; i++) {
+        const res = decode[typeObj.type](typeObj, _param);
         result.push(res.result);
         _param = res.params;
     }
 
-    return {
-        result, params: _param
-    };
+    return { result, params: _param };
 }
 
 function decodeArrs(typeObj, params) {
-    let lenArr = typeObj.arrLen;
+    const lenArr = typeObj.arrLen;
 
-    let loop = (i = 0, result?) => {
-        if ((lenArr.length <= 1 && i === lenArr.length) ||
-            (lenArr.length > 1 && i === lenArr.length - 1)) {
+    const loop = (i = 0, result?) => {
+        if ((lenArr.length <= 1 && i === lenArr.length)
+            || (lenArr.length > 1 && i === lenArr.length - 1)) {
             return result;
         }
 
-        let l  = lenArr[i];
+        const l = lenArr[i];
         let _r = [];
 
-        if (!result) {
+        if (result) {
+            let resultOpt = result && result.length;
+            while (resultOpt) {
+                _r.push(result.splice(0, l));
+                resultOpt = result && result.length;
+            }
+        } else {
             while (params) {
-                let _res = decodeArr(typeObj, l, params);
+                const _res = decodeArr(typeObj, l, params);
                 params = _res.params;
                 _r.push(_res.result);
             }
-            _r = _r.length > 1 ? _r : _r[0]
-        } else {
-            while (result && result.length) {
-                _r.push(result.splice(0, l));
-            }
+            _r = _r.length > 1 ? _r : _r[0];
         }
 
         i++;
         return loop(i, _r);
-    }
+    };
     return loop();
 }

@@ -1,7 +1,7 @@
 const assert = require('assert');
-import ipcProvider from 'provider/IPC_RPC';
+import IpcProvider from 'provider/IPC_RPC';
 
-const IPC_RPC = new ipcProvider({
+const IPC_RPC = new IpcProvider({
     path: '/Users/sisi/viteisbest/vite.ipc',
     timeout: 200
 });
@@ -9,7 +9,7 @@ const IPC_RPC = new ipcProvider({
 let resultCount = 0;
 function addResCount() {
     resultCount++;
-    if (resultCount ===  1) {
+    if (resultCount === 1) {
         IPC_RPC.disconnect();
     }
 }
@@ -32,10 +32,10 @@ describe('ipc_rpc_reset', function () {
                 type: 'request',
                 methodName: 'wallet.sdsdsd'
             }
-        ]).then((res) => {
+        ]).then(res => {
             addResCount();
             done(res);
-        }).catch((err) => {
+        }).catch(err => {
             addResCount();
             assert.equal(err.message, IPC_RPC.ERRORS.ABORT().message);
             done();

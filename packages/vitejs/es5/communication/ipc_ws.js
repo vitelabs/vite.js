@@ -14,9 +14,9 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var communication_1 = require("./communication");
-var IPC_WS = (function (_super) {
-    __extends(IPC_WS, _super);
-    function IPC_WS(_a) {
+var IpcWs = (function (_super) {
+    __extends(IpcWs, _super);
+    function IpcWs(_a) {
         var onEventTypes = _a.onEventTypes, sendFuncName = _a.sendFuncName, path = _a.path;
         var _this = _super.call(this) || this;
         _this.path = path;
@@ -32,18 +32,18 @@ var IPC_WS = (function (_super) {
         _this.subscribeMethod = null;
         return _this;
     }
-    IPC_WS.prototype._connected = function () {
+    IpcWs.prototype._connected = function () {
         this.connectStatus = true;
         this._connectConnect && this._connectConnect();
     };
-    IPC_WS.prototype._closed = function () {
+    IpcWs.prototype._closed = function () {
         this.connectStatus = false;
         this._connectClose && this._connectClose();
     };
-    IPC_WS.prototype._errored = function (err) {
+    IpcWs.prototype._errored = function (err) {
         this._connectErr && this._connectErr(err);
     };
-    IPC_WS.prototype._parse = function (data) {
+    IpcWs.prototype._parse = function (data) {
         var _this = this;
         var results = [];
         data.forEach(function (ele) {
@@ -86,7 +86,7 @@ var IPC_WS = (function (_super) {
             }
         });
     };
-    IPC_WS.prototype._checkOnType = function (type) {
+    IpcWs.prototype._checkOnType = function (type) {
         var i = this._onEventTypes.indexOf(type);
         if (i < 0) {
             return false;
@@ -94,7 +94,7 @@ var IPC_WS = (function (_super) {
         var eventType = type.substring(0, 1).toUpperCase() + type.substring(1);
         return "_connect" + eventType;
     };
-    IPC_WS.prototype._onSend = function (payloads) {
+    IpcWs.prototype._onSend = function (payloads) {
         var _this = this;
         var id = getIdFromPayloads(payloads);
         if (!id) {
@@ -142,14 +142,14 @@ var IPC_WS = (function (_super) {
             }, _this.timeout) : null;
         });
     };
-    IPC_WS.prototype._send = function (payloads) {
+    IpcWs.prototype._send = function (payloads) {
         if (!this.connectStatus) {
             return Promise.reject(this.ERRORS.CONNECT(this.path));
         }
         this.socket[this._sendFuncName](JSON.stringify(payloads));
         return this._onSend(payloads);
     };
-    IPC_WS.prototype.on = function (type, cb) {
+    IpcWs.prototype.on = function (type, cb) {
         var eventType = this._checkOnType(type);
         if (eventType < 0) {
             return this.ERRORS.IPC_ON(type);
@@ -159,25 +159,25 @@ var IPC_WS = (function (_super) {
         }
         this[eventType] = cb;
     };
-    IPC_WS.prototype.remove = function (type) {
+    IpcWs.prototype.remove = function (type) {
         var eventType = this._checkOnType(type);
         eventType && (this[eventType] = null);
     };
-    IPC_WS.prototype.request = function (methodName, params) {
+    IpcWs.prototype.request = function (methodName, params) {
         var requestObj = this._getRequestPayload(methodName, params);
         if (requestObj instanceof Error) {
             return Promise.reject(requestObj);
         }
         return this._send(requestObj);
     };
-    IPC_WS.prototype.notification = function (methodName, params) {
+    IpcWs.prototype.notification = function (methodName, params) {
         var requestObj = this._getNotificationPayload(methodName, params);
         if (requestObj instanceof Error) {
             return requestObj;
         }
         this._send(requestObj);
     };
-    IPC_WS.prototype.batch = function (requests) {
+    IpcWs.prototype.batch = function (requests) {
         if (requests === void 0) { requests = []; }
         var _requests = this._getBatchPayload(requests);
         if (_requests instanceof Error) {
@@ -185,17 +185,18 @@ var IPC_WS = (function (_super) {
         }
         return this._send(_requests);
     };
-    IPC_WS.prototype.subscribe = function (callback) {
+    IpcWs.prototype.subscribe = function (callback) {
         if (typeof callback !== 'function') {
-            throw '[Error] callback should be a function.';
+            throw new Error('[Error] callback should be a function.');
         }
         this.subscribeMethod = callback;
     };
-    IPC_WS.prototype.unSubscribe = function () {
+    IpcWs.prototype.unSubscribe = function () {
         this.subscribeMethod = null;
     };
-    return IPC_WS;
+    return IpcWs;
 }(communication_1.default));
+var IPC_WS = IpcWs;
 exports.default = IPC_WS;
 function getIdFromPayloads(payloads) {
     var id;

@@ -10,7 +10,7 @@ function bytesToHex(arr) {
         return null;
     }
     var hexArr = Array.prototype.map.call(arr, function (bit) {
-        return ('00' + bit.toString(16)).slice(-2);
+        return ("00" + bit.toString(16)).slice(-2);
     });
     return hexArr.join('');
 }
@@ -34,7 +34,10 @@ function getBytesSize(str, charset) {
         console.error(new Error(err.message));
         return null;
     }
-    var total = 0, code, i, len;
+    var total = 0;
+    var code;
+    var i;
+    var len;
     if (charset === "utf16") {
         for (i = 0, len = str.length; i < len; i++) {
             code = str.charCodeAt(i);
@@ -68,7 +71,8 @@ function utf8ToBytes(str) {
         return null;
     }
     var back = [];
-    for (var i = 0; i < str.length; i++) {
+    var i;
+    for (i = 0; i < str.length; i++) {
         var code = str.charCodeAt(i);
         if (0x00 <= code && code <= 0x7f) {
             back.push(code);
@@ -98,7 +102,6 @@ function isObject(obj) {
     return type === 'function' || type === 'object' && !!obj;
 }
 exports.isObject = isObject;
-;
 exports._Buffer = Buffer;
 exports.blake2b = blake.blake2b;
 exports.blake2bHex = blake.blake2bHex;

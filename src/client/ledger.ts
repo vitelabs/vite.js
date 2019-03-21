@@ -4,14 +4,14 @@ import { isValidHexAddr } from 'privToAddr';
 import { getBuiltinTxType, signAccountBlock, validReqAccountBlock } from 'accountBlock';
 
 import client from '.';
-import { RPCrequest, BuiltinTxType, Address } from "../type";
+import { RPCrequest, BuiltinTxType, Address } from '../type';
 
 const { onroad } = methods;
 const { checkParams } = tools;
-const _ledger =  methods.ledger;
+const _ledger = methods.ledger;
 
 
-export default class ledger {
+export default class Ledger {
     _client: client
 
     constructor(client) {
@@ -19,7 +19,7 @@ export default class ledger {
     }
 
     async getBalance(addr: Address) {
-        let err = checkParams({ addr }, ['addr' ], [{
+        const err = checkParams({ addr }, ['addr'], [{
             name: 'addr',
             func: isValidHexAddr
         }]);
@@ -27,13 +27,13 @@ export default class ledger {
             return Promise.reject(err);
         }
 
-        const data = await this._client.batch([{
+        const data = await this._client.batch([ {
             methodName: _ledger.getAccountByAccAddr,
             params: [addr]
         }, {
             methodName: onroad.getAccountOnroadInfo,
             params: [addr]
-        }]);
+        } ]);
 
         if (!data || (data instanceof Array && data.length < 2)) {
             return null;
@@ -45,12 +45,10 @@ export default class ledger {
         };
     }
 
-    async getTxList({
-        addr, index, pageCount = 50, totalNum = null
-    }: {
-        addr: Address, index: number, pageCount?: number, totalNum?: number
+    async getTxList({ addr, index, pageCount = 50, totalNum = null }: {
+        addr: Address; index: number; pageCount?: number; totalNum?: number;
     }) {
-        let err = checkParams({ addr, index }, ['addr', 'index'], [{
+        const err = checkParams({ addr, index }, [ 'addr', 'index' ], [{
             name: 'addr',
             func: isValidHexAddr
         }]);
@@ -58,23 +56,21 @@ export default class ledger {
             return Promise.reject(err);
         }
 
-        index = index >= 0 ? index : 0; 
+        index = index >= 0 ? index : 0;
 
         if (totalNum === 0) {
-            return {
-                totalNum, list: []
-            }
+            return { totalNum, list: [] };
         }
 
-        let requests: RPCrequest[] = [{
+        const requests: RPCrequest[] = [{
             methodName: _ledger.getBlocksByAccAddr,
-            params: [addr, index, pageCount]
+            params: [ addr, index, pageCount ]
         }];
         if (!totalNum) {
             requests.push({
                 methodName: _ledger.getAccountByAccAddr,
                 params: [addr]
-            })
+            });
         }
 
         const data = await this._client.batch(requests);
@@ -86,11 +82,11 @@ export default class ledger {
                 return;
             }
             rawList = data[i].result || [];
-        })
+        });
 
-        let list: any[] = [];
+        const list: any[] = [];
         rawList.forEach((item: any) => {
-            let txType = getBuiltinTxType(item.toAddress, item.data, +item.blockType);
+            const txType = getBuiltinTxType(item.toAddress, item.data, Number(item.blockType));
             item.txType = BuiltinTxType[txType];
             list.push(item);
         });
@@ -99,22 +95,20 @@ export default class ledger {
     }
 
     async sendRawTx(accountBlock, privateKey) {
-        let err = checkParams({ accountBlock, privateKey }, ['accountBlock', 'privateKey'], [{
+        const err = checkParams({ accountBlock, privateKey }, [ 'accountBlock', 'privateKey' ], [{
             name: 'accountBlock',
-            func: (_a)=>{
-                return !validReqAccountBlock(_a);
-            }
+            func: _a => !validReqAccountBlock(_a)
         }]);
         if (err) {
             return Promise.reject(err);
         }
 
-        let _accountBlock = signAccountBlock(accountBlock, privateKey);
+        const _accountBlock = signAccountBlock(accountBlock, privateKey);
 
         try {
             return await this._client.tx.sendRawTx(_accountBlock);
-        } catch(err) {
-            let _err = err;
+        } catch (err) {
+            const _err = err;
             _err.accountBlock = _accountBlock;
             return Promise.reject(_err);
         }

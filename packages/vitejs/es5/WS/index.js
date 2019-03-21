@@ -14,10 +14,10 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var ipc_ws_1 = require("communication/ipc_ws");
-var websocket = require('websocket').w3cwebsocket;
-var WS_RPC = (function (_super) {
-    __extends(WS_RPC, _super);
-    function WS_RPC(path, timeout, options) {
+var Websocket = require('websocket').w3cwebsocket;
+var WsRpc = (function (_super) {
+    __extends(WsRpc, _super);
+    function WsRpc(path, timeout, options) {
         if (path === void 0) { path = 'ws://localhost:31420'; }
         if (timeout === void 0) { timeout = 60000; }
         if (options === void 0) { options = {
@@ -56,9 +56,9 @@ var WS_RPC = (function (_super) {
         });
         return _this;
     }
-    WS_RPC.prototype.reconnect = function () {
+    WsRpc.prototype.reconnect = function () {
         var _this = this;
-        this.socket = new websocket(this.path, this.protocol, undefined, this.headers, undefined, this.clientConfig);
+        this.socket = new Websocket(this.path, this.protocol, null, this.headers, null, this.clientConfig);
         this.socket.onopen = function () {
             (_this.socket.readyState === _this.socket.OPEN) && _this._connected();
         };
@@ -73,9 +73,10 @@ var WS_RPC = (function (_super) {
             _this._parse([data]);
         };
     };
-    WS_RPC.prototype.disconnect = function () {
+    WsRpc.prototype.disconnect = function () {
         this.socket && this.socket.close && this.socket.close();
     };
-    return WS_RPC;
+    return WsRpc;
 }(ipc_ws_1.default));
+var WS_RPC = WsRpc;
 exports.default = WS_RPC;

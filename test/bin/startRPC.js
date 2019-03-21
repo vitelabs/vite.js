@@ -1,7 +1,7 @@
 const jayson = require('jayson');
 
 // create a server
-let server = jayson.server({
+const server = jayson.server({
     jsonrpcSuccess: function (args, callback) {
         callback(null, args[0] + args[1]);
     },

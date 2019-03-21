@@ -43,11 +43,11 @@ var type_1 = require("../type");
 var onroad = constant_1.methods.onroad;
 var checkParams = utils_1.tools.checkParams;
 var _ledger = constant_1.methods.ledger;
-var ledger = (function () {
-    function ledger(client) {
+var Ledger = (function () {
+    function Ledger(client) {
         this._client = client;
     }
-    ledger.prototype.getBalance = function (addr) {
+    Ledger.prototype.getBalance = function (addr) {
         return __awaiter(this, void 0, void 0, function () {
             var err, data;
             return __generator(this, function (_b) {
@@ -80,7 +80,7 @@ var ledger = (function () {
             });
         });
     };
-    ledger.prototype.getTxList = function (_b) {
+    Ledger.prototype.getTxList = function (_b) {
         var addr = _b.addr, index = _b.index, _c = _b.pageCount, pageCount = _c === void 0 ? 50 : _c, _d = _b.totalNum, totalNum = _d === void 0 ? null : _d;
         return __awaiter(this, void 0, void 0, function () {
             var err, requests, data, rawList, list;
@@ -96,9 +96,7 @@ var ledger = (function () {
                         }
                         index = index >= 0 ? index : 0;
                         if (totalNum === 0) {
-                            return [2, {
-                                    totalNum: totalNum, list: []
-                                }];
+                            return [2, { totalNum: totalNum, list: [] }];
                         }
                         requests = [{
                                 methodName: _ledger.getBlocksByAccAddr,
@@ -122,7 +120,7 @@ var ledger = (function () {
                         });
                         list = [];
                         rawList.forEach(function (item) {
-                            var txType = accountBlock_1.getBuiltinTxType(item.toAddress, item.data, +item.blockType);
+                            var txType = accountBlock_1.getBuiltinTxType(item.toAddress, item.data, Number(item.blockType));
                             item.txType = type_1.BuiltinTxType[txType];
                             list.push(item);
                         });
@@ -131,7 +129,7 @@ var ledger = (function () {
             });
         });
     };
-    ledger.prototype.sendRawTx = function (accountBlock, privateKey) {
+    Ledger.prototype.sendRawTx = function (accountBlock, privateKey) {
         return __awaiter(this, void 0, void 0, function () {
             var err, _accountBlock, err_1, _err;
             return __generator(this, function (_b) {
@@ -139,9 +137,7 @@ var ledger = (function () {
                     case 0:
                         err = checkParams({ accountBlock: accountBlock, privateKey: privateKey }, ['accountBlock', 'privateKey'], [{
                                 name: 'accountBlock',
-                                func: function (_a) {
-                                    return !accountBlock_1.validReqAccountBlock(_a);
-                                }
+                                func: function (_a) { return !accountBlock_1.validReqAccountBlock(_a); }
                             }]);
                         if (err) {
                             return [2, Promise.reject(err)];
@@ -162,6 +158,6 @@ var ledger = (function () {
             });
         });
     };
-    return ledger;
+    return Ledger;
 }());
-exports.default = ledger;
+exports.default = Ledger;

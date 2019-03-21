@@ -1,6 +1,6 @@
 // [NOTICE] At the first, npm run rpc && start go-vite server
 
-describe('Communication Base Library Test: libs/Communication/index.js', function() {
+describe('Communication Base Library Test: libs/Communication/index.js', function () {
     require('./Communication/index');
 });
 

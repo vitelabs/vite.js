@@ -13,13 +13,13 @@ class Communication {
     abort() {
         this._requestManager.forEach(({ request, rej }) => {
             request.abort();
-            rej( this.ERRORS.ABORT() );
+            rej(this.ERRORS.ABORT());
         });
         this._requestManager = [];
     }
 
     _addReq({ request, rej }) {
-        let _request = { request, rej };
+        const _request = { request, rej };
         this._requestManager.push(_request);
         return _request;
     }
@@ -55,17 +55,17 @@ class Communication {
             return errors.PARAMS();
         }
 
-        let _requests = [];
+        const _requests = [];
         for (let i = 0; i < requests.length; i++) {
-            let request = requests[i];
+            const request = requests[i];
 
             if (!request || !request.type || (request.type !== 'request' && request.type !== 'notification')) {
                 return errors.PARAMS();
             }
 
-            let requestObj = request.type === 'notification' ?
-                this._getNotificationPayload(request.methodName, request.params) :
-                this._getRequestPayload(request.methodName, request.params);
+            const requestObj = request.type === 'notification'
+                ? this._getNotificationPayload(request.methodName, request.params)
+                : this._getRequestPayload(request.methodName, request.params);
 
             if (requestObj instanceof Error) {
                 return requestObj;

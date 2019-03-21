@@ -1,6 +1,6 @@
-import httpProvider from 'provider/HTTP_RPC';
+import HttpProvider from 'provider/HTTP_RPC';
 
-const HTTP_RPC = new httpProvider({
+const HTTP_RPC = new HttpProvider({
     host: 'http://127.0.0.1:48132/',
     timeout: 200
 });
@@ -8,7 +8,7 @@ const HTTP_RPC = new httpProvider({
 it('request_success', function (done) {
     HTTP_RPC.request('common_logDir').then(() => {
         done();
-    }).catch((err) => {
+    }).catch(err => {
         done(err);
     });
 });
@@ -24,7 +24,7 @@ it('batch_requests_all_request_all_success', function (done) {
         }
     ]).then(() => {
         done();
-    }).catch((err) => {
+    }).catch(err => {
         done(err);
     });
 });

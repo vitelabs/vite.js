@@ -37,22 +37,22 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var error_1 = require("error");
 var eventEmitter_1 = require("./eventEmitter");
-var netProcessor = (function () {
-    function netProcessor(provider, firstConnect) {
+var NetProcessor = (function () {
+    function NetProcessor(provider, firstConnect) {
         this._provider = provider;
         this.isConnected = false;
         this.connectedOnce(firstConnect);
         this.requestList = [];
         this.subscriptionList = [];
     }
-    netProcessor.prototype._setProvider = function (provider, firstConnect, abort) {
+    NetProcessor.prototype._setProvider = function (provider, firstConnect, abort) {
         abort && this._provider.abort(abort);
         this.clearSubscriptions();
         this._provider = provider;
         this.isConnected = false;
         this.connectedOnce(firstConnect);
     };
-    netProcessor.prototype.connectedOnce = function (cb) {
+    NetProcessor.prototype.connectedOnce = function (cb) {
         var _this = this;
         var connectedCB = function () {
             _this.isConnected = true;
@@ -70,7 +70,131 @@ var netProcessor = (function () {
             _this._provider.remove('connect');
         });
     };
-    netProcessor.prototype._offReq = function (_q) {
+    NetProcessor.prototype.unSubscribe = function (event) {
+        var i;
+        for (i = 0; i < this.subscriptionList.length; i++) {
+            if (this.subscriptionList[i] === event) {
+                break;
+            }
+        }
+        if (i >= this.subscriptionList.length) {
+            return;
+        }
+        event && event.stopLoop();
+        this.subscriptionList.splice(i, 1);
+        if (!this.subscriptionList || !this.subscriptionList.length) {
+            this._provider.unSubscribe && this._provider.unSubscribe();
+        }
+    };
+    NetProcessor.prototype.clearSubscriptions = function () {
+        this.subscriptionList.forEach(function (s) {
+            s.stopLoop();
+        });
+        this.subscriptionList = [];
+        this._provider.unSubscribe && this._provider.unSubscribe();
+    };
+    NetProcessor.prototype.request = function (methods) {
+        var args = [];
+        for (var _i = 1; _i < arguments.length; _i++) {
+            args[_i - 1] = arguments[_i];
+        }
+        return __awaiter(this, void 0, void 0, function () {
+            var rep;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!this.isConnected) {
+                            return [2, this._onReq.apply(this, ['request', methods].concat(args))];
+                        }
+                        return [4, this._provider.request(methods, args)];
+                    case 1:
+                        rep = _a.sent();
+                        if (rep.error) {
+                            throw rep.error;
+                        }
+                        return [2, rep.result];
+                }
+            });
+        });
+    };
+    NetProcessor.prototype.notification = function (methods) {
+        var args = [];
+        for (var _i = 1; _i < arguments.length; _i++) {
+            args[_i - 1] = arguments[_i];
+        }
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                if (!this.isConnected) {
+                    return [2, this._onReq.apply(this, ['notification', methods].concat(args))];
+                }
+                return [2, this._provider.notification(methods, args)];
+            });
+        });
+    };
+    NetProcessor.prototype.batch = function (reqs) {
+        return __awaiter(this, void 0, void 0, function () {
+            var reps;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!this.isConnected) {
+                            return [2, this._onReq('batch', reqs)];
+                        }
+                        reqs.forEach(function (v) {
+                            v.type = v.type || 'request';
+                        });
+                        return [4, this._provider.batch(reqs)];
+                    case 1:
+                        reps = _a.sent();
+                        return [2, reps];
+                }
+            });
+        });
+    };
+    NetProcessor.prototype.subscribe = function (methodName) {
+        var args = [];
+        for (var _i = 1; _i < arguments.length; _i++) {
+            args[_i - 1] = arguments[_i];
+        }
+        return __awaiter(this, void 0, void 0, function () {
+            var subMethodName, params, rep, subscription, event;
+            var _this = this;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        subMethodName = this._provider.subscribe ? 'subscribe_subscribe' : "subscribe_" + methodName + "Filter";
+                        params = this._provider.subscribe ? [methodName].concat(args) : args;
+                        if (!this.isConnected) return [3, 2];
+                        return [4, this._provider.request(subMethodName, params)];
+                    case 1:
+                        rep = _a.sent();
+                        rep = rep.result;
+                        return [3, 4];
+                    case 2: return [4, this._onReq.apply(this, ['request', subMethodName].concat(params))];
+                    case 3:
+                        rep = _a.sent();
+                        _a.label = 4;
+                    case 4:
+                        subscription = rep;
+                        if (!this.subscriptionList || !this.subscriptionList.length) {
+                            this.subscriptionList = [];
+                            this._provider.subscribe && this._provider.subscribe(function (jsonEvent) {
+                                _this.subscribeCallback(jsonEvent);
+                            });
+                        }
+                        event = new eventEmitter_1.default(subscription, this, !!this._provider.subscribe);
+                        if (!this._provider.subscribe) {
+                            event.startLoop(function (jsonEvent) {
+                                _this.subscribeCallback(jsonEvent);
+                            });
+                        }
+                        this.subscriptionList.push(event);
+                        return [2, event];
+                }
+            });
+        });
+    };
+    NetProcessor.prototype._offReq = function (_q) {
         var i;
         for (i = 0; i < this.requestList.length; i++) {
             if (this.requestList[i] === _q) {
@@ -82,7 +206,7 @@ var netProcessor = (function () {
         }
         this.requestList.splice(i, 1);
     };
-    netProcessor.prototype._onReq = function (type, methods) {
+    NetProcessor.prototype._onReq = function (type, methods) {
         var _this = this;
         var args = [];
         for (var _i = 2; _i < arguments.length; _i++) {
@@ -107,7 +231,7 @@ var netProcessor = (function () {
             }, _this._provider._timeout || 30000);
         });
     };
-    netProcessor.prototype.subscribeCallback = function (jsonEvent) {
+    NetProcessor.prototype.subscribeCallback = function (jsonEvent) {
         if (!jsonEvent) {
             return;
         }
@@ -126,131 +250,6 @@ var netProcessor = (function () {
             s.emit(result);
         });
     };
-    netProcessor.prototype.request = function (methods) {
-        var args = [];
-        for (var _i = 1; _i < arguments.length; _i++) {
-            args[_i - 1] = arguments[_i];
-        }
-        return __awaiter(this, void 0, void 0, function () {
-            var rep;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        if (!this.isConnected) {
-                            return [2, this._onReq.apply(this, ['request', methods].concat(args))];
-                        }
-                        return [4, this._provider.request(methods, args)];
-                    case 1:
-                        rep = _a.sent();
-                        if (rep.error) {
-                            throw rep.error;
-                        }
-                        ;
-                        return [2, rep.result];
-                }
-            });
-        });
-    };
-    netProcessor.prototype.notification = function (methods) {
-        var args = [];
-        for (var _i = 1; _i < arguments.length; _i++) {
-            args[_i - 1] = arguments[_i];
-        }
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                if (!this.isConnected) {
-                    return [2, this._onReq.apply(this, ['notification', methods].concat(args))];
-                }
-                return [2, this._provider.notification(methods, args)];
-            });
-        });
-    };
-    netProcessor.prototype.batch = function (reqs) {
-        return __awaiter(this, void 0, void 0, function () {
-            var reps;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        if (!this.isConnected) {
-                            return [2, this._onReq('batch', reqs)];
-                        }
-                        reqs.forEach(function (v) {
-                            v.type = v.type || 'request';
-                        });
-                        return [4, this._provider.batch(reqs)];
-                    case 1:
-                        reps = _a.sent();
-                        return [2, reps];
-                }
-            });
-        });
-    };
-    netProcessor.prototype.subscribe = function (methodName) {
-        var args = [];
-        for (var _i = 1; _i < arguments.length; _i++) {
-            args[_i - 1] = arguments[_i];
-        }
-        return __awaiter(this, void 0, void 0, function () {
-            var subMethodName, params, rep, subscription, event;
-            var _this = this;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        subMethodName = this._provider.subscribe ? 'subscribe_subscribe' : "subscribe_" + methodName + "Filter";
-                        params = this._provider.subscribe ? [methodName].concat(args) : args;
-                        if (!!this.isConnected) return [3, 2];
-                        return [4, this._onReq.apply(this, ['request', subMethodName].concat(params))];
-                    case 1:
-                        rep = _a.sent();
-                        return [3, 4];
-                    case 2: return [4, this._provider.request(subMethodName, params)];
-                    case 3:
-                        rep = _a.sent();
-                        rep = rep.result;
-                        _a.label = 4;
-                    case 4:
-                        subscription = rep;
-                        if (!this.subscriptionList || !this.subscriptionList.length) {
-                            this.subscriptionList = [];
-                            this._provider.subscribe && this._provider.subscribe(function (jsonEvent) {
-                                _this.subscribeCallback(jsonEvent);
-                            });
-                        }
-                        event = new eventEmitter_1.default(subscription, this, !!this._provider.subscribe);
-                        if (!this._provider.subscribe) {
-                            event.startLoop(function (jsonEvent) {
-                                _this.subscribeCallback(jsonEvent);
-                            });
-                        }
-                        this.subscriptionList.push(event);
-                        return [2, event];
-                }
-            });
-        });
-    };
-    netProcessor.prototype.unSubscribe = function (event) {
-        var i;
-        for (i = 0; i < this.subscriptionList.length; i++) {
-            if (this.subscriptionList[i] === event) {
-                break;
-            }
-        }
-        if (i >= this.subscriptionList.length) {
-            return;
-        }
-        event && event.stopLoop();
-        this.subscriptionList.splice(i, 1);
-        if (!this.subscriptionList || !this.subscriptionList.length) {
-            this._provider.unSubscribe && this._provider.unSubscribe();
-        }
-    };
-    netProcessor.prototype.clearSubscriptions = function () {
-        this.subscriptionList.forEach(function (s) {
-            s.stopLoop();
-        });
-        this.subscriptionList = [];
-        this._provider.unSubscribe && this._provider.unSubscribe();
-    };
-    return netProcessor;
+    return NetProcessor;
 }());
-exports.default = netProcessor;
+exports.default = NetProcessor;

@@ -12,9 +12,7 @@ var Wallet = (function () {
         var _g = _b.addrTotalNum, addrTotalNum = _g === void 0 ? 10 : _g, _h = _b.addrStartInx, addrStartInx = _h === void 0 ? 0 : _h;
         var err = checkParams({ mnemonic: mnemonic, client: client }, ['client'], [{
                 name: 'mnemonic',
-                func: function (_mnemonic) {
-                    return hdAddr_1.validateMnemonic(_mnemonic, lang);
-                }
+                func: function (_mnemonic) { return hdAddr_1.validateMnemonic(_mnemonic, lang); }
             }]);
         if (err) {
             console.error(new Error(err.message));
@@ -22,7 +20,7 @@ var Wallet = (function () {
         }
         this._client = client;
         this.addrTotalNum = addrTotalNum;
-        var _addrNum = +addrNum && +addrNum > 0 ? +addrNum : 1;
+        var _addrNum = Number(addrNum) && Number(addrNum) > 0 ? Number(addrNum) : 1;
         _addrNum = _addrNum > addrTotalNum ? addrTotalNum : _addrNum;
         this.addrNum = _addrNum;
         this.lang = lang || type_1.LangList.english;
@@ -45,9 +43,7 @@ var Wallet = (function () {
         var _this = this;
         var address = _a.address, _c = _a.index, index = _c === void 0 ? this.addrStartInx : _c;
         var _d = _b.intervals, intervals = _d === void 0 ? 2000 : _d, _e = _b.receiveFailAction, receiveFailAction = _e === void 0 ? null : _e, _f = _b.duration, duration = _f === void 0 ? 5 * 60 * 1000 : _f;
-        index = validAddrParams({
-            address: address, index: index
-        });
+        index = validAddrParams({ address: address, index: index });
         if (index === null) {
             return null;
         }

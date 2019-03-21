@@ -18,9 +18,7 @@ function getEntropyFromMnemonic(mnemonic, lang) {
     if (lang === void 0) { lang = type_1.LangList.english; }
     var err = checkParams({ mnemonic: mnemonic }, ['mnemonic'], [{
             name: 'mnemonic',
-            func: function (_m) {
-                return validateMnemonic(_m, lang);
-            }
+            func: function (_m) { return validateMnemonic(_m, lang); }
         }]);
     if (err) {
         console.error(new Error(err.message));
@@ -63,9 +61,7 @@ function getAddrFromMnemonic(mnemonic, index, lang, pwd) {
     if (pwd === void 0) { pwd = ''; }
     var err = checkParams({ mnemonic: mnemonic }, ['mnemonic'], [{
             name: 'mnemonic',
-            func: function (_m) {
-                return validateMnemonic(_m, lang);
-            }
+            func: function (_m) { return validateMnemonic(_m, lang); }
         }]);
     if (err) {
         console.error(new Error(err.message));
@@ -87,9 +83,7 @@ function getAddrsFromMnemonic(mnemonic, start, num, lang, pwd) {
     if (pwd === void 0) { pwd = ''; }
     var err = checkParams({ mnemonic: mnemonic }, ['mnemonic'], [{
             name: 'mnemonic',
-            func: function (_m) {
-                return validateMnemonic(_m, lang);
-            }
+            func: function (_m) { return validateMnemonic(_m, lang); }
         }]);
     if (err) {
         console.error(new Error(err.message));
@@ -116,9 +110,7 @@ function getId(mnemonic, lang) {
     if (lang === void 0) { lang = type_1.LangList.english; }
     var err = checkParams({ mnemonic: mnemonic }, ['mnemonic'], [{
             name: 'mnemonic',
-            func: function (_m) {
-                return validateMnemonic(_m, lang);
-            }
+            func: function (_m) { return validateMnemonic(_m, lang); }
         }]);
     if (err) {
         console.error(new Error(err.message));

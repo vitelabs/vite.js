@@ -1,5 +1,5 @@
 import netProcessor from './index';
-import { subscribe } from "../type";
+import { subscribe } from '../type';
 
 class EventEmitter {
     id: string
@@ -31,16 +31,16 @@ class EventEmitter {
     }
 
     startLoop(cb, time = 2000) {
-        let loop = () => {
+        const loop = () => {
             this.timeLoop = setTimeout(() => {
-                this.netProcessor.request(subscribe.getFilterChanges, this.id).then((data) => {
+                this.netProcessor.request(subscribe.getFilterChanges, this.id).then(data => {
                     cb && cb(data);
                     loop();
-                }).catch(err => {
-                    loop();     
+                }).catch(() => {
+                    loop();
                 });
             }, time);
-        }
+        };
         loop();
     }
 

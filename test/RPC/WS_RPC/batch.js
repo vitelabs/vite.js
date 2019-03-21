@@ -1,13 +1,11 @@
 import WS_RPC from '../../../libs/WS';
 
-let WS = new WS_RPC({
-    timeout: 200
-});
+const WS = new WS_RPC({ timeout: 200 });
 
 let resultCount = 0;
 function addResCount() {
     resultCount++;
-    if (resultCount ===  4) {
+    if (resultCount === 4) {
         WS.disconnect();
     }
 }
@@ -22,7 +20,7 @@ describe('ws_rpc_batch', function () {
             done();
         });
     });
-    
+
     it('batch_requests_no_length', function (done) {
         WS.batch([]).then(() => {
             addResCount();
@@ -32,11 +30,11 @@ describe('ws_rpc_batch', function () {
             done();
         });
     });
-    
+
     it('batch_requests_all_notification_all_success', function (done) {
-        let err = WS.batch([
+        const err = WS.batch([
             {
-                type: 'notification',                    
+                type: 'notification',
                 methodName: 'wallet_reloadAndFixAddressFile'
             }, {
                 type: 'notification',
@@ -49,7 +47,7 @@ describe('ws_rpc_batch', function () {
         addResCount();
         done(err);
     });
-    
+
     // it('batch_requests_all_request_all_success', function (done) {
     //     WS.batch([
     //         {
@@ -71,5 +69,4 @@ describe('ws_rpc_batch', function () {
     //     });
     // });
 });
-
 

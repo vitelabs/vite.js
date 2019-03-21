@@ -60,13 +60,11 @@ var Account = (function (_super) {
         var privateKey = _b.privateKey, client = _b.client;
         var _this = this;
         if (!client) {
-            console.error(new Error(error_1.paramsMissing.message + " Client."));
-            return;
+            _this = _super.call(this) || this;
+            throw new Error(error_1.paramsMissing.message + " Client.");
         }
         var _c = privToAddr.newHexAddr(privateKey), pubKey = _c.pubKey, privKey = _c.privKey, hexAddr = _c.hexAddr;
-        _this = _super.call(this, {
-            address: hexAddr, client: client
-        }) || this;
+        _this = _super.call(this, { address: hexAddr, client: client }) || this;
         _this.privateKey = privKey;
         _this.publicKey = pubKey;
         _this._lock = true;
@@ -109,13 +107,8 @@ var Account = (function (_super) {
                 var onroad = _this.balance && _this.balance.onroad ? _this.balance.onroad : null;
                 var balanceInfos = onroad && onroad.tokenBalanceInfoMap ? onroad.tokenBalanceInfoMap : null;
                 if (balanceInfos) {
-                    for (var tokenId in balanceInfos) {
-                        if (+balanceInfos[tokenId].totalAmount) {
-                            _this.autoReceiveTx(intervals, receiveFailAction);
-                            _t();
-                            return;
-                        }
-                    }
+                    _this.autoReceiveTx(intervals, receiveFailAction);
+                    return;
                 }
                 _this.stopAutoReceiveTx();
                 _t();
@@ -190,9 +183,7 @@ var Account = (function (_super) {
         var _this = this;
         checkParams({ accountBlock: accountBlock }, ['accountBlock'], [{
                 name: 'accountBlock',
-                func: function (_a) {
-                    return !_a.accountAddress || (_a.accountAddress === _this.address);
-                },
+                func: function (_a) { return !_a.accountAddress || (_a.accountAddress === _this.address); },
                 msg: 'AccountAddress is wrong.'
             }]);
         accountBlock.accountAddress = this.address;
@@ -207,7 +198,10 @@ var Account = (function (_super) {
                     case 0:
                         reqBlock = {
                             accountAddress: this.address,
-                            toAddress: toAddress, tokenId: tokenId, amount: amount, message: message
+                            toAddress: toAddress,
+                            tokenId: tokenId,
+                            amount: amount,
+                            message: message
                         };
                         return [4, this._client.buildinTxBlock.asyncSendTx(reqBlock)];
                     case 1:
@@ -245,7 +239,10 @@ var Account = (function (_super) {
                     case 0:
                         reqBlock = {
                             accountAddress: this.address,
-                            nodeName: nodeName, toAddress: toAddress, amount: amount, tokenId: tokenId
+                            nodeName: nodeName,
+                            toAddress: toAddress,
+                            amount: amount,
+                            tokenId: tokenId
                         };
                         return [4, this._client.buildinTxBlock.SBPreg(reqBlock)];
                     case 1:
@@ -264,7 +261,9 @@ var Account = (function (_super) {
                     case 0:
                         reqBlock = {
                             accountAddress: this.address,
-                            nodeName: nodeName, toAddress: toAddress, tokenId: tokenId
+                            nodeName: nodeName,
+                            toAddress: toAddress,
+                            tokenId: tokenId
                         };
                         return [4, this._client.buildinTxBlock.updateReg(reqBlock)];
                     case 1:
@@ -283,7 +282,8 @@ var Account = (function (_super) {
                     case 0:
                         reqBlock = {
                             accountAddress: this.address,
-                            nodeName: nodeName, tokenId: tokenId
+                            nodeName: nodeName,
+                            tokenId: tokenId
                         };
                         return [4, this._client.buildinTxBlock.revokeReg(reqBlock)];
                     case 1:
@@ -302,7 +302,9 @@ var Account = (function (_super) {
                     case 0:
                         reqBlock = {
                             accountAddress: this.address,
-                            nodeName: nodeName, toAddress: toAddress, tokenId: tokenId
+                            nodeName: nodeName,
+                            toAddress: toAddress,
+                            tokenId: tokenId
                         };
                         return [4, this._client.buildinTxBlock.retrieveReward(reqBlock)];
                     case 1:
@@ -321,7 +323,8 @@ var Account = (function (_super) {
                     case 0:
                         reqBlock = {
                             accountAddress: this.address,
-                            nodeName: nodeName, tokenId: tokenId
+                            nodeName: nodeName,
+                            tokenId: tokenId
                         };
                         return [4, this._client.buildinTxBlock.voting(reqBlock)];
                     case 1:
@@ -359,7 +362,9 @@ var Account = (function (_super) {
                     case 0:
                         reqBlock = {
                             accountAddress: this.address,
-                            toAddress: toAddress, tokenId: tokenId, amount: amount
+                            toAddress: toAddress,
+                            tokenId: tokenId,
+                            amount: amount
                         };
                         return [4, this._client.buildinTxBlock.getQuota(reqBlock)];
                     case 1:
@@ -378,7 +383,9 @@ var Account = (function (_super) {
                     case 0:
                         reqBlock = {
                             accountAddress: this.address,
-                            toAddress: toAddress, tokenId: tokenId, amount: amount
+                            toAddress: toAddress,
+                            tokenId: tokenId,
+                            amount: amount
                         };
                         return [4, this._client.buildinTxBlock.withdrawalOfQuota(reqBlock)];
                     case 1:
@@ -396,7 +403,12 @@ var Account = (function (_super) {
                 switch (_d.label) {
                     case 0: return [4, this._client.buildinTxBlock.createContract({
                             accountAddress: this.address,
-                            hexCode: hexCode, abi: abi, params: params, tokenId: tokenId, amount: amount, fee: fee
+                            hexCode: hexCode,
+                            abi: abi,
+                            params: params,
+                            tokenId: tokenId,
+                            amount: amount,
+                            fee: fee
                         })];
                     case 1:
                         _createContractBlock = _d.sent();
@@ -413,7 +425,12 @@ var Account = (function (_super) {
                 switch (_c.label) {
                     case 0: return [4, this._client.buildinTxBlock.callContract({
                             accountAddress: this.address,
-                            toAddress: toAddress, abi: abi, params: params, methodName: methodName, tokenId: tokenId, amount: amount
+                            toAddress: toAddress,
+                            abi: abi,
+                            params: params,
+                            methodName: methodName,
+                            tokenId: tokenId,
+                            amount: amount
                         })];
                     case 1:
                         _callContractBlock = _c.sent();
@@ -430,7 +447,14 @@ var Account = (function (_super) {
                 switch (_d.label) {
                     case 0: return [4, this._client.buildinTxBlock.mintage({
                             accountAddress: this.address,
-                            feeType: feeType, tokenName: tokenName, isReIssuable: isReIssuable, maxSupply: maxSupply, ownerBurnOnly: ownerBurnOnly, totalSupply: totalSupply, decimals: decimals, tokenSymbol: tokenSymbol
+                            feeType: feeType,
+                            tokenName: tokenName,
+                            isReIssuable: isReIssuable,
+                            maxSupply: maxSupply,
+                            ownerBurnOnly: ownerBurnOnly,
+                            totalSupply: totalSupply,
+                            decimals: decimals,
+                            tokenSymbol: tokenSymbol
                         })];
                     case 1:
                         _callContractBlock = _d.sent();
@@ -464,7 +488,9 @@ var Account = (function (_super) {
                 switch (_c.label) {
                     case 0: return [4, this._client.buildinTxBlock.mintageIssue({
                             accountAddress: this.address,
-                            tokenId: tokenId, amount: amount, beneficial: beneficial
+                            tokenId: tokenId,
+                            amount: amount,
+                            beneficial: beneficial
                         })];
                     case 1:
                         _callContractBlock = _c.sent();
@@ -481,7 +507,8 @@ var Account = (function (_super) {
                 switch (_c.label) {
                     case 0: return [4, this._client.buildinTxBlock.mintageBurn({
                             accountAddress: this.address,
-                            amount: amount, tokenId: tokenId
+                            amount: amount,
+                            tokenId: tokenId
                         })];
                     case 1:
                         _callContractBlock = _c.sent();
@@ -515,7 +542,8 @@ var Account = (function (_super) {
                 switch (_c.label) {
                     case 0: return [4, this._client.buildinTxBlock.changeTransferOwner({
                             accountAddress: this.address,
-                            tokenId: tokenId, ownerAddress: ownerAddress
+                            tokenId: tokenId,
+                            ownerAddress: ownerAddress
                         })];
                     case 1:
                         _callContractBlock = _c.sent();

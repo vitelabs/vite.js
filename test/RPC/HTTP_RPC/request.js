@@ -1,9 +1,7 @@
 const assert = require('assert');
-import httpProvider from 'provider/HTTP_RPC';
+import HttpProvider from 'provider/HTTP_RPC';
 
-const HTTP_RPC = new httpProvider({
-    timeout: 200
-});
+const HTTP_RPC = new HttpProvider({ timeout: 200 });
 
 describe('http_rpc_request', function () {
     it('request_no_method', function (done) {
@@ -15,20 +13,20 @@ describe('http_rpc_request', function () {
     });
 
     it('request_success', function (done) {
-        HTTP_RPC.request('jsonrpcSuccess', [1, 2]).then((res) => {
+        HTTP_RPC.request('jsonrpcSuccess', [ 1, 2 ]).then(res => {
             assert.deepEqual(res, {
                 result: 3,
                 error: null
             });
             done();
-        }).catch((err) => {
+        }).catch(err => {
             done(err);
         });
     });
 
     it('request_error', function (done) {
-        const Params = [1, 2];
-        HTTP_RPC.request('jsonrpcError', Params).then((res) => {
+        const Params = [ 1, 2 ];
+        HTTP_RPC.request('jsonrpcError', Params).then(res => {
             assert.deepEqual(res, {
                 result: null,
                 error: {
@@ -37,26 +35,26 @@ describe('http_rpc_request', function () {
                 }
             });
             done();
-        }).catch((err) => {
+        }).catch(err => {
             done(err);
         });
     });
 
     it('request_timeout_success', function (done) {
-        const Params = [1, 2];
-        HTTP_RPC.request('jsonrpcTimeoutSuccess', Params).then((res) => {
+        const Params = [ 1, 2 ];
+        HTTP_RPC.request('jsonrpcTimeoutSuccess', Params).then(res => {
             assert.deepEqual(res, {
                 result: 3,
                 error: null
             });
             done();
-        }).catch((err) => {
+        }).catch(err => {
             done(err);
         });
     });
 
     it('request_timeout_error', function (done) {
-        const Params = [1, 2];
+        const Params = [ 1, 2 ];
         HTTP_RPC.request('jsonrpcTimeoutError', Params).then(() => {
             done('it should be timeout, but not.');
         }).catch(() => {

@@ -41,8 +41,8 @@ var error_1 = require("error");
 var accountBlock_1 = require("accountBlock");
 var abi_1 = require("abi");
 var checkParams = utils_1.tools.checkParams, validNodeName = utils_1.tools.validNodeName;
-var tx = (function () {
-    function tx(client) {
+var Tx = (function () {
+    function Tx(client) {
         this._client = client;
         this.getAccountBlock = {
             sync: accountBlock_1.getAccountBlock,
@@ -57,7 +57,7 @@ var tx = (function () {
             async: this.asyncSendTx.bind(this)
         };
     }
-    tx.prototype.asyncAccountBlock = function (_a) {
+    Tx.prototype.asyncAccountBlock = function (_a) {
         var blockType = _a.blockType, fromBlockHash = _a.fromBlockHash, accountAddress = _a.accountAddress, message = _a.message, data = _a.data, height = _a.height, prevHash = _a.prevHash, snapshotHash = _a.snapshotHash, toAddress = _a.toAddress, _b = _a.tokenId, tokenId = _b === void 0 ? constant_1.Vite_TokenId : _b, amount = _a.amount, fee = _a.fee;
         return __awaiter(this, void 0, void 0, function () {
             var reject, err, requests, req, latestBlock;
@@ -72,9 +72,7 @@ var tx = (function () {
                                 message: message
                             });
                         };
-                        err = accountBlock_1.validReqAccountBlock({
-                            blockType: blockType, fromBlockHash: fromBlockHash, accountAddress: accountAddress, message: message, data: data, toAddress: toAddress, amount: amount
-                        });
+                        err = accountBlock_1.validReqAccountBlock({ blockType: blockType, fromBlockHash: fromBlockHash, accountAddress: accountAddress, message: message, data: data, toAddress: toAddress, amount: amount });
                         if (err) {
                             return [2, reject(err)];
                         }
@@ -106,14 +104,12 @@ var tx = (function () {
                         });
                         height = latestBlock && latestBlock.height ? latestBlock.height : '';
                         prevHash = latestBlock && latestBlock.hash ? latestBlock.hash : '';
-                        return [2, accountBlock_1.formatAccountBlock({
-                                blockType: blockType, fromBlockHash: fromBlockHash, accountAddress: accountAddress, message: message, data: data, height: height, prevHash: prevHash, snapshotHash: snapshotHash, toAddress: toAddress, tokenId: tokenId, amount: amount, fee: fee
-                            })];
+                        return [2, accountBlock_1.formatAccountBlock({ blockType: blockType, fromBlockHash: fromBlockHash, accountAddress: accountAddress, message: message, data: data, height: height, prevHash: prevHash, snapshotHash: snapshotHash, toAddress: toAddress, tokenId: tokenId, amount: amount, fee: fee })];
                 }
             });
         });
     };
-    tx.prototype.createContract = function (_a, requestType) {
+    Tx.prototype.createContract = function (_a, requestType) {
         var accountAddress = _a.accountAddress, tokenId = _a.tokenId, amount = _a.amount, fee = _a.fee, hexCode = _a.hexCode, abi = _a.abi, params = _a.params, height = _a.height, prevHash = _a.prevHash, snapshotHash = _a.snapshotHash;
         if (requestType === void 0) { requestType = 'async'; }
         return __awaiter(this, void 0, void 0, function () {
@@ -126,16 +122,12 @@ var tx = (function () {
                             return [2, Promise.reject(err)];
                         }
                         if (!(requestType === 'async')) return [3, 2];
-                        return [4, this.asyncAccountBlock({
-                                blockType: 1, accountAddress: accountAddress, height: height, prevHash: prevHash, snapshotHash: snapshotHash, tokenId: tokenId, amount: amount, fee: fee
-                            })];
+                        return [4, this.asyncAccountBlock({ blockType: 1, accountAddress: accountAddress, height: height, prevHash: prevHash, snapshotHash: snapshotHash, tokenId: tokenId, amount: amount, fee: fee })];
                     case 1:
                         _b = _c.sent();
                         return [3, 3];
                     case 2:
-                        _b = accountBlock_1.getAccountBlock({
-                            blockType: 1, accountAddress: accountAddress, height: height, prevHash: prevHash, snapshotHash: snapshotHash, tokenId: tokenId, amount: amount, fee: fee
-                        });
+                        _b = accountBlock_1.getAccountBlock({ blockType: 1, accountAddress: accountAddress, height: height, prevHash: prevHash, snapshotHash: snapshotHash, tokenId: tokenId, amount: amount, fee: fee });
                         _c.label = 3;
                     case 3:
                         block = _b;
@@ -143,15 +135,13 @@ var tx = (function () {
                     case 4:
                         toAddress = _c.sent();
                         block.toAddress = toAddress;
-                        block.data = accountBlock_1.getCreateContractData({
-                            abi: abi, hexCode: hexCode, params: params
-                        });
+                        block.data = accountBlock_1.getCreateContractData({ abi: abi, hexCode: hexCode, params: params });
                         return [2, block];
                 }
             });
         });
     };
-    tx.prototype.callContract = function (_a, requestType) {
+    Tx.prototype.callContract = function (_a, requestType) {
         var accountAddress = _a.accountAddress, toAddress = _a.toAddress, _b = _a.tokenId, tokenId = _b === void 0 ? constant_1.Vite_TokenId : _b, amount = _a.amount, abi = _a.abi, methodName = _a.methodName, _c = _a.params, params = _c === void 0 ? [] : _c, fee = _a.fee, height = _a.height, prevHash = _a.prevHash, snapshotHash = _a.snapshotHash;
         if (requestType === void 0) { requestType = 'async'; }
         return __awaiter(this, void 0, void 0, function () {
@@ -167,12 +157,17 @@ var tx = (function () {
                         accountAddress: accountAddress,
                         toAddress: toAddress,
                         data: Buffer.from(data, 'hex').toString('base64'),
-                        height: height, fee: fee, prevHash: prevHash, snapshotHash: snapshotHash, tokenId: tokenId, amount: amount
+                        height: height,
+                        fee: fee,
+                        prevHash: prevHash,
+                        snapshotHash: snapshotHash,
+                        tokenId: tokenId,
+                        amount: amount
                     })];
             });
         });
     };
-    tx.prototype.asyncSendTx = function (_a) {
+    Tx.prototype.asyncSendTx = function (_a) {
         var accountAddress = _a.accountAddress, toAddress = _a.toAddress, tokenId = _a.tokenId, amount = _a.amount, message = _a.message, height = _a.height, prevHash = _a.prevHash, snapshotHash = _a.snapshotHash;
         return __awaiter(this, void 0, void 0, function () {
             var err;
@@ -183,12 +178,19 @@ var tx = (function () {
                 }
                 return [2, this.asyncAccountBlock({
                         blockType: 2,
-                        accountAddress: accountAddress, toAddress: toAddress, tokenId: tokenId, amount: amount, message: message, height: height, prevHash: prevHash, snapshotHash: snapshotHash
+                        accountAddress: accountAddress,
+                        toAddress: toAddress,
+                        tokenId: tokenId,
+                        amount: amount,
+                        message: message,
+                        height: height,
+                        prevHash: prevHash,
+                        snapshotHash: snapshotHash
                     })];
             });
         });
     };
-    tx.prototype.asyncReceiveTx = function (_a) {
+    Tx.prototype.asyncReceiveTx = function (_a) {
         var accountAddress = _a.accountAddress, fromBlockHash = _a.fromBlockHash, height = _a.height, prevHash = _a.prevHash, snapshotHash = _a.snapshotHash;
         return __awaiter(this, void 0, void 0, function () {
             var err;
@@ -199,20 +201,22 @@ var tx = (function () {
                 }
                 return [2, this.asyncAccountBlock({
                         blockType: 4,
-                        fromBlockHash: fromBlockHash, accountAddress: accountAddress, height: height, prevHash: prevHash, snapshotHash: snapshotHash
+                        fromBlockHash: fromBlockHash,
+                        accountAddress: accountAddress,
+                        height: height,
+                        prevHash: prevHash,
+                        snapshotHash: snapshotHash
                     })];
             });
         });
     };
-    tx.prototype.SBPreg = function (_a, requestType) {
+    Tx.prototype.SBPreg = function (_a, requestType) {
         var accountAddress = _a.accountAddress, nodeName = _a.nodeName, toAddress = _a.toAddress, amount = _a.amount, tokenId = _a.tokenId, height = _a.height, prevHash = _a.prevHash, snapshotHash = _a.snapshotHash;
         if (requestType === void 0) { requestType = 'async'; }
         return __awaiter(this, void 0, void 0, function () {
             var err;
             return __generator(this, function (_b) {
-                err = checkParams({
-                    toAddress: toAddress, nodeName: nodeName, tokenId: tokenId, amount: amount, requestType: requestType
-                }, ['toAddress', 'nodeName', 'tokenId', 'amount'], [{
+                err = checkParams({ toAddress: toAddress, nodeName: nodeName, tokenId: tokenId, amount: amount, requestType: requestType }, ['toAddress', 'nodeName', 'tokenId', 'amount'], [{
                         name: 'nodeName',
                         func: validNodeName
                     }, {
@@ -227,20 +231,22 @@ var tx = (function () {
                         abi: constant_1.Register_Abi,
                         toAddress: constant_1.Register_Addr,
                         params: [constant_1.Snapshot_Gid, nodeName, toAddress],
-                        tokenId: tokenId, amount: amount, height: height, prevHash: prevHash, snapshotHash: snapshotHash
+                        tokenId: tokenId,
+                        amount: amount,
+                        height: height,
+                        prevHash: prevHash,
+                        snapshotHash: snapshotHash
                     }, requestType)];
             });
         });
     };
-    tx.prototype.updateReg = function (_a, requestType) {
+    Tx.prototype.updateReg = function (_a, requestType) {
         var accountAddress = _a.accountAddress, nodeName = _a.nodeName, toAddress = _a.toAddress, tokenId = _a.tokenId, height = _a.height, prevHash = _a.prevHash, snapshotHash = _a.snapshotHash;
         if (requestType === void 0) { requestType = 'async'; }
         return __awaiter(this, void 0, void 0, function () {
             var err;
             return __generator(this, function (_b) {
-                err = checkParams({
-                    toAddress: toAddress, nodeName: nodeName, tokenId: tokenId, requestType: requestType
-                }, ['toAddress', 'nodeName', 'tokenId'], [{
+                err = checkParams({ toAddress: toAddress, nodeName: nodeName, tokenId: tokenId, requestType: requestType }, ['toAddress', 'nodeName', 'tokenId'], [{
                         name: 'nodeName',
                         func: validNodeName
                     }, {
@@ -255,20 +261,21 @@ var tx = (function () {
                         abi: constant_1.UpdateRegistration_Abi,
                         toAddress: constant_1.Register_Addr,
                         params: [constant_1.Snapshot_Gid, nodeName, toAddress],
-                        tokenId: tokenId, height: height, prevHash: prevHash, snapshotHash: snapshotHash
+                        tokenId: tokenId,
+                        height: height,
+                        prevHash: prevHash,
+                        snapshotHash: snapshotHash
                     }, requestType)];
             });
         });
     };
-    tx.prototype.revokeReg = function (_a, requestType) {
+    Tx.prototype.revokeReg = function (_a, requestType) {
         var accountAddress = _a.accountAddress, nodeName = _a.nodeName, tokenId = _a.tokenId, height = _a.height, prevHash = _a.prevHash, snapshotHash = _a.snapshotHash;
         if (requestType === void 0) { requestType = 'async'; }
         return __awaiter(this, void 0, void 0, function () {
             var err;
             return __generator(this, function (_b) {
-                err = checkParams({
-                    nodeName: nodeName, tokenId: tokenId, requestType: requestType
-                }, ['nodeName', 'tokenId'], [{
+                err = checkParams({ nodeName: nodeName, tokenId: tokenId, requestType: requestType }, ['nodeName', 'tokenId'], [{
                         name: 'nodeName',
                         func: validNodeName
                     }, {
@@ -283,20 +290,21 @@ var tx = (function () {
                         abi: constant_1.CancelRegister_Abi,
                         toAddress: constant_1.Register_Addr,
                         params: [constant_1.Snapshot_Gid, nodeName],
-                        tokenId: tokenId, height: height, prevHash: prevHash, snapshotHash: snapshotHash
+                        tokenId: tokenId,
+                        height: height,
+                        prevHash: prevHash,
+                        snapshotHash: snapshotHash
                     }, requestType)];
             });
         });
     };
-    tx.prototype.retrieveReward = function (_a, requestType) {
+    Tx.prototype.retrieveReward = function (_a, requestType) {
         var accountAddress = _a.accountAddress, nodeName = _a.nodeName, toAddress = _a.toAddress, tokenId = _a.tokenId, height = _a.height, prevHash = _a.prevHash, snapshotHash = _a.snapshotHash;
         if (requestType === void 0) { requestType = 'async'; }
         return __awaiter(this, void 0, void 0, function () {
             var err;
             return __generator(this, function (_b) {
-                err = checkParams({
-                    toAddress: toAddress, nodeName: nodeName, tokenId: tokenId, requestType: requestType
-                }, ['toAddress', 'nodeName', 'tokenId'], [{
+                err = checkParams({ toAddress: toAddress, nodeName: nodeName, tokenId: tokenId, requestType: requestType }, ['toAddress', 'nodeName', 'tokenId'], [{
                         name: 'nodeName',
                         func: validNodeName
                     }, {
@@ -311,20 +319,21 @@ var tx = (function () {
                         abi: constant_1.Reward_Abi,
                         toAddress: constant_1.Register_Addr,
                         params: [constant_1.Snapshot_Gid, nodeName, toAddress],
-                        tokenId: tokenId, height: height, prevHash: prevHash, snapshotHash: snapshotHash
+                        tokenId: tokenId,
+                        height: height,
+                        prevHash: prevHash,
+                        snapshotHash: snapshotHash
                     }, requestType)];
             });
         });
     };
-    tx.prototype.voting = function (_a, requestType) {
+    Tx.prototype.voting = function (_a, requestType) {
         var accountAddress = _a.accountAddress, nodeName = _a.nodeName, tokenId = _a.tokenId, height = _a.height, prevHash = _a.prevHash, snapshotHash = _a.snapshotHash;
         if (requestType === void 0) { requestType = 'async'; }
         return __awaiter(this, void 0, void 0, function () {
             var err;
             return __generator(this, function (_b) {
-                err = checkParams({
-                    nodeName: nodeName, tokenId: tokenId, requestType: requestType
-                }, ['nodeName', 'tokenId'], [{
+                err = checkParams({ nodeName: nodeName, tokenId: tokenId, requestType: requestType }, ['nodeName', 'tokenId'], [{
                         name: 'nodeName',
                         func: validNodeName
                     }, {
@@ -339,12 +348,15 @@ var tx = (function () {
                         abi: constant_1.Vote_Abi,
                         toAddress: constant_1.Vote_Addr,
                         params: [constant_1.Snapshot_Gid, nodeName],
-                        tokenId: tokenId, height: height, prevHash: prevHash, snapshotHash: snapshotHash
+                        tokenId: tokenId,
+                        height: height,
+                        prevHash: prevHash,
+                        snapshotHash: snapshotHash
                     }, requestType)];
             });
         });
     };
-    tx.prototype.revokeVoting = function (_a, requestType) {
+    Tx.prototype.revokeVoting = function (_a, requestType) {
         var accountAddress = _a.accountAddress, tokenId = _a.tokenId, height = _a.height, prevHash = _a.prevHash, snapshotHash = _a.snapshotHash;
         if (requestType === void 0) { requestType = 'async'; }
         return __awaiter(this, void 0, void 0, function () {
@@ -362,12 +374,15 @@ var tx = (function () {
                         abi: constant_1.CancelVote_Abi,
                         toAddress: constant_1.Vote_Addr,
                         params: [constant_1.Snapshot_Gid],
-                        tokenId: tokenId, height: height, prevHash: prevHash, snapshotHash: snapshotHash
+                        tokenId: tokenId,
+                        height: height,
+                        prevHash: prevHash,
+                        snapshotHash: snapshotHash
                     }, requestType)];
             });
         });
     };
-    tx.prototype.getQuota = function (_a, requestType) {
+    Tx.prototype.getQuota = function (_a, requestType) {
         var accountAddress = _a.accountAddress, toAddress = _a.toAddress, tokenId = _a.tokenId, amount = _a.amount, height = _a.height, prevHash = _a.prevHash, snapshotHash = _a.snapshotHash;
         if (requestType === void 0) { requestType = 'async'; }
         return __awaiter(this, void 0, void 0, function () {
@@ -384,12 +399,17 @@ var tx = (function () {
                         abi: constant_1.Pledge_Abi,
                         toAddress: constant_1.Quota_Addr,
                         params: [toAddress],
-                        accountAddress: accountAddress, tokenId: tokenId, height: height, prevHash: prevHash, snapshotHash: snapshotHash, amount: amount
+                        accountAddress: accountAddress,
+                        tokenId: tokenId,
+                        height: height,
+                        prevHash: prevHash,
+                        snapshotHash: snapshotHash,
+                        amount: amount
                     }, requestType)];
             });
         });
     };
-    tx.prototype.withdrawalOfQuota = function (_a, requestType) {
+    Tx.prototype.withdrawalOfQuota = function (_a, requestType) {
         var accountAddress = _a.accountAddress, toAddress = _a.toAddress, tokenId = _a.tokenId, amount = _a.amount, height = _a.height, prevHash = _a.prevHash, snapshotHash = _a.snapshotHash;
         if (requestType === void 0) { requestType = 'async'; }
         return __awaiter(this, void 0, void 0, function () {
@@ -406,12 +426,16 @@ var tx = (function () {
                         abi: constant_1.CancelPledge_Abi,
                         toAddress: constant_1.Quota_Addr,
                         params: [toAddress, amount],
-                        accountAddress: accountAddress, tokenId: tokenId, height: height, prevHash: prevHash, snapshotHash: snapshotHash
+                        accountAddress: accountAddress,
+                        tokenId: tokenId,
+                        height: height,
+                        prevHash: prevHash,
+                        snapshotHash: snapshotHash
                     }, requestType)];
             });
         });
     };
-    tx.prototype.mintage = function (_a, requestType) {
+    Tx.prototype.mintage = function (_a, requestType) {
         var accountAddress = _a.accountAddress, _b = _a.feeType, feeType = _b === void 0 ? 'burn' : _b, tokenName = _a.tokenName, isReIssuable = _a.isReIssuable, maxSupply = _a.maxSupply, ownerBurnOnly = _a.ownerBurnOnly, totalSupply = _a.totalSupply, decimals = _a.decimals, tokenSymbol = _a.tokenSymbol, height = _a.height, prevHash = _a.prevHash, snapshotHash = _a.snapshotHash;
         if (requestType === void 0) { requestType = 'async'; }
         return __awaiter(this, void 0, void 0, function () {
@@ -420,9 +444,10 @@ var tx = (function () {
                 switch (_d.label) {
                     case 0:
                         err = checkParams({ tokenName: tokenName, isReIssuable: isReIssuable, maxSupply: maxSupply, ownerBurnOnly: ownerBurnOnly, totalSupply: totalSupply, decimals: decimals, tokenSymbol: tokenSymbol, requestType: requestType, feeType: feeType }, ['tokenName', 'isReIssuable', 'maxSupply', 'ownerBurnOnly', 'totalSupply', 'decimals', 'tokenSymbol'], [{ name: 'requestType', func: validReqType },
-                            { name: 'feeType', func: function (type) {
-                                    return type === 'burn' || type === 'stake';
-                                } }
+                            {
+                                name: 'feeType',
+                                func: function (type) { return type === 'burn' || type === 'stake'; }
+                            }
                         ]);
                         if (err) {
                             return [2, Promise.reject(err)];
@@ -430,9 +455,7 @@ var tx = (function () {
                         spendAmount = '100000000000000000000000';
                         spendFee = '1000000000000000000000';
                         feeType = feeType === 'burn' ? 'fee' : 'amount';
-                        requestBlock = {
-                            blockType: 2, toAddress: constant_1.Mintage_Addr, accountAddress: accountAddress, height: height, prevHash: prevHash, snapshotHash: snapshotHash
-                        };
+                        requestBlock = { blockType: 2, toAddress: constant_1.Mintage_Addr, accountAddress: accountAddress, height: height, prevHash: prevHash, snapshotHash: snapshotHash };
                         requestBlock[feeType] = feeType === 'fee' ? spendFee : spendAmount;
                         if (!(requestType === 'async')) return [3, 2];
                         return [4, this.asyncAccountBlock(requestBlock)];
@@ -459,7 +482,7 @@ var tx = (function () {
             });
         });
     };
-    tx.prototype.mintageCancelPledge = function (_a, requestType) {
+    Tx.prototype.mintageCancelPledge = function (_a, requestType) {
         var accountAddress = _a.accountAddress, tokenId = _a.tokenId, height = _a.height, prevHash = _a.prevHash, snapshotHash = _a.snapshotHash;
         if (requestType === void 0) { requestType = 'async'; }
         return __awaiter(this, void 0, void 0, function () {
@@ -473,12 +496,15 @@ var tx = (function () {
                         abi: constant_1.Mint_CancelPledge_Abi,
                         params: [tokenId],
                         toAddress: constant_1.Mintage_Addr,
-                        accountAddress: accountAddress, height: height, prevHash: prevHash, snapshotHash: snapshotHash
+                        accountAddress: accountAddress,
+                        height: height,
+                        prevHash: prevHash,
+                        snapshotHash: snapshotHash
                     }, requestType)];
             });
         });
     };
-    tx.prototype.mintageIssue = function (_a, requestType) {
+    Tx.prototype.mintageIssue = function (_a, requestType) {
         var accountAddress = _a.accountAddress, tokenId = _a.tokenId, amount = _a.amount, beneficial = _a.beneficial, height = _a.height, prevHash = _a.prevHash, snapshotHash = _a.snapshotHash;
         if (requestType === void 0) { requestType = 'async'; }
         return __awaiter(this, void 0, void 0, function () {
@@ -495,12 +521,16 @@ var tx = (function () {
                         abi: constant_1.Issue_Abi,
                         toAddress: constant_1.Mintage_Addr,
                         params: [tokenId, amount, beneficial],
-                        accountAddress: accountAddress, amount: '0', height: height, prevHash: prevHash, snapshotHash: snapshotHash
+                        accountAddress: accountAddress,
+                        amount: '0',
+                        height: height,
+                        prevHash: prevHash,
+                        snapshotHash: snapshotHash
                     }, requestType)];
             });
         });
     };
-    tx.prototype.mintageBurn = function (_a, requestType) {
+    Tx.prototype.mintageBurn = function (_a, requestType) {
         var accountAddress = _a.accountAddress, tokenId = _a.tokenId, amount = _a.amount, height = _a.height, prevHash = _a.prevHash, snapshotHash = _a.snapshotHash;
         if (requestType === void 0) { requestType = 'async'; }
         return __awaiter(this, void 0, void 0, function () {
@@ -514,13 +544,17 @@ var tx = (function () {
                         abi: constant_1.Burn_Abi,
                         toAddress: constant_1.Mintage_Addr,
                         fee: '0',
-                        amount: amount, tokenId: tokenId,
-                        accountAddress: accountAddress, height: height, prevHash: prevHash, snapshotHash: snapshotHash
+                        amount: amount,
+                        tokenId: tokenId,
+                        accountAddress: accountAddress,
+                        height: height,
+                        prevHash: prevHash,
+                        snapshotHash: snapshotHash
                     }, requestType)];
             });
         });
     };
-    tx.prototype.changeTokenType = function (_a, requestType) {
+    Tx.prototype.changeTokenType = function (_a, requestType) {
         var accountAddress = _a.accountAddress, tokenId = _a.tokenId, height = _a.height, prevHash = _a.prevHash, snapshotHash = _a.snapshotHash;
         if (requestType === void 0) { requestType = 'async'; }
         return __awaiter(this, void 0, void 0, function () {
@@ -529,12 +563,15 @@ var tx = (function () {
                         abi: constant_1.ChangeTokenType_Abi,
                         params: [tokenId],
                         toAddress: constant_1.Mintage_Addr,
-                        accountAddress: accountAddress, height: height, prevHash: prevHash, snapshotHash: snapshotHash
+                        accountAddress: accountAddress,
+                        height: height,
+                        prevHash: prevHash,
+                        snapshotHash: snapshotHash
                     }, requestType)];
             });
         });
     };
-    tx.prototype.changeTransferOwner = function (_a, requestType) {
+    Tx.prototype.changeTransferOwner = function (_a, requestType) {
         var accountAddress = _a.accountAddress, ownerAddress = _a.ownerAddress, tokenId = _a.tokenId, height = _a.height, prevHash = _a.prevHash, snapshotHash = _a.snapshotHash;
         if (requestType === void 0) { requestType = 'async'; }
         return __awaiter(this, void 0, void 0, function () {
@@ -551,14 +588,17 @@ var tx = (function () {
                         abi: constant_1.TransferOwner_Abi,
                         toAddress: constant_1.Mintage_Addr,
                         params: [tokenId, ownerAddress],
-                        accountAddress: accountAddress, height: height, prevHash: prevHash, snapshotHash: snapshotHash
+                        accountAddress: accountAddress,
+                        height: height,
+                        prevHash: prevHash,
+                        snapshotHash: snapshotHash
                     }, requestType)];
             });
         });
     };
-    return tx;
+    return Tx;
 }());
-exports.default = tx;
+exports.default = Tx;
 function validReqType(type) {
-    return type === 'async' || type == 'sync';
+    return type === 'async' || type === 'sync';
 }

@@ -81,7 +81,7 @@ function getInputs(inputs, mehtodName) {
     }
     catch (err) { }
     if (!isArray(inputs) && !isObject(inputs)) {
-        throw "[Error] decodeLog: Illegal inputs " + JSON.stringify(inputs) + ". Should be Array or JsonInterface.";
+        throw new Error("[Error] decodeLog: Illegal inputs " + JSON.stringify(inputs) + ". Should be Array or JsonInterface.");
     }
     inputs = isArray(inputs) ? inputs : inputs.inputs;
     return inputs || [];

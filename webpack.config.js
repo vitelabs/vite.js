@@ -6,13 +6,11 @@ const target = process.env.build_target;
 const Buffer_Path = path.join(__dirname, './node_modules/buffer/index.js');
 
 module.exports = {
-    plugins:[
-        new webpack.NormalModuleReplacementPlugin(/\/buffer\//, function(resource) {
+    plugins: [
+        new webpack.NormalModuleReplacementPlugin(/\/buffer\//, function (resource) {
             resource.request = Buffer_Path;
         }),
-        new webpack.DefinePlugin({
-            'processSilence': process.env.NODE_ENV && process.env.NODE_ENV.indexOf('test') === 0 ? 0 : 1
-        })
+        new webpack.DefinePlugin({ 'processSilence': process.env.NODE_ENV && process.env.NODE_ENV.indexOf('test') === 0 ? 0 : 1 })
     ],
     target,
     mode: 'production',
@@ -38,8 +36,8 @@ module.exports = {
     output: {
         libraryTarget: 'umd',
         umdNamedDefine: true,
-        filename: `[name].${target}.js`,
-        path: path.join(__dirname, 'packages/dist'),
+        filename: `[name].${ target }.js`,
+        path: path.join(__dirname, 'packages/dist')
     },
     optimization: {
         splitChunks: {
@@ -53,25 +51,21 @@ module.exports = {
         }
     },
     module: {
-        rules: [{
+        rules: [ {
             test: /\.ts$/,
             exclude: /node_modules/,
             use: {
                 loader: 'ts-loader',
-                options: {
-                    configFile: 'tsconfig.json'
-                }
+                options: { configFile: 'tsconfig.json' }
             }
         }, {
             test: /\.js$/,
             exclude: /node_modules/,
             use: {
                 loader: 'babel-loader',
-                options: {
-                    presets: ['@babel/preset-env']
-                }
+                options: { presets: ['@babel/preset-env'] }
             }
-        }],
+        } ]
     },
     resolve: {
         alias: {
@@ -91,6 +85,6 @@ module.exports = {
             utils: path.join(__dirname, '/src/utils/'),
             vitejs: path.join(__dirname, '/src/vitejs/')
         },
-        extensions: ['.js', '.json', '.ts']
+        extensions: [ '.js', '.json', '.ts' ]
     }
 };

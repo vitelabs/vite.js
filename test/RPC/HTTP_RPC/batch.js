@@ -1,9 +1,7 @@
 const assert = require('assert');
-import {httpProvider} from 'provider/HTTP';
+import { httpProvider as HttpProvider } from 'provider/HTTP';
 
-const HTTP_RPC = new httpProvider({
-    timeout: 200
-});
+const HTTP_RPC = new HttpProvider({ timeout: 200 });
 
 describe('http_rpc_batch', function () {
     it('batch_no_requests', function (done) {
@@ -27,21 +25,21 @@ describe('http_rpc_batch', function () {
             {
                 type: 'request',
                 methodName: 'jsonrpcSuccess',
-                params: [1, 2]
+                params: [ 1, 2 ]
             }, {
                 type: 'request',
                 methodName: 'jsonrpcSuccess',
-                params: [5, 6]
+                params: [ 5, 6 ]
             }, {
                 type: 'request',
                 methodName: 'jsonrpcSuccess',
-                params: ['ok', 'no']
+                params: [ 'ok', 'no' ]
             }, {
                 type: 'request',
                 methodName: 'jsonrpcSuccess',
-                params: [1, 2]
+                params: [ 1, 2 ]
             }
-        ]).then((res) => {
+        ]).then(res => {
             assert.deepEqual(res, [
                 {
                     error: null,
@@ -58,7 +56,7 @@ describe('http_rpc_batch', function () {
                 }
             ]);
             done();
-        }).catch((err) => {
+        }).catch(err => {
             done(err);
         });
     });
@@ -68,21 +66,21 @@ describe('http_rpc_batch', function () {
             {
                 type: 'request',
                 methodName: 'jsonrpcSuccess',
-                params: [1, 2]
+                params: [ 1, 2 ]
             }, {
                 type: 'request',
                 methodName: 'jsonrpcError',
-                params: [5, 6]
+                params: [ 5, 6 ]
             }, {
                 type: 'request',
                 methodName: 'jsonrpcError',
-                params: [5, 6]
+                params: [ 5, 6 ]
             }, {
                 type: 'request',
                 methodName: 'jsonrpcSuccess',
-                params: [1, 2]
+                params: [ 1, 2 ]
             }
-        ]).then((res) => {
+        ]).then(res => {
             assert.deepEqual(res, [
                 {
                     error: null,
@@ -105,7 +103,7 @@ describe('http_rpc_batch', function () {
                 }
             ]);
             done();
-        }).catch((err) => {
+        }).catch(err => {
             done(err);
         });
     });
@@ -115,21 +113,21 @@ describe('http_rpc_batch', function () {
             {
                 type: 'request',
                 methodName: 'jsonrpcError',
-                params: [1, 2]
+                params: [ 1, 2 ]
             }, {
                 type: 'request',
                 methodName: 'jsonrpcError',
-                params: [5, 6]
+                params: [ 5, 6 ]
             }, {
                 type: 'request',
                 methodName: 'jsonrpcError',
-                params: [5, 6]
+                params: [ 5, 6 ]
             }, {
                 type: 'request',
                 methodName: 'jsonrpcError',
-                params: [1, 2]
+                params: [ 1, 2 ]
             }
-        ]).then((res) => {
+        ]).then(res => {
             assert.deepEqual(res, [
                 {
                     result: null,
@@ -158,7 +156,7 @@ describe('http_rpc_batch', function () {
                 }
             ]);
             done();
-        }).catch((err) => {
+        }).catch(err => {
             done(err);
         });
     });
@@ -168,21 +166,21 @@ describe('http_rpc_batch', function () {
             {
                 type: 'request',
                 methodName: 'jsonrpcSuccess',
-                params: [1, 2]
+                params: [ 1, 2 ]
             }, {
                 type: 'request',
                 methodName: 'jsonrpcSuccess',
-                params: [5, 6]
+                params: [ 5, 6 ]
             }, {
                 type: 'request',
                 methodName: 'jsonrpcTimeoutError',
-                params: ['ok', 'no']
+                params: [ 'ok', 'no' ]
             }, {
                 type: 'request',
                 methodName: 'jsonrpcSuccess',
-                params: [1, 2]
+                params: [ 1, 2 ]
             }
-        ]).then((res) => {
+        ]).then(res => {
             done(res);
         }).catch(() => {
             done();
@@ -194,21 +192,21 @@ describe('http_rpc_batch', function () {
             {
                 type: 'request',
                 methodName: 'jsonrpcTimeoutSuccess',
-                params: [1, 2]
+                params: [ 1, 2 ]
             }, {
                 type: 'request',
                 methodName: 'jsonrpcTimeoutSuccess',
-                params: [5, 6]
+                params: [ 5, 6 ]
             }, {
                 type: 'request',
                 methodName: 'jsonrpcTimeoutSuccess',
-                params: ['ok', 'no']
+                params: [ 'ok', 'no' ]
             }, {
                 type: 'request',
                 methodName: 'jsonrpcSuccess',
-                params: [1, 2]
+                params: [ 1, 2 ]
             }
-        ]).then((res) => {
+        ]).then(res => {
             assert.deepEqual(res, [
                 {
                     error: null,
@@ -225,7 +223,7 @@ describe('http_rpc_batch', function () {
                 }
             ]);
             done();
-        }).catch((err) => {
+        }).catch(err => {
             done(err);
         });
     });
@@ -235,24 +233,24 @@ describe('http_rpc_batch', function () {
             {
                 type: 'notification',
                 methodName: 'jsonrpcSuccess',
-                params: [1, 2]
+                params: [ 1, 2 ]
             }, {
                 type: 'notification',
                 methodName: 'jsonrpcSuccess',
-                params: [5, 6]
+                params: [ 5, 6 ]
             }, {
                 type: 'notification',
                 methodName: 'jsonrpcSuccess',
-                params: ['ok', 'no']
+                params: [ 'ok', 'no' ]
             }, {
                 type: 'notification',
                 methodName: 'jsonrpcSuccess',
-                params: [1, 2]
+                params: [ 1, 2 ]
             }
-        ]).then((res) => {
-            assert.deepEqual(res, [null, null, null, null]);
+        ]).then(res => {
+            assert.deepEqual(res, [ null, null, null, null ]);
             done();
-        }).catch((err) => {
+        }).catch(err => {
             done(err);
         });
     });
@@ -262,24 +260,24 @@ describe('http_rpc_batch', function () {
             {
                 type: 'notification',
                 methodName: 'jsonrpcSuccess',
-                params: [1, 2]
+                params: [ 1, 2 ]
             }, {
                 type: 'notification',
                 methodName: 'jsonrpcError',
-                params: [5, 6]
+                params: [ 5, 6 ]
             }, {
                 type: 'notification',
                 methodName: 'jsonrpcError',
-                params: ['ok', 'no']
+                params: [ 'ok', 'no' ]
             }, {
                 type: 'notification',
                 methodName: 'jsonrpcSuccess',
-                params: [1, 2]
+                params: [ 1, 2 ]
             }
-        ]).then((res) => {
-            assert.deepEqual(res, [null, null, null, null]);
+        ]).then(res => {
+            assert.deepEqual(res, [ null, null, null, null ]);
             done();
-        }).catch((err) => {
+        }).catch(err => {
             done(err);
         });
     });
@@ -289,24 +287,24 @@ describe('http_rpc_batch', function () {
             {
                 type: 'notification',
                 methodName: 'jsonrpcError',
-                params: [1, 2]
+                params: [ 1, 2 ]
             }, {
                 type: 'notification',
                 methodName: 'jsonrpcError',
-                params: [5, 6]
+                params: [ 5, 6 ]
             }, {
                 type: 'notification',
                 methodName: 'jsonrpcError',
-                params: ['ok', 'no']
+                params: [ 'ok', 'no' ]
             }, {
                 type: 'notification',
                 methodName: 'jsonrpcError',
-                params: [1, 2]
+                params: [ 1, 2 ]
             }
-        ]).then((res) => {
-            assert.deepEqual(res, [null, null, null, null]);
+        ]).then(res => {
+            assert.deepEqual(res, [ null, null, null, null ]);
             done();
-        }).catch((err) => {
+        }).catch(err => {
             done(err);
         });
     });
@@ -316,21 +314,21 @@ describe('http_rpc_batch', function () {
             {
                 type: 'notification',
                 methodName: 'jsonrpcSuccess',
-                params: [1, 2]
+                params: [ 1, 2 ]
             }, {
                 type: 'notification',
                 methodName: 'jsonrpcSuccess',
-                params: [5, 6]
+                params: [ 5, 6 ]
             }, {
                 type: 'notification',
                 methodName: 'jsonrpcTimeoutError',
-                params: ['ok', 'no']
+                params: [ 'ok', 'no' ]
             }, {
                 type: 'notification',
                 methodName: 'jsonrpcSuccess',
-                params: [1, 2]
+                params: [ 1, 2 ]
             }
-        ]).then((res) => {
+        ]).then(res => {
             done(res);
         }).catch(() => {
             done();
@@ -342,24 +340,24 @@ describe('http_rpc_batch', function () {
             {
                 type: 'notification',
                 methodName: 'jsonrpcTimeoutSuccess',
-                params: [1, 2]
+                params: [ 1, 2 ]
             }, {
                 type: 'notification',
                 methodName: 'jsonrpcTimeoutSuccess',
-                params: [5, 6]
+                params: [ 5, 6 ]
             }, {
                 type: 'notification',
                 methodName: 'jsonrpcTimeoutSuccess',
-                params: ['ok', 'no']
+                params: [ 'ok', 'no' ]
             }, {
                 type: 'notification',
                 methodName: 'jsonrpcSuccess',
-                params: [1, 2]
+                params: [ 1, 2 ]
             }
-        ]).then((res) => {
-            assert.deepEqual(res, [null, null, null, null]);
+        ]).then(res => {
+            assert.deepEqual(res, [ null, null, null, null ]);
             done();
-        }).catch((err) => {
+        }).catch(err => {
             done(err);
         });
     });
@@ -369,30 +367,30 @@ describe('http_rpc_batch', function () {
             {
                 type: 'request',
                 methodName: 'jsonrpcSuccess',
-                params: [1, 2]
+                params: [ 1, 2 ]
             }, {
                 type: 'notification',
                 methodName: 'jsonrpcSuccess',
-                params: [5, 6]
+                params: [ 5, 6 ]
             }, {
                 type: 'request',
                 methodName: 'jsonrpcSuccess',
-                params: [1, 1]
+                params: [ 1, 1 ]
             }, {
                 type: 'notification',
                 methodName: 'jsonrpcSuccess',
-                params: [1, 2]
+                params: [ 1, 2 ]
             }
-        ]).then((res) => {
-            assert.deepEqual(res, [{
+        ]).then(res => {
+            assert.deepEqual(res, [ {
                 error: null,
                 result: 3
             }, null, {
                 error: null,
                 result: 2
-            }, null]);
+            }, null ]);
             done();
-        }).catch((err) => {
+        }).catch(err => {
             done(err);
         });
     });
@@ -402,22 +400,22 @@ describe('http_rpc_batch', function () {
             {
                 type: 'request',
                 methodName: 'jsonrpcSuccess',
-                params: [1, 2]
+                params: [ 1, 2 ]
             }, {
                 type: 'notification',
                 methodName: 'jsonrpcError',
-                params: [5, 6]
+                params: [ 5, 6 ]
             }, {
                 type: 'request',
                 methodName: 'jsonrpcError',
-                params: [1, 1]
+                params: [ 1, 1 ]
             }, {
                 type: 'notification',
                 methodName: 'jsonrpcSuccess',
-                params: [1, 2]
+                params: [ 1, 2 ]
             }
-        ]).then((res) => {
-            assert.deepEqual(res, [{
+        ]).then(res => {
+            assert.deepEqual(res, [ {
                 error: null,
                 result: 3
             }, null, {
@@ -426,9 +424,9 @@ describe('http_rpc_batch', function () {
                     message: '[1,1]'
                 },
                 result: null
-            }, null]);
+            }, null ]);
             done();
-        }).catch((err) => {
+        }).catch(err => {
             done(err);
         });
     });
@@ -438,22 +436,22 @@ describe('http_rpc_batch', function () {
             {
                 type: 'request',
                 methodName: 'jsonrpcError',
-                params: [1, 2]
+                params: [ 1, 2 ]
             }, {
                 type: 'notification',
                 methodName: 'jsonrpcError',
-                params: [5, 6]
+                params: [ 5, 6 ]
             }, {
                 type: 'request',
                 methodName: 'jsonrpcError',
-                params: [1, 1]
+                params: [ 1, 1 ]
             }, {
                 type: 'notification',
                 methodName: 'jsonrpcError',
-                params: [1, 2]
+                params: [ 1, 2 ]
             }
-        ]).then((res) => {
-            assert.deepEqual(res, [{
+        ]).then(res => {
+            assert.deepEqual(res, [ {
                 result: null,
                 error: {
                     code: 0,
@@ -465,9 +463,9 @@ describe('http_rpc_batch', function () {
                     code: 0,
                     message: '[1,1]'
                 }
-            }, null]);
+            }, null ]);
             done();
-        }).catch((err) => {
+        }).catch(err => {
             done(err);
         });
     });
@@ -477,21 +475,21 @@ describe('http_rpc_batch', function () {
             {
                 type: 'request',
                 methodName: 'jsonrpcSuccess',
-                params: [1, 2]
+                params: [ 1, 2 ]
             }, {
                 type: 'notification',
                 methodName: 'jsonrpcSuccess',
-                params: [5, 6]
+                params: [ 5, 6 ]
             }, {
                 type: 'request',
                 methodName: 'jsonrpcTimeoutError',
-                params: ['ok', 'no']
+                params: [ 'ok', 'no' ]
             }, {
                 type: 'notification',
                 methodName: 'jsonrpcSuccess',
-                params: [1, 2]
+                params: [ 1, 2 ]
             }
-        ]).then((res) => {
+        ]).then(res => {
             done(res);
         }).catch(() => {
             done();
@@ -503,21 +501,21 @@ describe('http_rpc_batch', function () {
             {
                 type: 'request',
                 methodName: 'jsonrpcError',
-                params: [1, 2]
+                params: [ 1, 2 ]
             }, {
                 type: 'notification',
                 methodName: 'jsonrpcTimeoutError',
-                params: [5, 6]
+                params: [ 5, 6 ]
             }, {
                 type: 'request',
                 methodName: 'jsonrpcTimeoutSuccess',
-                params: [1, 1]
+                params: [ 1, 1 ]
             }, {
                 type: 'notification',
                 methodName: 'jsonrpcSuccess',
-                params: [1, 2]
+                params: [ 1, 2 ]
             }
-        ]).then((res) => {
+        ]).then(res => {
             done(res);
         }).catch(() => {
             done();

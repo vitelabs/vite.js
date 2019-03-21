@@ -7,7 +7,6 @@ import { tools } from 'utils';
 const { getRawTokenid, getTokenIdFromRaw } = tools;
 
 
-
 export function encode(typeObj, params) {
     const Bytes_Data = getBytesData(typeObj.type, params);
     return encodeBytesData(typeObj, Bytes_Data);
@@ -25,22 +24,22 @@ export function encodeBytesData(typeObj, Bytes_Data) {
         throw lengthError(typeObj, Bytes_Data.length);
     }
 
-    let result = new Uint8Array(Byte_Len);
+    const result = new Uint8Array(Byte_Len);
     result.set(Bytes_Data, typeObj.type === 'bytes' ? 0 : Offset);
 
     return {
         result: Buffer.from(result).toString('hex'),
         typeObj
-    }
+    };
 }
 
 export function decodeToHexData(typeObj, params) {
-    if ( typeof params !== 'string' || !/^[0-9a-fA-F]+$/.test(params) ) {
-        throw '[Error] decode, params should be hex-string.';
+    if (typeof params !== 'string' || !/^[0-9a-fA-F]+$/.test(params)) {
+        throw new Error('[Error] decode, params should be hex-string.');
     }
 
     const Byte_Len = typeObj.byteLength;
-    const _params = params.substring(0, Byte_Len*2);
+    const _params = params.substring(0, Byte_Len * 2);
     const Data_Len = _params.length / 2;
 
     if (Byte_Len !== Data_Len) {
@@ -61,57 +60,56 @@ export function decodeToHexData(typeObj, params) {
 
 
 export function decode(typeObj, params) {
-    let res = decodeToHexData(typeObj, params);
+    const res = decodeToHexData(typeObj, params);
 
     return {
         result: getRawData(typeObj.type, res.result),
         params: res.params
-    }
+    };
 }
-
 
 
 function getRawData(type, params) {
     switch (type) {
-        case 'address':
-            return showAddr(params);
-        case 'bool':
-            return showNumber(!!params ? '1' : '0');
-        case 'number':
-            return showNumber(params);
-        case 'gid':
-            return params;
-        case 'tokenId':
-            return showTokenId(params);
+    case 'address':
+        return showAddr(params);
+    case 'bool':
+        return showNumber(params ? '1' : '0');
+    case 'number':
+        return showNumber(params);
+    case 'gid':
+        return params;
+    case 'tokenId':
+        return showTokenId(params);
     }
 }
 
 function getBytesData(type, params) {
     switch (type) {
-        case 'address':
-            return formatAddr(params);
-        case 'bool':
-            return formatNumber(!!params ? '1' : '0');
-        case 'number':
-            return formatNumber(params);
-        case 'gid':
-            return formatGid(params);
-        case 'tokenId':
-            return fomatTokenId(params);
+    case 'address':
+        return formatAddr(params);
+    case 'bool':
+        return formatNumber(params ? '1' : '0');
+    case 'number':
+        return formatNumber(params);
+    case 'gid':
+        return formatGid(params);
+    case 'tokenId':
+        return fomatTokenId(params);
     }
 }
 
 function formatAddr(address) {
-    let addr = getAddrFromHexAddr(address);
+    const addr = getAddrFromHexAddr(address);
     if (!addr) {
-        throw `[Error] Illegal address. ${address}`;
+        throw new Error(`[Error] Illegal address. ${ address }`);
     }
     return Buffer.from(addr, 'hex');
 }
 
 function formatGid(gid) {
-    if (!gid || !/^[0-9a-fA-F]+$/.test(gid) || gid.length !== 20 ) {
-        throw `[Error] Illegal gid. ${gid}`;
+    if (!gid || !/^[0-9a-fA-F]+$/.test(gid) || gid.length !== 20) {
+        throw new Error(`[Error] Illegal gid. ${ gid }`);
     }
     return Buffer.from(gid, 'hex');
 }
@@ -121,17 +119,17 @@ function formatNumber(params) {
 }
 
 function fomatTokenId(tokenId) {
-    let rawTokenId = getRawTokenid(tokenId);
+    const rawTokenId = getRawTokenid(tokenId);
     if (!rawTokenId) {
-        throw `[Error] Illegal tokenId. ${tokenId}`;
+        throw new Error(`[Error] Illegal tokenId. ${ tokenId }`);
     }
     return Buffer.from(rawTokenId, 'hex');
 }
 
 function showAddr(address) {
-    let addr = getHexAddrFromAddr(address);
+    const addr = getHexAddrFromAddr(address);
     if (!addr) {
-        throw `[Error] Illegal address. ${address}`;
+        throw new Error(`[Error] Illegal address. ${ address }`);
     }
     return addr;
 }
@@ -141,14 +139,14 @@ function showNumber(str) {
 }
 
 function showTokenId(rawTokenId) {
-    let tokenId = getTokenIdFromRaw(rawTokenId);
+    const tokenId = getTokenIdFromRaw(rawTokenId);
     if (!tokenId) {
-        throw `[Error] Illegal tokenId. ${rawTokenId}`;
+        throw new Error(`[Error] Illegal tokenId. ${ rawTokenId }`);
     }
     return tokenId;
 }
 
 
 function lengthError(typeObj, length) {
-    return `[Error] Illegal length. ${JSON.stringify(typeObj)}, data length: ${length}`;
+    return new Error(`[Error] Illegal length. ${ JSON.stringify(typeObj) }, data length: ${ length }`);
 }

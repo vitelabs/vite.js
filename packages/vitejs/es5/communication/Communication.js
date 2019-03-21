@@ -56,9 +56,9 @@ var Communication = (function () {
             if (!request || !request.type || (request.type !== 'request' && request.type !== 'notification')) {
                 return errors_1.default.PARAMS();
             }
-            var requestObj = request.type === 'notification' ?
-                this._getNotificationPayload(request.methodName, request.params) :
-                this._getRequestPayload(request.methodName, request.params);
+            var requestObj = request.type === 'notification'
+                ? this._getNotificationPayload(request.methodName, request.params)
+                : this._getRequestPayload(request.methodName, request.params);
             if (requestObj instanceof Error) {
                 return requestObj;
             }

@@ -1,14 +1,12 @@
 import WS_RPC from '../../../libs/WS';
 
-let WS = new WS_RPC({
-    timeout: 200
-});
+const WS = new WS_RPC({ timeout: 200 });
 
 let resultCount = 0;
 
 function addResCount() {
     resultCount++;
-    if (resultCount ===  2) {
+    if (resultCount === 2) {
         WS.disconnect();
     }
 }
@@ -18,7 +16,7 @@ describe('ws_rpc_request', function () {
         WS.request().then(() => {
             addResCount();
             done('the test case don\'t have param \'methodName\', should return error, but now, return success.');
-        }).catch(() => {                
+        }).catch(() => {
             addResCount();
             done();
         });
@@ -28,7 +26,7 @@ describe('ws_rpc_request', function () {
         WS.request('wallet_listAddress').then(() => {
             addResCount();
             done();
-        }).catch((err) => {
+        }).catch(err => {
             addResCount();
             done(err);
         });

@@ -1,14 +1,14 @@
 import '@babel/polyfill';
 require('es6-promise').polyfill();
 
-import * as _constant from "constant";
-import * as _error from "error";
-import * as _utils from "utils";
-import * as _accountBlock from "accountBlock";
-import * as _abi from "abi";
-import * as _keystore from "keystore";
-import * as _privToAddr from "privToAddr";
-import * as _hdAddr from "hdAddr";
+import * as _constant from 'constant';
+import * as _error from 'error';
+import * as _utils from 'utils';
+import * as _accountBlock from 'accountBlock';
+import * as _abi from 'abi';
+import * as _keystore from 'keystore';
+import * as _privToAddr from 'privToAddr';
+import * as _hdAddr from 'hdAddr';
 import _netProcessor from 'netProcessor';
 import _client from 'client';
 import _addrAccount from 'addrAccount';

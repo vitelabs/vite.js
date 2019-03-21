@@ -17,16 +17,16 @@ var txBlock_1 = require("./txBlock");
 var ledger_1 = require("./ledger");
 var constant_1 = require("constant");
 var netProcessor_1 = require("netProcessor");
-var client = (function (_super) {
-    __extends(client, _super);
-    function client(provider, firstConnect) {
+var Client = (function (_super) {
+    __extends(Client, _super);
+    function Client(provider, firstConnect) {
         var _this = _super.call(this, provider, firstConnect) || this;
         _this.buildinTxBlock = new txBlock_1.default(_this);
         _this.buildinLedger = new ledger_1.default(_this);
         _this._setMethodsName();
         return _this;
     }
-    client.prototype.setProvider = function (provider, firstConnect, abort) {
+    Client.prototype.setProvider = function (provider, firstConnect, abort) {
         this._setProvider(provider, firstConnect, abort);
         var providerType = this._provider.type || 'http';
         if (providerType.toLowerCase !== 'ipc' || this.wallet) {
@@ -34,10 +34,13 @@ var client = (function (_super) {
         }
         this._setMethodsName();
     };
-    client.prototype._setMethodsName = function () {
+    Client.prototype._setMethodsName = function () {
         var _this = this;
         var providerType = (this._provider.type || 'http').toLowerCase();
         for (var namespace in constant_1.methods) {
+            if (!Object.prototype.hasOwnProperty.call(constant_1.methods, namespace)) {
+                continue;
+            }
             if (providerType === 'ipc' && namespace === 'wallet') {
                 this.wallet = null;
                 continue;
@@ -49,6 +52,9 @@ var client = (function (_super) {
             var spaceMethods = constant_1.methods[namespace];
             this[_namespace] = {};
             var _loop_1 = function (methodName) {
+                if (!Object.prototype.hasOwnProperty.call(spaceMethods, namespace)) {
+                    return "continue";
+                }
                 var name = spaceMethods[methodName];
                 this_1[_namespace][methodName] = function () {
                     var args = [];
@@ -64,6 +70,6 @@ var client = (function (_super) {
             }
         }
     };
-    return client;
+    return Client;
 }(netProcessor_1.default));
-exports.default = client;
+exports.default = Client;

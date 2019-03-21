@@ -19,9 +19,7 @@ function getAccountBlock(_a) {
         console.error(new Error(message));
         return null;
     };
-    var err = exports.validReqAccountBlock({
-        blockType: blockType, fromBlockHash: fromBlockHash, accountAddress: accountAddress, message: message, data: data, toAddress: toAddress, amount: amount
-    });
+    var err = exports.validReqAccountBlock({ blockType: blockType, fromBlockHash: fromBlockHash, accountAddress: accountAddress, message: message, data: data, toAddress: toAddress, amount: amount });
     if (err) {
         return reject(err);
     }
@@ -34,9 +32,7 @@ function getAccountBlock(_a) {
     if (height && !prevHash) {
         return reject(error_1.paramsFormat, 'No prevHash but height.');
     }
-    return exports.formatAccountBlock({
-        blockType: blockType, fromBlockHash: fromBlockHash, accountAddress: accountAddress, message: message, data: data, height: height, prevHash: prevHash, snapshotHash: snapshotHash, toAddress: toAddress, tokenId: tokenId, amount: amount, nonce: nonce
-    });
+    return exports.formatAccountBlock({ blockType: blockType, fromBlockHash: fromBlockHash, accountAddress: accountAddress, message: message, data: data, height: height, prevHash: prevHash, snapshotHash: snapshotHash, toAddress: toAddress, tokenId: tokenId, amount: amount, nonce: nonce });
 }
 exports.getAccountBlock = getAccountBlock;
 function getSendTxBlock(_a) {
@@ -48,7 +44,14 @@ function getSendTxBlock(_a) {
     }
     return getAccountBlock({
         blockType: 2,
-        accountAddress: accountAddress, toAddress: toAddress, tokenId: tokenId, amount: amount, message: message, height: height, prevHash: prevHash, snapshotHash: snapshotHash
+        accountAddress: accountAddress,
+        toAddress: toAddress,
+        tokenId: tokenId,
+        amount: amount,
+        message: message,
+        height: height,
+        prevHash: prevHash,
+        snapshotHash: snapshotHash
     });
 }
 exports.getSendTxBlock = getSendTxBlock;
@@ -61,7 +64,11 @@ function getReceiveTxBlock(_a) {
     }
     return getAccountBlock({
         blockType: 4,
-        fromBlockHash: fromBlockHash, accountAddress: accountAddress, height: height, prevHash: prevHash, snapshotHash: snapshotHash
+        fromBlockHash: fromBlockHash,
+        accountAddress: accountAddress,
+        height: height,
+        prevHash: prevHash,
+        snapshotHash: snapshotHash
     });
 }
 exports.getReceiveTxBlock = getReceiveTxBlock;
@@ -145,5 +152,6 @@ function enumTxType() {
     txType[constant_1.abiFuncSignature.DexFundUserWithdraw + "_" + constant_1.contractAddrs.DexFund] = 'DexFundUserWithdraw';
     txType[constant_1.abiFuncSignature.DexFundNewOrder + "_" + constant_1.contractAddrs.DexFund] = 'DexFundNewOrder';
     txType[constant_1.abiFuncSignature.DexTradeCancelOrder + "_" + constant_1.contractAddrs.DexTrade] = 'DexTradeCancelOrder';
+    txType[constant_1.abiFuncSignature.DexFundNewMarket + "_" + constant_1.contractAddrs.DexFund] = 'DexFundNewMarket';
     return txType;
 }

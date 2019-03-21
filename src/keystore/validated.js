@@ -1,4 +1,4 @@
-const uuid = require('pure-uuid');
+const UUID = require('pure-uuid');
 import { encoder, tools } from 'utils';
 import { isValidHexAddr } from 'privToAddr';
 
@@ -10,20 +10,20 @@ const { hexToBytes } = encoder;
 
 function isValidVersion1(keyJson) {
     // Required parameter
-    if (!keyJson.scryptparams ||
-        !keyJson.encryptp ||
-        !keyJson.version ||
-        +keyJson.version !== 1) {
+    if (!keyJson.scryptparams
+        || !keyJson.encryptp
+        || !keyJson.version
+        || Number(keyJson.version) !== 1) {
         return false;
     }
 
     // Check scryptparams
-    let scryptParams = keyJson.scryptparams;
-    if (!scryptParams.n ||
-        !scryptParams.r ||
-        !scryptParams.p ||
-        !scryptParams.keylen ||
-        !scryptParams.salt) {
+    const scryptParams = keyJson.scryptparams;
+    if (!scryptParams.n
+        || !scryptParams.r
+        || !scryptParams.p
+        || !scryptParams.keylen
+        || !scryptParams.salt) {
         return false;
     }
 
@@ -35,33 +35,33 @@ function isValidVersion1(keyJson) {
 
 function isValidVersion2(keyJson) {
     // Required parameter
-    if (!keyJson.crypto ||
-        !keyJson.encryptentropy ||
-        !keyJson.version ||
-        +keyJson.version !== 2) {
+    if (!keyJson.crypto
+        || !keyJson.encryptentropy
+        || !keyJson.version
+        || Number(keyJson.version) !== 2) {
         return false;
     }
 
     // Check cryptoJSON
-    let crypto = keyJson.crypto;
+    const crypto = keyJson.crypto;
 
-    if (crypto.ciphername !== algorithm ||
-        crypto.kdf !== scryptName || 
-        !crypto.nonce ||
-        (!crypto.salt && !crypto.scryptparams)) {
+    if (crypto.ciphername !== algorithm
+        || crypto.kdf !== scryptName
+        || !crypto.nonce
+        || (!crypto.salt && !crypto.scryptparams)) {
         return false;
     }
 
-    let salt = crypto.salt || crypto.scryptparams.salt;
+    const salt = crypto.salt || crypto.scryptparams.salt;
     if (!salt) {
         return false;
     }
 
     if (crypto.scryptparams && (
-        !crypto.scryptparams.n || 
-        !crypto.scryptparams.p ||
-        !crypto.scryptparams.r ||
-        !crypto.scryptparams.keylen
+        !crypto.scryptparams.n
+        || !crypto.scryptparams.p
+        || !crypto.scryptparams.r
+        || !crypto.scryptparams.keylen
     )) {
         return false;
     }
@@ -76,36 +76,36 @@ function isValidVersion2(keyJson) {
 
 function isValidVersion3(keyJson) {
     // Required parameter
-    if (!keyJson.uuid ||
-        !keyJson.crypto ||
-        !keyJson.version ||
-        +keyJson.version !== 3) {
+    if (!keyJson.uuid
+        || !keyJson.crypto
+        || !keyJson.version
+        || Number(keyJson.version) !== 3) {
         return false;
     }
 
     // Check cryptoJSON
-    let crypto = keyJson.crypto;
-    if (crypto.ciphername !== algorithm ||
-        !crypto.ciphertext ||
-        !crypto.nonce ||
-        crypto.kdf !== scryptName || 
-        !crypto.scryptparams) {
+    const crypto = keyJson.crypto;
+    if (crypto.ciphername !== algorithm
+        || !crypto.ciphertext
+        || !crypto.nonce
+        || crypto.kdf !== scryptName
+        || !crypto.scryptparams) {
         return false;
     }
 
     // Check scryptparams
-    let scryptparams = crypto.scryptparams;
-    if (!scryptparams.n || 
-        !scryptparams.p ||
-        !scryptparams.r ||
-        !scryptparams.keylen ||
-        !scryptparams.salt
+    const scryptparams = crypto.scryptparams;
+    if (!scryptparams.n
+        || !scryptparams.p
+        || !scryptparams.r
+        || !scryptparams.keylen
+        || !scryptparams.salt
     ) {
         return false;
     }
 
     // Try to do
-    new uuid().parse(keyJson.uuid);
+    new UUID().parse(keyJson.uuid);
     hexToBytes(crypto.ciphertext);
     hexToBytes(crypto.nonce);
     hexToBytes(scryptparams.salt);
@@ -115,36 +115,36 @@ function isValidVersion3(keyJson) {
 
 function isValidOldKeystore(keyJson) {
     // Required parameter
-    if (!keyJson.id ||
-        !keyJson.crypto ||
-        !keyJson.hexaddress ||
-        !isValidHexAddr(keyJson.hexaddress)) {
+    if (!keyJson.id
+        || !keyJson.crypto
+        || !keyJson.hexaddress
+        || !isValidHexAddr(keyJson.hexaddress)) {
         return false;
     }
 
     // Check cryptoJSON
-    let crypto = keyJson.crypto;
-    if (crypto.ciphername !== algorithm ||
-        !crypto.ciphertext ||
-        !crypto.nonce ||
-        crypto.kdf !== scryptName || 
-        !crypto.scryptparams) {
+    const crypto = keyJson.crypto;
+    if (crypto.ciphername !== algorithm
+        || !crypto.ciphertext
+        || !crypto.nonce
+        || crypto.kdf !== scryptName
+        || !crypto.scryptparams) {
         return false;
     }
 
     // Check scryptparams
-    let scryptparams = crypto.scryptparams;
-    if (!scryptparams.n || 
-        !scryptparams.p ||
-        !scryptparams.r ||
-        !scryptparams.keylen ||
-        !scryptparams.salt
+    const scryptparams = crypto.scryptparams;
+    if (!scryptparams.n
+        || !scryptparams.p
+        || !scryptparams.r
+        || !scryptparams.keylen
+        || !scryptparams.salt
     ) {
         return false;
     }
 
     // Try to do
-    new uuid().parse(keyJson.id);
+    new UUID().parse(keyJson.id);
     hexToBytes(crypto.ciphertext);
     hexToBytes(crypto.nonce);
     hexToBytes(scryptparams.salt);
@@ -153,11 +153,10 @@ function isValidOldKeystore(keyJson) {
 }
 
 
-
-const validatedFuncs = [isValidOldKeystore, isValidVersion1, isValidVersion2, isValidVersion3];
+const validatedFuncs = [ isValidOldKeystore, isValidVersion1, isValidVersion2, isValidVersion3 ];
 
 export default function isValid(keystore) {
-    let err = checkParams({ keystore }, ['keystore']);
+    const err = checkParams({ keystore }, ['keystore']);
     if (err) {
         console.error(new Error(err));
         return false;
@@ -165,18 +164,18 @@ export default function isValid(keystore) {
 
     try {
         // Must be a JSON-string
-        let keyJson = JSON.parse(keystore.toLowerCase());
+        const keyJson = JSON.parse(keystore.toLowerCase());
         if (!keyJson.version && !keyJson.keystoreversion) {
             return false;
         }
- 
-        if ((keyJson.version && +keyJson.version > currentVersion) ||
-            (keyJson.keystoreversion && keyJson.keystoreversion !== 1)) {
+
+        if ((keyJson.version && Number(keyJson.version) > currentVersion)
+            || (keyJson.keystoreversion && keyJson.keystoreversion !== 1)) {
             return false;
-        } 
+        }
 
         if (keyJson.version) {
-            return validatedFuncs[+keyJson.version](keyJson);
+            return validatedFuncs[Number(keyJson.version)](keyJson);
         }
 
         return validatedFuncs[0](keyJson);

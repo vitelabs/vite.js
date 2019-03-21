@@ -1,46 +1,49 @@
 const blake = require('blakejs/blake2b');
-import { Hex } from "../type";
+import { Hex } from '../type';
 import { checkParams } from './tools';
 
 declare const enum Charset {
-    utf16 = "utf16",
-    utf8 = "utf8"
+    'utf16' = 'utf16',
+    'utf8' = 'utf8'
 }
 
 export function bytesToHex(arr: Buffer = Buffer.from([])): Hex {
-    let err = checkParams({ arr }, ['arr']);
+    const err = checkParams({ arr }, ['arr']);
     if (err) {
         console.error(new Error(err.message));
         return null;
     }
 
-    let hexArr = Array.prototype.map.call(arr, function (bit: Number) {
-        return ('00' + bit.toString(16)).slice(-2);
+    const hexArr = Array.prototype.map.call(arr, function (bit: Number) {
+        return (`00${ bit.toString(16) }`).slice(-2);
     });
     return hexArr.join('');
 }
 
 export function hexToBytes(hex: Hex) {
-    let err = checkParams({ hex }, ['hex']);
+    const err = checkParams({ hex }, ['hex']);
     if (err) {
         console.error(new Error(err.message));
         return null;
     }
 
-    let typedArray = new Uint8Array(hex.match(/[\da-f]{2}/gi).map(function (h) {
+    const typedArray = new Uint8Array(hex.match(/[\da-f]{2}/gi).map(function (h) {
         return parseInt(h, 16);
     }));
     return typedArray;
 }
 
 export function getBytesSize(str: String, charset: Charset = Charset.utf8) {
-    let err = checkParams({ str  }, ['str']);
+    const err = checkParams({ str }, ['str']);
     if (err) {
         console.error(new Error(err.message));
         return null;
     }
 
-    var total = 0, code, i, len;
+    let total = 0;
+    let code;
+    let i;
+    let len;
 
     if (charset === Charset.utf16) {
         for (i = 0, len = str.length; i < len; i++) {
@@ -66,15 +69,16 @@ export function getBytesSize(str: String, charset: Charset = Charset.utf8) {
 }
 
 export function utf8ToBytes(str = '') {
-    let err = checkParams({ str  }, ['str']);
+    const err = checkParams({ str }, ['str']);
     if (err) {
         console.error(new Error(err.message));
         return null;
     }
 
     const back = [];
-    for (var i = 0; i < str.length; i++) {
-        var code = str.charCodeAt(i);
+    let i;
+    for (i = 0; i < str.length; i++) {
+        const code = str.charCodeAt(i);
         if (0x00 <= code && code <= 0x7f) {
             back.push(code);
         } else if (0x80 <= code && code <= 0x7ff) {
@@ -95,14 +99,14 @@ export function utf8ToBytes(str = '') {
     return new Uint8Array(back);
 }
 
-export const isArray = Array.isArray || function(obj) {
+export const isArray = Array.isArray || function (obj) {
     return Object.prototype.toString.call(obj) === '[object Array]';
 };
 
 export function isObject(obj) {
-    let type = typeof obj;
+    const type = typeof obj;
     return type === 'function' || type === 'object' && !!obj;
-};
+}
 
 export const _Buffer = Buffer;
 

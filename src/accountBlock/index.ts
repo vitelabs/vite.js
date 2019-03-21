@@ -5,8 +5,8 @@ import { getAddrFromHexAddr } from 'privToAddr';
 import { paramsMissing, paramsFormat } from 'error';
 import { Default_Hash, contractAddrs, abiFuncSignature } from 'constant';
 
-import { formatAccountBlock as _formatAccountBlock, validReqAccountBlock as _validReqAccountBlock, getCreateContractData as _getCreateContractData } from "./builtin";
-import { AccountBlock, BlockType, SignBlock, sendTxBlock, receiveTxBlock, syncFormatBlock } from "../type";
+import { formatAccountBlock as _formatAccountBlock, validReqAccountBlock as _validReqAccountBlock, getCreateContractData as _getCreateContractData } from './builtin';
+import { AccountBlock, BlockType, SignBlock, sendTxBlock, receiveTxBlock, syncFormatBlock } from '../type';
 
 const { getPublicKey, sign } = ed25519;
 const { bytesToHex, blake2b } = encoder;
@@ -14,18 +14,14 @@ const { checkParams, getRawTokenid } = tools;
 
 const txType = enumTxType();
 
-export function getAccountBlock({
-    blockType, fromBlockHash, accountAddress, message, data, height, prevHash, snapshotHash, toAddress, tokenId, amount, nonce
-}: syncFormatBlock) {
-    let reject = (error, errMsg = '') => {
-        let message = `${error.message || ''} ${errMsg}`;
+export function getAccountBlock({ blockType, fromBlockHash, accountAddress, message, data, height, prevHash, snapshotHash, toAddress, tokenId, amount, nonce }: syncFormatBlock) {
+    const reject = (error, errMsg = '') => {
+        const message = `${ error.message || '' } ${ errMsg }`;
         console.error(new Error(message));
         return null;
-    }
+    };
 
-    let err = validReqAccountBlock({
-        blockType, fromBlockHash, accountAddress, message, data, toAddress, amount
-    });
+    const err = validReqAccountBlock({ blockType, fromBlockHash, accountAddress, message, data, toAddress, amount });
     if (err) {
         return reject(err);
     }
@@ -42,30 +38,31 @@ export function getAccountBlock({
         return reject(paramsFormat, 'No prevHash but height.');
     }
 
-    return formatAccountBlock({
-        blockType, fromBlockHash, accountAddress, message, data, height, prevHash, snapshotHash, toAddress, tokenId, amount, nonce
-    });
+    return formatAccountBlock({ blockType, fromBlockHash, accountAddress, message, data, height, prevHash, snapshotHash, toAddress, tokenId, amount, nonce });
 }
 
-export function getSendTxBlock({
-    accountAddress, toAddress, tokenId, amount, message, height, prevHash, snapshotHash
-}: sendTxBlock) {
-    let err = checkParams({ toAddress, tokenId, amount }, ['toAddress', 'tokenId', 'amount']);
+export function getSendTxBlock({ accountAddress, toAddress, tokenId, amount, message, height, prevHash, snapshotHash }: sendTxBlock) {
+    const err = checkParams({ toAddress, tokenId, amount }, [ 'toAddress', 'tokenId', 'amount' ]);
     if (err) {
-        console.error(new Error(err.message))
+        console.error(new Error(err.message));
         return null;
     }
 
     return getAccountBlock({
         blockType: 2,
-        accountAddress, toAddress, tokenId, amount, message, height, prevHash, snapshotHash
+        accountAddress,
+        toAddress,
+        tokenId,
+        amount,
+        message,
+        height,
+        prevHash,
+        snapshotHash
     });
 }
 
-export function getReceiveTxBlock({
-    accountAddress, fromBlockHash, height, prevHash, snapshotHash
-}: receiveTxBlock) {
-    let err = checkParams({ fromBlockHash }, ['fromBlockHash']);
+export function getReceiveTxBlock({ accountAddress, fromBlockHash, height, prevHash, snapshotHash }: receiveTxBlock) {
+    const err = checkParams({ fromBlockHash }, ['fromBlockHash']);
     if (err) {
         console.error(new Error(err.message));
         return null;
@@ -73,7 +70,11 @@ export function getReceiveTxBlock({
 
     return getAccountBlock({
         blockType: 4,
-        fromBlockHash, accountAddress, height, prevHash, snapshotHash
+        fromBlockHash,
+        accountAddress,
+        height,
+        prevHash,
+        snapshotHash
     });
 }
 
@@ -84,9 +85,9 @@ export function getBuiltinTxType(toAddress, data, blockType) {
         return defaultType;
     }
 
-    let _data = Buffer.from(data || '', 'base64').toString('hex');
+    const _data = Buffer.from(data || '', 'base64').toString('hex');
     const dataPrefix = _data.slice(0, 8);
-    const key = `${dataPrefix}_${toAddress}`;
+    const key = `${ dataPrefix }_${ toAddress }`;
 
     const type = txType[key] || defaultType;
     return type;
@@ -101,7 +102,7 @@ export function getBuiltinTxType(toAddress, data, blockType) {
 export function getBlockHash(accountBlock: SignBlock) {
     let source = '';
 
-    let blockType = Buffer.from([accountBlock.blockType]).toString('hex');
+    const blockType = Buffer.from([accountBlock.blockType]).toString('hex');
     source += blockType;
     source += accountBlock.prevHash || Default_Hash;
     source += accountBlock.height ? bytesToHex(new BigNumber(accountBlock.height).toArray('big', 8)) : '';
@@ -109,41 +110,41 @@ export function getBlockHash(accountBlock: SignBlock) {
 
     if (accountBlock.toAddress) {
         source += getAddrFromHexAddr(accountBlock.toAddress);
-        let amount = new BigNumber(accountBlock.amount);
+        const amount = new BigNumber(accountBlock.amount);
         source += accountBlock.amount && !amount.isZero() ? bytesToHex(amount.toArray('big')) : '';
         source += accountBlock.tokenId ? getRawTokenid(accountBlock.tokenId) || '' : '';
     } else {
         source += accountBlock.fromBlockHash || Default_Hash;
     }
 
-    let fee = new BigNumber(accountBlock.fee);
+    const fee = new BigNumber(accountBlock.fee);
     source += accountBlock.fee && !fee.isZero() ? bytesToHex(fee.toArray('big')) : '';
     source += accountBlock.snapshotHash || '';
 
-    if ( accountBlock.data ) {
-        let hex = Buffer.from(accountBlock.data, 'base64').toString('hex');
+    if (accountBlock.data) {
+        const hex = Buffer.from(accountBlock.data, 'base64').toString('hex');
         source += hex;
     }
 
     source += accountBlock.timestamp ? bytesToHex(new BigNumber(accountBlock.timestamp).toArray('big', 8)) : '';
     source += accountBlock.logHash || '';
-    source += accountBlock.nonce ? Buffer.from(accountBlock.nonce, 'base64').toString('hex')  : '';
+    source += accountBlock.nonce ? Buffer.from(accountBlock.nonce, 'base64').toString('hex') : '';
 
-    let sourceHex = Buffer.from(source, 'hex');
-    let hash = blake2b(sourceHex, null, 32);
-    let hashHex = Buffer.from(hash).toString('hex');
+    const sourceHex = Buffer.from(source, 'hex');
+    const hash = blake2b(sourceHex, null, 32);
+    const hashHex = Buffer.from(hash).toString('hex');
 
     return hashHex;
 }
 
 export function signAccountBlock(accountBlock: SignBlock, privKey: string) {
-    let hashHex = getBlockHash(accountBlock);
-    let _privKey = Buffer.from(privKey, 'hex');
-    let pubKey = getPublicKey(_privKey);
-    let signature = sign(hashHex, _privKey);
+    const hashHex = getBlockHash(accountBlock);
+    const _privKey = Buffer.from(privKey, 'hex');
+    const pubKey = getPublicKey(_privKey);
+    const signature = sign(hashHex, _privKey);
 
-    let _accountBlock: AccountBlock = Object.assign({}, accountBlock, {
-        hash: hashHex, 
+    const _accountBlock: AccountBlock = Object.assign({}, accountBlock, {
+        hash: hashHex,
         signature: Buffer.from(signature, 'hex').toString('base64'),
         publicKey: Buffer.from(pubKey).toString('base64')
     });
@@ -158,37 +159,37 @@ export const validReqAccountBlock = _validReqAccountBlock;
 export const getCreateContractData = _getCreateContractData;
 
 
-
-function enumTxType () {
-    let txType = {};
+function enumTxType() {
+    const txType = {};
 
     // Register
-    txType[`${abiFuncSignature.Register}_${contractAddrs.Register}`] = 'SBPreg';
-    txType[`${abiFuncSignature.UpdateRegistration}_${contractAddrs.Register}`] = 'UpdateReg';
-    txType[`${abiFuncSignature.CancelRegister}_${contractAddrs.Register}`] = 'RevokeReg';
-    txType[`${abiFuncSignature.Reward}_${contractAddrs.Register}`] = 'RetrieveReward';
+    txType[`${ abiFuncSignature.Register }_${ contractAddrs.Register }`] = 'SBPreg';
+    txType[`${ abiFuncSignature.UpdateRegistration }_${ contractAddrs.Register }`] = 'UpdateReg';
+    txType[`${ abiFuncSignature.CancelRegister }_${ contractAddrs.Register }`] = 'RevokeReg';
+    txType[`${ abiFuncSignature.Reward }_${ contractAddrs.Register }`] = 'RetrieveReward';
 
     // Vote
-    txType[`${abiFuncSignature.Vote}_${contractAddrs.Vote}`] = 'Voting';
-    txType[`${abiFuncSignature.CancelVote}_${contractAddrs.Vote}`] = 'RevokeVoting';
+    txType[`${ abiFuncSignature.Vote }_${ contractAddrs.Vote }`] = 'Voting';
+    txType[`${ abiFuncSignature.CancelVote }_${ contractAddrs.Vote }`] = 'RevokeVoting';
 
     // Quota
-    txType[`${abiFuncSignature.Pledge}_${contractAddrs.Quota}`] = 'GetQuota';
-    txType[`${abiFuncSignature.CancelPledge}_${contractAddrs.Quota}`] = 'WithdrawalOfQuota';
-    
+    txType[`${ abiFuncSignature.Pledge }_${ contractAddrs.Quota }`] = 'GetQuota';
+    txType[`${ abiFuncSignature.CancelPledge }_${ contractAddrs.Quota }`] = 'WithdrawalOfQuota';
+
     // Mintage
-    txType[`${abiFuncSignature.Mint}_${contractAddrs.Mintage}`] = 'Mintage';
-    txType[`${abiFuncSignature.Issue}_${contractAddrs.Mintage}`] = 'MintageIssue';
-    txType[`${abiFuncSignature.Burn}_${contractAddrs.Mintage}`] = 'MintageBurn';
-    txType[`${abiFuncSignature.TransferOwner}_${contractAddrs.Mintage}`] = 'MintageTransferOwner';
-    txType[`${abiFuncSignature.ChangeTokenType}_${contractAddrs.Mintage}`] = 'MintageChangeTokenType';
-    txType[`${abiFuncSignature.Mint_CancelPledge}_${contractAddrs.Mintage}`] = 'MintageCancelPledge';
-    
+    txType[`${ abiFuncSignature.Mint }_${ contractAddrs.Mintage }`] = 'Mintage';
+    txType[`${ abiFuncSignature.Issue }_${ contractAddrs.Mintage }`] = 'MintageIssue';
+    txType[`${ abiFuncSignature.Burn }_${ contractAddrs.Mintage }`] = 'MintageBurn';
+    txType[`${ abiFuncSignature.TransferOwner }_${ contractAddrs.Mintage }`] = 'MintageTransferOwner';
+    txType[`${ abiFuncSignature.ChangeTokenType }_${ contractAddrs.Mintage }`] = 'MintageChangeTokenType';
+    txType[`${ abiFuncSignature.Mint_CancelPledge }_${ contractAddrs.Mintage }`] = 'MintageCancelPledge';
+
     // Dex
-    txType[`${abiFuncSignature.DexFundUserDeposit}_${contractAddrs.DexFund}`] = 'DexFundUserDeposit';
-    txType[`${abiFuncSignature.DexFundUserWithdraw}_${contractAddrs.DexFund}`] = 'DexFundUserWithdraw';
-    txType[`${abiFuncSignature.DexFundNewOrder}_${contractAddrs.DexFund}`] = 'DexFundNewOrder';
-    txType[`${abiFuncSignature.DexTradeCancelOrder}_${contractAddrs.DexTrade}`] = 'DexTradeCancelOrder';
+    txType[`${ abiFuncSignature.DexFundUserDeposit }_${ contractAddrs.DexFund }`] = 'DexFundUserDeposit';
+    txType[`${ abiFuncSignature.DexFundUserWithdraw }_${ contractAddrs.DexFund }`] = 'DexFundUserWithdraw';
+    txType[`${ abiFuncSignature.DexFundNewOrder }_${ contractAddrs.DexFund }`] = 'DexFundNewOrder';
+    txType[`${ abiFuncSignature.DexTradeCancelOrder }_${ contractAddrs.DexTrade }`] = 'DexTradeCancelOrder';
+    txType[`${ abiFuncSignature.DexFundNewMarket }_${ contractAddrs.DexFund }`] = 'DexFundNewMarket';
 
     return txType;
 }

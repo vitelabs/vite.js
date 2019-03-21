@@ -6,7 +6,7 @@ var error_1 = require("error");
 function uriStringify(o) {
     var schema = o.schema, prefix = o.prefix, target_address = o.target_address, chain_id = o.chain_id, function_name = o.function_name, params = o.params;
     var _schema = schema ? schema + ":" : 'vite:';
-    var _prefix = prefix === undefined ? '' : prefix + "-";
+    var _prefix = typeof prefix === 'undefined' ? '' : prefix + "-";
     var _target_address = target_address || '';
     var _chain_id = chain_id ? "@" + chain_id : '';
     var _function_name = function_name ? "/" + function_name : '';
@@ -21,11 +21,9 @@ function checkParams(params, requiredP, validFunc) {
     if (!params) {
         return null;
     }
-    var isHave = function (name) {
-        return params.hasOwnProperty(name) &&
-            typeof params[name] !== 'undefined' &&
-            params[name] !== null;
-    };
+    var isHave = function (name) { return params.hasOwnProperty(name)
+        && typeof params[name] !== 'undefined'
+        && params[name] !== null; };
     for (var i = 0; i < requiredP.length; i++) {
         var name = requiredP[i];
         if (!isHave(name)) {
@@ -53,9 +51,7 @@ exports.checkParams = checkParams;
 function getRawTokenid(tokenId) {
     var err = checkParams({ tokenId: tokenId }, ['tokenId'], [{
             name: 'tokenId',
-            func: function (_t) {
-                return _t.indexOf('tti_') === 0 && _t.length === 28;
-            }
+            func: function (_t) { return _t.indexOf('tti_') === 0 && _t.length === 28; }
         }]);
     if (err) {
         console.error(new Error(err.message));
@@ -67,9 +63,7 @@ exports.getRawTokenid = getRawTokenid;
 function getTokenIdFromRaw(rawTokenId) {
     var err = checkParams({ rawTokenId: rawTokenId }, ['rawTokenId'], [{
             name: 'rawTokenId',
-            func: function (_t) {
-                return /^[0-9a-fA-F]+$/.test(_t) && _t.length === 20;
-            }
+            func: function (_t) { return /^[0-9a-fA-F]+$/.test(_t) && _t.length === 20; }
         }]);
     if (err) {
         console.error(new Error(err.message));

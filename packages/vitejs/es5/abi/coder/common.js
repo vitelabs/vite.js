@@ -29,7 +29,7 @@ function encodeBytesData(typeObj, Bytes_Data) {
 exports.encodeBytesData = encodeBytesData;
 function decodeToHexData(typeObj, params) {
     if (typeof params !== 'string' || !/^[0-9a-fA-F]+$/.test(params)) {
-        throw '[Error] decode, params should be hex-string.';
+        throw new Error('[Error] decode, params should be hex-string.');
     }
     var Byte_Len = typeObj.byteLength;
     var _params = params.substring(0, Byte_Len * 2);
@@ -61,7 +61,7 @@ function getRawData(type, params) {
         case 'address':
             return showAddr(params);
         case 'bool':
-            return showNumber(!!params ? '1' : '0');
+            return showNumber(params ? '1' : '0');
         case 'number':
             return showNumber(params);
         case 'gid':
@@ -75,7 +75,7 @@ function getBytesData(type, params) {
         case 'address':
             return formatAddr(params);
         case 'bool':
-            return formatNumber(!!params ? '1' : '0');
+            return formatNumber(params ? '1' : '0');
         case 'number':
             return formatNumber(params);
         case 'gid':
@@ -87,13 +87,13 @@ function getBytesData(type, params) {
 function formatAddr(address) {
     var addr = privToAddr_1.getAddrFromHexAddr(address);
     if (!addr) {
-        throw "[Error] Illegal address. " + address;
+        throw new Error("[Error] Illegal address. " + address);
     }
     return Buffer.from(addr, 'hex');
 }
 function formatGid(gid) {
     if (!gid || !/^[0-9a-fA-F]+$/.test(gid) || gid.length !== 20) {
-        throw "[Error] Illegal gid. " + gid;
+        throw new Error("[Error] Illegal gid. " + gid);
     }
     return Buffer.from(gid, 'hex');
 }
@@ -103,14 +103,14 @@ function formatNumber(params) {
 function fomatTokenId(tokenId) {
     var rawTokenId = getRawTokenid(tokenId);
     if (!rawTokenId) {
-        throw "[Error] Illegal tokenId. " + tokenId;
+        throw new Error("[Error] Illegal tokenId. " + tokenId);
     }
     return Buffer.from(rawTokenId, 'hex');
 }
 function showAddr(address) {
     var addr = privToAddr_1.getHexAddrFromAddr(address);
     if (!addr) {
-        throw "[Error] Illegal address. " + address;
+        throw new Error("[Error] Illegal address. " + address);
     }
     return addr;
 }
@@ -120,10 +120,10 @@ function showNumber(str) {
 function showTokenId(rawTokenId) {
     var tokenId = getTokenIdFromRaw(rawTokenId);
     if (!tokenId) {
-        throw "[Error] Illegal tokenId. " + rawTokenId;
+        throw new Error("[Error] Illegal tokenId. " + rawTokenId);
     }
     return tokenId;
 }
 function lengthError(typeObj, length) {
-    return "[Error] Illegal length. " + JSON.stringify(typeObj) + ", data length: " + length;
+    return new Error("[Error] Illegal length. " + JSON.stringify(typeObj) + ", data length: " + length);
 }

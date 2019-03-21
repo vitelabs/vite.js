@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var uuid = require('pure-uuid');
+var UUID = require('pure-uuid');
 var utils_1 = require("utils");
 var privToAddr_1 = require("privToAddr");
 var error_1 = require("error");
@@ -78,7 +78,7 @@ function encryptOldKeystore(privKey, pwd, selfScryptsy) {
         r: r,
         p: p,
         keylen: keyLen,
-        salt: bytesToHex(random()),
+        salt: bytesToHex(random())
     };
     var getResult = function (_encryptPwd, res) {
         var nonce = random(12);
@@ -98,9 +98,9 @@ function encryptOldKeystore(privKey, pwd, selfScryptsy) {
         var encryptedKeyJSON = {
             hexAddress: key.hexAddr,
             crypto: cryptoJSON,
-            id: new uuid(1).format(),
+            id: new UUID(1).format(),
             keystoreVersion: 1,
-            timestamp: new Date().getTime(),
+            timestamp: new Date().getTime()
         };
         return res(JSON.stringify(encryptedKeyJSON).toLocaleLowerCase());
     };
@@ -129,7 +129,7 @@ function getKeystore(rawText, pwd, scryptParams) {
         scryptParams: scryptParams
     };
     var encryptedKeyJSON = {
-        uuid: new uuid(1).format(),
+        uuid: new UUID(1).format(),
         crypto: cryptoJSON,
         version: vars_1.currentVersion,
         timestamp: new Date().getTime()

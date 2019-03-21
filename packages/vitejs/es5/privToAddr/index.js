@@ -46,9 +46,7 @@ exports.getAddrFromHexAddr = getAddrFromHexAddr;
 function getHexAddrFromAddr(realAddr) {
     var err = checkParams({ realAddr: realAddr }, ['realAddr'], [{
             name: 'realAddr',
-            func: function (_realAddr) {
-                return typeof _realAddr === 'string' && /^[0-9a-fA-F]+$/.test(_realAddr) && _realAddr.length === vars_1.ADDR_SIZE * 2;
-            }
+            func: function (_realAddr) { return typeof _realAddr === 'string' && /^[0-9a-fA-F]+$/.test(_realAddr) && _realAddr.length === vars_1.ADDR_SIZE * 2; }
         }]);
     if (err) {
         console.error(new Error(err.message));

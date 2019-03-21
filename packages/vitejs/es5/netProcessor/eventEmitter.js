@@ -27,7 +27,7 @@ var EventEmitter = (function () {
                 _this.netProcessor.request(type_1.subscribe.getFilterChanges, _this.id).then(function (data) {
                     cb && cb(data);
                     loop();
-                }).catch(function (err) {
+                }).catch(function () {
                     loop();
                 });
             }, time);

@@ -1,7 +1,7 @@
 import IPC_WS from 'communication/ipc_ws';
-const websocket = require('websocket').w3cwebsocket;
+const Websocket = require('websocket').w3cwebsocket;
 
-class WS_RPC extends IPC_WS {
+class WsRpc extends IPC_WS {
     constructor(path = 'ws://localhost:31420', timeout = 60000, options = {
         protocol: '',
         headers: '',
@@ -10,13 +10,13 @@ class WS_RPC extends IPC_WS {
         retryInterval: 10000
     }) {
         super({
-            onEventTypes: ['error', 'close', 'connect'],
+            onEventTypes: [ 'error', 'close', 'connect' ],
             sendFuncName: 'send',
             path
         });
 
         if (!path) {
-            console.error( this.ERRORS.CONNECT(path) );
+            console.error(this.ERRORS.CONNECT(path));
             return this.ERRORS.CONNECT(path);
         }
 
@@ -44,18 +44,18 @@ class WS_RPC extends IPC_WS {
     }
 
     reconnect() {
-        this.socket = new websocket(this.path, this.protocol, undefined, this.headers, undefined, this.clientConfig);
+        this.socket = new Websocket(this.path, this.protocol, null, this.headers, null, this.clientConfig);
         this.socket.onopen = () => {
             (this.socket.readyState === this.socket.OPEN) && this._connected();
         };
-        this.socket.onclose = ()=>{
+        this.socket.onclose = () => {
             this._closed();
         };
-        this.socket.onerror = ()=>{
+        this.socket.onerror = () => {
             this._errored();
         };
-        this.socket.onmessage = (e) => {
-            let data = (typeof e.data === 'string') ? e.data : '';
+        this.socket.onmessage = e => {
+            const data = (typeof e.data === 'string') ? e.data : '';
             this._parse([data]);
         };
     }
@@ -65,4 +65,5 @@ class WS_RPC extends IPC_WS {
     }
 }
 
+const WS_RPC = WsRpc;
 export default WS_RPC;

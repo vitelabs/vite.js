@@ -27,7 +27,7 @@ function decryptVersion2(keystore, pwd, selfScryptsy) {
         r: keystore.scryptparams ? keystore.scryptparams.r || r : r,
         p: keystore.scryptparams ? keystore.scryptparams.p || p : p,
         keylen: keystore.scryptparams ? keystore.scryptparams.keylen || keyLen : keyLen,
-        salt: keystore.crypto.salt,
+        salt: keystore.crypto.salt
     };
     return _decrypt(pwd, {
         ciphername: crypto.ciphername,
@@ -38,9 +38,7 @@ function decryptVersion2(keystore, pwd, selfScryptsy) {
 }
 function decryptVersion1(keystore, pwd, selfScryptsy) {
     return new Promise(function (res, rej) {
-        tools_1.encryptPwd(pwd, keystore.scryptparams, selfScryptsy).then(function (encryptP) {
-            return res(encryptP.toString('hex') === keystore.encryptp);
-        }).catch(function (err) {
+        tools_1.encryptPwd(pwd, keystore.scryptparams, selfScryptsy).then(function (encryptP) { return res(encryptP.toString('hex') === keystore.encryptp); }).catch(function (err) {
             rej(err);
         });
     });
@@ -69,7 +67,7 @@ function decrypt(keystore, pwd, selfScryptsy) {
         });
     }
     if (keyJson.version) {
-        return decryptFuncs[+keyJson.version](keyJson, pwd, selfScryptsy);
+        return decryptFuncs[Number(keyJson.version)](keyJson, pwd, selfScryptsy);
     }
     return decryptFuncs[0](keyJson, pwd, selfScryptsy);
 }

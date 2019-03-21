@@ -1,11 +1,9 @@
 import Communication from 'communication/Communication.js';
-const XMLHttpRequest = typeof window !== 'undefined' && window.XMLHttpRequest ?
-    window.XMLHttpRequest : require('xhr2');
+const XMLHttpRequest = typeof window !== 'undefined' && window.XMLHttpRequest
+    ? window.XMLHttpRequest : require('xhr2');
 
-class HTTP_RPC extends Communication {
-    constructor(host = 'http://localhost:8415', timeout = 60000, options = {
-        headers: {}
-    }) {
+class HttpRpc extends Communication {
+    constructor(host = 'http://localhost:8415', timeout = 60000, options = { headers: {}}) {
         super();
 
         this.type = 'http';
@@ -15,7 +13,7 @@ class HTTP_RPC extends Communication {
     }
 
     _getRequest() {
-        let request = new XMLHttpRequest();
+        const request = new XMLHttpRequest();
 
         request.open('POST', this.url);
 
@@ -32,16 +30,16 @@ class HTTP_RPC extends Communication {
         return new Promise((res, rej) => {
             // Init request
             let resetAbort = false;
-            let request = this._getRequest();
-            let _request = this._addReq({
+            const request = this._getRequest();
+            const _request = this._addReq({
                 request,
-                rej: (err) => {
+                rej: err => {
                     resetAbort = true;
                     rej(err);
                 }
             });
 
-            let clearRequestAndTimeout = () => {
+            const clearRequestAndTimeout = () => {
                 requestTimeout && clearTimeout(requestTimeout);
                 requestTimeout = null;
                 this._removeReq(_request);
@@ -90,13 +88,13 @@ class HTTP_RPC extends Communication {
     }
 
     request(methodName, params) {
-        let requestObj = this._getRequestPayload(methodName, params);
+        const requestObj = this._getRequestPayload(methodName, params);
 
         if (requestObj instanceof Error) {
             return Promise.reject(requestObj);
         }
 
-        return this._send(requestObj).then((res) => {
+        return this._send(requestObj).then(res => {
             if (!res) {
                 throw this.ERRORS.INVAILID_RESPONSE(res);
             }
@@ -109,7 +107,7 @@ class HTTP_RPC extends Communication {
     }
 
     notification(methodName, params) {
-        let requestObj = this._getNotificationPayload(methodName, params);
+        const requestObj = this._getNotificationPayload(methodName, params);
 
         if (requestObj instanceof Error) {
             return Promise.reject(requestObj);
@@ -129,14 +127,12 @@ class HTTP_RPC extends Communication {
             return Promise.reject(_requests);
         }
 
-        return this._send(_requests).then((results) => {
-            results = (results || []).sort((a, b) => {
-                return a.id - b.id;
-            });
+        return this._send(_requests).then(results => {
+            results = (results || []).sort((a, b) => a.id - b.id);
 
-            let _results = [];
+            const _results = [];
             let i = 0;
-            _requests.forEach((_request) => {
+            _requests.forEach(_request => {
                 // notification
                 if (!_request.id) {
                     _results.push(null);
@@ -158,4 +154,5 @@ class HTTP_RPC extends Communication {
     }
 }
 
+const HTTP_RPC = HttpRpc;
 export default HTTP_RPC;

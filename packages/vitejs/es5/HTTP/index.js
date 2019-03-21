@@ -14,16 +14,14 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var Communication_js_1 = require("communication/Communication.js");
-var XMLHttpRequest = typeof window !== 'undefined' && window.XMLHttpRequest ?
-    window.XMLHttpRequest : require('xhr2');
-var HTTP_RPC = (function (_super) {
-    __extends(HTTP_RPC, _super);
-    function HTTP_RPC(host, timeout, options) {
+var XMLHttpRequest = typeof window !== 'undefined' && window.XMLHttpRequest
+    ? window.XMLHttpRequest : require('xhr2');
+var HttpRpc = (function (_super) {
+    __extends(HttpRpc, _super);
+    function HttpRpc(host, timeout, options) {
         if (host === void 0) { host = 'http://localhost:8415'; }
         if (timeout === void 0) { timeout = 60000; }
-        if (options === void 0) { options = {
-            headers: {}
-        }; }
+        if (options === void 0) { options = { headers: {} }; }
         var _this = _super.call(this) || this;
         _this.type = 'http';
         _this.host = host;
@@ -31,7 +29,7 @@ var HTTP_RPC = (function (_super) {
         _this.headers = options.headers;
         return _this;
     }
-    HTTP_RPC.prototype._getRequest = function () {
+    HttpRpc.prototype._getRequest = function () {
         var request = new XMLHttpRequest();
         request.open('POST', this.url);
         request.setRequestHeader('Content-Type', 'application/json;charset=utf-8');
@@ -40,7 +38,7 @@ var HTTP_RPC = (function (_super) {
         });
         return request;
     };
-    HTTP_RPC.prototype._send = function (payload) {
+    HttpRpc.prototype._send = function (payload) {
         var _this = this;
         return new Promise(function (res, rej) {
             var resetAbort = false;
@@ -91,7 +89,7 @@ var HTTP_RPC = (function (_super) {
             }
         });
     };
-    HTTP_RPC.prototype.request = function (methodName, params) {
+    HttpRpc.prototype.request = function (methodName, params) {
         var _this = this;
         var requestObj = this._getRequestPayload(methodName, params);
         if (requestObj instanceof Error) {
@@ -107,23 +105,21 @@ var HTTP_RPC = (function (_super) {
             };
         });
     };
-    HTTP_RPC.prototype.notification = function (methodName, params) {
+    HttpRpc.prototype.notification = function (methodName, params) {
         var requestObj = this._getNotificationPayload(methodName, params);
         if (requestObj instanceof Error) {
             return Promise.reject(requestObj);
         }
         return this._send(requestObj);
     };
-    HTTP_RPC.prototype.batch = function (requests) {
+    HttpRpc.prototype.batch = function (requests) {
         if (requests === void 0) { requests = []; }
         var _requests = this._getBatchPayload(requests);
         if (_requests instanceof Error) {
             return Promise.reject(_requests);
         }
         return this._send(_requests).then(function (results) {
-            results = (results || []).sort(function (a, b) {
-                return a.id - b.id;
-            });
+            results = (results || []).sort(function (a, b) { return a.id - b.id; });
             var _results = [];
             var i = 0;
             _requests.forEach(function (_request) {
@@ -142,6 +138,7 @@ var HTTP_RPC = (function (_super) {
             return _results;
         });
     };
-    return HTTP_RPC;
+    return HttpRpc;
 }(Communication_js_1.default));
+var HTTP_RPC = HttpRpc;
 exports.default = HTTP_RPC;

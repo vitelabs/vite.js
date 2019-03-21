@@ -20,11 +20,12 @@ var BuiltinTxType;
     BuiltinTxType[BuiltinTxType["DexFundUserWithdraw"] = 15] = "DexFundUserWithdraw";
     BuiltinTxType[BuiltinTxType["DexFundNewOrder"] = 16] = "DexFundNewOrder";
     BuiltinTxType[BuiltinTxType["DexTradeCancelOrder"] = 17] = "DexTradeCancelOrder";
-    BuiltinTxType[BuiltinTxType["CreateContractReq"] = 18] = "CreateContractReq";
-    BuiltinTxType[BuiltinTxType["TxReq"] = 19] = "TxReq";
-    BuiltinTxType[BuiltinTxType["RewardReq"] = 20] = "RewardReq";
-    BuiltinTxType[BuiltinTxType["TxRes"] = 21] = "TxRes";
-    BuiltinTxType[BuiltinTxType["TxResFail"] = 22] = "TxResFail";
+    BuiltinTxType[BuiltinTxType["DexFundNewMarket"] = 18] = "DexFundNewMarket";
+    BuiltinTxType[BuiltinTxType["CreateContractReq"] = 19] = "CreateContractReq";
+    BuiltinTxType[BuiltinTxType["TxReq"] = 20] = "TxReq";
+    BuiltinTxType[BuiltinTxType["RewardReq"] = 21] = "RewardReq";
+    BuiltinTxType[BuiltinTxType["TxRes"] = 22] = "TxRes";
+    BuiltinTxType[BuiltinTxType["TxResFail"] = 23] = "TxResFail";
 })(BuiltinTxType = exports.BuiltinTxType || (exports.BuiltinTxType = {}));
 var BlockType;
 (function (BlockType) {

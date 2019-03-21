@@ -49,37 +49,35 @@ function formatType(typeStr) {
 exports.formatType = formatType;
 function validType(typeStr) {
     if (typeof typeStr !== 'string') {
-        throw "[Error] Illegal type " + JSON.stringify(typeStr) + ". Should be type-string, like 'uint32'.";
+        throw new Error("[Error] Illegal type " + JSON.stringify(typeStr) + ". Should be type-string, like 'uint32'.");
     }
     var isArr = /^\w+(\[\d*\])+$/g.test(typeStr);
     var isSingle = /^\w+\d*$/g.test(typeStr);
     if (!isArr && !isSingle) {
-        throw "[Error] Illegal type. " + typeStr;
+        throw new Error("[Error] Illegal type. " + typeStr);
     }
     var _type = typeStr.match(/^[a-zA-Z]+/g);
     var type = _type && _type[0] ? _type[0] : '';
     if (!type || typePre.indexOf(type) === -1) {
-        throw "[Error] Illegal type. " + typeStr;
+        throw new Error("[Error] Illegal type. " + typeStr);
     }
     type = type.indexOf('int') >= 0 ? 'number' : type;
     var _size;
-    if (!isArr) {
-        _size = typeStr.match(getNum);
-    }
-    else {
+    if (isArr) {
         var _typeStrArr = typeStr.split('[');
         _size = _typeStrArr[0].match(getNum);
     }
+    else {
+        _size = typeStr.match(getNum);
+    }
     var size = _size ? _size[0] : 0;
     if (type === 'bytes' && size && !(size > 0 && size <= 32)) {
-        throw "[Error] Illegal type. " + typeStr + ": Binary type of\u00A0M\u00A0bytes,\u00A00\u00A0<\u00A0M\u00A0<=\u00A032. Or dynamic sized byte sequence.";
+        throw new Error("[Error] Illegal type. " + typeStr + ": Binary type of\u00A0M\u00A0bytes,\u00A00\u00A0<\u00A0M\u00A0<=\u00A032. Or dynamic sized byte sequence.");
     }
     if (type === 'number' && size && !(size > 0 && size <= 256 && size % 8 === 0)) {
-        throw "[Error] Illegal type. " + typeStr + ": Unsigned integer type of\u00A0M\u00A0bits,\u00A00\u00A0<\u00A0M\u00A0<=\u00A0256,\u00A0M\u00A0%\u00A08\u00A0==\u00A00. e.g.\u00A0uint32,\u00A0uint8,\u00A0uint256.";
+        throw new Error("[Error] Illegal type. " + typeStr + ": Unsigned integer type of\u00A0M\u00A0bits,\u00A00\u00A0<\u00A0M\u00A0<=\u00A0256,\u00A0M\u00A0%\u00A08\u00A0==\u00A00. e.g.\u00A0uint32,\u00A0uint8,\u00A0uint256.");
     }
-    return {
-        isArr: isArr, type: type, size: size
-    };
+    return { isArr: isArr, type: type, size: size };
 }
 exports.validType = validType;
 function getTypes(jsonInterface) {
@@ -87,7 +85,7 @@ function getTypes(jsonInterface) {
         return jsonInterface;
     }
     if (!isObject(jsonInterface)) {
-        throw "[Error] Illegal types: " + jsonInterface + ". Should be Array<string> or JsonInterface.";
+        throw new Error("[Error] Illegal types: " + jsonInterface + ". Should be Array<string> or JsonInterface.");
     }
     var types = [];
     jsonInterface.inputs && jsonInterface.inputs.forEach(function (param) {

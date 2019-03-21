@@ -1,6 +1,6 @@
-import ipcProvider from 'provider/IPC_RPC';
+import IpcProvider from 'provider/IPC_RPC';
 
-const IPC_RPC = new ipcProvider({
+const IPC_RPC = new IpcProvider({
     path: '/Users/sisi/viteisbest/vite.ipc',
     timeout: 3000
 });
@@ -8,7 +8,7 @@ const IPC_RPC = new ipcProvider({
 let resultCount = 0;
 function addResCount() {
     resultCount++;
-    if (resultCount ===  4) {
+    if (resultCount === 4) {
         IPC_RPC.disconnect();
     }
 }
@@ -50,16 +50,16 @@ describe('ipc_rpc_batch', function () {
         ]).then(() => {
             addResCount();
             done();
-        }).catch((err) => {
+        }).catch(err => {
             addResCount();
             done(err);
         });
     });
 
     it('batch_requests_all_notification_all_success', function (done) {
-        let err = IPC_RPC.batch([
+        const err = IPC_RPC.batch([
             {
-                type: 'notification',                    
+                type: 'notification',
                 methodName: 'wallet_reloadAndFixAddressFile'
             }, {
                 type: 'notification',

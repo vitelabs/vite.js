@@ -43,9 +43,7 @@ function formatAccountBlock(_a) {
 exports.formatAccountBlock = formatAccountBlock;
 function validReqAccountBlock(_a) {
     var blockType = _a.blockType, fromBlockHash = _a.fromBlockHash, accountAddress = _a.accountAddress, message = _a.message, data = _a.data, toAddress = _a.toAddress, amount = _a.amount;
-    var err = checkParams({
-        blockType: blockType, accountAddress: accountAddress, toAddress: toAddress, amount: amount
-    }, ['accountAddress', 'blockType'], [{
+    var err = checkParams({ blockType: blockType, accountAddress: accountAddress, toAddress: toAddress, amount: amount }, ['accountAddress', 'blockType'], [{
             name: 'accountAddress',
             func: privToAddr_1.isValidHexAddr
         }, {
@@ -53,9 +51,7 @@ function validReqAccountBlock(_a) {
             func: privToAddr_1.isValidHexAddr
         }, {
             name: 'blockType',
-            func: function (_b) {
-                return +_b > 0 && +_b < 5;
-            },
+            func: function (_b) { return Number(_b) > 0 && Number(_b) < 5; },
             msg: 'BlockType should be greater than 0 and less than 6.'
         }, {
             name: 'amount',
@@ -65,7 +61,7 @@ function validReqAccountBlock(_a) {
     if (err) {
         return err;
     }
-    if (+blockType === 4 && !fromBlockHash) {
+    if (Number(blockType) === 4 && !fromBlockHash) {
         return {
             code: error_1.paramsMissing.code,
             msg: error_1.paramsMissing.message + " ReceiveBlock must have fromBlockHash."
@@ -83,7 +79,7 @@ exports.validReqAccountBlock = validReqAccountBlock;
 function getCreateContractData(_a) {
     var abi = _a.abi, hexCode = _a.hexCode, params = _a.params;
     var jsonInterface = getConstructor(abi);
-    var data = constant_1.Delegate_Gid + '01' + hexCode;
+    var data = constant_1.Delegate_Gid + "01" + hexCode;
     if (jsonInterface) {
         data += abi_1.encodeParameters(jsonInterface, params);
     }

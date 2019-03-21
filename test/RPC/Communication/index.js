@@ -24,19 +24,19 @@ describe('payload should be in the correct format', function () {
     };
     const Notification_Payload_No_Method = C._getNotificationPayload();
 
-    let currentId = C._requestId;
+    const currentId = C._requestId;
     const Batch_Payload = C._getBatchPayload([
         {
             type: 'request',
             methodName: 'request1',
-            params: [1, 2]
+            params: [ 1, 2 ]
         }, {
             type: 'notification',
             methodName: 'notification1'
         }, {
             type: 'notification',
             methodName: 'notification2',
-            params: ['ok', 'no']
+            params: [ 'ok', 'no' ]
         }, {
             type: 'request',
             methodName: 'request1'
@@ -46,7 +46,7 @@ describe('payload should be in the correct format', function () {
         {
             jsonrpc: '2.0',
             method: 'request1',
-            params: [1, 2],
+            params: [ 1, 2 ],
             id: currentId + 1
         }, {
             jsonrpc: '2.0',
@@ -54,12 +54,12 @@ describe('payload should be in the correct format', function () {
         }, {
             jsonrpc: '2.0',
             method: 'notification2',
-            params: ['ok', 'no']
+            params: [ 'ok', 'no' ]
         }, {
             jsonrpc: '2.0',
             method: 'request1',
             id: currentId + 2
-        },
+        }
     ];
     const Batch_Payload_No_Requests = C._getBatchPayload();
     const Batch_Payload_No_Requests_Length = C._getBatchPayload([]);

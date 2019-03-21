@@ -4,9 +4,9 @@ var privToAddr = require("privToAddr");
 var constant_1 = require("constant");
 var AddrAccount = (function () {
     function AddrAccount(_a) {
-        var address = _a.address, client = _a.client;
+        var _b = _a === void 0 ? { address: null, client: null } : _a, address = _b.address, client = _b.client;
         if (!privToAddr.isValidHexAddr(address)) {
-            throw "Illegal address " + address + ".";
+            throw new Error("Illegal address " + address + ".");
         }
         this.address = address;
         this.realAddress = privToAddr.getAddrFromHexAddr(this.address);
@@ -61,9 +61,7 @@ var AddrAccount = (function () {
     };
     AddrAccount.prototype.getTxList = function (_a) {
         var index = _a.index, _b = _a.pageCount, pageCount = _b === void 0 ? 50 : _b, _c = _a.totalNum, totalNum = _c === void 0 ? null : _c;
-        return this._client.buildinLedger.getTxList({
-            addr: this.address, index: index, pageCount: pageCount, totalNum: totalNum
-        });
+        return this._client.buildinLedger.getTxList({ addr: this.address, index: index, pageCount: pageCount, totalNum: totalNum });
     };
     return AddrAccount;
 }());

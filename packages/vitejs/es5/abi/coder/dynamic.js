@@ -9,9 +9,7 @@ function encode(typeObj, params) {
     var result = dynamicEncode(Bytes_Data);
     if (typeObj.type === 'bytes') {
         var dataLength = 32 * Math.ceil(Bytes_Data.length / 32);
-        result = common_1.encode({
-            type: 'number', byteLength: 32
-        }, dataLength).result + result;
+        result = common_1.encode({ type: 'number', byteLength: 32 }, dataLength).result + result;
     }
     return { result: result, typeObj: typeObj };
 }
@@ -41,12 +39,12 @@ function getRawData(type, params) {
 }
 function getBytesData(type, params) {
     if (typeof params !== 'string') {
-        throw '[Error] Illegal params. Should be String';
+        throw new Error('[Error] Illegal params. Should be String');
     }
     var isHex = /^0x[0-9a-fA-F]+$/.test(params) && params.length % 2 === 0;
     var isCommonHex = /^[0-9a-fA-F]+$/.test(params) && params.length % 2 === 0 && type === 'bytes';
     if (type === 'bytes' && !isCommonHex && !isHex) {
-        throw '[Error] Illegal params. Should be hex-string.';
+        throw new Error('[Error] Illegal params. Should be hex-string.');
     }
     if (isHex) {
         return Buffer.from(params.substring(2), 'hex');
@@ -59,9 +57,7 @@ function getBytesData(type, params) {
 function dynamicEncode(bytesData) {
     var Str_Len = bytesData.length;
     var Data_Length = 32 * Math.ceil(Str_Len / 32);
-    var bytesLen = common_1.encode({
-        type: 'number', byteLength: 32
-    }, Str_Len).result;
+    var bytesLen = common_1.encode({ type: 'number', byteLength: 32 }, Str_Len).result;
     var len = bytesLen.length / 2 + Data_Length;
     var arr = new Uint8Array(len);
     arr.set(Buffer.from(bytesLen, 'hex'));
@@ -69,9 +65,7 @@ function dynamicEncode(bytesData) {
     return Buffer.from(arr).toString('hex');
 }
 function dynamicDecode(params) {
-    var Str_Len = common_1.decode({
-        type: 'number', byteLength: 32
-    }, params.substring(0, 64)).result;
+    var Str_Len = common_1.decode({ type: 'number', byteLength: 32 }, params.substring(0, 64)).result;
     var Data_Length = 32 * Math.ceil(Str_Len / 32);
     return {
         result: params.substring(64, 64 + Str_Len * 2),

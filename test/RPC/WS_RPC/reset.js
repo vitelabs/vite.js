@@ -1,14 +1,12 @@
 const assert = require('assert');
 import WS_RPC from '../../../libs/WS';
 
-let WS = new WS_RPC({
-    timeout: 200
-});
+const WS = new WS_RPC({ timeout: 200 });
 
 let resultCount = 0;
 function addResCount() {
     resultCount++;
-    if (resultCount ===  1) {
+    if (resultCount === 1) {
         WS.disconnect();
     }
 }
@@ -31,10 +29,10 @@ describe('ws_rpc_reset', function () {
                 type: 'request',
                 methodName: 'wallet.sdsdsd'
             }
-        ]).then((res) => {
+        ]).then(res => {
             addResCount();
             done(res);
-        }).catch((err) => {
+        }).catch(err => {
             addResCount();
             assert.equal(err.message, WS.ERRORS.ABORT().message);
             done();
