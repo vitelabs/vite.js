@@ -1,10 +1,13 @@
 const bip39 = require('bip39');
 const assert = require('assert');
 
+import { getEntropyFromMnemonic, getMnemonicFromEntropy, getAddrsFromMnemonic } from '../src/hdAddr';
+import { LangList } from '../src/type';
+
 describe('mnemonic 12 password', function () {
     const mnemonic = 'banner bar shiver budget window cart snake control venue lonely marine print';
+    const entropy = getEntropyFromMnemonic(mnemonic);
 
-    const entropy = bip39.mnemonicToEntropy(mnemonic);
     it('entropy', function () {
         assert.equal(entropy, '12424f188ecfb64633497bf270762055');
     });
@@ -18,8 +21,8 @@ describe('mnemonic 12 password', function () {
 
 describe('mnemonic 24 password', function () {
     const mnemonic = 'hazard kind issue draw bottom foot net join train elbow census present blind assume suit vague vital crack slab material pill census actress panda';
+    const entropy = getEntropyFromMnemonic(mnemonic);
 
-    const entropy = bip39.mnemonicToEntropy(mnemonic);
     it('entropy', function () {
         assert.equal(entropy, '69ef51daa131a4b5e52bc1e708e49555017c1bf64785f5063b2bc47a4c4a80b4');
     });
@@ -49,7 +52,7 @@ describe('english', function () {
 });
 
 describe('english', function () {
-    const mnemonic = bip39.entropyToMnemonic(entropy);
+    const mnemonic = getMnemonicFromEntropy(entropy);
     const seed = bip39.mnemonicToSeed(mnemonic);
 
     it('mnemonic', function () {
@@ -64,7 +67,7 @@ describe('english', function () {
 });
 
 describe('japanese', function () {
-    const mnemonic = bip39.entropyToMnemonic(entropy, bip39.wordlists.JA);
+    const mnemonic = getMnemonicFromEntropy(entropy, LangList.japanese);
     const seed = bip39.mnemonicToSeed(mnemonic);
 
     it('mnemonic', function () {
@@ -79,7 +82,7 @@ describe('japanese', function () {
 });
 
 describe('korean', function () {
-    const mnemonic = bip39.entropyToMnemonic(entropy, bip39.wordlists.korean);
+    const mnemonic = getMnemonicFromEntropy(entropy, LangList.korean);
     const seed = bip39.mnemonicToSeed(mnemonic);
 
     it('mnemonic', function () {
@@ -94,7 +97,7 @@ describe('korean', function () {
 });
 
 describe('italian', function () {
-    const mnemonic = bip39.entropyToMnemonic(entropy, bip39.wordlists.italian);
+    const mnemonic = getMnemonicFromEntropy(entropy, LangList.italian);
     const seed = bip39.mnemonicToSeed(mnemonic);
 
     it('mnemonic', function () {
@@ -109,7 +112,7 @@ describe('italian', function () {
 });
 
 describe('chinese_simplified', function () {
-    const mnemonic = bip39.entropyToMnemonic(entropy, bip39.wordlists.chinese_simplified);
+    const mnemonic = getMnemonicFromEntropy(entropy, LangList.chineseSimplified);
     const seed = bip39.mnemonicToSeed(mnemonic);
 
     it('mnemonic', function () {
@@ -124,7 +127,7 @@ describe('chinese_simplified', function () {
 });
 
 describe('chinese_traditional', function () {
-    const mnemonic = bip39.entropyToMnemonic(entropy, bip39.wordlists.chinese_traditional);
+    const mnemonic = getMnemonicFromEntropy(entropy, LangList.chineseTraditional);
     const seed = bip39.mnemonicToSeed(mnemonic);
 
     it('mnemonic', function () {
@@ -139,7 +142,7 @@ describe('chinese_traditional', function () {
 });
 
 describe('spanish', function () {
-    const mnemonic = bip39.entropyToMnemonic(entropy, bip39.wordlists.spanish);
+    const mnemonic = getMnemonicFromEntropy(entropy, LangList.spanish);
     const seed = bip39.mnemonicToSeed(mnemonic);
 
     it('mnemonic', function () {
@@ -150,5 +153,28 @@ describe('spanish', function () {
     it('seed', function () {
         const hex = '26e1d7631f436403047a0d35c5d560e64b6224f5db741b9b54c4ddea1569f7283837fb9bd483957db7eb5a4d2b9e4d9dadcbd1744f17474f853adc50d4ebe6c0';
         assert.equal(seed.toString('hex'), hex);
+    });
+});
+
+describe('HD_Address', function () {
+    it('test_getAddrsFromMnemonic', function () {
+        const as = getAddrsFromMnemonic('horn equal mystery success pride regret renew great witness hire man moon');
+        const arr = [];
+        as.forEach(item => {
+            arr.push(item.hexAddr);
+        });
+
+        assert.deepEqual(arr, [
+            'vite_0c27e431629b49fad8fcc87d33123dd70d6a73657c60cd8cb4',
+            'vite_9e406fd75463a232f00f5c3bf51d0c49561d6c2ec119ce3f3c',
+            'vite_bf56e382349867441f1f52ab55661c0ff0786204444fa10ee2',
+            'vite_fb61bb0a65ac4141aeddfa247c808ded1ab4ea53ef10eef644',
+            'vite_8cf0c68cea2988d14e30d133baa2b279ccc4b4011263d74bd0',
+            'vite_25b07769690f8e897e0289907a7117d063614c7fe698648e21',
+            'vite_aec7c83a130617fef863723cf731aed0426d45a2227268b1e0',
+            'vite_00b2aed4102dfc97b6a322c73ae1158d024fe5444213ac1a10',
+            'vite_889ba379a0390843fd18f8f89ed8ae268bd2bfdbb48f96c57a',
+            'vite_97692d152d969bddaedaddcd58baa996fe913d912b2875c35c'
+        ]);
     });
 });

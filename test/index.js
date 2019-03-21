@@ -1,5 +1,5 @@
 describe('Mnemonic Test: bip39', function () {
-    require('./bip39');
+    require('./hdAddr');
 });
 
 describe('Utils Test: packages/utils', function () {
@@ -17,7 +17,7 @@ describe('AccountBlock Test: packages/accountBlock', function () {
 });
 
 describe('Address Test', function () {
-    require('./address');
+    require('./privAddr');
 });
 
 describe('Keystore Test: packages/keystore', function () {
