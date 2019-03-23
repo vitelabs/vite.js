@@ -88,3 +88,12 @@ export function validNodeName(nodeName) {
 export function validInteger(num) {
     return num && (/(^[1-9]\d*$)/g.test(num) || num === '0');
 }
+
+export const isArray = Array.isArray || function (obj) {
+    return Object.prototype.toString.call(obj) === '[object Array]';
+};
+
+export function isObject(obj) {
+    const type = typeof obj;
+    return type === 'function' || type === 'object' && !!obj;
+}

@@ -1,7 +1,8 @@
-import { encoder } from '~@vite/vitejs-utils';
+import { encoder, tools } from '~@vite/vitejs-utils';
 import { getTypes } from './inputsType';
 
-const { isArray, isObject, blake2bHex } = encoder;
+const { blake2bHex } = encoder;
+const { isArray, isObject } = tools;
 
 export function encodeFunction(jsonFunction, mehtodName?) {
     const isArr = isArray(jsonFunction);

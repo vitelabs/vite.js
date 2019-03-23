@@ -99,15 +99,6 @@ export function utf8ToBytes(str = '') {
     return new Uint8Array(back);
 }
 
-export const isArray = Array.isArray || function (obj) {
-    return Object.prototype.toString.call(obj) === '[object Array]';
-};
-
-export function isObject(obj) {
-    const type = typeof obj;
-    return type === 'function' || type === 'object' && !!obj;
-}
-
 export const _Buffer = Buffer;
 
 export const blake2b = blake.blake2b;
