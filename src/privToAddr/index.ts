@@ -1,12 +1,10 @@
 const blake = require('blakejs/blake2b');
-import { tools, ed25519, encoder } from '~@vite/vitejs-utils';
+import { checkParams, ed25519, bytesToHex, hexToBytes } from '~@vite/vitejs-utils';
 
 import { ADDR_PRE, ADDR_SIZE, ADDR_CHECK_SUM_SIZE, ADDR_LEN } from './vars';
 import { Hex, AddrObj } from '../type';
 
-const { checkParams } = tools;
 const { keyPair, getPublicKey } = ed25519;
-const { bytesToHex, hexToBytes } = encoder;
 
 
 export function newHexAddr(priv?: Hex | Buffer): AddrObj {

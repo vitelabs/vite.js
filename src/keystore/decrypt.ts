@@ -1,11 +1,9 @@
 import { paramsFormat } from '~@vite/vitejs-error';
-import { tools } from '~@vite/vitejs-utils';
+import { checkParams } from '~@vite/vitejs-utils';
 
 import { decipheriv, encryptPwd } from './tools';
 import { defaultScryptParams, additionData } from './vars';
 import isValid from './validated';
-
-const { checkParams } = tools;
 
 const n = defaultScryptParams.n;
 const p = defaultScryptParams.p;

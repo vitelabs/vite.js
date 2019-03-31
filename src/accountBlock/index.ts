@@ -1,6 +1,6 @@
 const BigNumber = require('bn.js');
 
-import { ed25519, encoder, tools } from '~@vite/vitejs-utils';
+import { ed25519, bytesToHex, blake2b, checkParams, getRawTokenId } from '~@vite/vitejs-utils';
 import { getAddrFromHexAddr } from '~@vite/vitejs-privtoaddr';
 import { paramsMissing, paramsFormat } from '~@vite/vitejs-error';
 import { Default_Hash, contractAddrs, abiFuncSignature } from '~@vite/vitejs-constant';
@@ -9,8 +9,6 @@ import { formatAccountBlock as _formatAccountBlock, validReqAccountBlock as _val
 import { AccountBlock, BlockType, SignBlock, sendTxBlock, receiveTxBlock, syncFormatBlock } from '../type';
 
 const { getPublicKey, sign } = ed25519;
-const { bytesToHex, blake2b } = encoder;
-const { checkParams, getRawTokenid } = tools;
 
 const txType = enumTxType();
 
@@ -112,7 +110,7 @@ export function getBlockHash(accountBlock: SignBlock) {
         source += getAddrFromHexAddr(accountBlock.toAddress);
         const amount = new BigNumber(accountBlock.amount);
         source += accountBlock.amount && !amount.isZero() ? bytesToHex(amount.toArray('big')) : '';
-        source += accountBlock.tokenId ? getRawTokenid(accountBlock.tokenId) || '' : '';
+        source += accountBlock.tokenId ? getRawTokenId(accountBlock.tokenId) || '' : '';
     } else {
         source += accountBlock.fromBlockHash || Default_Hash;
     }

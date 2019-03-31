@@ -1,12 +1,12 @@
 const scryptsy = require('scryptsy');
-const crypto = typeof window === 'undefined' ? require('crypto') : require('browserify-aes');
-import { encoder } from '~@vite/vitejs-utils';
 
-const { hexToBytes } = encoder;
+declare const window;
+const crypto = typeof window === 'undefined' ? require('crypto') : require('browserify-aes');
+import { hexToBytes } from '~@vite/vitejs-utils';
 
 const TAG_LEN = 32;
 
-export function cipheriv({ rawText, pwd, nonce, algorithm }, additionData = '') {
+export function cipheriv({ rawText, pwd, nonce, algorithm }, additionData?: Buffer) {
     const cipher = crypto.createCipheriv(algorithm, pwd, nonce);
     additionData && cipher.setAAD(additionData);
 

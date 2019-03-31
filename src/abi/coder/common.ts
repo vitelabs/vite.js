@@ -2,9 +2,7 @@
 
 const BigNumber = require('bn.js');
 import { getHexAddrFromAddr, getAddrFromHexAddr } from '~@vite/vitejs-privtoaddr';
-import { tools } from '~@vite/vitejs-utils';
-
-const { getRawTokenid, getTokenIdFromRaw } = tools;
+import { getRawTokenId, getTokenIdFromRaw } from '~@vite/vitejs-utils';
 
 
 export function encode(typeObj, params) {
@@ -119,7 +117,7 @@ function formatNumber(params) {
 }
 
 function fomatTokenId(tokenId) {
-    const rawTokenId = getRawTokenid(tokenId);
+    const rawTokenId = getRawTokenId(tokenId);
     if (!rawTokenId) {
         throw new Error(`[Error] Illegal tokenId. ${ tokenId }`);
     }

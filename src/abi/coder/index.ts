@@ -1,10 +1,8 @@
-import { tools } from '~@vite/vitejs-utils';
+import { isArray } from '~@vite/vitejs-utils';
 import { formatType } from '../inputsType';
 
 import { encode as commonEncode, decode as commonDecode } from './common';
 import { encode as dynamicEncode, decode as dynamicDecode } from './dynamic';
-
-const { isArray } = tools;
 
 const encode = {
     address: commonEncode,

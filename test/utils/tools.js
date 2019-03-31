@@ -1,10 +1,10 @@
 const assert = require('assert');
 
-import { getRawTokenid, validNodeName, validInteger, getTokenIdFromRaw, uriStringify } from '../../src/utils/tools';
+import { getRawTokenId, validNodeName, validInteger, getTokenIdFromRaw, uriStringify } from '../../src/utils';
 
 describe('utils/tools', function () {
-    it('getRawTokenid', function () {
-        assert.equal('5649544520544f4b454e', getRawTokenid('tti_5649544520544f4b454e6e40'));
+    it('getRawTokenId', function () {
+        assert.equal('5649544520544f4b454e', getRawTokenId('tti_5649544520544f4b454e6e40'));
     });
     it('uriStringify', function () {
         assert.equal('vite:vite_fa1d81d93bcc36f234f7bccf1403924a0834609f4b2e9856ad/echo?amount=1&data=MTIzYWJjZA', uriStringify({ target_address: 'vite_fa1d81d93bcc36f234f7bccf1403924a0834609f4b2e9856ad', params: { amount: 1, data: 'MTIzYWJjZA' }, function_name: 'echo' }));

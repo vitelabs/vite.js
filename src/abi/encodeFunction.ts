@@ -1,8 +1,6 @@
-import { encoder, tools } from '~@vite/vitejs-utils';
+import { blake2bHex, isArray, isObject } from '~@vite/vitejs-utils';
 import { getTypes } from './inputsType';
 
-const { blake2bHex } = encoder;
-const { isArray, isObject } = tools;
 
 export function encodeFunction(jsonFunction, mehtodName?) {
     const isArr = isArray(jsonFunction);
@@ -10,6 +8,8 @@ export function encodeFunction(jsonFunction, mehtodName?) {
     const result = jsonFunctionToString(_jsonFunction);
     return blake2bHex(result, null, 32);
 }
+
+
 
 function jsonFunctionToString(jsonFunction) {
     const isObj = isObject(jsonFunction);

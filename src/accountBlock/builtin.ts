@@ -2,12 +2,10 @@ const BigNumber = require('bn.js');
 import { paramsMissing, paramsConflict } from '~@vite/vitejs-error';
 import { Vite_TokenId, Default_Hash, Delegate_Gid } from '~@vite/vitejs-constant';
 import { isValidHexAddr } from '~@vite/vitejs-privtoaddr';
-import { tools } from '~@vite/vitejs-utils';
+import { checkParams, validInteger, isArray } from '~@vite/vitejs-utils';
 import { encodeParameters } from '~@vite/vitejs-abi';
 
 import { SignBlock, formatBlock } from '../type';
-
-const { checkParams, validInteger, isArray } = tools;
 
 
 export function formatAccountBlock({ blockType, fromBlockHash, accountAddress, message, data, height, prevHash, snapshotHash, tokenId = Vite_TokenId, fee, toAddress, amount, nonce }: formatBlock) {

@@ -5,7 +5,7 @@ import {
     Reward_Abi, Vote_Abi, CancelVote_Abi, Pledge_Abi, CancelPledge_Abi,
     Mint_Abi, Issue_Abi, Burn_Abi, ChangeTokenType_Abi, TransferOwner_Abi, Mint_CancelPledge_Abi
 } from '~@vite/vitejs-constant';
-import { tools } from '~@vite/vitejs-utils';
+import { checkParams, validNodeName } from '~@vite/vitejs-utils';
 import { no } from '~@vite/vitejs-error';
 import {
     getAccountBlock as _getAccountBlock,
@@ -25,7 +25,6 @@ import {
 } from '../type';
 import client from '.';
 
-const { checkParams, validNodeName } = tools;
 
 export default class Tx {
     _client: client

@@ -1,6 +1,6 @@
 const UUID = require('pure-uuid');
 
-import { tools, ed25519, encoder } from '~@vite/vitejs-utils';
+import { checkParams, ed25519, hexToBytes, bytesToHex } from '~@vite/vitejs-utils';
 import { newHexAddr } from '~@vite/vitejs-privtoaddr';
 import { paramsFormat } from '~@vite/vitejs-error';
 
@@ -9,8 +9,6 @@ import { cipheriv, encryptPwd } from './tools';
 import { scryptName, algorithm, currentVersion, defaultScryptParams, additionData } from './vars';
 
 const { random } = ed25519;
-const { checkParams } = tools;
-const { hexToBytes, bytesToHex } = encoder;
 
 const n = defaultScryptParams.n;
 const p = defaultScryptParams.p;

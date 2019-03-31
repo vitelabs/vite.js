@@ -1,10 +1,9 @@
-import { tools } from '~@vite/vitejs-utils';
+import { isArray, isObject } from '~@vite/vitejs-utils';
 
 import { encodeFunction, getFunction } from './encodeFunction';
 import { encodeParameter as _encodeParameter, encodeParameters as _encodeParameters, decodeParameter as _decodeParameter, decodeParameters as _decodeParameters } from './coder';
 import { getTypes } from './inputsType';
 
-const { isArray, isObject } = tools;
 
 export function encodeLogSignature(jsonFunction, mehtodName?) {
     return encodeFunction(jsonFunction, mehtodName);

@@ -2,11 +2,10 @@ import { newAddr, getId, validateMnemonic, getEntropyFromMnemonic, getAddrsFromM
 import Account from '~@vite/vitejs-account';
 import client from '~@vite/vitejs-client';
 import { paramsMissing, addressIllegal, addressMissing } from '~@vite/vitejs-error';
-import { tools } from '~@vite/vitejs-utils';
+import { checkParams } from '~@vite/vitejs-utils';
 
 import { Address, AddrObj, Hex, LangList } from '../type';
 
-const { checkParams } = tools;
 
 class Wallet {
     addrList: Array<AddrObj>

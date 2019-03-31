@@ -1,11 +1,8 @@
 const UUID = require('pure-uuid');
-import { encoder, tools } from '~@vite/vitejs-utils';
+import { hexToBytes, checkParams } from '~@vite/vitejs-utils';
 import { isValidHexAddr } from '~@vite/vitejs-privtoaddr';
 
 import { currentVersion, algorithm, scryptName } from './vars';
-
-const { checkParams } = tools;
-const { hexToBytes } = encoder;
 
 
 function isValidVersion1(keyJson) {
@@ -158,7 +155,7 @@ const validatedFuncs = [ isValidOldKeystore, isValidVersion1, isValidVersion2, i
 export default function isValid(keystore) {
     const err = checkParams({ keystore }, ['keystore']);
     if (err) {
-        console.error(new Error(err));
+        console.error(err);
         return false;
     }
 

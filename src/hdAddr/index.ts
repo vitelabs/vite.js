@@ -2,13 +2,11 @@ const bip39 = require('bip39');
 const hd = require('@sisi/ed25519-blake2b-hd-key');
 import { newHexAddr, isValidHexAddr as _isValidHexAddr, getAddrFromHexAddr as _getAddrFromHexAddr } from '~@vite/vitejs-privtoaddr';
 import { paramsFormat } from '~@vite/vitejs-error';
-import { tools, encoder } from '~@vite/vitejs-utils';
+import { checkParams, bytesToHex, blake2b } from '~@vite/vitejs-utils';
 
 import { AddrObj, Hex, LangList } from '../type';
 
 const ROOT_PATH = 'm/44\'/666666\'';
-const { checkParams } = tools;
-const { bytesToHex, blake2b } = encoder;
 
 export function validateMnemonic(mnemonic: string, lang: LangList = LangList.english) {
     return mnemonic && bip39.validateMnemonic(mnemonic, getWordList(lang));
