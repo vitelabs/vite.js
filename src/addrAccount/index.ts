@@ -58,10 +58,6 @@ export default class AddrAccount {
         return this._client.ledger.getBlocksByHashInToken(this.address, hash, tokenId, num);
     }
 
-    getFittestSnapshotHash(sendblockHash) {
-        return this._client.ledger.getFittestSnapshotHash(this.address, sendblockHash);
-    }
-
     getPledgeQuota() {
         return this._client.pledge.getPledgeQuota(this.address);
     }

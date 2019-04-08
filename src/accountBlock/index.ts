@@ -1,6 +1,6 @@
 const BigNumber = require('bn.js');
 
-import { ed25519, bytesToHex, blake2b, checkParams, getRawTokenId } from '~@vite/vitejs-utils';
+import { ed25519, bytesToHex, blake2b, blake2bHex, checkParams, getRawTokenId } from '~@vite/vitejs-utils';
 import { getAddrFromHexAddr } from '~@vite/vitejs-privtoaddr';
 import { paramsMissing, paramsFormat } from '~@vite/vitejs-error';
 import { Default_Hash, contractAddrs, abiFuncSignature } from '~@vite/vitejs-constant';
@@ -12,7 +12,7 @@ const { getPublicKey, sign } = ed25519;
 
 const txType = enumTxType();
 
-export function getAccountBlock({ blockType, fromBlockHash, accountAddress, message, data, height, prevHash, snapshotHash, toAddress, tokenId, amount, nonce }: syncFormatBlock) {
+export function getAccountBlock({ blockType, fromBlockHash, accountAddress, message, data, height, prevHash, toAddress, tokenId, amount, nonce }: syncFormatBlock) {
     const reject = (error, errMsg = '') => {
         const message = `${ error.message || '' } ${ errMsg }`;
         console.error(new Error(message));
@@ -24,10 +24,6 @@ export function getAccountBlock({ blockType, fromBlockHash, accountAddress, mess
         return reject(err);
     }
 
-    if (!snapshotHash) {
-        return reject(paramsMissing, 'SnapshotHash.');
-    }
-
     if (!height && prevHash) {
         return reject(paramsFormat, 'No height but prevHash.');
     }
@@ -36,10 +32,10 @@ export function getAccountBlock({ blockType, fromBlockHash, accountAddress, mess
         return reject(paramsFormat, 'No prevHash but height.');
     }
 
-    return formatAccountBlock({ blockType, fromBlockHash, accountAddress, message, data, height, prevHash, snapshotHash, toAddress, tokenId, amount, nonce });
+    return formatAccountBlock({ blockType, fromBlockHash, accountAddress, message, data, height, prevHash, toAddress, tokenId, amount, nonce });
 }
 
-export function getSendTxBlock({ accountAddress, toAddress, tokenId, amount, message, height, prevHash, snapshotHash }: sendTxBlock) {
+export function getSendTxBlock({ accountAddress, toAddress, tokenId, amount, message, height, prevHash }: sendTxBlock) {
     const err = checkParams({ toAddress, tokenId, amount }, [ 'toAddress', 'tokenId', 'amount' ]);
     if (err) {
         console.error(new Error(err.message));
@@ -54,12 +50,11 @@ export function getSendTxBlock({ accountAddress, toAddress, tokenId, amount, mes
         amount,
         message,
         height,
-        prevHash,
-        snapshotHash
+        prevHash
     });
 }
 
-export function getReceiveTxBlock({ accountAddress, fromBlockHash, height, prevHash, snapshotHash }: receiveTxBlock) {
+export function getReceiveTxBlock({ accountAddress, fromBlockHash, height, prevHash }: receiveTxBlock) {
     const err = checkParams({ fromBlockHash }, ['fromBlockHash']);
     if (err) {
         console.error(new Error(err.message));
@@ -71,8 +66,7 @@ export function getReceiveTxBlock({ accountAddress, fromBlockHash, height, prevH
         fromBlockHash,
         accountAddress,
         height,
-        prevHash,
-        snapshotHash
+        prevHash
     });
 }
 
@@ -92,10 +86,10 @@ export function getBuiltinTxType(toAddress, data, blockType) {
 }
 
 // 1.sendBlock
-// hash = HashFunction(BlockType + PrevHash  + Height + AccountAddress + ToAddress + Amount + TokenId  + Fee + SnapshotHash + Data + Timestamp + LogHash + Nonce）
+// hash = HashFunction(BlockType + PrevHash  + Height + AccountAddress + ToAddress + Amount + TokenId + Data + Fee + LogHash + Nonce + sendBlock hashList）
 
 // 2.receiveBlock
-// hash = HashFunction(BlockType + PrevHash  + Height + AccountAddress + FromBlockHash + Fee + SnapshotHash + Data + Timestamp + LogHash + Nonce）
+// hash = HashFunction(BlockType + PrevHash  + Height + AccountAddress + FromBlockHash + Data + Fee + LogHash + Nonce + sendBlock hashList）
 
 export function getBlockHash(accountBlock: SignBlock) {
     let source = '';
@@ -108,25 +102,25 @@ export function getBlockHash(accountBlock: SignBlock) {
 
     if (accountBlock.toAddress) {
         source += getAddrFromHexAddr(accountBlock.toAddress);
-        const amount = new BigNumber(accountBlock.amount);
-        source += accountBlock.amount && !amount.isZero() ? bytesToHex(amount.toArray('big')) : '';
+        source += getNumberHex(accountBlock.amount);
         source += accountBlock.tokenId ? getRawTokenId(accountBlock.tokenId) || '' : '';
     } else {
         source += accountBlock.fromBlockHash || Default_Hash;
     }
 
-    const fee = new BigNumber(accountBlock.fee);
-    source += accountBlock.fee && !fee.isZero() ? bytesToHex(fee.toArray('big')) : '';
-    source += accountBlock.snapshotHash || '';
-
     if (accountBlock.data) {
-        const hex = Buffer.from(accountBlock.data, 'base64').toString('hex');
+        const hex = blake2bHex(Buffer.from(accountBlock.data, 'base64'), null, 32);
         source += hex;
     }
 
-    source += accountBlock.timestamp ? bytesToHex(new BigNumber(accountBlock.timestamp).toArray('big', 8)) : '';
+    source += getNumberHex(accountBlock.fee);
     source += accountBlock.logHash || '';
     source += accountBlock.nonce ? Buffer.from(accountBlock.nonce, 'base64').toString('hex') : '';
+
+    const sendBlockList = accountBlock.sendBlockList || [];
+    sendBlockList.forEach(block => {
+        source += block.hash;
+    });
 
     const sourceHex = Buffer.from(source, 'hex');
     const hash = blake2b(sourceHex, null, 32);
@@ -190,4 +184,14 @@ function enumTxType() {
     txType[`${ abiFuncSignature.DexFundNewMarket }_${ contractAddrs.DexFund }`] = 'DexFundNewMarket';
 
     return txType;
+}
+
+function getNumberHex(amount) {
+    const amountResult = new Uint8Array(32);
+    const bigAmount = new BigNumber(amount);
+    const amountBytes = amount && !bigAmount.isZero() ? bigAmount.toArray('big') : '';
+    if (amountBytes) {
+        amountResult.set(amountBytes, 32 - amountBytes.length);
+    }
+    return Buffer.from(amountResult).toString('hex');
 }

@@ -4,7 +4,7 @@ import { getAccountBlock, getSendTxBlock, getReceiveTxBlock, getBuiltinTxType, s
 import { BlockType } from '../src/type';
 import { Default_Hash } from '../src/constant/index';
 
-// let block = {
+// const block = {
 //     accountAddress: 'vite_155e4e83fb0499dcc3047e0458bbfae77f2ac1270e38c176f8',
 //     amount: '0',
 //     blockType: 2,
@@ -22,21 +22,17 @@ import { Default_Hash } from '../src/constant/index';
 //     publicKey: 'Kn+xAEkrRm/KSsfE38htuM5P6NCwsp1x70/yya+ZIJ0=',
 //     quota: '62000',
 //     signature: 'DPiaz3ZjGzXrycnjXdmXgr823J/4zv1MB1yoDQRaIkCZkLlwM6V8AzekqHjhveWz+ymM57X3royv5FtpfdKcCA==',
-//     snapshotHash: 'ff91866c4393566c44a667e8344c1567a12fdefa27093a69fed6ecbf4cb02046',
-//     timestamp: 1544100858,
 //     toAddress: 'vite_000000000000000000000000000000000000000270a48cc491',
-//     tokenId: 'tti_5649544520544f4b454e6e40',
+//     tokenId: 'tti_5649544520544f4b454e6e40'
 // };
 
 describe('getAccountBlock', function () {
     const reqAccBlock = [ {
         accountAddress: 'vite_155e4e83fb0499dcc3047e0458bbfae77f2ac1270e38c176f8',
-        blockType: 2,
-        snapshotHash: 'ff91866c4393566c44a667e8344c1567a12fdefa27093a69fed6ecbf4cb02046'
+        blockType: 2
     }, {
         accountAddress: 'vite_155e4e83fb0499dcc3047e0458bbfae77f2ac1270e38c176f8',
         blockType: 2,
-        snapshotHash: 'ff91866c4393566c44a667e8344c1567a12fdefa27093a69fed6ecbf4cb02046',
         amount: '0',
         toAddress: 'vite_000000000000000000000000000000000000000270a48cc491',
         tokenId: 'tti_5649544520544f4b454e6e40'
@@ -44,7 +40,6 @@ describe('getAccountBlock', function () {
         accountAddress: 'vite_155e4e83fb0499dcc3047e0458bbfae77f2ac1270e38c176f8',
         blockType: 4,
         fromBlockHash: 'ff91866c4393566c44a667e8344c1567a12fdefa27093a69fed6ecbf4cb02046',
-        snapshotHash: 'ff91866c4393566c44a667e8344c1567a12fdefa27093a69fed6ecbf4cb02046',
         amount: '0',
         toAddress: 'vite_000000000000000000000000000000000000000270a48cc491',
         tokenId: 'tti_5649544520544f4b454e6e40',
@@ -54,7 +49,6 @@ describe('getAccountBlock', function () {
         accountAddress: 'vite_155e4e83fb0499dcc3047e0458bbfae77f2ac1270e38c176f8',
         blockType: 4,
         fromBlockHash: 'ff91866c4393566c44a667e8344c1567a12fdefa27093a69fed6ecbf4cb02046',
-        snapshotHash: 'ff91866c4393566c44a667e8344c1567a12fdefa27093a69fed6ecbf4cb02046',
         amount: '0',
         toAddress: 'vite_000000000000000000000000000000000000000270a48cc491',
         tokenId: 'tti_5649544520544f4b454e6e40',
@@ -63,7 +57,6 @@ describe('getAccountBlock', function () {
     }, {
         accountAddress: 'vite_155e4e83fb0499dcc3047e0458bbfae77f2ac1270e38c176f8',
         blockType: 2,
-        snapshotHash: 'ff91866c4393566c44a667e8344c1567a12fdefa27093a69fed6ecbf4cb02046',
         height: '19',
         prevHash: 'fef0b178458acb3f7d37d575b10139357d79a5a90adc3fdc8ddd96800770fce7',
         message: '2123'
@@ -71,7 +64,6 @@ describe('getAccountBlock', function () {
         accountAddress: 'vite_155e4e83fb0499dcc3047e0458bbfae77f2ac1270e38c176f8',
         blockType: 4,
         fromBlockHash: 'ff91866c4393566c44a667e8344c1567a12fdefa27093a69fed6ecbf4cb02046',
-        snapshotHash: 'ff91866c4393566c44a667e8344c1567a12fdefa27093a69fed6ecbf4cb02046',
         height: '19',
         prevHash: 'fef0b178458acb3f7d37d575b10139357d79a5a90adc3fdc8ddd96800770fce7',
         data: 'MjEyMw==',
@@ -84,13 +76,11 @@ describe('getAccountBlock', function () {
 describe('getSendTxBlock', function () {
     const reqAccBlock = [ {
         accountAddress: 'vite_155e4e83fb0499dcc3047e0458bbfae77f2ac1270e38c176f8',
-        snapshotHash: 'ff91866c4393566c44a667e8344c1567a12fdefa27093a69fed6ecbf4cb02046',
         amount: '0',
         toAddress: 'vite_000000000000000000000000000000000000000270a48cc491',
         tokenId: 'tti_5649544520544f4b454e6e40'
     }, {
         accountAddress: 'vite_155e4e83fb0499dcc3047e0458bbfae77f2ac1270e38c176f8',
-        snapshotHash: 'ff91866c4393566c44a667e8344c1567a12fdefa27093a69fed6ecbf4cb02046',
         amount: '0',
         toAddress: 'vite_000000000000000000000000000000000000000270a48cc491',
         tokenId: 'tti_5649544520544f4b454e6e40',
@@ -109,12 +99,10 @@ describe('getSendTxBlock', function () {
 describe('getReceiveTxBlock', function () {
     const reqAccBlock = [ {
         accountAddress: 'vite_155e4e83fb0499dcc3047e0458bbfae77f2ac1270e38c176f8',
-        fromBlockHash: 'ff91866c4393566c44a667e8344c1567a12fdefa27093a69fed6ecbf4cb02046',
-        snapshotHash: 'ff91866c4393566c44a667e8344c1567a12fdefa27093a69fed6ecbf4cb02046'
+        fromBlockHash: 'ff91866c4393566c44a667e8344c1567a12fdefa27093a69fed6ecbf4cb02046'
     }, {
         accountAddress: 'vite_155e4e83fb0499dcc3047e0458bbfae77f2ac1270e38c176f8',
         fromBlockHash: 'ff91866c4393566c44a667e8344c1567a12fdefa27093a69fed6ecbf4cb02046',
-        snapshotHash: 'ff91866c4393566c44a667e8344c1567a12fdefa27093a69fed6ecbf4cb02046',
         height: '19',
         prevHash: 'fef0b178458acb3f7d37d575b10139357d79a5a90adc3fdc8ddd96800770fce7'
     } ];
@@ -280,16 +268,14 @@ describe('signAccountBlock', function () {
         const accountBlock = {
             'accountAddress': 'vite_a17465557d554fd27ff958887082f147054e0d6f75762e25cb',
             'height': '1',
-            'timestamp': 1539669939,
-            'snapshotHash': '17c5712f0feb83c3a25a63b55979f1991d5c41bf9450849eaebfe39e54076393',
             'fee': '0',
             'prevHash': '0000000000000000000000000000000000000000000000000000000000000000',
             'blockType': 4,
             'fromBlockHash': '382c9d11894aa45d18bb02edf4b520a281341e686915c750adbbb0655c8ba6ec',
             'nonce': 'xjpCTkxYBfA=',
             'publicKey': 'eeD7wINoHmNv75s4nZHFcArl1AFDgVjlx3mLdiMs34g=',
-            'hash': '2b39c5c1e3f70eee84679914aedea5585b3990c2d922cd7f8d31b49b759ab8eb',
-            'signature': 'ytfgT+GhGE3xOU1zzuJ+95traptSqCubz1Rs2elq31NCMUmjOoVsYiD3dFvXwVEr0eb8Ifmk3YeN1QrETlliAA=='
+            'hash': '3bdbbc9e1c4ea2b52afadb841fdf97de55daa77e671a2c417e83bfb25b7682a9',
+            'signature': 'XP3jYE7rq1tby7fCZ9wpU9fX1TpLHxtAHRmy5wNiWra7bfyMOIZgS89FW2UacrA1dSIlv3pGuG33pGV43+AtCg=='
         };
 
         const { hash, signature, publicKey } = signAccountBlock(accountBlock, privKey);
@@ -303,8 +289,6 @@ describe('signAccountBlock', function () {
         const accountBlock = {
             'accountAddress': 'vite_aac0d5bb7d5585716a8d9a0ee600d6d28cb52d6695673e8f50',
             'height': '1',
-            'timestamp': 1539677137,
-            'snapshotHash': '8aa4d1427223ed4757a784245483501efe728d4b9675ab02249833b6f8c462b8',
             'fee': '0',
             'prevHash': 'a574cef0e2a22978f194e8ac818cb7ca4c14ea3b5d14649e4c4f0723c27b1bf6',
             'data': 'MTI=',
@@ -313,9 +297,9 @@ describe('signAccountBlock', function () {
             'amount': '1000000000000000000',
             'blockType': 2,
             'nonce': 'jnrqnJpfOb4=',
-            'hash': 'cb4cc0b762bd86c95941f45a8d69d004e7c558bc27fd5204cfc504b9082f383a',
+            'hash': '361a92a5ddaa4bbc55348e0e047d53ab7f677325bd8ddef4963f8a712d3309ed',
             'publicKey': '6RyGDGPQH21KkpAZcZB6chA+i6qH+IeGZfWk3vnsejY=',
-            'signature': 'r9JcJLiZGhFK6+bCLmcfu2W5yIPDbm2BpVWJaokkeiOebGe2WSq94jxfvF/UI40/hOWhnlWMSvXTgmnnt8P7Bw=='
+            'signature': 'I6WxxwjkTEYjXMw9uGNMwVQPpteEUdr5/D7w/sHIm4Gg/4mbqNl7vyBSkIXRdi2JxVaIpr/hIHigr6llz/UZDQ=='
         };
 
         const { hash, signature, publicKey } = signAccountBlock(accountBlock, privKey);
@@ -329,46 +313,49 @@ describe('signAccountBlock', function () {
 describe('accountBlockHash', function () {
     it('test_hash_1', function () {
         const accountBlock = {
-            accountAddress: 'vite_17db10f302569b79adbb31f7dd96a11f09f740459c2e0d8638',
-            blockType: 4,
-            difficulty: '67108864',
-            fromBlockHash: '516292ddb370a93fe3528998854e82f8a6fd4b87b6bcf9ddea0849dd375e32f0',
-            hash: 'd855cbfe45c6b5f7eec3c42ba68735b11e580733ba04b6b813103e2e5917973a',
-            height: '4',
-            nonce: '3BLqA3PGYHk=',
-            prevHash: 'cf76d50711533b150672f432ae8cf12e73305b3f50923da21c40b995649670b3',
-            publicKey: 'kuzthX/o/WfqSQy+cA+TFFPIrJpaf6+74LAnQhUmoVM=',
-            signature: 'FdH5DUWd7YQ0MQrKlscr5l44TJ1I2+FoaNxLTQlVjEouYqyU8oNNFv6Bfw/oqI9bgIxgiCxU/VvBTyQIgnn9Dg==',
-            snapshotHash: '8c607d885b9f5c2399e8a3dcafdd89f05b046100a9c62ba678a416d2762cf971',
-            timestamp: 1550559560
+            sendBlockList: null,
+            accountAddress: 'vite_40ecd068e6919694d989866e3362c557984fd2637671219def',
+            amount: '1000',
+            blockType: 2,
+            data: 'dGVzdCBkYXRhIHRlc3QgZGF0YQ==',
+            difficulty: '10',
+            fee: '10',
+            fromBlockHash: '837fca7bc93835c635551971dc06abd440e2c590ec6f478847e3be392bb694bd',
+            hash: '1e25ac8dac6945afc84e3361d2d011046d9966603981fd8d1a78eeb32cef34f5',
+            height: '123',
+            logHash: '89a90cd8db754fb56fd41475cdc9abdc01c272d18b41cd5699a4e92c65623632',
+            nonce: 'dGVzdCBub25jZSB0ZXN0IG5vbmNl',
+            prevHash: 'e9a5907a2781708c2b6154b070aa543b788cdf50cc46701a36703952339b64f0',
+            publicKey: 'kgRm0vB5ErdlkUoKKtZ4wYOIoSINDadMjtP2um/I2UU=',
+            quota: '1234',
+            signature: null,
+            toAddress: 'vite_aa01c78289d51862026d93c98115e4b540b800a877aa98a76b',
+            tokenId: 'tti_5649544520544f4b454e6e40'
         };
+
         const hash = getBlockHash(accountBlock);
-        assert.equal(hash, accountBlock.hash);
+        assert.equal(accountBlock.hash, hash);
     });
-    it('test_hash_2', function () {
-        const accountBlock = {
-            accountAddress: 'vite_17db10f302569b79adbb31f7dd96a11f09f740459c2e0d8638',
-            blockType: 4,
-            difficulty: '67108864',
-            fromBlockHash: '2d920fc4b216e495ea95cdfd5c73a4e88fcad9770a08b017e92868c72cf6164c',
-            hash: '3bfe4a1e4093d3a7a0195d1042e65008d03d202b03aaa4e2a18cb10dbd03325b',
-            height: '5',
-            nonce: '8UwDEt0cBsE=',
-            prevHash: 'd855cbfe45c6b5f7eec3c42ba68735b11e580733ba04b6b813103e2e5917973a',
-            publicKey: 'kuzthX/o/WfqSQy+cA+TFFPIrJpaf6+74LAnQhUmoVM=',
-            signature: 'PpVUN7xpbBoHSUovJGry8FN/J3+TGXA/QadjKrbdKS4X4Y/2rJWvPBbXuvB3wrvgRSbYz+8048i8QXPHnHbnDA==',
-            snapshotHash: '68c550ce1fa1d22e4be03d0bfef6c1cae768531fdb781828062eea59d1f47220',
-            timestamp: 1550560184
-        };
-        const hash = getBlockHash(accountBlock);
-        assert.equal(hash, accountBlock.hash);
-    });
+    // it('test_hash_2', function () {
+    //     const accountBlock = {
+    //         accountAddress: 'vite_17db10f302569b79adbb31f7dd96a11f09f740459c2e0d8638',
+    //         blockType: 4,
+    //         difficulty: '67108864',
+    //         fromBlockHash: '2d920fc4b216e495ea95cdfd5c73a4e88fcad9770a08b017e92868c72cf6164c',
+    //         hash: '3bfe4a1e4093d3a7a0195d1042e65008d03d202b03aaa4e2a18cb10dbd03325b',
+    //         height: '5',
+    //         nonce: '8UwDEt0cBsE=',
+    //         prevHash: 'd855cbfe45c6b5f7eec3c42ba68735b11e580733ba04b6b813103e2e5917973a',
+    //         publicKey: 'kuzthX/o/WfqSQy+cA+TFFPIrJpaf6+74LAnQhUmoVM=',
+    //         signature: 'PpVUN7xpbBoHSUovJGry8FN/J3+TGXA/QadjKrbdKS4X4Y/2rJWvPBbXuvB3wrvgRSbYz+8048i8QXPHnHbnDA=='
+    //     };
+    //     const hash = getBlockHash(accountBlock);
+    //     assert.equal(hash, accountBlock.hash);
+    // });
 });
 
 
 function testAccBlockCase(reqAccBlock, func, validFunc) {
-    const time = new Date().getTime() / 1000;
-
     reqAccBlock.forEach(reqBlock => {
         const resBlock = func(reqBlock);
         validFunc && validFunc(resBlock);
@@ -376,8 +363,6 @@ function testAccBlockCase(reqAccBlock, func, validFunc) {
         it('required params', function () {
             assert.equal(resBlock.accountAddress, reqBlock.accountAddress);
             reqBlock.blockType && assert.equal(resBlock.blockType, reqBlock.blockType);
-            assert.equal(resBlock.snapshotHash, reqBlock.snapshotHash);
-            assert.equal((resBlock.timestamp - time) < 6000, true);
             reqBlock.nonce && assert.equal(resBlock.nonce, reqBlock.nonce);
         });
 

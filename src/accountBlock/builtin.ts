@@ -8,15 +8,12 @@ import { encodeParameters } from '~@vite/vitejs-abi';
 import { SignBlock, formatBlock } from '../type';
 
 
-export function formatAccountBlock({ blockType, fromBlockHash, accountAddress, message, data, height, prevHash, snapshotHash, tokenId = Vite_TokenId, fee, toAddress, amount, nonce }: formatBlock) {
+export function formatAccountBlock({ blockType, fromBlockHash, accountAddress, message, data, height, prevHash, tokenId = Vite_TokenId, fee, toAddress, amount, nonce }: formatBlock) {
     const _height = height ? new BigNumber(height).add(new BigNumber(1)).toString() : '1';
     const _prevHash = prevHash || Default_Hash;
-    const timestamp = new BigNumber(new Date().getTime()).div(new BigNumber(1000)).toNumber();
 
     const _accountBlock: SignBlock = {
-        timestamp,
         accountAddress,
-        snapshotHash,
         blockType,
         prevHash: _prevHash,
         height: _height
