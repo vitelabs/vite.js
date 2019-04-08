@@ -78,7 +78,6 @@ var ledger;
     ledger["getBlocksByHashInToken"] = "ledger_getBlocksByHashInToken";
     ledger["getSnapshotChainHeight"] = "ledger_getSnapshotChainHeight";
     ledger["getVmLogList"] = "ledger_getVmLogList";
-    ledger["getFittestSnapshotHash"] = "ledger_getFittestSnapshotHash";
 })(ledger = exports.ledger || (exports.ledger = {}));
 var consensusGroup;
 (function (consensusGroup) {

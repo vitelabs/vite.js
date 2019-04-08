@@ -2,16 +2,15 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var vitejs_utils_1 = require("./../utils");
 var inputsType_1 = require("./inputsType");
-var isArray = vitejs_utils_1.encoder.isArray, isObject = vitejs_utils_1.encoder.isObject, blake2bHex = vitejs_utils_1.encoder.blake2bHex;
 function encodeFunction(jsonFunction, mehtodName) {
-    var isArr = isArray(jsonFunction);
+    var isArr = vitejs_utils_1.isArray(jsonFunction);
     var _jsonFunction = isArr ? getFunction(jsonFunction, mehtodName) : jsonFunction;
     var result = jsonFunctionToString(_jsonFunction);
-    return blake2bHex(result, null, 32);
+    return vitejs_utils_1.blake2bHex(result, null, 32);
 }
 exports.encodeFunction = encodeFunction;
 function jsonFunctionToString(jsonFunction) {
-    var isObj = isObject(jsonFunction);
+    var isObj = vitejs_utils_1.isObject(jsonFunction);
     var isRightStr = /\w+\((\w\,\w)*|(\w*)\)/g;
     if (!isObj && !isRightStr.test(jsonFunction)) {
         throw new Error("[Error] Illegal jsonFunction. " + JSON.stringify(jsonFunction));
@@ -26,7 +25,7 @@ function jsonFunctionToString(jsonFunction) {
     return jsonFunction.name + "(" + types.join(',') + ")";
 }
 function getFunction(jsonFunction, mehtodName) {
-    if (!isArray(jsonFunction) && isObject(jsonFunction)) {
+    if (!vitejs_utils_1.isArray(jsonFunction) && vitejs_utils_1.isObject(jsonFunction)) {
         return jsonFunction;
     }
     if (jsonFunction.length !== 1 && !mehtodName) {

@@ -5,7 +5,6 @@ var vitejs_utils_1 = require("./../utils");
 var tools_1 = require("./tools");
 var vars_1 = require("./vars");
 var validated_1 = require("./validated");
-var checkParams = vitejs_utils_1.tools.checkParams;
 var n = vars_1.defaultScryptParams.n;
 var p = vars_1.defaultScryptParams.p;
 var r = vars_1.defaultScryptParams.r;
@@ -55,7 +54,7 @@ function decryptOldKeystore(keystore, pwd, selfScryptsy) {
 }
 var decryptFuncs = [decryptOldKeystore, decryptVersion1, decryptVersion2, decryptVersion3];
 function decrypt(keystore, pwd, selfScryptsy) {
-    var err = checkParams({ keystore: keystore, pwd: pwd }, ['keystore', 'pwd']);
+    var err = vitejs_utils_1.checkParams({ keystore: keystore, pwd: pwd }, ['keystore', 'pwd']);
     if (err) {
         return Promise.reject(err);
     }

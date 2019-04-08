@@ -37,10 +37,9 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var vitejs_constant_1 = require("./../constant");
 var vitejs_utils_1 = require("./../utils");
-var vitejs_error_1 = require("./../error");
 var vitejs_accountblock_1 = require("./../accountblock");
 var vitejs_abi_1 = require("./../abi");
-var checkParams = vitejs_utils_1.tools.checkParams, validNodeName = vitejs_utils_1.tools.validNodeName;
+var ledger = vitejs_constant_1.methods.ledger;
 var Tx = (function () {
     function Tx(client) {
         this._client = client;
@@ -58,9 +57,9 @@ var Tx = (function () {
         };
     }
     Tx.prototype.asyncAccountBlock = function (_a) {
-        var blockType = _a.blockType, fromBlockHash = _a.fromBlockHash, accountAddress = _a.accountAddress, message = _a.message, data = _a.data, height = _a.height, prevHash = _a.prevHash, snapshotHash = _a.snapshotHash, toAddress = _a.toAddress, _b = _a.tokenId, tokenId = _b === void 0 ? vitejs_constant_1.Vite_TokenId : _b, amount = _a.amount, fee = _a.fee;
+        var blockType = _a.blockType, fromBlockHash = _a.fromBlockHash, accountAddress = _a.accountAddress, message = _a.message, data = _a.data, height = _a.height, prevHash = _a.prevHash, toAddress = _a.toAddress, _b = _a.tokenId, tokenId = _b === void 0 ? vitejs_constant_1.Vite_TokenId : _b, amount = _a.amount, fee = _a.fee;
         return __awaiter(this, void 0, void 0, function () {
-            var reject, err, requests, req, latestBlock;
+            var reject, err, latestBlock;
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
@@ -76,62 +75,39 @@ var Tx = (function () {
                         if (err) {
                             return [2, reject(err)];
                         }
-                        requests = [];
-                        if (!height || !prevHash) {
-                            requests.push({
-                                methodName: 'ledger_getLatestBlock',
-                                params: [accountAddress]
-                            });
-                        }
-                        if (!snapshotHash) {
-                            requests.push({
-                                methodName: 'ledger_getFittestSnapshotHash',
-                                params: [accountAddress, fromBlockHash]
-                            });
-                        }
-                        if (!requests) {
-                            return [2, reject(vitejs_error_1.no)];
-                        }
-                        return [4, this._client.batch(requests)];
+                        return [4, this._client.request(ledger.getLatestBlock, accountAddress)];
                     case 1:
-                        req = _c.sent();
-                        requests.forEach(function (_r, index) {
-                            if (_r.methodName === 'ledger_getLatestBlock') {
-                                latestBlock = req[index].result;
-                                return;
-                            }
-                            snapshotHash = req[index].result;
-                        });
+                        latestBlock = _c.sent();
                         height = latestBlock && latestBlock.height ? latestBlock.height : '';
                         prevHash = latestBlock && latestBlock.hash ? latestBlock.hash : '';
-                        return [2, vitejs_accountblock_1.formatAccountBlock({ blockType: blockType, fromBlockHash: fromBlockHash, accountAddress: accountAddress, message: message, data: data, height: height, prevHash: prevHash, snapshotHash: snapshotHash, toAddress: toAddress, tokenId: tokenId, amount: amount, fee: fee })];
+                        return [2, vitejs_accountblock_1.formatAccountBlock({ blockType: blockType, fromBlockHash: fromBlockHash, accountAddress: accountAddress, message: message, data: data, height: height, prevHash: prevHash, toAddress: toAddress, tokenId: tokenId, amount: amount, fee: fee })];
                 }
             });
         });
     };
     Tx.prototype.createContract = function (_a, requestType) {
-        var accountAddress = _a.accountAddress, tokenId = _a.tokenId, amount = _a.amount, fee = _a.fee, hexCode = _a.hexCode, abi = _a.abi, params = _a.params, height = _a.height, prevHash = _a.prevHash, snapshotHash = _a.snapshotHash;
+        var accountAddress = _a.accountAddress, tokenId = _a.tokenId, amount = _a.amount, fee = _a.fee, hexCode = _a.hexCode, abi = _a.abi, params = _a.params, height = _a.height, prevHash = _a.prevHash;
         if (requestType === void 0) { requestType = 'async'; }
         return __awaiter(this, void 0, void 0, function () {
             var err, block, _b, toAddress;
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
-                        err = checkParams({ hexCode: hexCode, abi: abi, tokenId: tokenId, amount: amount, fee: fee }, ['hexCode', 'abi', 'tokenId', 'amount', 'fee']);
+                        err = vitejs_utils_1.checkParams({ hexCode: hexCode, abi: abi, tokenId: tokenId, amount: amount, fee: fee }, ['hexCode', 'abi', 'tokenId', 'amount', 'fee']);
                         if (err) {
                             return [2, Promise.reject(err)];
                         }
                         if (!(requestType === 'async')) return [3, 2];
-                        return [4, this.asyncAccountBlock({ blockType: 1, accountAddress: accountAddress, height: height, prevHash: prevHash, snapshotHash: snapshotHash, tokenId: tokenId, amount: amount, fee: fee })];
+                        return [4, this.asyncAccountBlock({ blockType: 1, accountAddress: accountAddress, height: height, prevHash: prevHash, tokenId: tokenId, amount: amount, fee: fee })];
                     case 1:
                         _b = _c.sent();
                         return [3, 3];
                     case 2:
-                        _b = vitejs_accountblock_1.getAccountBlock({ blockType: 1, accountAddress: accountAddress, height: height, prevHash: prevHash, snapshotHash: snapshotHash, tokenId: tokenId, amount: amount, fee: fee });
+                        _b = vitejs_accountblock_1.getAccountBlock({ blockType: 1, accountAddress: accountAddress, height: height, prevHash: prevHash, tokenId: tokenId, amount: amount, fee: fee });
                         _c.label = 3;
                     case 3:
                         block = _b;
-                        return [4, this._client.contract.getCreateContractToAddress(accountAddress, block.height, block.prevHash, block.snapshotHash)];
+                        return [4, this._client.contract.getCreateContractToAddress(accountAddress, block.height, block.prevHash)];
                     case 4:
                         toAddress = _c.sent();
                         block.toAddress = toAddress;
@@ -142,12 +118,12 @@ var Tx = (function () {
         });
     };
     Tx.prototype.callContract = function (_a, requestType) {
-        var accountAddress = _a.accountAddress, toAddress = _a.toAddress, _b = _a.tokenId, tokenId = _b === void 0 ? vitejs_constant_1.Vite_TokenId : _b, amount = _a.amount, abi = _a.abi, methodName = _a.methodName, _c = _a.params, params = _c === void 0 ? [] : _c, fee = _a.fee, height = _a.height, prevHash = _a.prevHash, snapshotHash = _a.snapshotHash;
+        var accountAddress = _a.accountAddress, toAddress = _a.toAddress, _b = _a.tokenId, tokenId = _b === void 0 ? vitejs_constant_1.Vite_TokenId : _b, amount = _a.amount, abi = _a.abi, methodName = _a.methodName, _c = _a.params, params = _c === void 0 ? [] : _c, fee = _a.fee, height = _a.height, prevHash = _a.prevHash;
         if (requestType === void 0) { requestType = 'async'; }
         return __awaiter(this, void 0, void 0, function () {
             var err, data;
             return __generator(this, function (_d) {
-                err = checkParams({ toAddress: toAddress, abi: abi }, ['toAddress', 'abi']);
+                err = vitejs_utils_1.checkParams({ toAddress: toAddress, abi: abi }, ['toAddress', 'abi']);
                 if (err) {
                     return [2, Promise.reject(err)];
                 }
@@ -160,7 +136,6 @@ var Tx = (function () {
                         height: height,
                         fee: fee,
                         prevHash: prevHash,
-                        snapshotHash: snapshotHash,
                         tokenId: tokenId,
                         amount: amount
                     })];
@@ -168,11 +143,11 @@ var Tx = (function () {
         });
     };
     Tx.prototype.asyncSendTx = function (_a) {
-        var accountAddress = _a.accountAddress, toAddress = _a.toAddress, tokenId = _a.tokenId, amount = _a.amount, message = _a.message, height = _a.height, prevHash = _a.prevHash, snapshotHash = _a.snapshotHash;
+        var accountAddress = _a.accountAddress, toAddress = _a.toAddress, tokenId = _a.tokenId, amount = _a.amount, message = _a.message, height = _a.height, prevHash = _a.prevHash;
         return __awaiter(this, void 0, void 0, function () {
             var err;
             return __generator(this, function (_b) {
-                err = checkParams({ toAddress: toAddress, tokenId: tokenId, amount: amount }, ['toAddress', 'tokenId', 'amount']);
+                err = vitejs_utils_1.checkParams({ toAddress: toAddress, tokenId: tokenId, amount: amount }, ['toAddress', 'tokenId', 'amount']);
                 if (err) {
                     return [2, Promise.reject(err)];
                 }
@@ -184,18 +159,17 @@ var Tx = (function () {
                         amount: amount,
                         message: message,
                         height: height,
-                        prevHash: prevHash,
-                        snapshotHash: snapshotHash
+                        prevHash: prevHash
                     })];
             });
         });
     };
     Tx.prototype.asyncReceiveTx = function (_a) {
-        var accountAddress = _a.accountAddress, fromBlockHash = _a.fromBlockHash, height = _a.height, prevHash = _a.prevHash, snapshotHash = _a.snapshotHash;
+        var accountAddress = _a.accountAddress, fromBlockHash = _a.fromBlockHash, height = _a.height, prevHash = _a.prevHash;
         return __awaiter(this, void 0, void 0, function () {
             var err;
             return __generator(this, function (_b) {
-                err = checkParams({ fromBlockHash: fromBlockHash }, ['fromBlockHash']);
+                err = vitejs_utils_1.checkParams({ fromBlockHash: fromBlockHash }, ['fromBlockHash']);
                 if (err) {
                     return [2, Promise.reject(err)];
                 }
@@ -204,21 +178,20 @@ var Tx = (function () {
                         fromBlockHash: fromBlockHash,
                         accountAddress: accountAddress,
                         height: height,
-                        prevHash: prevHash,
-                        snapshotHash: snapshotHash
+                        prevHash: prevHash
                     })];
             });
         });
     };
     Tx.prototype.SBPreg = function (_a, requestType) {
-        var accountAddress = _a.accountAddress, nodeName = _a.nodeName, toAddress = _a.toAddress, amount = _a.amount, tokenId = _a.tokenId, height = _a.height, prevHash = _a.prevHash, snapshotHash = _a.snapshotHash;
+        var accountAddress = _a.accountAddress, nodeName = _a.nodeName, toAddress = _a.toAddress, amount = _a.amount, tokenId = _a.tokenId, height = _a.height, prevHash = _a.prevHash;
         if (requestType === void 0) { requestType = 'async'; }
         return __awaiter(this, void 0, void 0, function () {
             var err;
             return __generator(this, function (_b) {
-                err = checkParams({ toAddress: toAddress, nodeName: nodeName, tokenId: tokenId, amount: amount, requestType: requestType }, ['toAddress', 'nodeName', 'tokenId', 'amount'], [{
+                err = vitejs_utils_1.checkParams({ toAddress: toAddress, nodeName: nodeName, tokenId: tokenId, amount: amount, requestType: requestType }, ['toAddress', 'nodeName', 'tokenId', 'amount'], [{
                         name: 'nodeName',
-                        func: validNodeName
+                        func: vitejs_utils_1.validNodeName
                     }, {
                         name: 'requestType',
                         func: validReqType
@@ -234,21 +207,20 @@ var Tx = (function () {
                         tokenId: tokenId,
                         amount: amount,
                         height: height,
-                        prevHash: prevHash,
-                        snapshotHash: snapshotHash
+                        prevHash: prevHash
                     }, requestType)];
             });
         });
     };
     Tx.prototype.updateReg = function (_a, requestType) {
-        var accountAddress = _a.accountAddress, nodeName = _a.nodeName, toAddress = _a.toAddress, tokenId = _a.tokenId, height = _a.height, prevHash = _a.prevHash, snapshotHash = _a.snapshotHash;
+        var accountAddress = _a.accountAddress, nodeName = _a.nodeName, toAddress = _a.toAddress, tokenId = _a.tokenId, height = _a.height, prevHash = _a.prevHash;
         if (requestType === void 0) { requestType = 'async'; }
         return __awaiter(this, void 0, void 0, function () {
             var err;
             return __generator(this, function (_b) {
-                err = checkParams({ toAddress: toAddress, nodeName: nodeName, tokenId: tokenId, requestType: requestType }, ['toAddress', 'nodeName', 'tokenId'], [{
+                err = vitejs_utils_1.checkParams({ toAddress: toAddress, nodeName: nodeName, tokenId: tokenId, requestType: requestType }, ['toAddress', 'nodeName', 'tokenId'], [{
                         name: 'nodeName',
-                        func: validNodeName
+                        func: vitejs_utils_1.validNodeName
                     }, {
                         name: 'requestType',
                         func: validReqType
@@ -263,21 +235,20 @@ var Tx = (function () {
                         params: [vitejs_constant_1.Snapshot_Gid, nodeName, toAddress],
                         tokenId: tokenId,
                         height: height,
-                        prevHash: prevHash,
-                        snapshotHash: snapshotHash
+                        prevHash: prevHash
                     }, requestType)];
             });
         });
     };
     Tx.prototype.revokeReg = function (_a, requestType) {
-        var accountAddress = _a.accountAddress, nodeName = _a.nodeName, tokenId = _a.tokenId, height = _a.height, prevHash = _a.prevHash, snapshotHash = _a.snapshotHash;
+        var accountAddress = _a.accountAddress, nodeName = _a.nodeName, tokenId = _a.tokenId, height = _a.height, prevHash = _a.prevHash;
         if (requestType === void 0) { requestType = 'async'; }
         return __awaiter(this, void 0, void 0, function () {
             var err;
             return __generator(this, function (_b) {
-                err = checkParams({ nodeName: nodeName, tokenId: tokenId, requestType: requestType }, ['nodeName', 'tokenId'], [{
+                err = vitejs_utils_1.checkParams({ nodeName: nodeName, tokenId: tokenId, requestType: requestType }, ['nodeName', 'tokenId'], [{
                         name: 'nodeName',
-                        func: validNodeName
+                        func: vitejs_utils_1.validNodeName
                     }, {
                         name: 'requestType',
                         func: validReqType
@@ -292,21 +263,20 @@ var Tx = (function () {
                         params: [vitejs_constant_1.Snapshot_Gid, nodeName],
                         tokenId: tokenId,
                         height: height,
-                        prevHash: prevHash,
-                        snapshotHash: snapshotHash
+                        prevHash: prevHash
                     }, requestType)];
             });
         });
     };
     Tx.prototype.retrieveReward = function (_a, requestType) {
-        var accountAddress = _a.accountAddress, nodeName = _a.nodeName, toAddress = _a.toAddress, tokenId = _a.tokenId, height = _a.height, prevHash = _a.prevHash, snapshotHash = _a.snapshotHash;
+        var accountAddress = _a.accountAddress, nodeName = _a.nodeName, toAddress = _a.toAddress, tokenId = _a.tokenId, height = _a.height, prevHash = _a.prevHash;
         if (requestType === void 0) { requestType = 'async'; }
         return __awaiter(this, void 0, void 0, function () {
             var err;
             return __generator(this, function (_b) {
-                err = checkParams({ toAddress: toAddress, nodeName: nodeName, tokenId: tokenId, requestType: requestType }, ['toAddress', 'nodeName', 'tokenId'], [{
+                err = vitejs_utils_1.checkParams({ toAddress: toAddress, nodeName: nodeName, tokenId: tokenId, requestType: requestType }, ['toAddress', 'nodeName', 'tokenId'], [{
                         name: 'nodeName',
-                        func: validNodeName
+                        func: vitejs_utils_1.validNodeName
                     }, {
                         name: 'requestType',
                         func: validReqType
@@ -321,21 +291,20 @@ var Tx = (function () {
                         params: [vitejs_constant_1.Snapshot_Gid, nodeName, toAddress],
                         tokenId: tokenId,
                         height: height,
-                        prevHash: prevHash,
-                        snapshotHash: snapshotHash
+                        prevHash: prevHash
                     }, requestType)];
             });
         });
     };
     Tx.prototype.voting = function (_a, requestType) {
-        var accountAddress = _a.accountAddress, nodeName = _a.nodeName, tokenId = _a.tokenId, height = _a.height, prevHash = _a.prevHash, snapshotHash = _a.snapshotHash;
+        var accountAddress = _a.accountAddress, nodeName = _a.nodeName, tokenId = _a.tokenId, height = _a.height, prevHash = _a.prevHash;
         if (requestType === void 0) { requestType = 'async'; }
         return __awaiter(this, void 0, void 0, function () {
             var err;
             return __generator(this, function (_b) {
-                err = checkParams({ nodeName: nodeName, tokenId: tokenId, requestType: requestType }, ['nodeName', 'tokenId'], [{
+                err = vitejs_utils_1.checkParams({ nodeName: nodeName, tokenId: tokenId, requestType: requestType }, ['nodeName', 'tokenId'], [{
                         name: 'nodeName',
-                        func: validNodeName
+                        func: vitejs_utils_1.validNodeName
                     }, {
                         name: 'requestType',
                         func: validReqType
@@ -350,19 +319,18 @@ var Tx = (function () {
                         params: [vitejs_constant_1.Snapshot_Gid, nodeName],
                         tokenId: tokenId,
                         height: height,
-                        prevHash: prevHash,
-                        snapshotHash: snapshotHash
+                        prevHash: prevHash
                     }, requestType)];
             });
         });
     };
     Tx.prototype.revokeVoting = function (_a, requestType) {
-        var accountAddress = _a.accountAddress, tokenId = _a.tokenId, height = _a.height, prevHash = _a.prevHash, snapshotHash = _a.snapshotHash;
+        var accountAddress = _a.accountAddress, tokenId = _a.tokenId, height = _a.height, prevHash = _a.prevHash;
         if (requestType === void 0) { requestType = 'async'; }
         return __awaiter(this, void 0, void 0, function () {
             var err;
             return __generator(this, function (_b) {
-                err = checkParams({ tokenId: tokenId, requestType: requestType }, ['tokenId'], [{
+                err = vitejs_utils_1.checkParams({ tokenId: tokenId, requestType: requestType }, ['tokenId'], [{
                         name: 'requestType',
                         func: validReqType
                     }]);
@@ -376,19 +344,18 @@ var Tx = (function () {
                         params: [vitejs_constant_1.Snapshot_Gid],
                         tokenId: tokenId,
                         height: height,
-                        prevHash: prevHash,
-                        snapshotHash: snapshotHash
+                        prevHash: prevHash
                     }, requestType)];
             });
         });
     };
     Tx.prototype.getQuota = function (_a, requestType) {
-        var accountAddress = _a.accountAddress, toAddress = _a.toAddress, tokenId = _a.tokenId, amount = _a.amount, height = _a.height, prevHash = _a.prevHash, snapshotHash = _a.snapshotHash;
+        var accountAddress = _a.accountAddress, toAddress = _a.toAddress, tokenId = _a.tokenId, amount = _a.amount, height = _a.height, prevHash = _a.prevHash;
         if (requestType === void 0) { requestType = 'async'; }
         return __awaiter(this, void 0, void 0, function () {
             var err;
             return __generator(this, function (_b) {
-                err = checkParams({ toAddress: toAddress, tokenId: tokenId, amount: amount, requestType: requestType }, ['toAddress', 'tokenId', 'amount'], [{
+                err = vitejs_utils_1.checkParams({ toAddress: toAddress, tokenId: tokenId, amount: amount, requestType: requestType }, ['toAddress', 'tokenId', 'amount'], [{
                         name: 'requestType',
                         func: validReqType
                     }]);
@@ -403,19 +370,18 @@ var Tx = (function () {
                         tokenId: tokenId,
                         height: height,
                         prevHash: prevHash,
-                        snapshotHash: snapshotHash,
                         amount: amount
                     }, requestType)];
             });
         });
     };
     Tx.prototype.withdrawalOfQuota = function (_a, requestType) {
-        var accountAddress = _a.accountAddress, toAddress = _a.toAddress, tokenId = _a.tokenId, amount = _a.amount, height = _a.height, prevHash = _a.prevHash, snapshotHash = _a.snapshotHash;
+        var accountAddress = _a.accountAddress, toAddress = _a.toAddress, tokenId = _a.tokenId, amount = _a.amount, height = _a.height, prevHash = _a.prevHash;
         if (requestType === void 0) { requestType = 'async'; }
         return __awaiter(this, void 0, void 0, function () {
             var err;
             return __generator(this, function (_b) {
-                err = checkParams({ toAddress: toAddress, tokenId: tokenId, amount: amount, requestType: requestType }, ['toAddress', 'tokenId', 'amount'], [{
+                err = vitejs_utils_1.checkParams({ toAddress: toAddress, tokenId: tokenId, amount: amount, requestType: requestType }, ['toAddress', 'tokenId', 'amount'], [{
                         name: 'requestType',
                         func: validReqType
                     }]);
@@ -429,21 +395,20 @@ var Tx = (function () {
                         accountAddress: accountAddress,
                         tokenId: tokenId,
                         height: height,
-                        prevHash: prevHash,
-                        snapshotHash: snapshotHash
+                        prevHash: prevHash
                     }, requestType)];
             });
         });
     };
     Tx.prototype.mintage = function (_a, requestType) {
-        var accountAddress = _a.accountAddress, _b = _a.feeType, feeType = _b === void 0 ? 'burn' : _b, tokenName = _a.tokenName, isReIssuable = _a.isReIssuable, maxSupply = _a.maxSupply, ownerBurnOnly = _a.ownerBurnOnly, totalSupply = _a.totalSupply, decimals = _a.decimals, tokenSymbol = _a.tokenSymbol, height = _a.height, prevHash = _a.prevHash, snapshotHash = _a.snapshotHash;
+        var accountAddress = _a.accountAddress, _b = _a.feeType, feeType = _b === void 0 ? 'burn' : _b, tokenName = _a.tokenName, isReIssuable = _a.isReIssuable, maxSupply = _a.maxSupply, ownerBurnOnly = _a.ownerBurnOnly, totalSupply = _a.totalSupply, decimals = _a.decimals, tokenSymbol = _a.tokenSymbol, height = _a.height, prevHash = _a.prevHash;
         if (requestType === void 0) { requestType = 'async'; }
         return __awaiter(this, void 0, void 0, function () {
             var err, spendAmount, spendFee, requestBlock, block, _c, tokenId, data;
             return __generator(this, function (_d) {
                 switch (_d.label) {
                     case 0:
-                        err = checkParams({ tokenName: tokenName, isReIssuable: isReIssuable, maxSupply: maxSupply, ownerBurnOnly: ownerBurnOnly, totalSupply: totalSupply, decimals: decimals, tokenSymbol: tokenSymbol, requestType: requestType, feeType: feeType }, ['tokenName', 'isReIssuable', 'maxSupply', 'ownerBurnOnly', 'totalSupply', 'decimals', 'tokenSymbol'], [{ name: 'requestType', func: validReqType },
+                        err = vitejs_utils_1.checkParams({ tokenName: tokenName, isReIssuable: isReIssuable, maxSupply: maxSupply, ownerBurnOnly: ownerBurnOnly, totalSupply: totalSupply, decimals: decimals, tokenSymbol: tokenSymbol, requestType: requestType, feeType: feeType }, ['tokenName', 'isReIssuable', 'maxSupply', 'ownerBurnOnly', 'totalSupply', 'decimals', 'tokenSymbol'], [{ name: 'requestType', func: validReqType },
                             {
                                 name: 'feeType',
                                 func: function (type) { return type === 'burn' || type === 'stake'; }
@@ -455,7 +420,7 @@ var Tx = (function () {
                         spendAmount = '100000000000000000000000';
                         spendFee = '1000000000000000000000';
                         feeType = feeType === 'burn' ? 'fee' : 'amount';
-                        requestBlock = { blockType: 2, toAddress: vitejs_constant_1.Mintage_Addr, accountAddress: accountAddress, height: height, prevHash: prevHash, snapshotHash: snapshotHash };
+                        requestBlock = { blockType: 2, toAddress: vitejs_constant_1.Mintage_Addr, accountAddress: accountAddress, height: height, prevHash: prevHash };
                         requestBlock[feeType] = feeType === 'fee' ? spendFee : spendAmount;
                         if (!(requestType === 'async')) return [3, 2];
                         return [4, this.asyncAccountBlock(requestBlock)];
@@ -470,8 +435,7 @@ var Tx = (function () {
                         return [4, this._client.mintage.newTokenId({
                                 selfAddr: accountAddress,
                                 height: block.height,
-                                prevHash: block.prevHash,
-                                snapshotHash: block.snapshotHash
+                                prevHash: block.prevHash
                             })];
                     case 4:
                         tokenId = _d.sent();
@@ -483,12 +447,12 @@ var Tx = (function () {
         });
     };
     Tx.prototype.mintageCancelPledge = function (_a, requestType) {
-        var accountAddress = _a.accountAddress, tokenId = _a.tokenId, height = _a.height, prevHash = _a.prevHash, snapshotHash = _a.snapshotHash;
+        var accountAddress = _a.accountAddress, tokenId = _a.tokenId, height = _a.height, prevHash = _a.prevHash;
         if (requestType === void 0) { requestType = 'async'; }
         return __awaiter(this, void 0, void 0, function () {
             var err;
             return __generator(this, function (_b) {
-                err = checkParams({ tokenId: tokenId }, ['tokenId'], [{ name: 'requestType', func: validReqType }]);
+                err = vitejs_utils_1.checkParams({ tokenId: tokenId }, ['tokenId'], [{ name: 'requestType', func: validReqType }]);
                 if (err) {
                     return [2, Promise.reject(err)];
                 }
@@ -498,19 +462,18 @@ var Tx = (function () {
                         toAddress: vitejs_constant_1.Mintage_Addr,
                         accountAddress: accountAddress,
                         height: height,
-                        prevHash: prevHash,
-                        snapshotHash: snapshotHash
+                        prevHash: prevHash
                     }, requestType)];
             });
         });
     };
     Tx.prototype.mintageIssue = function (_a, requestType) {
-        var accountAddress = _a.accountAddress, tokenId = _a.tokenId, amount = _a.amount, beneficial = _a.beneficial, height = _a.height, prevHash = _a.prevHash, snapshotHash = _a.snapshotHash;
+        var accountAddress = _a.accountAddress, tokenId = _a.tokenId, amount = _a.amount, beneficial = _a.beneficial, height = _a.height, prevHash = _a.prevHash;
         if (requestType === void 0) { requestType = 'async'; }
         return __awaiter(this, void 0, void 0, function () {
             var err;
             return __generator(this, function (_b) {
-                err = checkParams({ tokenId: tokenId, amount: amount, beneficial: beneficial, requestType: requestType }, ['tokenId', 'amount', 'beneficial'], [{
+                err = vitejs_utils_1.checkParams({ tokenId: tokenId, amount: amount, beneficial: beneficial, requestType: requestType }, ['tokenId', 'amount', 'beneficial'], [{
                         name: 'requestType',
                         func: validReqType
                     }]);
@@ -524,19 +487,18 @@ var Tx = (function () {
                         accountAddress: accountAddress,
                         amount: '0',
                         height: height,
-                        prevHash: prevHash,
-                        snapshotHash: snapshotHash
+                        prevHash: prevHash
                     }, requestType)];
             });
         });
     };
     Tx.prototype.mintageBurn = function (_a, requestType) {
-        var accountAddress = _a.accountAddress, tokenId = _a.tokenId, amount = _a.amount, height = _a.height, prevHash = _a.prevHash, snapshotHash = _a.snapshotHash;
+        var accountAddress = _a.accountAddress, tokenId = _a.tokenId, amount = _a.amount, height = _a.height, prevHash = _a.prevHash;
         if (requestType === void 0) { requestType = 'async'; }
         return __awaiter(this, void 0, void 0, function () {
             var err;
             return __generator(this, function (_b) {
-                err = checkParams({ amount: amount, requestType: requestType }, ['amount'], [{ name: 'requestType', func: validReqType }]);
+                err = vitejs_utils_1.checkParams({ amount: amount, requestType: requestType }, ['amount'], [{ name: 'requestType', func: validReqType }]);
                 if (err) {
                     return [2, Promise.reject(err)];
                 }
@@ -548,14 +510,13 @@ var Tx = (function () {
                         tokenId: tokenId,
                         accountAddress: accountAddress,
                         height: height,
-                        prevHash: prevHash,
-                        snapshotHash: snapshotHash
+                        prevHash: prevHash
                     }, requestType)];
             });
         });
     };
     Tx.prototype.changeTokenType = function (_a, requestType) {
-        var accountAddress = _a.accountAddress, tokenId = _a.tokenId, height = _a.height, prevHash = _a.prevHash, snapshotHash = _a.snapshotHash;
+        var accountAddress = _a.accountAddress, tokenId = _a.tokenId, height = _a.height, prevHash = _a.prevHash;
         if (requestType === void 0) { requestType = 'async'; }
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_b) {
@@ -565,19 +526,18 @@ var Tx = (function () {
                         toAddress: vitejs_constant_1.Mintage_Addr,
                         accountAddress: accountAddress,
                         height: height,
-                        prevHash: prevHash,
-                        snapshotHash: snapshotHash
+                        prevHash: prevHash
                     }, requestType)];
             });
         });
     };
     Tx.prototype.changeTransferOwner = function (_a, requestType) {
-        var accountAddress = _a.accountAddress, ownerAddress = _a.ownerAddress, tokenId = _a.tokenId, height = _a.height, prevHash = _a.prevHash, snapshotHash = _a.snapshotHash;
+        var accountAddress = _a.accountAddress, ownerAddress = _a.ownerAddress, tokenId = _a.tokenId, height = _a.height, prevHash = _a.prevHash;
         if (requestType === void 0) { requestType = 'async'; }
         return __awaiter(this, void 0, void 0, function () {
             var err;
             return __generator(this, function (_b) {
-                err = checkParams({ tokenId: tokenId, ownerAddress: ownerAddress, requestType: requestType }, ['tokenId', 'ownerAddress'], [{
+                err = vitejs_utils_1.checkParams({ tokenId: tokenId, ownerAddress: ownerAddress, requestType: requestType }, ['tokenId', 'ownerAddress'], [{
                         name: 'requestType',
                         func: validReqType
                     }]);
@@ -590,8 +550,7 @@ var Tx = (function () {
                         params: [tokenId, ownerAddress],
                         accountAddress: accountAddress,
                         height: height,
-                        prevHash: prevHash,
-                        snapshotHash: snapshotHash
+                        prevHash: prevHash
                     }, requestType)];
             });
         });

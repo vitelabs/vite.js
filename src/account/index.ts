@@ -1,12 +1,11 @@
 import * as privToAddr from '~@vite/vitejs-privtoaddr';
 import { paramsMissing } from '~@vite/vitejs-error';
-import { tools, ed25519 } from '~@vite/vitejs-utils';
+import { checkParams, ed25519 } from '~@vite/vitejs-utils';
 import client from '~@vite/vitejs-client';
 import addrAccount from '~@vite/vitejs-addraccount';
 
 import { Hex, SBPregBlock, block8, block7, revokeVotingBlock, quotaBlock, sendTxBlock, receiveTxBlock } from '../type';
 
-const { checkParams } = tools;
 const { sign, getPublicKey } = ed25519;
 
 
@@ -154,7 +153,7 @@ class Account extends addrAccount {
         }]);
 
         accountBlock.accountAddress = this.address;
-        return this._client.buildinLedger.sendRawTx(accountBlock, this.privateKey);
+        return this._client.sendRawTx(accountBlock, this.privateKey);
     }
 
     async sendTx({ toAddress, tokenId, amount, message }) {
@@ -166,7 +165,7 @@ class Account extends addrAccount {
             message
         };
         const _sendTxBlock = await this._client.buildinTxBlock.asyncSendTx(reqBlock);
-        return this._client.buildinLedger.sendRawTx(_sendTxBlock, this.privateKey);
+        return this._client.sendRawTx(_sendTxBlock, this.privateKey);
     }
 
     async receiveTx({ fromBlockHash }) {
@@ -175,7 +174,7 @@ class Account extends addrAccount {
             fromBlockHash
         };
         const _receiveTxBlock = await this._client.buildinTxBlock.asyncReceiveTx(reqBlock);
-        return this._client.buildinLedger.sendRawTx(_receiveTxBlock, this.privateKey);
+        return this._client.sendRawTx(_receiveTxBlock, this.privateKey);
     }
 
     async SBPreg({ nodeName, toAddress, amount, tokenId }) {
@@ -187,7 +186,7 @@ class Account extends addrAccount {
             tokenId
         };
         const _SBPregBlock = await this._client.buildinTxBlock.SBPreg(reqBlock);
-        return this._client.buildinLedger.sendRawTx(_SBPregBlock, this.privateKey);
+        return this._client.sendRawTx(_SBPregBlock, this.privateKey);
     }
 
     async updateReg({ nodeName, toAddress, tokenId }) {
@@ -198,7 +197,7 @@ class Account extends addrAccount {
             tokenId
         };
         const _updateRegBlock = await this._client.buildinTxBlock.updateReg(reqBlock);
-        return this._client.buildinLedger.sendRawTx(_updateRegBlock, this.privateKey);
+        return this._client.sendRawTx(_updateRegBlock, this.privateKey);
     }
 
     async revokeReg({ nodeName, tokenId }) {
@@ -208,7 +207,7 @@ class Account extends addrAccount {
             tokenId
         };
         const _revokeRegBlock = await this._client.buildinTxBlock.revokeReg(reqBlock);
-        return this._client.buildinLedger.sendRawTx(_revokeRegBlock, this.privateKey);
+        return this._client.sendRawTx(_revokeRegBlock, this.privateKey);
     }
 
     async retrieveReward({ nodeName, toAddress, tokenId }) {
@@ -219,7 +218,7 @@ class Account extends addrAccount {
             tokenId
         };
         const _retrieveRewardBlock = await this._client.buildinTxBlock.retrieveReward(reqBlock);
-        return this._client.buildinLedger.sendRawTx(_retrieveRewardBlock, this.privateKey);
+        return this._client.sendRawTx(_retrieveRewardBlock, this.privateKey);
     }
 
     async voting({ nodeName, tokenId }) {
@@ -229,7 +228,7 @@ class Account extends addrAccount {
             tokenId
         };
         const _votingBlock = await this._client.buildinTxBlock.voting(reqBlock);
-        return this._client.buildinLedger.sendRawTx(_votingBlock, this.privateKey);
+        return this._client.sendRawTx(_votingBlock, this.privateKey);
     }
 
     async revokeVoting({ tokenId }) {
@@ -238,7 +237,7 @@ class Account extends addrAccount {
             tokenId
         };
         const _revokeVotingBlock = await this._client.buildinTxBlock.revokeVoting(reqBlock);
-        return this._client.buildinLedger.sendRawTx(_revokeVotingBlock, this.privateKey);
+        return this._client.sendRawTx(_revokeVotingBlock, this.privateKey);
     }
 
     async getQuota({ toAddress, tokenId, amount }) {
@@ -249,7 +248,7 @@ class Account extends addrAccount {
             amount
         };
         const _getQuotaBlock = await this._client.buildinTxBlock.getQuota(reqBlock);
-        return this._client.buildinLedger.sendRawTx(_getQuotaBlock, this.privateKey);
+        return this._client.sendRawTx(_getQuotaBlock, this.privateKey);
     }
 
     async withdrawalOfQuota({ toAddress, tokenId, amount }) {
@@ -260,7 +259,7 @@ class Account extends addrAccount {
             amount
         };
         const _withdrawalOfQuotaBlock = await this._client.buildinTxBlock.withdrawalOfQuota(reqBlock);
-        return this._client.buildinLedger.sendRawTx(_withdrawalOfQuotaBlock, this.privateKey);
+        return this._client.sendRawTx(_withdrawalOfQuotaBlock, this.privateKey);
     }
 
     async createContract({ hexCode, abi, params, tokenId, amount, fee = '10000000000000000000' }) {
@@ -273,7 +272,7 @@ class Account extends addrAccount {
             amount,
             fee
         });
-        return this._client.buildinLedger.sendRawTx(_createContractBlock, this.privateKey);
+        return this._client.sendRawTx(_createContractBlock, this.privateKey);
     }
 
     async callContract({ toAddress, abi, params, methodName, tokenId, amount }) {
@@ -286,7 +285,7 @@ class Account extends addrAccount {
             tokenId,
             amount
         });
-        return this._client.buildinLedger.sendRawTx(_callContractBlock, this.privateKey);
+        return this._client.sendRawTx(_callContractBlock, this.privateKey);
     }
 
     async mintage({ feeType = 'burn', tokenName, isReIssuable, maxSupply, ownerBurnOnly, totalSupply, decimals, tokenSymbol }) {
@@ -301,7 +300,7 @@ class Account extends addrAccount {
             decimals,
             tokenSymbol
         });
-        return this._client.buildinLedger.sendRawTx(_callContractBlock, this.privateKey);
+        return this._client.sendRawTx(_callContractBlock, this.privateKey);
     }
 
     async mintageCancelPledge({ tokenId }) {
@@ -309,7 +308,7 @@ class Account extends addrAccount {
             accountAddress: this.address,
             tokenId
         });
-        return this._client.buildinLedger.sendRawTx(_callContractBlock, this.privateKey);
+        return this._client.sendRawTx(_callContractBlock, this.privateKey);
     }
 
     async mintageIssue({ tokenId, amount, beneficial }) {
@@ -319,7 +318,7 @@ class Account extends addrAccount {
             amount,
             beneficial
         });
-        return this._client.buildinLedger.sendRawTx(_callContractBlock, this.privateKey);
+        return this._client.sendRawTx(_callContractBlock, this.privateKey);
     }
 
     async mintageBurn({ amount, tokenId }) {
@@ -328,7 +327,7 @@ class Account extends addrAccount {
             amount,
             tokenId
         });
-        return this._client.buildinLedger.sendRawTx(_callContractBlock, this.privateKey);
+        return this._client.sendRawTx(_callContractBlock, this.privateKey);
     }
 
     async changeTokenType({ tokenId }) {
@@ -336,7 +335,7 @@ class Account extends addrAccount {
             accountAddress: this.address,
             tokenId
         });
-        return this._client.buildinLedger.sendRawTx(_callContractBlock, this.privateKey);
+        return this._client.sendRawTx(_callContractBlock, this.privateKey);
     }
 
     async changeTransferOwner({ ownerAddress, tokenId }) {
@@ -345,7 +344,7 @@ class Account extends addrAccount {
             tokenId,
             ownerAddress
         });
-        return this._client.buildinLedger.sendRawTx(_callContractBlock, this.privateKey);
+        return this._client.sendRawTx(_callContractBlock, this.privateKey);
     }
 }
 

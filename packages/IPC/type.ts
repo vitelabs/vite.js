@@ -37,8 +37,6 @@ export declare type SignBlock = {
     accountAddress: Address;
     blockType: BlockType;
     prevHash: Hex;
-    snapshotHash: Hex;
-    timestamp: Int64;
     height: Uint64;
     fee?: BigInt;
     fromBlockHash?: Hex;
@@ -48,14 +46,13 @@ export declare type SignBlock = {
     data?: Base64;
     nonce?: Base64;
     logHash?: Hex;
+    sendBlockList?: Array<any>;
 }
 
 export declare type AccountBlock = {
     accountAddress: Address;
     blockType: BlockType;
     prevHash: Hex;
-    snapshotHash: Hex;
-    timestamp: Int64;
     height: Uint64;
     hash: Hex;
     signature: Base64;
@@ -80,7 +77,6 @@ export declare type SBPregBlock = {
     Gid?: string;
     prevHash?: Hex;
     height?: Uint64;
-    snapshotHash?: Hex;
 };
 
 export declare type block8 = {
@@ -92,7 +88,6 @@ export declare type block8 = {
     Gid?: string;
     prevHash?: Hex;
     height?: Uint64;
-    snapshotHash?: Hex;
 }
 
 export declare type block7 = {
@@ -103,7 +98,6 @@ export declare type block7 = {
     Gid?: string;
     prevHash?: Hex;
     height?: Uint64;
-    snapshotHash?: Hex;
 }
 
 export declare type revokeVotingBlock = {
@@ -113,7 +107,6 @@ export declare type revokeVotingBlock = {
     Gid?: string;
     prevHash?: Hex;
     height?: Uint64;
-    snapshotHash?: Hex;
 }
 
 export declare type quotaBlock = {
@@ -124,7 +117,6 @@ export declare type quotaBlock = {
 
     prevHash?: Hex;
     height?: Uint64;
-    snapshotHash?: Hex;
 }
 
 
@@ -137,7 +129,6 @@ export declare type sendTxBlock = {
     message?: string;
     prevHash?: Hex;
     height?: Uint64;
-    snapshotHash?: Hex;
 }
 
 export declare type receiveTxBlock = {
@@ -146,13 +137,11 @@ export declare type receiveTxBlock = {
 
     prevHash?: Hex;
     height?: Uint64;
-    snapshotHash?: Hex;
 }
 
 export declare type syncFormatBlock = {
     blockType: BlockType;
     accountAddress: Address;
-    snapshotHash: Hex;
     prevHash?: Hex;
     height?: Uint64;
     fromBlockHash?: Hex;
@@ -177,7 +166,6 @@ export declare type formatBlock = {
     fee?: BigInt;
     prevHash?: Hex;
     height?: Uint64;
-    snapshotHash?: Hex;
     nonce?: Base64;
 }
 export declare type createContractBlock = {
@@ -190,7 +178,6 @@ export declare type createContractBlock = {
     params?: string;
     prevHash?: Hex;
     height?: Uint64;
-    snapshotHash?: Hex;
 }
 
 export declare type callContractBlock = {
@@ -204,7 +191,6 @@ export declare type callContractBlock = {
     params?: Array<string>;
     prevHash?: Hex;
     height?: Uint64;
-    snapshotHash?: Hex;
 }
 
 
@@ -220,7 +206,6 @@ export declare type mintageBlock = {
     tokenSymbol: string;
     prevHash?: Hex;
     height?: Uint64;
-    snapshotHash?: Hex;
 }
 
 export declare type mintageIssueBlock = {
@@ -230,7 +215,6 @@ export declare type mintageIssueBlock = {
     beneficial: Address;
     prevHash?: Hex;
     height?: Uint64;
-    snapshotHash?: Hex;
 }
 
 export declare type mintageBurnBlock = {
@@ -239,7 +223,6 @@ export declare type mintageBurnBlock = {
     tokenId: TokenId;
     prevHash?: Hex;
     height?: Uint64;
-    snapshotHash?: Hex;
 }
 
 export declare type changeTokenTypeBlock = {
@@ -247,7 +230,6 @@ export declare type changeTokenTypeBlock = {
     tokenId: TokenId;
     prevHash?: Hex;
     height?: Uint64;
-    snapshotHash?: Hex;
 }
 
 export declare type changeTransferOwnerBlock = {
@@ -256,7 +238,6 @@ export declare type changeTransferOwnerBlock = {
     ownerAddress: Address;
     prevHash?: Hex;
     height?: Uint64;
-    snapshotHash?: Hex;
 }
 
 export declare type AddrObj = {
@@ -315,8 +296,7 @@ export enum ledger {
     'getBlocksByHash' = 'ledger_getBlocksByHash',
     'getBlocksByHashInToken' = 'ledger_getBlocksByHashInToken',
     'getSnapshotChainHeight' = 'ledger_getSnapshotChainHeight',
-    'getVmLogList' = 'ledger_getVmLogList',
-    'getFittestSnapshotHash' = 'ledger_getFittestSnapshotHash'
+    'getVmLogList' = 'ledger_getVmLogList'
 }
 
 export enum consensusGroup {
@@ -461,7 +441,6 @@ export type ledgerFunc = {
     getBlocksByHashInToken: Function;
     getBlocksByHash: Function;
     getSnapshotChainHeight: Function;
-    getFittestSnapshotHash: Function;
     getVmLogList: Function;
 }
 export type txFunc = {

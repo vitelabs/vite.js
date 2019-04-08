@@ -3,36 +3,34 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var blake = require('blakejs/blake2b');
 var vitejs_utils_1 = require("./../utils");
 var vars_1 = require("./vars");
-var checkParams = vitejs_utils_1.tools.checkParams;
 var keyPair = vitejs_utils_1.ed25519.keyPair, getPublicKey = vitejs_utils_1.ed25519.getPublicKey;
-var bytesToHex = vitejs_utils_1.encoder.bytesToHex, hexToBytes = vitejs_utils_1.encoder.hexToBytes;
 function newHexAddr(priv) {
     var _a = newAddr(priv), addr = _a.addr, privKey = _a.privKey;
     var checkSum = getAddrCheckSum(addr);
-    var _addr = bytesToHex(addr);
+    var _addr = vitejs_utils_1.bytesToHex(addr);
     var _pubKey = getPublicKey(privKey);
     return {
         addr: _addr,
         pubKey: _pubKey,
-        privKey: bytesToHex(privKey),
+        privKey: vitejs_utils_1.bytesToHex(privKey),
         hexAddr: vars_1.ADDR_PRE + _addr + checkSum
     };
 }
 exports.newHexAddr = newHexAddr;
 function newHexAddrFromPub(pubkey) {
-    var err = checkParams({ pubkey: pubkey }, ['pubkey']);
+    var err = vitejs_utils_1.checkParams({ pubkey: pubkey }, ['pubkey']);
     if (err) {
         console.error(new Error(err.message));
         return null;
     }
     var addr = newAddrFromPub(pubkey);
     var checkSum = getAddrCheckSum(addr);
-    var _addr = bytesToHex(addr);
+    var _addr = vitejs_utils_1.bytesToHex(addr);
     return vars_1.ADDR_PRE + _addr + checkSum;
 }
 exports.newHexAddrFromPub = newHexAddrFromPub;
 function getAddrFromHexAddr(hexAddr) {
-    var err = checkParams({ hexAddr: hexAddr }, ['hexAddr'], [{
+    var err = vitejs_utils_1.checkParams({ hexAddr: hexAddr }, ['hexAddr'], [{
             name: 'hexAddr',
             func: isValidHexAddr
         }]);
@@ -44,7 +42,7 @@ function getAddrFromHexAddr(hexAddr) {
 }
 exports.getAddrFromHexAddr = getAddrFromHexAddr;
 function getHexAddrFromAddr(realAddr) {
-    var err = checkParams({ realAddr: realAddr }, ['realAddr'], [{
+    var err = vitejs_utils_1.checkParams({ realAddr: realAddr }, ['realAddr'], [{
             name: 'realAddr',
             func: function (_realAddr) { return typeof _realAddr === 'string' && /^[0-9a-fA-F]+$/.test(_realAddr) && _realAddr.length === vars_1.ADDR_SIZE * 2; }
         }]);
@@ -61,7 +59,7 @@ function isValidHexAddr(hexAddr) {
         return false;
     }
     var pre = getRealAddr(hexAddr);
-    var addr = hexToBytes(pre);
+    var addr = vitejs_utils_1.hexToBytes(pre);
     var currentChecksum = hexAddr.slice(vars_1.ADDR_PRE.length + vars_1.ADDR_SIZE * 2);
     var checkSum = getAddrCheckSum(addr);
     return currentChecksum === checkSum;

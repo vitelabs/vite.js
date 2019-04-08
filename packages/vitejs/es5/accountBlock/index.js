@@ -8,11 +8,9 @@ var vitejs_constant_1 = require("./../constant");
 var builtin_1 = require("./builtin");
 var type_1 = require("../type");
 var getPublicKey = vitejs_utils_1.ed25519.getPublicKey, sign = vitejs_utils_1.ed25519.sign;
-var bytesToHex = vitejs_utils_1.encoder.bytesToHex, blake2b = vitejs_utils_1.encoder.blake2b;
-var checkParams = vitejs_utils_1.tools.checkParams, getRawTokenid = vitejs_utils_1.tools.getRawTokenid;
 var txType = enumTxType();
 function getAccountBlock(_a) {
-    var blockType = _a.blockType, fromBlockHash = _a.fromBlockHash, accountAddress = _a.accountAddress, message = _a.message, data = _a.data, height = _a.height, prevHash = _a.prevHash, snapshotHash = _a.snapshotHash, toAddress = _a.toAddress, tokenId = _a.tokenId, amount = _a.amount, nonce = _a.nonce;
+    var blockType = _a.blockType, fromBlockHash = _a.fromBlockHash, accountAddress = _a.accountAddress, message = _a.message, data = _a.data, height = _a.height, prevHash = _a.prevHash, toAddress = _a.toAddress, tokenId = _a.tokenId, amount = _a.amount, nonce = _a.nonce;
     var reject = function (error, errMsg) {
         if (errMsg === void 0) { errMsg = ''; }
         var message = (error.message || '') + " " + errMsg;
@@ -23,21 +21,18 @@ function getAccountBlock(_a) {
     if (err) {
         return reject(err);
     }
-    if (!snapshotHash) {
-        return reject(vitejs_error_1.paramsMissing, 'SnapshotHash.');
-    }
     if (!height && prevHash) {
         return reject(vitejs_error_1.paramsFormat, 'No height but prevHash.');
     }
     if (height && !prevHash) {
         return reject(vitejs_error_1.paramsFormat, 'No prevHash but height.');
     }
-    return exports.formatAccountBlock({ blockType: blockType, fromBlockHash: fromBlockHash, accountAddress: accountAddress, message: message, data: data, height: height, prevHash: prevHash, snapshotHash: snapshotHash, toAddress: toAddress, tokenId: tokenId, amount: amount, nonce: nonce });
+    return exports.formatAccountBlock({ blockType: blockType, fromBlockHash: fromBlockHash, accountAddress: accountAddress, message: message, data: data, height: height, prevHash: prevHash, toAddress: toAddress, tokenId: tokenId, amount: amount, nonce: nonce });
 }
 exports.getAccountBlock = getAccountBlock;
 function getSendTxBlock(_a) {
-    var accountAddress = _a.accountAddress, toAddress = _a.toAddress, tokenId = _a.tokenId, amount = _a.amount, message = _a.message, height = _a.height, prevHash = _a.prevHash, snapshotHash = _a.snapshotHash;
-    var err = checkParams({ toAddress: toAddress, tokenId: tokenId, amount: amount }, ['toAddress', 'tokenId', 'amount']);
+    var accountAddress = _a.accountAddress, toAddress = _a.toAddress, tokenId = _a.tokenId, amount = _a.amount, message = _a.message, height = _a.height, prevHash = _a.prevHash;
+    var err = vitejs_utils_1.checkParams({ toAddress: toAddress, tokenId: tokenId, amount: amount }, ['toAddress', 'tokenId', 'amount']);
     if (err) {
         console.error(new Error(err.message));
         return null;
@@ -50,14 +45,13 @@ function getSendTxBlock(_a) {
         amount: amount,
         message: message,
         height: height,
-        prevHash: prevHash,
-        snapshotHash: snapshotHash
+        prevHash: prevHash
     });
 }
 exports.getSendTxBlock = getSendTxBlock;
 function getReceiveTxBlock(_a) {
-    var accountAddress = _a.accountAddress, fromBlockHash = _a.fromBlockHash, height = _a.height, prevHash = _a.prevHash, snapshotHash = _a.snapshotHash;
-    var err = checkParams({ fromBlockHash: fromBlockHash }, ['fromBlockHash']);
+    var accountAddress = _a.accountAddress, fromBlockHash = _a.fromBlockHash, height = _a.height, prevHash = _a.prevHash;
+    var err = vitejs_utils_1.checkParams({ fromBlockHash: fromBlockHash }, ['fromBlockHash']);
     if (err) {
         console.error(new Error(err.message));
         return null;
@@ -67,8 +61,7 @@ function getReceiveTxBlock(_a) {
         fromBlockHash: fromBlockHash,
         accountAddress: accountAddress,
         height: height,
-        prevHash: prevHash,
-        snapshotHash: snapshotHash
+        prevHash: prevHash
     });
 }
 exports.getReceiveTxBlock = getReceiveTxBlock;
@@ -89,29 +82,29 @@ function getBlockHash(accountBlock) {
     var blockType = Buffer.from([accountBlock.blockType]).toString('hex');
     source += blockType;
     source += accountBlock.prevHash || vitejs_constant_1.Default_Hash;
-    source += accountBlock.height ? bytesToHex(new BigNumber(accountBlock.height).toArray('big', 8)) : '';
+    source += accountBlock.height ? vitejs_utils_1.bytesToHex(new BigNumber(accountBlock.height).toArray('big', 8)) : '';
     source += accountBlock.accountAddress ? vitejs_privtoaddr_1.getAddrFromHexAddr(accountBlock.accountAddress) : '';
     if (accountBlock.toAddress) {
         source += vitejs_privtoaddr_1.getAddrFromHexAddr(accountBlock.toAddress);
-        var amount = new BigNumber(accountBlock.amount);
-        source += accountBlock.amount && !amount.isZero() ? bytesToHex(amount.toArray('big')) : '';
-        source += accountBlock.tokenId ? getRawTokenid(accountBlock.tokenId) || '' : '';
+        source += getNumberHex(accountBlock.amount);
+        source += accountBlock.tokenId ? vitejs_utils_1.getRawTokenId(accountBlock.tokenId) || '' : '';
     }
     else {
         source += accountBlock.fromBlockHash || vitejs_constant_1.Default_Hash;
     }
-    var fee = new BigNumber(accountBlock.fee);
-    source += accountBlock.fee && !fee.isZero() ? bytesToHex(fee.toArray('big')) : '';
-    source += accountBlock.snapshotHash || '';
     if (accountBlock.data) {
-        var hex = Buffer.from(accountBlock.data, 'base64').toString('hex');
+        var hex = vitejs_utils_1.blake2bHex(Buffer.from(accountBlock.data, 'base64'), null, 32);
         source += hex;
     }
-    source += accountBlock.timestamp ? bytesToHex(new BigNumber(accountBlock.timestamp).toArray('big', 8)) : '';
+    source += getNumberHex(accountBlock.fee);
     source += accountBlock.logHash || '';
     source += accountBlock.nonce ? Buffer.from(accountBlock.nonce, 'base64').toString('hex') : '';
+    var sendBlockList = accountBlock.sendBlockList || [];
+    sendBlockList.forEach(function (block) {
+        source += block.hash;
+    });
     var sourceHex = Buffer.from(source, 'hex');
-    var hash = blake2b(sourceHex, null, 32);
+    var hash = vitejs_utils_1.blake2b(sourceHex, null, 32);
     var hashHex = Buffer.from(hash).toString('hex');
     return hashHex;
 }
@@ -154,4 +147,13 @@ function enumTxType() {
     txType[vitejs_constant_1.abiFuncSignature.DexTradeCancelOrder + "_" + vitejs_constant_1.contractAddrs.DexTrade] = 'DexTradeCancelOrder';
     txType[vitejs_constant_1.abiFuncSignature.DexFundNewMarket + "_" + vitejs_constant_1.contractAddrs.DexFund] = 'DexFundNewMarket';
     return txType;
+}
+function getNumberHex(amount) {
+    var amountResult = new Uint8Array(32);
+    var bigAmount = new BigNumber(amount);
+    var amountBytes = amount && !bigAmount.isZero() ? bigAmount.toArray('big') : '';
+    if (amountBytes) {
+        amountResult.set(amountBytes, 32 - amountBytes.length);
+    }
+    return Buffer.from(amountResult).toString('hex');
 }

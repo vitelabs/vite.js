@@ -7,8 +7,6 @@ var vitejs_error_1 = require("./../error");
 var vitejs_utils_1 = require("./../utils");
 var type_1 = require("../type");
 var ROOT_PATH = 'm/44\'/666666\'';
-var checkParams = vitejs_utils_1.tools.checkParams;
-var bytesToHex = vitejs_utils_1.encoder.bytesToHex, blake2b = vitejs_utils_1.encoder.blake2b;
 function validateMnemonic(mnemonic, lang) {
     if (lang === void 0) { lang = type_1.LangList.english; }
     return mnemonic && bip39.validateMnemonic(mnemonic, getWordList(lang));
@@ -16,7 +14,7 @@ function validateMnemonic(mnemonic, lang) {
 exports.validateMnemonic = validateMnemonic;
 function getEntropyFromMnemonic(mnemonic, lang) {
     if (lang === void 0) { lang = type_1.LangList.english; }
-    var err = checkParams({ mnemonic: mnemonic }, ['mnemonic'], [{
+    var err = vitejs_utils_1.checkParams({ mnemonic: mnemonic }, ['mnemonic'], [{
             name: 'mnemonic',
             func: function (_m) { return validateMnemonic(_m, lang); }
         }]);
@@ -29,7 +27,7 @@ function getEntropyFromMnemonic(mnemonic, lang) {
 exports.getEntropyFromMnemonic = getEntropyFromMnemonic;
 function getMnemonicFromEntropy(entropy, lang) {
     if (lang === void 0) { lang = type_1.LangList.english; }
-    var err = checkParams({ entropy: entropy }, ['entropy']);
+    var err = vitejs_utils_1.checkParams({ entropy: entropy }, ['entropy']);
     if (err) {
         console.error(new Error(err.message));
         return null;
@@ -41,7 +39,7 @@ function newAddr(bits, lang, pwd) {
     if (bits === void 0) { bits = 256; }
     if (lang === void 0) { lang = type_1.LangList.english; }
     if (pwd === void 0) { pwd = ''; }
-    var err = checkParams({ bits: bits }, ['bits']);
+    var err = vitejs_utils_1.checkParams({ bits: bits }, ['bits']);
     if (err) {
         console.error(new Error(err.message));
         return null;
@@ -59,7 +57,7 @@ function getAddrFromMnemonic(mnemonic, index, lang, pwd) {
     if (index === void 0) { index = 0; }
     if (lang === void 0) { lang = type_1.LangList.english; }
     if (pwd === void 0) { pwd = ''; }
-    var err = checkParams({ mnemonic: mnemonic }, ['mnemonic'], [{
+    var err = vitejs_utils_1.checkParams({ mnemonic: mnemonic }, ['mnemonic'], [{
             name: 'mnemonic',
             func: function (_m) { return validateMnemonic(_m, lang); }
         }]);
@@ -81,7 +79,7 @@ function getAddrsFromMnemonic(mnemonic, start, num, lang, pwd) {
     if (num === void 0) { num = 10; }
     if (lang === void 0) { lang = type_1.LangList.english; }
     if (pwd === void 0) { pwd = ''; }
-    var err = checkParams({ mnemonic: mnemonic }, ['mnemonic'], [{
+    var err = vitejs_utils_1.checkParams({ mnemonic: mnemonic }, ['mnemonic'], [{
             name: 'mnemonic',
             func: function (_m) { return validateMnemonic(_m, lang); }
         }]);
@@ -108,7 +106,7 @@ function getAddrsFromMnemonic(mnemonic, start, num, lang, pwd) {
 exports.getAddrsFromMnemonic = getAddrsFromMnemonic;
 function getId(mnemonic, lang) {
     if (lang === void 0) { lang = type_1.LangList.english; }
-    var err = checkParams({ mnemonic: mnemonic }, ['mnemonic'], [{
+    var err = vitejs_utils_1.checkParams({ mnemonic: mnemonic }, ['mnemonic'], [{
             name: 'mnemonic',
             func: function (_m) { return validateMnemonic(_m, lang); }
         }]);
@@ -118,7 +116,7 @@ function getId(mnemonic, lang) {
     }
     var addrObj = getAddrFromMnemonic(mnemonic, 0);
     var keyBuffer = Buffer.from(addrObj.hexAddr);
-    var idByte = blake2b(keyBuffer, null, 32);
+    var idByte = vitejs_utils_1.blake2b(keyBuffer, null, 32);
     return Buffer.from(idByte).toString('hex');
 }
 exports.getId = getId;
@@ -127,7 +125,7 @@ exports.isValidHexAddr = vitejs_privtoaddr_1.isValidHexAddr;
 function getAddrFromPath(path, seed) {
     var key = hd.derivePath(path, seed).key;
     var privateKey = hd.getPublicKey(key).privateKey;
-    var priv = bytesToHex(privateKey);
+    var priv = vitejs_utils_1.bytesToHex(privateKey);
     return vitejs_privtoaddr_1.newHexAddr(priv);
 }
 function getPath(index) {

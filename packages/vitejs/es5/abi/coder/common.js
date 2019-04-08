@@ -3,7 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var BigNumber = require('bn.js');
 var vitejs_privtoaddr_1 = require("./../../privtoaddr");
 var vitejs_utils_1 = require("./../../utils");
-var getRawTokenid = vitejs_utils_1.tools.getRawTokenid, getTokenIdFromRaw = vitejs_utils_1.tools.getTokenIdFromRaw;
 function encode(typeObj, params) {
     var Bytes_Data = getBytesData(typeObj.type, params);
     return encodeBytesData(typeObj, Bytes_Data);
@@ -101,7 +100,7 @@ function formatNumber(params) {
     return new BigNumber(params).toArray();
 }
 function fomatTokenId(tokenId) {
-    var rawTokenId = getRawTokenid(tokenId);
+    var rawTokenId = vitejs_utils_1.getRawTokenId(tokenId);
     if (!rawTokenId) {
         throw new Error("[Error] Illegal tokenId. " + tokenId);
     }
@@ -118,7 +117,7 @@ function showNumber(str) {
     return new BigNumber(str, 16).toString();
 }
 function showTokenId(rawTokenId) {
-    var tokenId = getTokenIdFromRaw(rawTokenId);
+    var tokenId = vitejs_utils_1.getTokenIdFromRaw(rawTokenId);
     if (!tokenId) {
         throw new Error("[Error] Illegal tokenId. " + rawTokenId);
     }

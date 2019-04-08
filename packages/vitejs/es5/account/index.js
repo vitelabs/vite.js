@@ -52,7 +52,6 @@ var privToAddr = require("./../privtoaddr");
 var vitejs_error_1 = require("./../error");
 var vitejs_utils_1 = require("./../utils");
 var vitejs_addraccount_1 = require("./../addraccount");
-var checkParams = vitejs_utils_1.tools.checkParams;
 var sign = vitejs_utils_1.ed25519.sign, getPublicKey = vitejs_utils_1.ed25519.getPublicKey;
 var Account = (function (_super) {
     __extends(Account, _super);
@@ -181,13 +180,13 @@ var Account = (function (_super) {
     };
     Account.prototype.sendRawTx = function (accountBlock) {
         var _this = this;
-        checkParams({ accountBlock: accountBlock }, ['accountBlock'], [{
+        vitejs_utils_1.checkParams({ accountBlock: accountBlock }, ['accountBlock'], [{
                 name: 'accountBlock',
                 func: function (_a) { return !_a.accountAddress || (_a.accountAddress === _this.address); },
                 msg: 'AccountAddress is wrong.'
             }]);
         accountBlock.accountAddress = this.address;
-        return this._client.buildinLedger.sendRawTx(accountBlock, this.privateKey);
+        return this._client.sendRawTx(accountBlock, this.privateKey);
     };
     Account.prototype.sendTx = function (_b) {
         var toAddress = _b.toAddress, tokenId = _b.tokenId, amount = _b.amount, message = _b.message;
@@ -206,7 +205,7 @@ var Account = (function (_super) {
                         return [4, this._client.buildinTxBlock.asyncSendTx(reqBlock)];
                     case 1:
                         _sendTxBlock = _c.sent();
-                        return [2, this._client.buildinLedger.sendRawTx(_sendTxBlock, this.privateKey)];
+                        return [2, this._client.sendRawTx(_sendTxBlock, this.privateKey)];
                 }
             });
         });
@@ -225,7 +224,7 @@ var Account = (function (_super) {
                         return [4, this._client.buildinTxBlock.asyncReceiveTx(reqBlock)];
                     case 1:
                         _receiveTxBlock = _c.sent();
-                        return [2, this._client.buildinLedger.sendRawTx(_receiveTxBlock, this.privateKey)];
+                        return [2, this._client.sendRawTx(_receiveTxBlock, this.privateKey)];
                 }
             });
         });
@@ -247,7 +246,7 @@ var Account = (function (_super) {
                         return [4, this._client.buildinTxBlock.SBPreg(reqBlock)];
                     case 1:
                         _SBPregBlock = _c.sent();
-                        return [2, this._client.buildinLedger.sendRawTx(_SBPregBlock, this.privateKey)];
+                        return [2, this._client.sendRawTx(_SBPregBlock, this.privateKey)];
                 }
             });
         });
@@ -268,7 +267,7 @@ var Account = (function (_super) {
                         return [4, this._client.buildinTxBlock.updateReg(reqBlock)];
                     case 1:
                         _updateRegBlock = _c.sent();
-                        return [2, this._client.buildinLedger.sendRawTx(_updateRegBlock, this.privateKey)];
+                        return [2, this._client.sendRawTx(_updateRegBlock, this.privateKey)];
                 }
             });
         });
@@ -288,7 +287,7 @@ var Account = (function (_super) {
                         return [4, this._client.buildinTxBlock.revokeReg(reqBlock)];
                     case 1:
                         _revokeRegBlock = _c.sent();
-                        return [2, this._client.buildinLedger.sendRawTx(_revokeRegBlock, this.privateKey)];
+                        return [2, this._client.sendRawTx(_revokeRegBlock, this.privateKey)];
                 }
             });
         });
@@ -309,7 +308,7 @@ var Account = (function (_super) {
                         return [4, this._client.buildinTxBlock.retrieveReward(reqBlock)];
                     case 1:
                         _retrieveRewardBlock = _c.sent();
-                        return [2, this._client.buildinLedger.sendRawTx(_retrieveRewardBlock, this.privateKey)];
+                        return [2, this._client.sendRawTx(_retrieveRewardBlock, this.privateKey)];
                 }
             });
         });
@@ -329,7 +328,7 @@ var Account = (function (_super) {
                         return [4, this._client.buildinTxBlock.voting(reqBlock)];
                     case 1:
                         _votingBlock = _c.sent();
-                        return [2, this._client.buildinLedger.sendRawTx(_votingBlock, this.privateKey)];
+                        return [2, this._client.sendRawTx(_votingBlock, this.privateKey)];
                 }
             });
         });
@@ -348,7 +347,7 @@ var Account = (function (_super) {
                         return [4, this._client.buildinTxBlock.revokeVoting(reqBlock)];
                     case 1:
                         _revokeVotingBlock = _c.sent();
-                        return [2, this._client.buildinLedger.sendRawTx(_revokeVotingBlock, this.privateKey)];
+                        return [2, this._client.sendRawTx(_revokeVotingBlock, this.privateKey)];
                 }
             });
         });
@@ -369,7 +368,7 @@ var Account = (function (_super) {
                         return [4, this._client.buildinTxBlock.getQuota(reqBlock)];
                     case 1:
                         _getQuotaBlock = _c.sent();
-                        return [2, this._client.buildinLedger.sendRawTx(_getQuotaBlock, this.privateKey)];
+                        return [2, this._client.sendRawTx(_getQuotaBlock, this.privateKey)];
                 }
             });
         });
@@ -390,7 +389,7 @@ var Account = (function (_super) {
                         return [4, this._client.buildinTxBlock.withdrawalOfQuota(reqBlock)];
                     case 1:
                         _withdrawalOfQuotaBlock = _c.sent();
-                        return [2, this._client.buildinLedger.sendRawTx(_withdrawalOfQuotaBlock, this.privateKey)];
+                        return [2, this._client.sendRawTx(_withdrawalOfQuotaBlock, this.privateKey)];
                 }
             });
         });
@@ -412,7 +411,7 @@ var Account = (function (_super) {
                         })];
                     case 1:
                         _createContractBlock = _d.sent();
-                        return [2, this._client.buildinLedger.sendRawTx(_createContractBlock, this.privateKey)];
+                        return [2, this._client.sendRawTx(_createContractBlock, this.privateKey)];
                 }
             });
         });
@@ -434,7 +433,7 @@ var Account = (function (_super) {
                         })];
                     case 1:
                         _callContractBlock = _c.sent();
-                        return [2, this._client.buildinLedger.sendRawTx(_callContractBlock, this.privateKey)];
+                        return [2, this._client.sendRawTx(_callContractBlock, this.privateKey)];
                 }
             });
         });
@@ -458,7 +457,7 @@ var Account = (function (_super) {
                         })];
                     case 1:
                         _callContractBlock = _d.sent();
-                        return [2, this._client.buildinLedger.sendRawTx(_callContractBlock, this.privateKey)];
+                        return [2, this._client.sendRawTx(_callContractBlock, this.privateKey)];
                 }
             });
         });
@@ -475,7 +474,7 @@ var Account = (function (_super) {
                         })];
                     case 1:
                         _callContractBlock = _c.sent();
-                        return [2, this._client.buildinLedger.sendRawTx(_callContractBlock, this.privateKey)];
+                        return [2, this._client.sendRawTx(_callContractBlock, this.privateKey)];
                 }
             });
         });
@@ -494,7 +493,7 @@ var Account = (function (_super) {
                         })];
                     case 1:
                         _callContractBlock = _c.sent();
-                        return [2, this._client.buildinLedger.sendRawTx(_callContractBlock, this.privateKey)];
+                        return [2, this._client.sendRawTx(_callContractBlock, this.privateKey)];
                 }
             });
         });
@@ -512,7 +511,7 @@ var Account = (function (_super) {
                         })];
                     case 1:
                         _callContractBlock = _c.sent();
-                        return [2, this._client.buildinLedger.sendRawTx(_callContractBlock, this.privateKey)];
+                        return [2, this._client.sendRawTx(_callContractBlock, this.privateKey)];
                 }
             });
         });
@@ -529,7 +528,7 @@ var Account = (function (_super) {
                         })];
                     case 1:
                         _callContractBlock = _c.sent();
-                        return [2, this._client.buildinLedger.sendRawTx(_callContractBlock, this.privateKey)];
+                        return [2, this._client.sendRawTx(_callContractBlock, this.privateKey)];
                 }
             });
         });
@@ -547,7 +546,7 @@ var Account = (function (_super) {
                         })];
                     case 1:
                         _callContractBlock = _c.sent();
-                        return [2, this._client.buildinLedger.sendRawTx(_callContractBlock, this.privateKey)];
+                        return [2, this._client.sendRawTx(_callContractBlock, this.privateKey)];
                 }
             });
         });

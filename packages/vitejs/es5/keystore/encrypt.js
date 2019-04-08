@@ -8,14 +8,12 @@ var validated_1 = require("./validated");
 var tools_1 = require("./tools");
 var vars_1 = require("./vars");
 var random = vitejs_utils_1.ed25519.random;
-var checkParams = vitejs_utils_1.tools.checkParams;
-var hexToBytes = vitejs_utils_1.encoder.hexToBytes, bytesToHex = vitejs_utils_1.encoder.bytesToHex;
 var n = vars_1.defaultScryptParams.n;
 var p = vars_1.defaultScryptParams.p;
 var r = vars_1.defaultScryptParams.r;
 var keyLen = vars_1.defaultScryptParams.keyLen;
 function encrypt(key, pwd, _scryptParams, selfScryptsy) {
-    var err = checkParams({ key: key, pwd: pwd }, ['key', 'pwd']);
+    var err = vitejs_utils_1.checkParams({ key: key, pwd: pwd }, ['key', 'pwd']);
     if (err) {
         return Promise.reject(err);
     }
@@ -24,7 +22,7 @@ function encrypt(key, pwd, _scryptParams, selfScryptsy) {
         r: _scryptParams && _scryptParams.r ? _scryptParams.r : r,
         p: _scryptParams && _scryptParams.p ? _scryptParams.p : p,
         keylen: _scryptParams && _scryptParams.keylen ? _scryptParams.keylen : keyLen,
-        salt: _scryptParams && _scryptParams.salt ? _scryptParams.salt : bytesToHex(random())
+        salt: _scryptParams && _scryptParams.salt ? _scryptParams.salt : vitejs_utils_1.bytesToHex(random())
     };
     var getResult = function (encryptPwd, res, rej) {
         try {
@@ -45,7 +43,7 @@ function encrypt(key, pwd, _scryptParams, selfScryptsy) {
 }
 exports.encrypt = encrypt;
 function encryptV1ToV3(key, keystore) {
-    var err = checkParams({ key: key, keystore: keystore }, ['key', 'keystore']);
+    var err = vitejs_utils_1.checkParams({ key: key, keystore: keystore }, ['key', 'keystore']);
     if (err) {
         console.error(new Error(err.message));
         return false;
@@ -56,7 +54,7 @@ function encryptV1ToV3(key, keystore) {
         return false;
     }
     var scryptParams = keyJson.scryptparams;
-    var _encryptPwd = hexToBytes(keyJson.encryptp);
+    var _encryptPwd = vitejs_utils_1.hexToBytes(keyJson.encryptp);
     try {
         return getKeystore(key, _encryptPwd, scryptParams);
     }
@@ -67,7 +65,7 @@ function encryptV1ToV3(key, keystore) {
 }
 exports.encryptV1ToV3 = encryptV1ToV3;
 function encryptOldKeystore(privKey, pwd, selfScryptsy) {
-    var err = checkParams({ privKey: privKey, pwd: pwd }, ['privKey', 'pwd']);
+    var err = vitejs_utils_1.checkParams({ privKey: privKey, pwd: pwd }, ['privKey', 'pwd']);
     if (err) {
         console.error(new Error(err.message));
         return false;
@@ -78,7 +76,7 @@ function encryptOldKeystore(privKey, pwd, selfScryptsy) {
         r: r,
         p: p,
         keylen: keyLen,
-        salt: bytesToHex(random())
+        salt: vitejs_utils_1.bytesToHex(random())
     };
     var getResult = function (_encryptPwd, res) {
         var nonce = random(12);
@@ -93,7 +91,7 @@ function encryptOldKeystore(privKey, pwd, selfScryptsy) {
             KDF: vars_1.scryptName,
             ScryptParams: scryptParams,
             CipherText: text,
-            Nonce: bytesToHex(nonce)
+            Nonce: vitejs_utils_1.bytesToHex(nonce)
         };
         var encryptedKeyJSON = {
             hexAddress: key.hexAddr,
@@ -124,7 +122,7 @@ function getKeystore(rawText, pwd, scryptParams) {
     var cryptoJSON = {
         cipherName: vars_1.algorithm,
         ciphertext: ciphertext,
-        Nonce: bytesToHex(nonce),
+        Nonce: vitejs_utils_1.bytesToHex(nonce),
         KDF: vars_1.scryptName,
         scryptParams: scryptParams
     };
