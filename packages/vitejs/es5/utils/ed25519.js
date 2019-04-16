@@ -1,13 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var nacl = require('@sisi/tweetnacl-blake2b');
-var tools_1 = require("./tools");
+var index_1 = require("./index");
 function keyPair() {
     return nacl.sign.keyPair();
 }
 exports.keyPair = keyPair;
 function getPublicKey(privKey) {
-    var err = tools_1.checkParams({ privKey: privKey }, ['privKey']);
+    var err = index_1.checkParams({ privKey: privKey }, ['privKey']);
     if (err) {
         console.error(new Error(err.message));
         return null;
@@ -17,7 +17,7 @@ function getPublicKey(privKey) {
 }
 exports.getPublicKey = getPublicKey;
 function sign(hexStr, privKey) {
-    var err = tools_1.checkParams({ hexStr: hexStr, privKey: privKey }, ['hexStr', 'privKey']);
+    var err = index_1.checkParams({ hexStr: hexStr, privKey: privKey }, ['hexStr', 'privKey']);
     if (err) {
         console.error(new Error(err.message));
         return null;
@@ -30,7 +30,7 @@ function sign(hexStr, privKey) {
 }
 exports.sign = sign;
 function verify(message, signature, publicKey) {
-    var err = tools_1.checkParams({ message: message, signature: signature, publicKey: publicKey }, ['message', 'signature', 'publicKey']);
+    var err = index_1.checkParams({ message: message, signature: signature, publicKey: publicKey }, ['message', 'signature', 'publicKey']);
     if (err) {
         console.error(new Error(err.message));
         return null;
@@ -42,7 +42,7 @@ function verify(message, signature, publicKey) {
 exports.verify = verify;
 function random(bytesLen) {
     if (bytesLen === void 0) { bytesLen = 32; }
-    var err = tools_1.checkParams({ bytesLen: bytesLen }, ['bytesLen']);
+    var err = index_1.checkParams({ bytesLen: bytesLen }, ['bytesLen']);
     if (err) {
         console.error(new Error(err.message));
         return null;

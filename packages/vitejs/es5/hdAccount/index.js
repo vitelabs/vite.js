@@ -5,12 +5,11 @@ var vitejs_account_1 = require("./../account");
 var vitejs_error_1 = require("./../error");
 var vitejs_utils_1 = require("./../utils");
 var type_1 = require("../type");
-var checkParams = vitejs_utils_1.tools.checkParams;
 var Wallet = (function () {
     function Wallet(_a, _b) {
         var client = _a.client, mnemonic = _a.mnemonic, _c = _a.bits, bits = _c === void 0 ? 256 : _c, _d = _a.addrNum, addrNum = _d === void 0 ? 1 : _d, _e = _a.lang, lang = _e === void 0 ? type_1.LangList.english : _e, _f = _a.pwd, pwd = _f === void 0 ? '' : _f;
         var _g = _b.addrTotalNum, addrTotalNum = _g === void 0 ? 10 : _g, _h = _b.addrStartInx, addrStartInx = _h === void 0 ? 0 : _h;
-        var err = checkParams({ mnemonic: mnemonic, client: client }, ['client'], [{
+        var err = vitejs_utils_1.checkParams({ mnemonic: mnemonic, client: client }, ['client'], [{
                 name: 'mnemonic',
                 func: function (_mnemonic) { return vitejs_hdaddr_1.validateMnemonic(_mnemonic, lang); }
             }]);

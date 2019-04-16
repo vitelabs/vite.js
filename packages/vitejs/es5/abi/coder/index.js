@@ -4,7 +4,6 @@ var vitejs_utils_1 = require("./../../utils");
 var inputsType_1 = require("../inputsType");
 var common_1 = require("./common");
 var dynamic_1 = require("./dynamic");
-var isArray = vitejs_utils_1.encoder.isArray;
 var encode = {
     address: common_1.encode,
     gid: common_1.encode,
@@ -25,7 +24,7 @@ var decode = {
 };
 function encodeParameter(typeStr, params) {
     var typeObj = inputsType_1.formatType(typeStr);
-    if (typeObj.isArr && !isArray(params)
+    if (typeObj.isArr && !vitejs_utils_1.isArray(params)
         || (!typeObj.isArr && ['string', 'boolean', 'number'].indexOf(typeof params) === -1)) {
         throw new Error("[Error] Illegal type or params. type: " + typeObj.type + ", params: " + params);
     }
@@ -36,7 +35,7 @@ function encodeParameter(typeStr, params) {
 }
 exports.encodeParameter = encodeParameter;
 function encodeParameters(types, params) {
-    if (!isArray(types) || !isArray(params) || types.length !== params.length) {
+    if (!vitejs_utils_1.isArray(types) || !vitejs_utils_1.isArray(params) || types.length !== params.length) {
         throw new Error('[Error] Illegal types or params. Types and params should be array.');
     }
     var tempResult = [];
@@ -80,7 +79,7 @@ function decodeParameter(typeStr, params) {
 }
 exports.decodeParameter = decodeParameter;
 function decodeParameters(types, params) {
-    if (!isArray(types)) {
+    if (!vitejs_utils_1.isArray(types)) {
         throw new Error('[Error] Illegal types. Should be array.');
     }
     var _params = params;
@@ -154,7 +153,7 @@ function encodeArrs(typeObj, params) {
             return;
         }
         i++;
-        isArray(params) && params.forEach(function (_p) {
+        vitejs_utils_1.isArray(params) && params.forEach(function (_p) {
             loop(_p, i);
         });
     };

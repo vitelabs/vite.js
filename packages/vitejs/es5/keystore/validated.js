@@ -4,8 +4,6 @@ var UUID = require('pure-uuid');
 var vitejs_utils_1 = require("./../utils");
 var vitejs_privtoaddr_1 = require("./../privtoaddr");
 var vars_1 = require("./vars");
-var checkParams = vitejs_utils_1.tools.checkParams;
-var hexToBytes = vitejs_utils_1.encoder.hexToBytes;
 function isValidVersion1(keyJson) {
     if (!keyJson.scryptparams
         || !keyJson.encryptp
@@ -21,7 +19,7 @@ function isValidVersion1(keyJson) {
         || !scryptParams.salt) {
         return false;
     }
-    hexToBytes(scryptParams.salt);
+    vitejs_utils_1.hexToBytes(scryptParams.salt);
     return keyJson;
 }
 function isValidVersion2(keyJson) {
@@ -48,9 +46,9 @@ function isValidVersion2(keyJson) {
         || !crypto.scryptparams.keylen)) {
         return false;
     }
-    hexToBytes(keyJson.encryptentropy);
-    hexToBytes(crypto.nonce);
-    hexToBytes(crypto.salt);
+    vitejs_utils_1.hexToBytes(keyJson.encryptentropy);
+    vitejs_utils_1.hexToBytes(crypto.nonce);
+    vitejs_utils_1.hexToBytes(crypto.salt);
     return keyJson;
 }
 function isValidVersion3(keyJson) {
@@ -77,9 +75,9 @@ function isValidVersion3(keyJson) {
         return false;
     }
     new UUID().parse(keyJson.uuid);
-    hexToBytes(crypto.ciphertext);
-    hexToBytes(crypto.nonce);
-    hexToBytes(scryptparams.salt);
+    vitejs_utils_1.hexToBytes(crypto.ciphertext);
+    vitejs_utils_1.hexToBytes(crypto.nonce);
+    vitejs_utils_1.hexToBytes(scryptparams.salt);
     return keyJson;
 }
 function isValidOldKeystore(keyJson) {
@@ -106,16 +104,16 @@ function isValidOldKeystore(keyJson) {
         return false;
     }
     new UUID().parse(keyJson.id);
-    hexToBytes(crypto.ciphertext);
-    hexToBytes(crypto.nonce);
-    hexToBytes(scryptparams.salt);
+    vitejs_utils_1.hexToBytes(crypto.ciphertext);
+    vitejs_utils_1.hexToBytes(crypto.nonce);
+    vitejs_utils_1.hexToBytes(scryptparams.salt);
     return keyJson;
 }
 var validatedFuncs = [isValidOldKeystore, isValidVersion1, isValidVersion2, isValidVersion3];
 function isValid(keystore) {
-    var err = checkParams({ keystore: keystore }, ['keystore']);
+    var err = vitejs_utils_1.checkParams({ keystore: keystore }, ['keystore']);
     if (err) {
-        console.error(new Error(err));
+        console.error(err);
         return false;
     }
     try {

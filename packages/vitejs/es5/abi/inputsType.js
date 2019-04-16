@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var vitejs_utils_1 = require("./../utils");
-var isArray = vitejs_utils_1.encoder.isArray, isObject = vitejs_utils_1.encoder.isObject;
 var ADDR_SIZE = 20;
 var getNum = new RegExp(/(\d+)/g);
 var typePre = ['uint', 'int', 'address', 'bool', 'bytes', 'string', 'tokenId', 'gid'];
@@ -81,10 +80,10 @@ function validType(typeStr) {
 }
 exports.validType = validType;
 function getTypes(jsonInterface) {
-    if (isArray(jsonInterface)) {
+    if (vitejs_utils_1.isArray(jsonInterface)) {
         return jsonInterface;
     }
-    if (!isObject(jsonInterface)) {
+    if (!vitejs_utils_1.isObject(jsonInterface)) {
         throw new Error("[Error] Illegal types: " + jsonInterface + ". Should be Array<string> or JsonInterface.");
     }
     var types = [];

@@ -13,7 +13,7 @@ var AddrAccount = (function () {
         this._client = client;
     }
     AddrAccount.prototype.getBalance = function () {
-        return this._client.buildinLedger.getBalance(this.address);
+        return this._client.getBalance(this.address);
     };
     AddrAccount.prototype.getOnroad = function () {
         return this._client.onroad.getAccountOnroadInfo(this.address);
@@ -61,7 +61,7 @@ var AddrAccount = (function () {
     };
     AddrAccount.prototype.getTxList = function (_a) {
         var index = _a.index, _b = _a.pageCount, pageCount = _b === void 0 ? 50 : _b, _c = _a.totalNum, totalNum = _c === void 0 ? null : _c;
-        return this._client.buildinLedger.getTxList({ addr: this.address, index: index, pageCount: pageCount, totalNum: totalNum });
+        return this._client.getTxList({ addr: this.address, index: index, pageCount: pageCount, totalNum: totalNum });
     };
     return AddrAccount;
 }());

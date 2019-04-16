@@ -40,7 +40,6 @@ var vitejs_utils_1 = require("./../utils");
 var vitejs_error_1 = require("./../error");
 var vitejs_accountblock_1 = require("./../accountblock");
 var vitejs_abi_1 = require("./../abi");
-var checkParams = vitejs_utils_1.tools.checkParams, validNodeName = vitejs_utils_1.tools.validNodeName;
 var Tx = (function () {
     function Tx(client) {
         this._client = client;
@@ -117,7 +116,7 @@ var Tx = (function () {
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
-                        err = checkParams({ hexCode: hexCode, abi: abi, tokenId: tokenId, amount: amount, fee: fee }, ['hexCode', 'abi', 'tokenId', 'amount', 'fee']);
+                        err = vitejs_utils_1.checkParams({ hexCode: hexCode, abi: abi, tokenId: tokenId, amount: amount, fee: fee }, ['hexCode', 'abi', 'tokenId', 'amount', 'fee']);
                         if (err) {
                             return [2, Promise.reject(err)];
                         }
@@ -147,7 +146,7 @@ var Tx = (function () {
         return __awaiter(this, void 0, void 0, function () {
             var err, data;
             return __generator(this, function (_d) {
-                err = checkParams({ toAddress: toAddress, abi: abi }, ['toAddress', 'abi']);
+                err = vitejs_utils_1.checkParams({ toAddress: toAddress, abi: abi }, ['toAddress', 'abi']);
                 if (err) {
                     return [2, Promise.reject(err)];
                 }
@@ -172,7 +171,7 @@ var Tx = (function () {
         return __awaiter(this, void 0, void 0, function () {
             var err;
             return __generator(this, function (_b) {
-                err = checkParams({ toAddress: toAddress, tokenId: tokenId, amount: amount }, ['toAddress', 'tokenId', 'amount']);
+                err = vitejs_utils_1.checkParams({ toAddress: toAddress, tokenId: tokenId, amount: amount }, ['toAddress', 'tokenId', 'amount']);
                 if (err) {
                     return [2, Promise.reject(err)];
                 }
@@ -195,7 +194,7 @@ var Tx = (function () {
         return __awaiter(this, void 0, void 0, function () {
             var err;
             return __generator(this, function (_b) {
-                err = checkParams({ fromBlockHash: fromBlockHash }, ['fromBlockHash']);
+                err = vitejs_utils_1.checkParams({ fromBlockHash: fromBlockHash }, ['fromBlockHash']);
                 if (err) {
                     return [2, Promise.reject(err)];
                 }
@@ -216,9 +215,9 @@ var Tx = (function () {
         return __awaiter(this, void 0, void 0, function () {
             var err;
             return __generator(this, function (_b) {
-                err = checkParams({ toAddress: toAddress, nodeName: nodeName, tokenId: tokenId, amount: amount, requestType: requestType }, ['toAddress', 'nodeName', 'tokenId', 'amount'], [{
+                err = vitejs_utils_1.checkParams({ toAddress: toAddress, nodeName: nodeName, tokenId: tokenId, amount: amount, requestType: requestType }, ['toAddress', 'nodeName', 'tokenId', 'amount'], [{
                         name: 'nodeName',
-                        func: validNodeName
+                        func: vitejs_utils_1.validNodeName
                     }, {
                         name: 'requestType',
                         func: validReqType
@@ -246,9 +245,9 @@ var Tx = (function () {
         return __awaiter(this, void 0, void 0, function () {
             var err;
             return __generator(this, function (_b) {
-                err = checkParams({ toAddress: toAddress, nodeName: nodeName, tokenId: tokenId, requestType: requestType }, ['toAddress', 'nodeName', 'tokenId'], [{
+                err = vitejs_utils_1.checkParams({ toAddress: toAddress, nodeName: nodeName, tokenId: tokenId, requestType: requestType }, ['toAddress', 'nodeName', 'tokenId'], [{
                         name: 'nodeName',
-                        func: validNodeName
+                        func: vitejs_utils_1.validNodeName
                     }, {
                         name: 'requestType',
                         func: validReqType
@@ -275,9 +274,9 @@ var Tx = (function () {
         return __awaiter(this, void 0, void 0, function () {
             var err;
             return __generator(this, function (_b) {
-                err = checkParams({ nodeName: nodeName, tokenId: tokenId, requestType: requestType }, ['nodeName', 'tokenId'], [{
+                err = vitejs_utils_1.checkParams({ nodeName: nodeName, tokenId: tokenId, requestType: requestType }, ['nodeName', 'tokenId'], [{
                         name: 'nodeName',
-                        func: validNodeName
+                        func: vitejs_utils_1.validNodeName
                     }, {
                         name: 'requestType',
                         func: validReqType
@@ -304,9 +303,9 @@ var Tx = (function () {
         return __awaiter(this, void 0, void 0, function () {
             var err;
             return __generator(this, function (_b) {
-                err = checkParams({ toAddress: toAddress, nodeName: nodeName, tokenId: tokenId, requestType: requestType }, ['toAddress', 'nodeName', 'tokenId'], [{
+                err = vitejs_utils_1.checkParams({ toAddress: toAddress, nodeName: nodeName, tokenId: tokenId, requestType: requestType }, ['toAddress', 'nodeName', 'tokenId'], [{
                         name: 'nodeName',
-                        func: validNodeName
+                        func: vitejs_utils_1.validNodeName
                     }, {
                         name: 'requestType',
                         func: validReqType
@@ -333,9 +332,9 @@ var Tx = (function () {
         return __awaiter(this, void 0, void 0, function () {
             var err;
             return __generator(this, function (_b) {
-                err = checkParams({ nodeName: nodeName, tokenId: tokenId, requestType: requestType }, ['nodeName', 'tokenId'], [{
+                err = vitejs_utils_1.checkParams({ nodeName: nodeName, tokenId: tokenId, requestType: requestType }, ['nodeName', 'tokenId'], [{
                         name: 'nodeName',
-                        func: validNodeName
+                        func: vitejs_utils_1.validNodeName
                     }, {
                         name: 'requestType',
                         func: validReqType
@@ -362,7 +361,7 @@ var Tx = (function () {
         return __awaiter(this, void 0, void 0, function () {
             var err;
             return __generator(this, function (_b) {
-                err = checkParams({ tokenId: tokenId, requestType: requestType }, ['tokenId'], [{
+                err = vitejs_utils_1.checkParams({ tokenId: tokenId, requestType: requestType }, ['tokenId'], [{
                         name: 'requestType',
                         func: validReqType
                     }]);
@@ -388,7 +387,7 @@ var Tx = (function () {
         return __awaiter(this, void 0, void 0, function () {
             var err;
             return __generator(this, function (_b) {
-                err = checkParams({ toAddress: toAddress, tokenId: tokenId, amount: amount, requestType: requestType }, ['toAddress', 'tokenId', 'amount'], [{
+                err = vitejs_utils_1.checkParams({ toAddress: toAddress, tokenId: tokenId, amount: amount, requestType: requestType }, ['toAddress', 'tokenId', 'amount'], [{
                         name: 'requestType',
                         func: validReqType
                     }]);
@@ -415,7 +414,7 @@ var Tx = (function () {
         return __awaiter(this, void 0, void 0, function () {
             var err;
             return __generator(this, function (_b) {
-                err = checkParams({ toAddress: toAddress, tokenId: tokenId, amount: amount, requestType: requestType }, ['toAddress', 'tokenId', 'amount'], [{
+                err = vitejs_utils_1.checkParams({ toAddress: toAddress, tokenId: tokenId, amount: amount, requestType: requestType }, ['toAddress', 'tokenId', 'amount'], [{
                         name: 'requestType',
                         func: validReqType
                     }]);
@@ -443,7 +442,7 @@ var Tx = (function () {
             return __generator(this, function (_d) {
                 switch (_d.label) {
                     case 0:
-                        err = checkParams({ tokenName: tokenName, isReIssuable: isReIssuable, maxSupply: maxSupply, ownerBurnOnly: ownerBurnOnly, totalSupply: totalSupply, decimals: decimals, tokenSymbol: tokenSymbol, requestType: requestType, feeType: feeType }, ['tokenName', 'isReIssuable', 'maxSupply', 'ownerBurnOnly', 'totalSupply', 'decimals', 'tokenSymbol'], [{ name: 'requestType', func: validReqType },
+                        err = vitejs_utils_1.checkParams({ tokenName: tokenName, isReIssuable: isReIssuable, maxSupply: maxSupply, ownerBurnOnly: ownerBurnOnly, totalSupply: totalSupply, decimals: decimals, tokenSymbol: tokenSymbol, requestType: requestType, feeType: feeType }, ['tokenName', 'isReIssuable', 'maxSupply', 'ownerBurnOnly', 'totalSupply', 'decimals', 'tokenSymbol'], [{ name: 'requestType', func: validReqType },
                             {
                                 name: 'feeType',
                                 func: function (type) { return type === 'burn' || type === 'stake'; }
@@ -488,7 +487,7 @@ var Tx = (function () {
         return __awaiter(this, void 0, void 0, function () {
             var err;
             return __generator(this, function (_b) {
-                err = checkParams({ tokenId: tokenId }, ['tokenId'], [{ name: 'requestType', func: validReqType }]);
+                err = vitejs_utils_1.checkParams({ tokenId: tokenId }, ['tokenId'], [{ name: 'requestType', func: validReqType }]);
                 if (err) {
                     return [2, Promise.reject(err)];
                 }
@@ -510,7 +509,7 @@ var Tx = (function () {
         return __awaiter(this, void 0, void 0, function () {
             var err;
             return __generator(this, function (_b) {
-                err = checkParams({ tokenId: tokenId, amount: amount, beneficial: beneficial, requestType: requestType }, ['tokenId', 'amount', 'beneficial'], [{
+                err = vitejs_utils_1.checkParams({ tokenId: tokenId, amount: amount, beneficial: beneficial, requestType: requestType }, ['tokenId', 'amount', 'beneficial'], [{
                         name: 'requestType',
                         func: validReqType
                     }]);
@@ -536,7 +535,7 @@ var Tx = (function () {
         return __awaiter(this, void 0, void 0, function () {
             var err;
             return __generator(this, function (_b) {
-                err = checkParams({ amount: amount, requestType: requestType }, ['amount'], [{ name: 'requestType', func: validReqType }]);
+                err = vitejs_utils_1.checkParams({ amount: amount, requestType: requestType }, ['amount'], [{ name: 'requestType', func: validReqType }]);
                 if (err) {
                     return [2, Promise.reject(err)];
                 }
@@ -577,7 +576,7 @@ var Tx = (function () {
         return __awaiter(this, void 0, void 0, function () {
             var err;
             return __generator(this, function (_b) {
-                err = checkParams({ tokenId: tokenId, ownerAddress: ownerAddress, requestType: requestType }, ['tokenId', 'ownerAddress'], [{
+                err = vitejs_utils_1.checkParams({ tokenId: tokenId, ownerAddress: ownerAddress, requestType: requestType }, ['tokenId', 'ownerAddress'], [{
                         name: 'requestType',
                         func: validReqType
                     }]);

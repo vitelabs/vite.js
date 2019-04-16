@@ -4,7 +4,6 @@ var vitejs_utils_1 = require("./../utils");
 var encodeFunction_1 = require("./encodeFunction");
 var coder_1 = require("./coder");
 var inputsType_1 = require("./inputsType");
-var isArray = vitejs_utils_1.encoder.isArray, isObject = vitejs_utils_1.encoder.isObject;
 function encodeLogSignature(jsonFunction, mehtodName) {
     return encodeFunction_1.encodeFunction(jsonFunction, mehtodName);
 }
@@ -44,7 +43,7 @@ exports.decodeParameters = decodeParameters;
 function decodeLog(inputs, data, topics, mehtodName) {
     if (data === void 0) { data = ''; }
     var topicCount = 0;
-    topics = isArray(topics) ? topics : [topics];
+    topics = vitejs_utils_1.isArray(topics) ? topics : [topics];
     var notIndexedInputsShow = [];
     var indexedParams = [];
     inputs = getInputs(inputs, mehtodName);
@@ -80,9 +79,9 @@ function getInputs(inputs, mehtodName) {
         func && (inputs = func);
     }
     catch (err) { }
-    if (!isArray(inputs) && !isObject(inputs)) {
+    if (!vitejs_utils_1.isArray(inputs) && !vitejs_utils_1.isObject(inputs)) {
         throw new Error("[Error] decodeLog: Illegal inputs " + JSON.stringify(inputs) + ". Should be Array or JsonInterface.");
     }
-    inputs = isArray(inputs) ? inputs : inputs.inputs;
+    inputs = vitejs_utils_1.isArray(inputs) ? inputs : inputs.inputs;
     return inputs || [];
 }

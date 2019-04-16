@@ -6,8 +6,6 @@ var vitejs_constant_1 = require("./../constant");
 var vitejs_privtoaddr_1 = require("./../privtoaddr");
 var vitejs_utils_1 = require("./../utils");
 var vitejs_abi_1 = require("./../abi");
-var checkParams = vitejs_utils_1.tools.checkParams, validInteger = vitejs_utils_1.tools.validInteger;
-var isArray = vitejs_utils_1.encoder.isArray;
 function formatAccountBlock(_a) {
     var blockType = _a.blockType, fromBlockHash = _a.fromBlockHash, accountAddress = _a.accountAddress, message = _a.message, data = _a.data, height = _a.height, prevHash = _a.prevHash, snapshotHash = _a.snapshotHash, _c = _a.tokenId, tokenId = _c === void 0 ? vitejs_constant_1.Vite_TokenId : _c, fee = _a.fee, toAddress = _a.toAddress, amount = _a.amount, nonce = _a.nonce;
     var _height = height ? new BigNumber(height).add(new BigNumber(1)).toString() : '1';
@@ -43,7 +41,7 @@ function formatAccountBlock(_a) {
 exports.formatAccountBlock = formatAccountBlock;
 function validReqAccountBlock(_a) {
     var blockType = _a.blockType, fromBlockHash = _a.fromBlockHash, accountAddress = _a.accountAddress, message = _a.message, data = _a.data, toAddress = _a.toAddress, amount = _a.amount;
-    var err = checkParams({ blockType: blockType, accountAddress: accountAddress, toAddress: toAddress, amount: amount }, ['accountAddress', 'blockType'], [{
+    var err = vitejs_utils_1.checkParams({ blockType: blockType, accountAddress: accountAddress, toAddress: toAddress, amount: amount }, ['accountAddress', 'blockType'], [{
             name: 'accountAddress',
             func: vitejs_privtoaddr_1.isValidHexAddr
         }, {
@@ -55,7 +53,7 @@ function validReqAccountBlock(_a) {
             msg: 'BlockType should be greater than 0 and less than 6.'
         }, {
             name: 'amount',
-            func: validInteger,
+            func: vitejs_utils_1.validInteger,
             msg: 'Amount must be an integer string.'
         }]);
     if (err) {
@@ -87,7 +85,7 @@ function getCreateContractData(_a) {
 }
 exports.getCreateContractData = getCreateContractData;
 function getConstructor(jsonInterfaces) {
-    if (!isArray(jsonInterfaces)) {
+    if (!vitejs_utils_1.isArray(jsonInterfaces)) {
         if (jsonInterfaces.type === 'constructor') {
             return jsonInterfaces;
         }

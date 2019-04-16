@@ -23,7 +23,7 @@ export default class AddrAccount {
     }
 
     getBalance() {
-        return this._client.buildinLedger.getBalance(this.address);
+        return this._client.getBalance(this.address);
     }
 
     getOnroad() {
@@ -79,6 +79,6 @@ export default class AddrAccount {
     }
 
     getTxList({ index, pageCount = 50, totalNum = null }) {
-        return this._client.buildinLedger.getTxList({ addr: this.address, index, pageCount, totalNum });
+        return this._client.getTxList({ addr: this.address, index, pageCount, totalNum });
     }
 }
