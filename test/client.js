@@ -4,15 +4,6 @@ import Client from '../src/client/index';
 import { methods } from '../src/constant';
 import HTTP_RPC from '../src/HTTP';
 
-// import IPC_RPC from '../src/IPC';
-// import WS_RPC from '../src/WS';
-
-// const wsProvider = new WS_RPC();
-// wsProvider.disconnect();
-
-// const ipcProvider = new IPC_RPC('///');
-// ipcProvider.disconnect();
-
 const myWSClient = new Client({ type: 'ws' });
 const myHTTPClient = new Client(new HTTP_RPC());
 const myIPCClient = new Client({ type: 'ipc' });

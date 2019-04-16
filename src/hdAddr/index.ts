@@ -36,7 +36,7 @@ export function getMnemonicFromEntropy(entropy: string, lang: LangList = LangLis
 }
 
 export function newAddr(bits: number = 256, lang: LangList = LangList.english, pwd: string = ''): {
-    addr: AddrObj; entropy: string; mnemonic: string;
+    addr: AddrObj; entropy: string; mnemonic: string; id: Hex;
 } {
     const err = checkParams({ bits }, ['bits']);
     if (err) {
@@ -50,7 +50,9 @@ export function newAddr(bits: number = 256, lang: LangList = LangList.english, p
     const seed = bip39.mnemonicToSeedHex(mnemonic, pwd);
     const path = getPath(0);
     const addr = getAddrFromPath(path, seed);
-    return { addr, entropy, mnemonic };
+    const id = getId(mnemonic, lang);
+
+    return { addr, entropy, mnemonic, id };
 }
 
 export function getAddrFromMnemonic(mnemonic, index = 0, lang: LangList = LangList.english, pwd: string = ''): AddrObj {
@@ -104,21 +106,7 @@ export function getAddrsFromMnemonic(mnemonic, start = 0, num = 10, lang: LangLi
     return addrs;
 }
 
-export function getId(mnemonic: string, lang: LangList = LangList.english): Hex {
-    const err = checkParams({ mnemonic }, ['mnemonic'], [{
-        name: 'mnemonic',
-        func: _m => validateMnemonic(_m, lang)
-    }]);
-    if (err) {
-        console.error(new Error(err.message));
-        return null;
-    }
-
-    const addrObj = getAddrFromMnemonic(mnemonic, 0);
-    const keyBuffer = Buffer.from(addrObj.hexAddr);
-    const idByte = blake2b(keyBuffer, null, 32);
-    return Buffer.from(idByte).toString('hex');
-}
+export const getId = _getId;
 
 export const getAddrFromHexAddr = _getAddrFromHexAddr;
 
@@ -139,4 +127,20 @@ function getPath(index: number): string {
 function getWordList(lang: LangList = LangList.english) {
     lang = lang && bip39.wordlists[lang] ? lang : LangList.english;
     return bip39.wordlists[lang];
+}
+
+function _getId(mnemonic: string, lang: LangList = LangList.english): Hex {
+    const err = checkParams({ mnemonic }, ['mnemonic'], [{
+        name: 'mnemonic',
+        func: _m => validateMnemonic(_m, lang)
+    }]);
+    if (err) {
+        console.error(new Error(err.message));
+        return null;
+    }
+
+    const addrObj = getAddrFromMnemonic(mnemonic, 0);
+    const keyBuffer = Buffer.from(addrObj.hexAddr);
+    const idByte = blake2b(keyBuffer, null, 32);
+    return Buffer.from(idByte).toString('hex');
 }

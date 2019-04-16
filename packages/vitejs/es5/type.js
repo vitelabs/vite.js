@@ -65,11 +65,12 @@ var onroad;
 var tx;
 (function (tx) {
     tx["sendRawTx"] = "tx_sendRawTx";
+    tx["calcPoWDifficulty"] = "tx_calcPoWDifficulty";
 })(tx = exports.tx || (exports.tx = {}));
 var ledger;
 (function (ledger) {
     ledger["getBlocksByAccAddr"] = "ledger_getBlocksByAccAddr";
-    ledger["getAccountByAccAddr"] = "ledger_getAccountByAccAddr";
+    ledger["getAccount"] = "ledger_getAccount";
     ledger["getLatestSnapshotChainHash"] = "ledger_getLatestSnapshotChainHash";
     ledger["getLatestBlock"] = "ledger_getLatestBlock";
     ledger["getTokenMintage"] = "ledger_getTokenMintage";

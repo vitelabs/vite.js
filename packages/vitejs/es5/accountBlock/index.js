@@ -140,7 +140,7 @@ function enumTxType() {
     txType[vitejs_constant_1.abiFuncSignature.Burn + "_" + vitejs_constant_1.contractAddrs.Mintage] = 'MintageBurn';
     txType[vitejs_constant_1.abiFuncSignature.TransferOwner + "_" + vitejs_constant_1.contractAddrs.Mintage] = 'MintageTransferOwner';
     txType[vitejs_constant_1.abiFuncSignature.ChangeTokenType + "_" + vitejs_constant_1.contractAddrs.Mintage] = 'MintageChangeTokenType';
-    txType[vitejs_constant_1.abiFuncSignature.Mint_CancelPledge + "_" + vitejs_constant_1.contractAddrs.Mintage] = 'MintageCancelPledge';
+    txType[vitejs_constant_1.abiFuncSignature.CancelMintPledge + "_" + vitejs_constant_1.contractAddrs.Mintage] = 'MintageCancelPledge';
     txType[vitejs_constant_1.abiFuncSignature.DexFundUserDeposit + "_" + vitejs_constant_1.contractAddrs.DexFund] = 'DexFundUserDeposit';
     txType[vitejs_constant_1.abiFuncSignature.DexFundUserWithdraw + "_" + vitejs_constant_1.contractAddrs.DexFund] = 'DexFundUserWithdraw';
     txType[vitejs_constant_1.abiFuncSignature.DexFundNewOrder + "_" + vitejs_constant_1.contractAddrs.DexFund] = 'DexFundNewOrder';

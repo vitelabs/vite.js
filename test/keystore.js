@@ -107,7 +107,6 @@ if (process.env.NODE_ENV !== 'testWatch') {
         });
     });
 
-
     describe('Keystore', function () {
         it('valid V1', function () {
             const result = isValid(ksV1);

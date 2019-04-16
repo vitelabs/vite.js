@@ -57,7 +57,7 @@ export default class Client extends netProcessor {
         }
 
         const data = await this.batch([ {
-            methodName: _ledger.getAccountByAccAddr,
+            methodName: _ledger.getAccount,
             params: [addr]
         }, {
             methodName: onroad.getAccountOnroadInfo,
@@ -97,7 +97,7 @@ export default class Client extends netProcessor {
         }];
         if (!totalNum) {
             requests.push({
-                methodName: _ledger.getAccountByAccAddr,
+                methodName: _ledger.getAccount,
                 params: [addr]
             });
         }
@@ -106,7 +106,7 @@ export default class Client extends netProcessor {
 
         let rawList;
         requests.forEach((_r, i) => {
-            if (_r.methodName === _ledger.getAccountByAccAddr) {
+            if (_r.methodName === _ledger.getAccount) {
                 totalNum = data[i].result ? data[i].result.totalNumber : 0;
                 return;
             }
@@ -162,7 +162,10 @@ export default class Client extends netProcessor {
 
             for (const methodName in spaceMethods) {
                 const name = spaceMethods[methodName];
-                this[_namespace][methodName] = (...args: any[]) => this.request(name, ...args);
+                this[_namespace][methodName] = (...args: any[]) => {
+                    console.log(...args);
+                    return this.request(name, ...args);
+                };
             }
         }
     }

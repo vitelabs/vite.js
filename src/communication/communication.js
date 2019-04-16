@@ -1,5 +1,6 @@
+const jsonrpc = require('jsonrpc-lite');
+
 import errors from './errors';
-import jsonrpc from 'jsonrpc-lite';
 
 class Communication {
     constructor() {

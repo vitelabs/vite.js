@@ -92,7 +92,7 @@ function newAddr(privKey?: Buffer | Hex): { addr: Buffer; privKey: Buffer } {
         _privKey = privKey instanceof Buffer ? privKey : Buffer.from(privKey, 'hex');
     } else {
         const _keyPair = keyPair();
-        _privKey = _keyPair.secretKey as Buffer;
+        _privKey = _keyPair.privateKey as Buffer;
     }
 
     const addr = newAddrFromPriv(_privKey);

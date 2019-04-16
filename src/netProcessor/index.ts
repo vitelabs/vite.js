@@ -82,7 +82,7 @@ export default class NetProcessor {
         if (!this.isConnected) {
             return this._onReq('request', methods, ...args);
         }
-
+        console.log(methods, args);
         const rep: RPCresponse = await this._provider.request(methods, args);
         if (rep.error) {
             throw rep.error;

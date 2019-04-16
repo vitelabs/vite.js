@@ -1,29 +1,27 @@
-describe('Mnemonic Test: bip39', function () {
-    require('./hdAddr');
+import './cover';
+
+describe('Account Test: src/account', function () {
+    require('./account');
 });
 
-describe('Utils Test: packages/utils', function () {
-    require('./utils/ed25519');
-    require('./utils/encoder');
-    require('./utils/tools');
+describe('AddrAccount Test: src/addrAccount', function () {
+    require('./addrAccount');
 });
 
-describe('Utils Test: packages/abi', function () {
-    require('./abi');
-});
-
-describe('AccountBlock Test: packages/accountBlock', function () {
-    require('./accountBlock');
-});
-
-describe('Address Test', function () {
-    require('./privAddr');
-});
-
-describe('Keystore Test: packages/keystore', function () {
-    require('./keystore');
-});
-
-describe('Client Test: packages/client', function () {
+describe('Client Test: src/client', function () {
     require('./client');
 });
+
+describe('HdAccount Test: src/hdAccount', function () {
+    require('./hdAccount');
+});
+
+describe('Communication Test: src/communication', function () {
+    require('./communication');
+});
+
+
+// netProcessor
+// http
+// ipc
+// ws

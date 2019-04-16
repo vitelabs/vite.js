@@ -1,7 +1,7 @@
 const bip39 = require('bip39');
 const assert = require('assert');
 
-import { getEntropyFromMnemonic, getMnemonicFromEntropy, getAddrsFromMnemonic } from '../src/hdAddr';
+import { newAddr, getId, getEntropyFromMnemonic, getMnemonicFromEntropy, getAddrsFromMnemonic, getAddrFromMnemonic } from '../src/hdAddr';
 import { LangList } from '../src/type';
 
 describe('mnemonic 12 password', function () {
@@ -178,3 +178,25 @@ describe('HD_Address', function () {
         ]);
     });
 });
+
+describe('newAddr', function () {
+    const addrObj = newAddr();
+    const addr0 = getAddrFromMnemonic(addrObj.mnemonic);
+
+    it('test mnemonic', () => {
+        assert(addrObj.mnemonic.split(' ').length, 24);
+    });
+
+    it('test entropy', () => {
+        assert(addrObj.entropy.length, 512);
+    });
+
+    it('test addr 0', () => {
+        assert(addrObj.addr, addr0);
+    });
+
+    it('test getId', () => {
+        assert(getId(addrObj.mnemonic), addrObj.id);
+    });
+});
+

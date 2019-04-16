@@ -93,6 +93,7 @@ class Account extends addrAccount {
         this._lock = true;
     }
 
+    // [TODO] 新增判断，是否需要pow，需要则返回错误
     autoReceiveTx(intervals: number = 2000, receiveFailAction: Function = null) {
         if (this._autoReceive) {
             return;
@@ -108,7 +109,7 @@ class Account extends addrAccount {
             const fromBlockHash = result[0].hash;
 
             try {
-                const data = await this.receiveTx({ fromBlockHash });
+                const data = await this.receiveTx(fromBlockHash);
                 return data;
             } catch (err) {
                 if (!receiveFailAction) {
@@ -168,7 +169,7 @@ class Account extends addrAccount {
         return this._client.sendRawTx(_sendTxBlock, this.privateKey);
     }
 
-    async receiveTx({ fromBlockHash }) {
+    async receiveTx(fromBlockHash) {
         const reqBlock: receiveTxBlock = {
             accountAddress: this.address,
             fromBlockHash

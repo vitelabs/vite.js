@@ -2,7 +2,7 @@ const BigNumber = require('bn.js');
 
 import { ed25519, bytesToHex, blake2b, blake2bHex, checkParams, getRawTokenId } from '~@vite/vitejs-utils';
 import { getAddrFromHexAddr } from '~@vite/vitejs-privtoaddr';
-import { paramsMissing, paramsFormat } from '~@vite/vitejs-error';
+import { paramsFormat } from '~@vite/vitejs-error';
 import { Default_Hash, contractAddrs, abiFuncSignature } from '~@vite/vitejs-constant';
 
 import { formatAccountBlock as _formatAccountBlock, validReqAccountBlock as _validReqAccountBlock, getCreateContractData as _getCreateContractData } from './builtin';
@@ -115,7 +115,7 @@ export function getBlockHash(accountBlock: SignBlock) {
 
     source += getNumberHex(accountBlock.fee);
     source += accountBlock.logHash || '';
-    source += accountBlock.nonce ? Buffer.from(accountBlock.nonce, 'base64').toString('hex') : '';
+    source += getNonceHex(accountBlock.nonce);
 
     const sendBlockList = accountBlock.sendBlockList || [];
     sendBlockList.forEach(block => {
@@ -174,7 +174,7 @@ function enumTxType() {
     txType[`${ abiFuncSignature.Burn }_${ contractAddrs.Mintage }`] = 'MintageBurn';
     txType[`${ abiFuncSignature.TransferOwner }_${ contractAddrs.Mintage }`] = 'MintageTransferOwner';
     txType[`${ abiFuncSignature.ChangeTokenType }_${ contractAddrs.Mintage }`] = 'MintageChangeTokenType';
-    txType[`${ abiFuncSignature.Mint_CancelPledge }_${ contractAddrs.Mintage }`] = 'MintageCancelPledge';
+    txType[`${ abiFuncSignature.CancelMintPledge }_${ contractAddrs.Mintage }`] = 'MintageCancelPledge';
 
     // Dex
     txType[`${ abiFuncSignature.DexFundUserDeposit }_${ contractAddrs.DexFund }`] = 'DexFundUserDeposit';
@@ -186,12 +186,25 @@ function enumTxType() {
     return txType;
 }
 
+function leftPadBytes(bytesData, len) {
+    if (bytesData && len - bytesData.length < 0) {
+        return bytesData.toString('hex');
+    }
+
+    const result = new Uint8Array(len);
+    if (bytesData) {
+        result.set(bytesData, len - bytesData.length);
+    }
+    return Buffer.from(result).toString('hex');
+}
+
 function getNumberHex(amount) {
-    const amountResult = new Uint8Array(32);
     const bigAmount = new BigNumber(amount);
     const amountBytes = amount && !bigAmount.isZero() ? bigAmount.toArray('big') : '';
-    if (amountBytes) {
-        amountResult.set(amountBytes, 32 - amountBytes.length);
-    }
-    return Buffer.from(amountResult).toString('hex');
+    return leftPadBytes(amountBytes, 32);
+}
+
+function getNonceHex(nonce) {
+    const nonceBytes = nonce ? Buffer.from(nonce, 'base64') : '';
+    return leftPadBytes(nonceBytes, 8);
 }

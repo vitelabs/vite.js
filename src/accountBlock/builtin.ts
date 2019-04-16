@@ -80,6 +80,7 @@ export function validReqAccountBlock({ blockType, fromBlockHash, accountAddress,
     return null;
 }
 
+// [TODO] ping 确认，confirmtime如何进行补充
 export function getCreateContractData({ abi, hexCode, params }) {
     const jsonInterface = getConstructor(abi);
     let data = `${ Delegate_Gid }01${ hexCode }`;

@@ -457,7 +457,7 @@ var Tx = (function () {
                     return [2, Promise.reject(err)];
                 }
                 return [2, this.callContract({
-                        abi: vitejs_constant_1.Mint_CancelPledge_Abi,
+                        abi: vitejs_constant_1.CancelMintPledge_Abi,
                         params: [tokenId],
                         toAddress: vitejs_constant_1.Mintage_Addr,
                         accountAddress: accountAddress,

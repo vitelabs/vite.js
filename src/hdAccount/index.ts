@@ -23,6 +23,9 @@ class Wallet {
     constructor({ client, mnemonic, bits = 256, addrNum = 1, lang = LangList.english, pwd = '' }, {
         addrTotalNum = 10,
         addrStartInx = 0
+    } = {
+        addrTotalNum: 10,
+        addrStartInx: 0
     }) {
         const err = checkParams({ mnemonic, client }, ['client'], [{
             name: 'mnemonic',
@@ -58,14 +61,18 @@ class Wallet {
         this.activeAccountList = [];
     }
 
-    activateAccount({ address, index = this.addrStartInx }: { address?: Address; index?: number }, {
+    activateAccount({ address, index = this.addrStartInx }: { address?: Address; index?: number } = { index: this.addrStartInx }, {
         intervals = 2000,
         receiveFailAction = null,
         duration = 5 * 60 * 1000
-    }: { intervals?: number; receiveFailAction?: null; duration?: number }) {
+    }: { intervals?: number; receiveFailAction?: null; duration?: number } = {
+        intervals: 2000,
+        receiveFailAction: null,
+        duration: 5 * 60 * 1000
+    }) {
         index = validAddrParams({ address, index });
         if (index === null) {
-            return null;
+            throw new Error(`Don\'t have this account: address = ${ address } , index = ${ index }`);
         }
 
         const addrObj: AddrObj = this.addrList[index];

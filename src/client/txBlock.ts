@@ -3,7 +3,7 @@ import {
     Quota_Addr, Vote_Addr, Register_Addr, Mintage_Addr,
     Register_Abi, UpdateRegistration_Abi, CancelRegister_Abi,
     Reward_Abi, Vote_Abi, CancelVote_Abi, Pledge_Abi, CancelPledge_Abi,
-    Mint_Abi, Issue_Abi, Burn_Abi, ChangeTokenType_Abi, TransferOwner_Abi, Mint_CancelPledge_Abi
+    Mint_Abi, Issue_Abi, Burn_Abi, ChangeTokenType_Abi, TransferOwner_Abi, CancelMintPledge_Abi
 } from '~@vite/vitejs-constant';
 import { checkParams, validNodeName } from '~@vite/vitejs-utils';
 import {
@@ -365,7 +365,7 @@ export default class Tx {
         }
 
         return this.callContract({
-            abi: Mint_CancelPledge_Abi,
+            abi: CancelMintPledge_Abi,
             params: [tokenId],
             toAddress: Mintage_Addr,
             accountAddress,

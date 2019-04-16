@@ -27,7 +27,7 @@ var AddrAccount = (function () {
         return this._client.ledger.getBlocksByAccAddr(this.address, index, pageCount);
     };
     AddrAccount.prototype.getAccountBalance = function () {
-        return this._client.ledger.getAccountByAccAddr(this.address);
+        return this._client.ledger.getAccount(this.address);
     };
     AddrAccount.prototype.getLatestBlock = function () {
         return this._client.ledger.getLatestBlock(this.address);

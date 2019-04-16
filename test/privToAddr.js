@@ -1,6 +1,6 @@
 const assert = require('assert');
 
-import { newHexAddr, isValidHexAddr, getAddrFromHexAddr, getHexAddrFromAddr } from '../src/privToAddr/index';
+import { newHexAddr, isValidHexAddr, getAddrFromHexAddr, getHexAddrFromAddr, newHexAddrFromPub } from '../src/privToAddr/index';
 
 describe('newHexAddr', function () {
     it('test', function () {
@@ -14,6 +14,7 @@ describe('isValidHexAddr', function () {
     it('test-viteJS', function () {
         const k = newHexAddr();
         assert.equal(isValidHexAddr(k.hexAddr), true);
+        assert.equal(newHexAddrFromPub(k.pubKey), k.hexAddr);
     });
 
     it('test-go-vite-1', function () {

@@ -15,7 +15,7 @@ class HttpRpc extends Communication {
     _getRequest() {
         const request = new XMLHttpRequest();
 
-        request.open('POST', this.url);
+        request.open('POST', this.host);
 
         // Set headers
         request.setRequestHeader('Content-Type', 'application/json;charset=utf-8');
@@ -82,7 +82,7 @@ class HttpRpc extends Communication {
                 request.send(JSON.stringify(payload));
             } catch (err) {
                 clearRequestAndTimeout();
-                return rej(this.ERRORS.CONNECT(this.url));
+                return rej(this.ERRORS.CONNECT(this.host));
             }
         });
     }

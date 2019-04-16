@@ -172,7 +172,6 @@ class IpcWs extends Communication {
         eventType && (this[eventType] = null);
     }
 
-
     request(methodName, params) {
         const requestObj = this._getRequestPayload(methodName, params);
 

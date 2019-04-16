@@ -1,5 +1,5 @@
-import { verify, getPublicKey, sign } from '../../src/utils/ed25519';
-import { bytesToHex } from '../../src/utils';
+import { keyPair, verify, getPublicKey, sign, random } from '../../src/utils/ed25519';
+// import { bytesToHex } from '../../src/utils';
 
 const assert = require('assert');
 
@@ -28,7 +28,7 @@ testData.forEach((testCase, index) => {
 
     describe(`test_${ index }`, function () {
         it('publicKey', function () {
-            assert.equal(testCase.pub, bytesToHex(pub));
+            assert.equal(testCase.pub, Buffer.from(pub).toString('hex'));
         });
 
         it('signData', function () {
@@ -40,4 +40,14 @@ testData.forEach((testCase, index) => {
             assert.equal(result, true);
         });
     });
+});
+
+it('keyPair', function () {
+    const pairData = keyPair();
+    const _pubkey = getPublicKey(pairData.privateKey);
+    assert.deepEqual(_pubkey, pairData.publicKey);
+});
+
+it('random', function () {
+    assert.equal(random().length, 32);
 });

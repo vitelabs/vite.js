@@ -283,12 +283,13 @@ export enum onroad {
 }
 
 export enum tx {
-    'sendRawTx' = 'tx_sendRawTx'
+    'sendRawTx' = 'tx_sendRawTx',
+    'calcPoWDifficulty' = 'tx_calcPoWDifficulty'
 }
 
 export enum ledger {
     'getBlocksByAccAddr' = 'ledger_getBlocksByAccAddr',
-    'getAccountByAccAddr' = 'ledger_getAccountByAccAddr',
+    'getAccount' = 'ledger_getAccount',
     'getLatestSnapshotChainHash' = 'ledger_getLatestSnapshotChainHash',
     'getLatestBlock' = 'ledger_getLatestBlock',
     'getTokenMintage' = 'ledger_getTokenMintage',
@@ -433,7 +434,7 @@ export type consensusGroupFunc = {
 
 export type ledgerFunc = {
     getBlocksByAccAddr: Function;
-    getAccountByAccAddr: Function;
+    getAccount: Function;
     getLatestSnapshotChainHash: Function;
     getLatestBlock: Function;
     getBlockByHeight: Function;

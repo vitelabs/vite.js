@@ -87,7 +87,7 @@ var Client = (function (_super) {
                             return [2, Promise.reject(err)];
                         }
                         return [4, this.batch([{
-                                    methodName: _ledger.getAccountByAccAddr,
+                                    methodName: _ledger.getAccount,
                                     params: [addr]
                                 }, {
                                     methodName: onroad.getAccountOnroadInfo,
@@ -130,7 +130,7 @@ var Client = (function (_super) {
                             }];
                         if (!totalNum) {
                             requests.push({
-                                methodName: _ledger.getAccountByAccAddr,
+                                methodName: _ledger.getAccount,
                                 params: [addr]
                             });
                         }
@@ -138,7 +138,7 @@ var Client = (function (_super) {
                     case 1:
                         data = _e.sent();
                         requests.forEach(function (_r, i) {
-                            if (_r.methodName === _ledger.getAccountByAccAddr) {
+                            if (_r.methodName === _ledger.getAccount) {
                                 totalNum = data[i].result ? data[i].result.totalNumber : 0;
                                 return;
                             }

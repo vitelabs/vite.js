@@ -252,7 +252,9 @@ export enum BlockType {
     'TxReq',
     'RewardReq',
     'TxRes',
-    'TxResFail'
+    'TxResFail',
+    'SendRefund',
+    'GenesisReceive'
 }
 
 export enum wallet {
@@ -283,12 +285,13 @@ export enum onroad {
 }
 
 export enum tx {
-    'sendRawTx' = 'tx_sendRawTx'
+    'sendRawTx' = 'tx_sendRawTx',
+    'calcPoWDifficulty' = 'tx_calcPoWDifficulty'
 }
 
 export enum ledger {
     'getBlocksByAccAddr' = 'ledger_getBlocksByAccAddr',
-    'getAccountByAccAddr' = 'ledger_getAccountByAccAddr',
+    'getAccount' = 'ledger_getAccount',
     'getLatestSnapshotChainHash' = 'ledger_getLatestSnapshotChainHash',
     'getLatestBlock' = 'ledger_getLatestBlock',
     'getTokenMintage' = 'ledger_getTokenMintage',
@@ -336,7 +339,7 @@ export enum vote {
 }
 
 export enum mintage {
-    'getMintageData' = 'mintage_getMintageData',
+    'getMintData' = 'mintage_getMintData',
     'getMintageCancelPledgeData' = 'mintage_getMintageCancelPledgeData',
     'getTokenInfoList' = 'mintage_getTokenInfoList',
     'getTokenInfoById' = 'mintage_getTokenInfoById',
@@ -416,7 +419,7 @@ export type voteFunc = {
     getVoteInfo: Function;
 }
 export type mintageFunc = {
-    getMintageData: Function;
+    getMintData: Function;
     getMintageCancelPledgeData: Function;
     getTokenInfoList: Function;
     getTokenInfoById: Function;
@@ -433,7 +436,7 @@ export type consensusGroupFunc = {
 
 export type ledgerFunc = {
     getBlocksByAccAddr: Function;
-    getAccountByAccAddr: Function;
+    getAccount: Function;
     getLatestSnapshotChainHash: Function;
     getLatestBlock: Function;
     getBlockByHeight: Function;

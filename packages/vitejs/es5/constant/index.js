@@ -7,8 +7,8 @@ exports.Default_Hash = '00000000000000000000000000000000000000000000000000000000
 exports.Snapshot_Gid = '00000000000000000001';
 exports.Delegate_Gid = '00000000000000000002';
 exports.Quota_Addr = 'vite_000000000000000000000000000000000000000309508ba646';
-exports.Vote_Addr = 'vite_000000000000000000000000000000000000000270a48cc491';
-exports.Register_Addr = 'vite_0000000000000000000000000000000000000001c9e9f25417';
+exports.Vote_Addr = 'vite_00000000000000000000000000000000000000042d7ef71894';
+exports.Register_Addr = 'vite_00000000000000000000000000000000000000042d7ef71894';
 exports.Mintage_Addr = 'vite_00000000000000000000000000000000000000056ad6d26692';
 exports.DexFund_Addr = 'vite_000000000000000000000000000000000000000617d47459a8';
 exports.DexTrade_Addr = 'vite_000000000000000000000000000000000000000768ef0e6238';
@@ -25,7 +25,7 @@ exports.Issue_Abi = { 'type': 'function', 'name': 'Issue', 'inputs': [{ 'name': 
 exports.Burn_Abi = { 'type': 'function', 'name': 'Burn', 'inputs': [] };
 exports.TransferOwner_Abi = { 'type': 'function', 'name': 'TransferOwner', 'inputs': [{ 'name': 'tokenId', 'type': 'tokenId' }, { 'name': 'newOwner', 'type': 'address' }] };
 exports.ChangeTokenType_Abi = { 'type': 'function', 'name': 'ChangeTokenType', 'inputs': [{ 'name': 'tokenId', 'type': 'tokenId' }] };
-exports.Mint_CancelPledge_Abi = { 'type': 'function', 'name': 'CancelPledge', 'inputs': [{ 'name': 'tokenId', 'type': 'tokenId' }] };
+exports.CancelMintPledge_Abi = { 'type': 'function', 'name': 'CancelMintPledge', 'inputs': [{ 'name': 'tokenId', 'type': 'tokenId' }] };
 exports.DexFundUserDeposit_Abi = { 'type': 'function', 'name': 'DexFundUserDeposit', 'inputs': [] };
 exports.DexFundUserWithdraw_Abi = { 'type': 'function', 'name': 'DexFundUserWithdraw', 'inputs': [{ 'name': 'token', 'type': 'tokenId' }, { 'name': 'amount', 'type': 'uint256' }] };
 exports.DexTradeCancelOrder_Abi = { 'type': 'function', 'name': 'DexTradeCancelOrder', 'inputs': [{ 'name': 'orderId', 'type': 'bytes' }, { 'name': 'tradeToken', 'type': 'tokenId' }, { 'name': ',quoteToken', 'type': 'tokenId' }, { 'name': 'side', 'type': 'bool' }] };
@@ -99,7 +99,7 @@ exports.abiFuncSignature = {
     Burn: vitejs_abi_1.encodeFunctionSignature(exports.Burn_Abi),
     TransferOwner: vitejs_abi_1.encodeFunctionSignature(exports.TransferOwner_Abi),
     ChangeTokenType: vitejs_abi_1.encodeFunctionSignature(exports.ChangeTokenType_Abi),
-    Mint_CancelPledge: vitejs_abi_1.encodeFunctionSignature(exports.Mint_CancelPledge_Abi),
+    CancelMintPledge: vitejs_abi_1.encodeFunctionSignature(exports.CancelMintPledge_Abi),
     DexFundUserDeposit: vitejs_abi_1.encodeFunctionSignature(exports.DexFundUserDeposit_Abi),
     DexFundUserWithdraw: vitejs_abi_1.encodeFunctionSignature(exports.DexFundUserWithdraw_Abi),
     DexFundNewOrder: vitejs_abi_1.encodeFunctionSignature(exports.DexFundNewOrder_Abi),

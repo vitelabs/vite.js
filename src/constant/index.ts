@@ -9,8 +9,8 @@ export const Snapshot_Gid = '00000000000000000001';
 export const Delegate_Gid = '00000000000000000002';
 
 export const Quota_Addr = 'vite_000000000000000000000000000000000000000309508ba646';
-export const Vote_Addr = 'vite_000000000000000000000000000000000000000270a48cc491';
-export const Register_Addr = 'vite_0000000000000000000000000000000000000001c9e9f25417';
+export const Vote_Addr = 'vite_00000000000000000000000000000000000000042d7ef71894';
+export const Register_Addr = 'vite_00000000000000000000000000000000000000042d7ef71894';
 export const Mintage_Addr = 'vite_00000000000000000000000000000000000000056ad6d26692';
 export const DexFund_Addr = 'vite_000000000000000000000000000000000000000617d47459a8';
 export const DexTrade_Addr = 'vite_000000000000000000000000000000000000000768ef0e6238';
@@ -30,12 +30,20 @@ export const Pledge_Abi = { 'type': 'function', 'name': 'Pledge', 'inputs': [{ '
 export const CancelPledge_Abi = { 'type': 'function', 'name': 'CancelPledge', 'inputs': [ { 'name': 'beneficial', 'type': 'address' }, { 'name': 'amount', 'type': 'uint256' } ] };
 
 // Mintage
+// [TODO] ==> ping 确认 有新增合约
+
+// {"type":"event","name":"mint","inputs":[{"name":"tokenId","type":"tokenId","indexed":true}]},
+// {"type":"event","name":"issue","inputs":[{"name":"tokenId","type":"tokenId","indexed":true}]},
+// {"type":"event","name":"burn","inputs":[{"name":"tokenId","type":"tokenId","indexed":true},{"name":"address","type":"address"},{"name":"amount","type":"uint256"}]},
+// {"type":"event","name":"transferOwner","inputs":[{"name":"tokenId","type":"tokenId","indexed":true},{"name":"owner","type":"address"}]},
+// {"type":"event","name":"changeTokenType","inputs":[{"name":"tokenId","type":"tokenId","indexed":true}]}
+
 export const Mint_Abi = { 'type': 'function', 'name': 'Mint', 'inputs': [ { 'name': 'isReIssuable', 'type': 'bool' }, { 'name': 'tokenId', 'type': 'tokenId' }, { 'name': 'tokenName', 'type': 'string' }, { 'name': 'tokenSymbol', 'type': 'string' }, { 'name': 'totalSupply', 'type': 'uint256' }, { 'name': 'decimals', 'type': 'uint8' }, { 'name': 'maxSupply', 'type': 'uint256' }, { 'name': 'ownerBurnOnly', 'type': 'bool' } ] };
 export const Issue_Abi = { 'type': 'function', 'name': 'Issue', 'inputs': [ { 'name': 'tokenId', 'type': 'tokenId' }, { 'name': 'amount', 'type': 'uint256' }, { 'name': 'beneficial', 'type': 'address' } ] };
 export const Burn_Abi = { 'type': 'function', 'name': 'Burn', 'inputs': [] };
 export const TransferOwner_Abi = { 'type': 'function', 'name': 'TransferOwner', 'inputs': [ { 'name': 'tokenId', 'type': 'tokenId' }, { 'name': 'newOwner', 'type': 'address' } ] };
 export const ChangeTokenType_Abi = { 'type': 'function', 'name': 'ChangeTokenType', 'inputs': [{ 'name': 'tokenId', 'type': 'tokenId' }] };
-export const Mint_CancelPledge_Abi = { 'type': 'function', 'name': 'CancelPledge', 'inputs': [{ 'name': 'tokenId', 'type': 'tokenId' }] };
+export const CancelMintPledge_Abi = { 'type': 'function', 'name': 'CancelMintPledge', 'inputs': [{ 'name': 'tokenId', 'type': 'tokenId' }] };
 
 // DEX
 export const DexFundUserDeposit_Abi = { 'type': 'function', 'name': 'DexFundUserDeposit', 'inputs': [] };
@@ -49,7 +57,9 @@ export enum BlockType {
     'TxReq',
     'RewardReq',
     'TxRes',
-    'TxResFail'
+    'TxResFail',
+    'SendRefund',
+    'GenesisReceive'
 }
 
 export enum BuiltinTxType {
@@ -76,7 +86,9 @@ export enum BuiltinTxType {
     'TxReq',
     'RewardReq',
     'TxRes',
-    'TxResFail'
+    'TxResFail',
+    'SendRefund',
+    'GenesisReceive'
 }
 
 export enum LangList {
@@ -113,7 +125,7 @@ export const abiFuncSignature = {
     Burn: encodeFunctionSignature(Burn_Abi),
     TransferOwner: encodeFunctionSignature(TransferOwner_Abi),
     ChangeTokenType: encodeFunctionSignature(ChangeTokenType_Abi),
-    Mint_CancelPledge: encodeFunctionSignature(Mint_CancelPledge_Abi),
+    CancelMintPledge: encodeFunctionSignature(CancelMintPledge_Abi),
     DexFundUserDeposit: encodeFunctionSignature(DexFundUserDeposit_Abi),
     DexFundUserWithdraw: encodeFunctionSignature(DexFundUserWithdraw_Abi),
     DexFundNewOrder: encodeFunctionSignature(DexFundNewOrder_Abi),

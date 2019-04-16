@@ -2,15 +2,18 @@ const nacl = require('@sisi/tweetnacl-blake2b');
 import { Hex } from '../type';
 import { checkParams } from './index';
 
-export function keyPair() {
-    return nacl.sign.keyPair();
+export function keyPair(): { privateKey: Buffer; publicKey: Buffer; } {
+    const keys = nacl.sign.keyPair();
+    return {
+        privateKey: keys.secretKey,
+        publicKey: keys.publicKey
+    };
 }
 
 export function getPublicKey(privKey: Buffer) {
     const err = checkParams({ privKey }, ['privKey']);
     if (err) {
-        console.error(new Error(err.message));
-        return null;
+        throw new Error(err.message);
     }
 
     const key = nacl.sign.keyPair.fromSecretKey(privKey);
@@ -20,8 +23,7 @@ export function getPublicKey(privKey: Buffer) {
 export function sign(hexStr: Hex, privKey: Buffer) {
     const err = checkParams({ hexStr, privKey }, [ 'hexStr', 'privKey' ]);
     if (err) {
-        console.error(new Error(err.message));
-        return null;
+        throw new Error(err.message);
     }
 
     const hash = Buffer.from(hexStr, 'hex');
@@ -34,8 +36,7 @@ export function sign(hexStr: Hex, privKey: Buffer) {
 export function verify(message: Hex, signature: Hex, publicKey: Buffer) {
     const err = checkParams({ message, signature, publicKey }, [ 'message', 'signature', 'publicKey' ]);
     if (err) {
-        console.error(new Error(err.message));
-        return null;
+        throw new Error(err.message);
     }
 
     const _msg = Buffer.from(message, 'hex');
@@ -46,8 +47,7 @@ export function verify(message: Hex, signature: Hex, publicKey: Buffer) {
 export function random(bytesLen: number = 32) {
     const err = checkParams({ bytesLen }, ['bytesLen']);
     if (err) {
-        console.error(new Error(err.message));
-        return null;
+        throw new Error(err.message);
     }
 
     return nacl.randomBytes(bytesLen);
