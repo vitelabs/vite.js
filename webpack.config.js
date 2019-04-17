@@ -20,6 +20,7 @@ module.exports = {
     mode: 'production',
     entry: {
         abi: path.join(baseDir, '/abi/index.ts'),
+        addrAccount: path.join(baseDir, '/addrAccount/index.ts'),
         account: path.join(baseDir, '/account/index.ts'),
         accountBlock: path.join(baseDir, '/accountBlock/index.ts'),
         client: path.join(baseDir, '/client/index.ts'),
