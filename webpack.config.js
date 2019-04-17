@@ -5,13 +5,17 @@ const baseDir = path.join(__dirname, './src');
 const target = process.env.build_target;
 const Buffer_Path = path.join(__dirname, './node_modules/buffer/index.js');
 
+const plugins = [
+    new webpack.DefinePlugin({ 'processSilence': process.env.NODE_ENV && process.env.NODE_ENV.indexOf('test') === 0 ? 0 : 1 })
+];
+if (target === 'web') {
+    plugins.push(new webpack.NormalModuleReplacementPlugin(/\/buffer\//, function (resource) {
+        resource.request = Buffer_Path;
+    }));
+}
+
 module.exports = {
-    plugins: [
-        new webpack.NormalModuleReplacementPlugin(/\/buffer\//, function (resource) {
-            resource.request = Buffer_Path;
-        }),
-        new webpack.DefinePlugin({ 'processSilence': process.env.NODE_ENV && process.env.NODE_ENV.indexOf('test') === 0 ? 0 : 1 })
-    ],
+    plugins,
     target,
     mode: 'production',
     entry: {
@@ -34,8 +38,10 @@ module.exports = {
         IPC: path.join(baseDir, 'IPC/index.js')
     },
     output: {
+        globalObject: 'this',
         libraryTarget: 'umd',
         umdNamedDefine: true,
+        library: '$vite_[name]',
         filename: `[name].${ target }.js`,
         path: path.join(__dirname, 'packages/dist')
     },

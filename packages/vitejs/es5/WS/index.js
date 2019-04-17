@@ -78,5 +78,5 @@ var WsRpc = (function (_super) {
     };
     return WsRpc;
 }(ipc_ws_1.default));
-var WS_RPC = WsRpc;
-exports.default = WS_RPC;
+exports.WS_RPC = WsRpc;
+exports.default = exports.WS_RPC;

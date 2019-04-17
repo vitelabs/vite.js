@@ -37,8 +37,7 @@ function getSendTxBlock(_a) {
     var accountAddress = _a.accountAddress, toAddress = _a.toAddress, tokenId = _a.tokenId, amount = _a.amount, message = _a.message, height = _a.height, prevHash = _a.prevHash, snapshotHash = _a.snapshotHash;
     var err = vitejs_utils_1.checkParams({ toAddress: toAddress, tokenId: tokenId, amount: amount }, ['toAddress', 'tokenId', 'amount']);
     if (err) {
-        console.error(new Error(err.message));
-        return null;
+        throw new Error(err.message);
     }
     return getAccountBlock({
         blockType: 2,
@@ -57,8 +56,7 @@ function getReceiveTxBlock(_a) {
     var accountAddress = _a.accountAddress, fromBlockHash = _a.fromBlockHash, height = _a.height, prevHash = _a.prevHash, snapshotHash = _a.snapshotHash;
     var err = vitejs_utils_1.checkParams({ fromBlockHash: fromBlockHash }, ['fromBlockHash']);
     if (err) {
-        console.error(new Error(err.message));
-        return null;
+        throw new Error(err.message);
     }
     return getAccountBlock({
         blockType: 4,

@@ -8,7 +8,10 @@ var type_1 = require("../type");
 var Wallet = (function () {
     function Wallet(_a, _b) {
         var client = _a.client, mnemonic = _a.mnemonic, _c = _a.bits, bits = _c === void 0 ? 256 : _c, _d = _a.addrNum, addrNum = _d === void 0 ? 1 : _d, _e = _a.lang, lang = _e === void 0 ? type_1.LangList.english : _e, _f = _a.pwd, pwd = _f === void 0 ? '' : _f;
-        var _g = _b.addrTotalNum, addrTotalNum = _g === void 0 ? 10 : _g, _h = _b.addrStartInx, addrStartInx = _h === void 0 ? 0 : _h;
+        var _g = _b === void 0 ? {
+            addrTotalNum: 10,
+            addrStartInx: 0
+        } : _b, _h = _g.addrTotalNum, addrTotalNum = _h === void 0 ? 10 : _h, _j = _g.addrStartInx, addrStartInx = _j === void 0 ? 0 : _j;
         var err = vitejs_utils_1.checkParams({ mnemonic: mnemonic, client: client }, ['client'], [{
                 name: 'mnemonic',
                 func: function (_mnemonic) { return vitejs_hdaddr_1.validateMnemonic(_mnemonic, lang); }
@@ -29,7 +32,7 @@ var Wallet = (function () {
             this.entropy = vitejs_hdaddr_1.getEntropyFromMnemonic(mnemonic, this.lang);
         }
         else {
-            var _j = vitejs_hdaddr_1.newAddr(bits, this.lang, this.pwd), entropy = _j.entropy, mnemonic_1 = _j.mnemonic;
+            var _k = vitejs_hdaddr_1.newAddr(bits, this.lang, this.pwd), entropy = _k.entropy, mnemonic_1 = _k.mnemonic;
             this.mnemonic = mnemonic_1;
             this.entropy = entropy;
         }
@@ -41,7 +44,11 @@ var Wallet = (function () {
     Wallet.prototype.activateAccount = function (_a, _b) {
         var _this = this;
         var address = _a.address, _c = _a.index, index = _c === void 0 ? this.addrStartInx : _c;
-        var _d = _b.intervals, intervals = _d === void 0 ? 2000 : _d, _e = _b.receiveFailAction, receiveFailAction = _e === void 0 ? null : _e, _f = _b.duration, duration = _f === void 0 ? 5 * 60 * 1000 : _f;
+        var _d = _b === void 0 ? {
+            intervals: 2000,
+            receiveFailAction: null,
+            duration: 5 * 60 * 1000
+        } : _b, _e = _d.intervals, intervals = _e === void 0 ? 2000 : _e, _f = _d.receiveFailAction, receiveFailAction = _f === void 0 ? null : _f, _g = _d.duration, duration = _g === void 0 ? 5 * 60 * 1000 : _g;
         index = validAddrParams({ address: address, index: index });
         if (index === null) {
             return null;

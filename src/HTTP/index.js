@@ -1,4 +1,4 @@
-import Communication from '~@vite/vitejs-communication/Communication.js';
+import Communication from '~@vite/vitejs-communication/communication.js';
 const XMLHttpRequest = typeof window !== 'undefined' && window.XMLHttpRequest
     ? window.XMLHttpRequest : require('xhr2');
 
@@ -154,5 +154,5 @@ class HttpRpc extends Communication {
     }
 }
 
-const HTTP_RPC = HttpRpc;
+export const HTTP_RPC = HttpRpc;
 export default HTTP_RPC;

@@ -83,5 +83,5 @@ var IpcRpc = (function (_super) {
     };
     return IpcRpc;
 }(ipc_ws_1.default));
-var IPC_RPC = IpcRpc;
-exports.default = IPC_RPC;
+exports.IPC_RPC = IpcRpc;
+exports.default = exports.IPC_RPC;
