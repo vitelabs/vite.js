@@ -14,7 +14,8 @@
         "coverage": "nyc report --reporter=text-lcov | coveralls",
         "lint": "eslint --ext js,ts --cache --fix .",
         "lint-all": "eslint --ext js,ts --fix .",
-        "publish-alpha": "yarn run build && lerna publish --dist-tag alpha"
+        "publish-alpha": "yarn run build && lerna publish --dist-tag alpha",
+        "publish": "yarn run build && lerna publish"
     },
     "repository": {
         "type": "git",
