@@ -16,8 +16,7 @@ class WsRpc extends IPC_WS {
         });
 
         if (!path) {
-            console.error(this.ERRORS.CONNECT(path));
-            return this.ERRORS.CONNECT(path);
+            throw this.ERRORS.CONNECT(path);
         }
 
         this.timeout = timeout;

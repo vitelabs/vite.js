@@ -76,8 +76,7 @@ export function encryptV1ToV3(key, keystore) {
 export function encryptOldKeystore(privKey, pwd, selfScryptsy) {
     const err = checkParams({ privKey, pwd }, [ 'privKey', 'pwd' ]);
     if (err) {
-        console.error(new Error(err.message));
-        return false;
+        throw new Error(err.message);
     }
 
     const key = newHexAddr(privKey);

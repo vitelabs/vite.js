@@ -18,8 +18,7 @@ export function getEntropyFromMnemonic(mnemonic: string, lang: LangList = LangLi
         func: _m => validateMnemonic(_m, lang)
     }]);
     if (err) {
-        console.error(new Error(err.message));
-        return null;
+        throw new Error(err.message);
     }
 
     return bip39.mnemonicToEntropy(mnemonic, getWordList(lang));
@@ -28,8 +27,7 @@ export function getEntropyFromMnemonic(mnemonic: string, lang: LangList = LangLi
 export function getMnemonicFromEntropy(entropy: string, lang: LangList = LangList.english): string {
     const err = checkParams({ entropy }, ['entropy']);
     if (err) {
-        console.error(new Error(err.message));
-        return null;
+        throw new Error(err.message);
     }
 
     return bip39.entropyToMnemonic(entropy, getWordList(lang));
@@ -40,8 +38,7 @@ export function newAddr(bits: number = 256, lang: LangList = LangList.english, p
 } {
     const err = checkParams({ bits }, ['bits']);
     if (err) {
-        console.error(new Error(err.message));
-        return null;
+        throw new Error(err.message);
     }
 
     const wordList = getWordList(lang);
@@ -61,8 +58,7 @@ export function getAddrFromMnemonic(mnemonic, index = 0, lang: LangList = LangLi
         func: _m => validateMnemonic(_m, lang)
     }]);
     if (err) {
-        console.error(new Error(err.message));
-        return null;
+        throw new Error(err.message);
     }
 
     if (index < 0) {
@@ -81,8 +77,7 @@ export function getAddrsFromMnemonic(mnemonic, start = 0, num = 10, lang: LangLi
         func: _m => validateMnemonic(_m, lang)
     }]);
     if (err) {
-        console.error(new Error(err.message));
-        return null;
+        throw new Error(err.message);
     }
 
     if (start < 0) {

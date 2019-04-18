@@ -69,8 +69,7 @@ export function getRawTokenId(tokenId: string) {
     }]);
 
     if (err) {
-        console.error(new Error(err.message));
-        return null;
+        throw new Error(err.message);
     }
 
     return tokenId.slice(4, tokenId.length - 4);
@@ -82,8 +81,7 @@ export function getTokenIdFromRaw(rawTokenId: string) {
         func: _t => /^[0-9a-fA-F]+$/.test(_t) && _t.length === 20
     }]);
     if (err) {
-        console.error(new Error(err.message));
-        return null;
+        throw new Error(err.message);
     }
 
     const checkSum = blake.blake2bHex(Buffer.from(rawTokenId, 'hex'), null, 2);
@@ -110,8 +108,7 @@ export function isObject(obj) {
 export function bytesToHex(arr: Buffer = Buffer.from([])): Hex {
     const err = checkParams({ arr }, ['arr']);
     if (err) {
-        console.error(new Error(err.message));
-        return null;
+        throw new Error(err.message);
     }
 
     const hexArr = Array.prototype.map.call(arr, function (bit: Number) {
@@ -123,8 +120,7 @@ export function bytesToHex(arr: Buffer = Buffer.from([])): Hex {
 export function hexToBytes(hex: Hex) {
     const err = checkParams({ hex }, ['hex']);
     if (err) {
-        console.error(new Error(err.message));
-        return null;
+        throw new Error(err.message);
     }
 
     const typedArray = new Uint8Array(hex.match(/[\da-f]{2}/gi).map(function (h) {
@@ -136,8 +132,7 @@ export function hexToBytes(hex: Hex) {
 export function getBytesSize(str: String, charset: Charset = Charset.utf8) {
     const err = checkParams({ str }, ['str']);
     if (err) {
-        console.error(new Error(err.message));
-        return null;
+        throw new Error(err.message);
     }
 
     let total = 0;
@@ -171,8 +166,7 @@ export function getBytesSize(str: String, charset: Charset = Charset.utf8) {
 export function utf8ToBytes(str = '') {
     const err = checkParams({ str }, ['str']);
     if (err) {
-        console.error(new Error(err.message));
-        return null;
+        throw new Error(err.message);
     }
 
     const back = [];

@@ -15,8 +15,7 @@ const txType = enumTxType();
 export function getAccountBlock({ blockType, fromBlockHash, accountAddress, message, data, height, prevHash, toAddress, tokenId, amount, nonce }: syncFormatBlock) {
     const reject = (error, errMsg = '') => {
         const message = `${ error.message || '' } ${ errMsg }`;
-        console.error(new Error(message));
-        return null;
+        throw new Error(message);
     };
 
     const err = validReqAccountBlock({ blockType, fromBlockHash, accountAddress, message, data, toAddress, amount });

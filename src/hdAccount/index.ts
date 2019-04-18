@@ -32,8 +32,7 @@ class Wallet {
             func: _mnemonic => validateMnemonic(_mnemonic, lang)
         }]);
         if (err) {
-            console.error(new Error(err.message));
-            return;
+            throw new Error(err.message);
         }
 
         this._client = client;

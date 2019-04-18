@@ -155,7 +155,6 @@ const validatedFuncs = [ isValidOldKeystore, isValidVersion1, isValidVersion2, i
 export default function isValid(keystore) {
     const err = checkParams({ keystore }, ['keystore']);
     if (err) {
-        console.error(err);
         return false;
     }
 

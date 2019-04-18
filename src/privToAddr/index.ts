@@ -29,8 +29,7 @@ export function newHexAddr(priv?: Hex | Buffer): AddrObj {
 export function newHexAddrFromPub(pubkey: Hex | Buffer): string {
     const err = checkParams({ pubkey }, ['pubkey']);
     if (err) {
-        console.error(new Error(err.message));
-        return null;
+        throw new Error(err.message);
     }
 
     const addr = newAddrFromPub(pubkey);
@@ -45,8 +44,7 @@ export function getAddrFromHexAddr(hexAddr: Hex): Hex {
         func: isValidHexAddr
     }]);
     if (err) {
-        console.error(new Error(err.message));
-        return null;
+        throw new Error(err.message);
     }
 
     return getRealAddr(hexAddr);
@@ -58,8 +56,7 @@ export function getHexAddrFromAddr(realAddr: Hex): string {
         func: _realAddr => typeof _realAddr === 'string' && /^[0-9a-fA-F]+$/.test(_realAddr) && _realAddr.length === ADDR_SIZE * 2
     }]);
     if (err) {
-        console.error(new Error(err.message));
-        return null;
+        throw new Error(err.message);
     }
 
     const checkSum = getAddrCheckSum(Buffer.from(realAddr, 'hex'));
