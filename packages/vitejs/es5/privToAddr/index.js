@@ -75,7 +75,7 @@ function newAddr(privKey) {
     }
     else {
         var _keyPair = keyPair();
-        _privKey = _keyPair.secretKey;
+        _privKey = _keyPair.privateKey;
     }
     var addr = newAddrFromPriv(_privKey);
     return { addr: addr, privKey: _privKey };

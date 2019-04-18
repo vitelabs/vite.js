@@ -38,6 +38,8 @@ var BlockType;
     BlockType[BlockType["RewardReq"] = 3] = "RewardReq";
     BlockType[BlockType["TxRes"] = 4] = "TxRes";
     BlockType[BlockType["TxResFail"] = 5] = "TxResFail";
+    BlockType[BlockType["SendRefund"] = 6] = "SendRefund";
+    BlockType[BlockType["GenesisReceive"] = 7] = "GenesisReceive";
 })(BlockType = exports.BlockType || (exports.BlockType = {}));
 var BuiltinTxType;
 (function (BuiltinTxType) {
@@ -65,6 +67,8 @@ var BuiltinTxType;
     BuiltinTxType[BuiltinTxType["RewardReq"] = 21] = "RewardReq";
     BuiltinTxType[BuiltinTxType["TxRes"] = 22] = "TxRes";
     BuiltinTxType[BuiltinTxType["TxResFail"] = 23] = "TxResFail";
+    BuiltinTxType[BuiltinTxType["SendRefund"] = 24] = "SendRefund";
+    BuiltinTxType[BuiltinTxType["GenesisReceive"] = 25] = "GenesisReceive";
 })(BuiltinTxType = exports.BuiltinTxType || (exports.BuiltinTxType = {}));
 var LangList;
 (function (LangList) {

@@ -34,8 +34,7 @@ function getSendTxBlock(_a) {
     var accountAddress = _a.accountAddress, toAddress = _a.toAddress, tokenId = _a.tokenId, amount = _a.amount, message = _a.message, height = _a.height, prevHash = _a.prevHash;
     var err = vitejs_utils_1.checkParams({ toAddress: toAddress, tokenId: tokenId, amount: amount }, ['toAddress', 'tokenId', 'amount']);
     if (err) {
-        console.error(new Error(err.message));
-        return null;
+        throw new Error(err.message);
     }
     return getAccountBlock({
         blockType: 2,
@@ -53,8 +52,7 @@ function getReceiveTxBlock(_a) {
     var accountAddress = _a.accountAddress, fromBlockHash = _a.fromBlockHash, height = _a.height, prevHash = _a.prevHash;
     var err = vitejs_utils_1.checkParams({ fromBlockHash: fromBlockHash }, ['fromBlockHash']);
     if (err) {
-        console.error(new Error(err.message));
-        return null;
+        throw new Error(err.message);
     }
     return getAccountBlock({
         blockType: 4,
@@ -98,7 +96,7 @@ function getBlockHash(accountBlock) {
     }
     source += getNumberHex(accountBlock.fee);
     source += accountBlock.logHash || '';
-    source += accountBlock.nonce ? Buffer.from(accountBlock.nonce, 'base64').toString('hex') : '';
+    source += getNonceHex(accountBlock.nonce);
     var sendBlockList = accountBlock.sendBlockList || [];
     sendBlockList.forEach(function (block) {
         source += block.hash;
@@ -148,12 +146,22 @@ function enumTxType() {
     txType[vitejs_constant_1.abiFuncSignature.DexFundNewMarket + "_" + vitejs_constant_1.contractAddrs.DexFund] = 'DexFundNewMarket';
     return txType;
 }
+function leftPadBytes(bytesData, len) {
+    if (bytesData && len - bytesData.length < 0) {
+        return bytesData.toString('hex');
+    }
+    var result = new Uint8Array(len);
+    if (bytesData) {
+        result.set(bytesData, len - bytesData.length);
+    }
+    return Buffer.from(result).toString('hex');
+}
 function getNumberHex(amount) {
-    var amountResult = new Uint8Array(32);
     var bigAmount = new BigNumber(amount);
     var amountBytes = amount && !bigAmount.isZero() ? bigAmount.toArray('big') : '';
-    if (amountBytes) {
-        amountResult.set(amountBytes, 32 - amountBytes.length);
-    }
-    return Buffer.from(amountResult).toString('hex');
+    return leftPadBytes(amountBytes, 32);
+}
+function getNonceHex(nonce) {
+    var nonceBytes = nonce ? Buffer.from(nonce, 'base64') : '';
+    return leftPadBytes(nonceBytes, 8);
 }

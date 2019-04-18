@@ -50,7 +50,8 @@ function newAddr(bits, lang, pwd) {
     var seed = bip39.mnemonicToSeedHex(mnemonic, pwd);
     var path = getPath(0);
     var addr = getAddrFromPath(path, seed);
-    return { addr: addr, entropy: entropy, mnemonic: mnemonic };
+    var id = exports.getId(mnemonic, lang);
+    return { addr: addr, entropy: entropy, mnemonic: mnemonic, id: id };
 }
 exports.newAddr = newAddr;
 function getAddrFromMnemonic(mnemonic, index, lang, pwd) {
@@ -104,22 +105,7 @@ function getAddrsFromMnemonic(mnemonic, start, num, lang, pwd) {
     return addrs;
 }
 exports.getAddrsFromMnemonic = getAddrsFromMnemonic;
-function getId(mnemonic, lang) {
-    if (lang === void 0) { lang = type_1.LangList.english; }
-    var err = vitejs_utils_1.checkParams({ mnemonic: mnemonic }, ['mnemonic'], [{
-            name: 'mnemonic',
-            func: function (_m) { return validateMnemonic(_m, lang); }
-        }]);
-    if (err) {
-        console.error(new Error(err.message));
-        return null;
-    }
-    var addrObj = getAddrFromMnemonic(mnemonic, 0);
-    var keyBuffer = Buffer.from(addrObj.hexAddr);
-    var idByte = vitejs_utils_1.blake2b(keyBuffer, null, 32);
-    return Buffer.from(idByte).toString('hex');
-}
-exports.getId = getId;
+exports.getId = _getId;
 exports.getAddrFromHexAddr = vitejs_privtoaddr_1.getAddrFromHexAddr;
 exports.isValidHexAddr = vitejs_privtoaddr_1.isValidHexAddr;
 function getAddrFromPath(path, seed) {
@@ -135,4 +121,19 @@ function getWordList(lang) {
     if (lang === void 0) { lang = type_1.LangList.english; }
     lang = lang && bip39.wordlists[lang] ? lang : type_1.LangList.english;
     return bip39.wordlists[lang];
+}
+function _getId(mnemonic, lang) {
+    if (lang === void 0) { lang = type_1.LangList.english; }
+    var err = vitejs_utils_1.checkParams({ mnemonic: mnemonic }, ['mnemonic'], [{
+            name: 'mnemonic',
+            func: function (_m) { return validateMnemonic(_m, lang); }
+        }]);
+    if (err) {
+        console.error(new Error(err.message));
+        return null;
+    }
+    var addrObj = getAddrFromMnemonic(mnemonic, 0);
+    var keyBuffer = Buffer.from(addrObj.hexAddr);
+    var idByte = vitejs_utils_1.blake2b(keyBuffer, null, 32);
+    return Buffer.from(idByte).toString('hex');
 }

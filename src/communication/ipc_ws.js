@@ -1,4 +1,4 @@
-import Communication from './communication';
+import Communication from './communication.js';
 
 class IpcWs extends Communication {
     constructor({ onEventTypes, sendFuncName, path }) {

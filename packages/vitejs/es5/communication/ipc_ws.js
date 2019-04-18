@@ -13,7 +13,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var communication_1 = require("./communication");
+var communication_js_1 = require("./communication.js");
 var IpcWs = (function (_super) {
     __extends(IpcWs, _super);
     function IpcWs(_a) {
@@ -195,7 +195,7 @@ var IpcWs = (function (_super) {
         this.subscribeMethod = null;
     };
     return IpcWs;
-}(communication_1.default));
+}(communication_js_1.default));
 var IPC_WS = IpcWs;
 exports.default = IPC_WS;
 function getIdFromPayloads(payloads) {

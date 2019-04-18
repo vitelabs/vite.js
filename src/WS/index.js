@@ -65,5 +65,5 @@ class WsRpc extends IPC_WS {
     }
 }
 
-const WS_RPC = WsRpc;
+export const WS_RPC = WsRpc;
 export default WS_RPC;

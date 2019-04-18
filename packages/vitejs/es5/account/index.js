@@ -142,7 +142,7 @@ var Account = (function (_super) {
                         _b.label = 2;
                     case 2:
                         _b.trys.push([2, 4, , 5]);
-                        return [4, this.receiveTx({ fromBlockHash: fromBlockHash })];
+                        return [4, this.receiveTx(fromBlockHash)];
                     case 3:
                         data = _b.sent();
                         return [2, data];
@@ -210,12 +210,11 @@ var Account = (function (_super) {
             });
         });
     };
-    Account.prototype.receiveTx = function (_b) {
-        var fromBlockHash = _b.fromBlockHash;
+    Account.prototype.receiveTx = function (fromBlockHash) {
         return __awaiter(this, void 0, void 0, function () {
             var reqBlock, _receiveTxBlock;
-            return __generator(this, function (_c) {
-                switch (_c.label) {
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0:
                         reqBlock = {
                             accountAddress: this.address,
@@ -223,7 +222,7 @@ var Account = (function (_super) {
                         };
                         return [4, this._client.buildinTxBlock.asyncReceiveTx(reqBlock)];
                     case 1:
-                        _receiveTxBlock = _c.sent();
+                        _receiveTxBlock = _b.sent();
                         return [2, this._client.sendRawTx(_receiveTxBlock, this.privateKey)];
                 }
             });

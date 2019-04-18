@@ -13,7 +13,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var Communication_js_1 = require("./../communication/Communication.js");
+var communication_js_1 = require("./../communication/communication.js");
 var XMLHttpRequest = typeof window !== 'undefined' && window.XMLHttpRequest
     ? window.XMLHttpRequest : require('xhr2');
 var HttpRpc = (function (_super) {
@@ -31,7 +31,7 @@ var HttpRpc = (function (_super) {
     }
     HttpRpc.prototype._getRequest = function () {
         var request = new XMLHttpRequest();
-        request.open('POST', this.url);
+        request.open('POST', this.host);
         request.setRequestHeader('Content-Type', 'application/json;charset=utf-8');
         this.headers && this.headers.forEach(function (header) {
             request.setRequestHeader(header.name, header.value);
@@ -85,7 +85,7 @@ var HttpRpc = (function (_super) {
             }
             catch (err) {
                 clearRequestAndTimeout();
-                return rej(_this.ERRORS.CONNECT(_this.url));
+                return rej(_this.ERRORS.CONNECT(_this.host));
             }
         });
     };
@@ -139,6 +139,6 @@ var HttpRpc = (function (_super) {
         });
     };
     return HttpRpc;
-}(Communication_js_1.default));
-var HTTP_RPC = HttpRpc;
-exports.default = HTTP_RPC;
+}(communication_js_1.default));
+exports.HTTP_RPC = HttpRpc;
+exports.default = exports.HTTP_RPC;

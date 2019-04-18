@@ -252,7 +252,9 @@ export enum BlockType {
     'TxReq',
     'RewardReq',
     'TxRes',
-    'TxResFail'
+    'TxResFail',
+    'SendRefund',
+    'GenesisReceive'
 }
 
 export enum wallet {
@@ -337,7 +339,7 @@ export enum vote {
 }
 
 export enum mintage {
-    'getMintageData' = 'mintage_getMintageData',
+    'getMintData' = 'mintage_getMintData',
     'getMintageCancelPledgeData' = 'mintage_getMintageCancelPledgeData',
     'getTokenInfoList' = 'mintage_getTokenInfoList',
     'getTokenInfoById' = 'mintage_getTokenInfoById',
@@ -417,7 +419,7 @@ export type voteFunc = {
     getVoteInfo: Function;
 }
 export type mintageFunc = {
-    getMintageData: Function;
+    getMintData: Function;
     getMintageCancelPledgeData: Function;
     getTokenInfoList: Function;
     getTokenInfoById: Function;

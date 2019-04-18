@@ -34,6 +34,8 @@ var BlockType;
     BlockType[BlockType["RewardReq"] = 3] = "RewardReq";
     BlockType[BlockType["TxRes"] = 4] = "TxRes";
     BlockType[BlockType["TxResFail"] = 5] = "TxResFail";
+    BlockType[BlockType["SendRefund"] = 6] = "SendRefund";
+    BlockType[BlockType["GenesisReceive"] = 7] = "GenesisReceive";
 })(BlockType = exports.BlockType || (exports.BlockType = {}));
 var wallet;
 (function (wallet) {
@@ -118,7 +120,7 @@ var vote;
 })(vote = exports.vote || (exports.vote = {}));
 var mintage;
 (function (mintage) {
-    mintage["getMintageData"] = "mintage_getMintageData";
+    mintage["getMintData"] = "mintage_getMintData";
     mintage["getMintageCancelPledgeData"] = "mintage_getMintageCancelPledgeData";
     mintage["getTokenInfoList"] = "mintage_getTokenInfoList";
     mintage["getTokenInfoById"] = "mintage_getTokenInfoById";

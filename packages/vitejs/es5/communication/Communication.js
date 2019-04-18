@@ -1,11 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+var jsonrpc = require('jsonrpc-lite');
 var errors_1 = require("./errors");
-var jsonrpc_lite_1 = require("jsonrpc-lite");
 var Communication = (function () {
     function Communication() {
         this.ERRORS = errors_1.default;
-        this.jsonrpc = jsonrpc_lite_1.default;
+        this.jsonrpc = jsonrpc;
         this._requestManager = [];
         this._requestId = 0;
     }

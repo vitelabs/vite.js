@@ -74,5 +74,5 @@ class IpcRpc extends IPC_WS {
     }
 }
 
-const IPC_RPC = IpcRpc;
+export const IPC_RPC = IpcRpc;
 export default IPC_RPC;
