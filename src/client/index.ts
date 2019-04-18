@@ -162,10 +162,8 @@ export default class Client extends netProcessor {
 
             for (const methodName in spaceMethods) {
                 const name = spaceMethods[methodName];
-                this[_namespace][methodName] = (...args: any[]) => {
-                    console.log(...args);
-                    return this.request(name, ...args);
-                };
+                // console.log(...args);
+                this[_namespace][methodName] = (...args: any[]) => this.request(name, ...args);
             }
         }
     }
