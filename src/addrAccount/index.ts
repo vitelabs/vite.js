@@ -39,7 +39,7 @@ export default class AddrAccount {
     }
 
     getAccountBalance() {
-        return this._client.ledger.getAccount(this.address);
+        return this._client.ledger.getAccountByAccAddr(this.address);
     }
 
     getLatestBlock() {

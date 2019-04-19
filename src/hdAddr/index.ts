@@ -92,7 +92,7 @@ export function getAddrsFromMnemonic(mnemonic, start = 0, num = 10, lang: LangLi
     const addrs = [];
     const seed = bip39.mnemonicToSeedHex(mnemonic, pwd);
 
-    for (let i = start; i < num; i++) {
+    for (let i = start; i < start + num; i++) {
         const currentPath = getPath(i);
         const addr = getAddrFromPath(currentPath, seed);
         addrs.push(addr);

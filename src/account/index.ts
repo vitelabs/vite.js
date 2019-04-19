@@ -20,7 +20,6 @@ class Account extends addrAccount {
         privateKey?: Hex | Buffer; client: client;
     }) {
         if (!client) {
-            super();
             throw new Error(`${ paramsMissing.message } Client.`);
         }
 
@@ -263,13 +262,13 @@ class Account extends addrAccount {
         return this._client.sendRawTx(_withdrawalOfQuotaBlock, this.privateKey);
     }
 
-    async createContract({ hexCode, abi, params, tokenId, amount, fee = '10000000000000000000' }) {
+    async createContract({ hexCode, abi, params, confirmTimes, amount, fee = '10000000000000000000' }) {
         const _createContractBlock = await this._client.buildinTxBlock.createContract({
             accountAddress: this.address,
             hexCode,
             abi,
             params,
-            tokenId,
+            confirmTimes,
             amount,
             fee
         });

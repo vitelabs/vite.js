@@ -6,7 +6,7 @@ import { isValidHexAddr } from '~@vite/vitejs-privtoaddr';
 import { getBuiltinTxType, signAccountBlock, validReqAccountBlock } from '~@vite/vitejs-accountblock';
 
 import TxBlock from './txBlock';
-import { RPCrequest, BuiltinTxType, Address, subscribeFunc, walletFunc, netFunc, onroadFunc, contractFunc, pledgeFunc, registerFunc, voteFunc, mintageFunc, consensusGroupFunc, ledgerFunc, txFunc } from '../type';
+import { RPCrequest, BuiltinTxType, Address, subscribeFunc, walletFunc, netFunc, onroadFunc, contractFunc, pledgeFunc, registerFunc, voteFunc, mintageFunc, ledgerFunc, txFunc } from '../type';
 
 const { onroad } = _methods;
 const _ledger = _methods.ledger;
@@ -23,7 +23,6 @@ export default class Client extends netProcessor {
     register: registerFunc
     vote: voteFunc
     mintage: mintageFunc
-    consensusGroup: consensusGroupFunc
     ledger: ledgerFunc
     tx: txFunc
     subscribeFunc: subscribeFunc
@@ -57,10 +56,10 @@ export default class Client extends netProcessor {
         }
 
         const data = await this.batch([ {
-            methodName: _ledger.getAccount,
+            methodName: _ledger.getAccountByAccAddr,
             params: [addr]
         }, {
-            methodName: onroad.getAccountOnroadInfo,
+            methodName: onroad.getOnroadInfoByAddress,
             params: [addr]
         } ]);
 
@@ -97,7 +96,7 @@ export default class Client extends netProcessor {
         }];
         if (!totalNum) {
             requests.push({
-                methodName: _ledger.getAccount,
+                methodName: _ledger.getAccountByAccAddr,
                 params: [addr]
             });
         }
@@ -106,7 +105,7 @@ export default class Client extends netProcessor {
 
         let rawList;
         requests.forEach((_r, i) => {
-            if (_r.methodName === _ledger.getAccount) {
+            if (_r.methodName === _ledger.getAccountByAccAddr) {
                 totalNum = data[i].result ? data[i].result.totalNumber : 0;
                 return;
             }

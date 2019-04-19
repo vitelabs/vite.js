@@ -138,7 +138,6 @@ class HttpRpc extends Communication {
                     _results.push(null);
                     return;
                 }
-
                 _results.push({
                     result: results[i].result || null,
                     error: results[i].error || null

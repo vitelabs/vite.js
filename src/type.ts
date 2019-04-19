@@ -172,7 +172,6 @@ export declare type createContractBlock = {
     accountAddress: Address;
     hexCode: Hex;
     abi: string;
-    tokenId: TokenId;
     amount: BigInt;
     fee: BigInt;
     confirmTimes: number;
@@ -281,8 +280,8 @@ export enum wallet {
 export enum onroad {
     'getOnroadBlocksByAddress' = 'onroad_getOnroadBlocksByAddress',
     'getOnroadInfoByAddress' = 'onroad_getOnroadInfoByAddress',
-    'getOnroadInfoInBatch' = 'onroad_getOnroadInfoInBatch',
-    'getAccountOnroadInfo' = 'onroad_getAccountOnroadInfo'
+    'getOnroadBlocksInBatch' = 'onroad_getOnroadBlocksInBatch',
+    'getOnroadInfoInBatch' = 'onroad_getOnroadInfoInBatch'
 }
 
 export enum tx {
@@ -292,7 +291,7 @@ export enum tx {
 
 export enum ledger {
     'getBlocksByAccAddr' = 'ledger_getBlocksByAccAddr',
-    'getAccount' = 'ledger_getAccount',
+    'getAccountByAccAddr' = 'ledger_getAccountByAccAddr',
     'getLatestSnapshotChainHash' = 'ledger_getLatestSnapshotChainHash',
     'getLatestBlock' = 'ledger_getLatestBlock',
     'getBlockByHeight' = 'ledger_getBlockByHeight',
@@ -414,12 +413,12 @@ export type netFunc = {
     syncInfo: Function;
     peers: Function;
 }
+
 export type onroadFunc = {
     getOnroadBlocksByAddress: Function;
+    getOnroadInfoByAddress: Function;
+    getOnroadInfoInBatch: Function;
     getAccountOnroadInfo: Function;
-    listWorkingAutoReceiveWorker: Function;
-    startAutoReceive: Function;
-    stopAutoReceive: Function;
 }
 export type contractFunc = {
     getCreateContractToAddress: Function;
@@ -470,7 +469,7 @@ export type dexfundFunc = {
 
 export type ledgerFunc = {
     getBlocksByAccAddr: Function;
-    getAccount: Function;
+    getAccountByAccAddr: Function;
     getLatestSnapshotChainHash: Function;
     getLatestBlock: Function;
     getBlockByHeight: Function;

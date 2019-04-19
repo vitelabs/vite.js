@@ -70,9 +70,6 @@ class Wallet {
         duration: 5 * 60 * 1000
     }) {
         index = validAddrParams({ address, index });
-        if (index === null) {
-            throw new Error(`Don\'t have this account: address = ${ address } , index = ${ index }`);
-        }
 
         const addrObj: AddrObj = this.addrList[index];
         const activeAccount = new Account({
@@ -128,13 +125,11 @@ export default Wallet;
 
 function validAddrParams({ address, index = this.addrStartInx }: { address?: Address; index?: number }) {
     if (!address && !index && index !== 0) {
-        console.error(new Error(`${ paramsMissing.message } Address or index.`));
-        return null;
+        throw new Error(`${ paramsMissing.message } Address or index.`);
     }
 
-    if (address && !isValidHexAddr) {
-        console.error(new Error(`${ addressIllegal.message }`));
-        return null;
+    if (address && !isValidHexAddr(address)) {
+        throw new Error(`${ addressIllegal.message }`);
     }
 
     if (!address) {
@@ -147,9 +142,9 @@ function validAddrParams({ address, index = this.addrStartInx }: { address?: Add
             break;
         }
     }
+
     if (i === this.addrList.length) {
-        console.error(new Error(`${ addressMissing.message }`));
-        return null;
+        throw new Error(`${ addressMissing.message }`);
     }
     return i;
 }

@@ -25,3 +25,4 @@ describe('Communication Test: src/communication', function () {
 // http
 // ipc
 // ws
+require('./RPC/http/index');
