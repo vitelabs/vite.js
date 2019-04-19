@@ -17,8 +17,7 @@ var Wallet = (function () {
                 func: function (_mnemonic) { return vitejs_hdaddr_1.validateMnemonic(_mnemonic, lang); }
             }]);
         if (err) {
-            console.error(new Error(err.message));
-            return;
+            throw new Error(err.message);
         }
         this._client = client;
         this.addrTotalNum = addrTotalNum;

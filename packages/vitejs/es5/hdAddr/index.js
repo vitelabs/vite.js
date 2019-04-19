@@ -19,8 +19,7 @@ function getEntropyFromMnemonic(mnemonic, lang) {
             func: function (_m) { return validateMnemonic(_m, lang); }
         }]);
     if (err) {
-        console.error(new Error(err.message));
-        return null;
+        throw new Error(err.message);
     }
     return bip39.mnemonicToEntropy(mnemonic, getWordList(lang));
 }
@@ -29,8 +28,7 @@ function getMnemonicFromEntropy(entropy, lang) {
     if (lang === void 0) { lang = type_1.LangList.english; }
     var err = vitejs_utils_1.checkParams({ entropy: entropy }, ['entropy']);
     if (err) {
-        console.error(new Error(err.message));
-        return null;
+        throw new Error(err.message);
     }
     return bip39.entropyToMnemonic(entropy, getWordList(lang));
 }
@@ -41,8 +39,7 @@ function newAddr(bits, lang, pwd) {
     if (pwd === void 0) { pwd = ''; }
     var err = vitejs_utils_1.checkParams({ bits: bits }, ['bits']);
     if (err) {
-        console.error(new Error(err.message));
-        return null;
+        throw new Error(err.message);
     }
     var wordList = getWordList(lang);
     var mnemonic = bip39.generateMnemonic(bits, null, wordList);
@@ -63,8 +60,7 @@ function getAddrFromMnemonic(mnemonic, index, lang, pwd) {
             func: function (_m) { return validateMnemonic(_m, lang); }
         }]);
     if (err) {
-        console.error(new Error(err.message));
-        return null;
+        throw new Error(err.message);
     }
     if (index < 0) {
         console.warn(vitejs_error_1.paramsFormat.message + " Index must greater than 0.");
@@ -85,8 +81,7 @@ function getAddrsFromMnemonic(mnemonic, start, num, lang, pwd) {
             func: function (_m) { return validateMnemonic(_m, lang); }
         }]);
     if (err) {
-        console.error(new Error(err.message));
-        return null;
+        throw new Error(err.message);
     }
     if (start < 0) {
         console.warn(vitejs_error_1.paramsFormat.message + " Start must greater than 0 or equal to 0.");

@@ -175,6 +175,7 @@ export declare type createContractBlock = {
     tokenId: TokenId;
     amount: BigInt;
     fee: BigInt;
+    confirmTimes: number;
     params?: string;
     prevHash?: Hex;
     height?: Uint64;
@@ -260,6 +261,7 @@ export enum BlockType {
 export enum wallet {
     'listEntropyFilesInStandardDir' = 'wallet_listEntropyFilesInStandardDir',
     'listAllEntropyFiles' = 'wallet_listAllEntropyFiles',
+    'extractMnemonic' = 'wallet_extractMnemonic',
     'unlock' = 'wallet_unlock',
     'lock' = 'wallet_lock',
     'listEntropyStoreAddresses' = 'wallet_listEntropyStoreAddresses',
@@ -278,10 +280,9 @@ export enum wallet {
 
 export enum onroad {
     'getOnroadBlocksByAddress' = 'onroad_getOnroadBlocksByAddress',
-    'getAccountOnroadInfo' = 'onroad_getAccountOnroadInfo',
-    'listWorkingAutoReceiveWorker' = 'onroad_listWorkingAutoReceiveWorker',
-    'startAutoReceive' = 'onroad_startAutoReceive',
-    'stopAutoReceive' = 'onroad_stopAutoReceive'
+    'getOnroadInfoByAddress' = 'onroad_getOnroadInfoByAddress',
+    'getOnroadInfoInBatch' = 'onroad_getOnroadInfoInBatch',
+    'getAccountOnroadInfo' = 'onroad_getAccountOnroadInfo'
 }
 
 export enum tx {
@@ -294,26 +295,32 @@ export enum ledger {
     'getAccount' = 'ledger_getAccount',
     'getLatestSnapshotChainHash' = 'ledger_getLatestSnapshotChainHash',
     'getLatestBlock' = 'ledger_getLatestBlock',
-    'getTokenMintage' = 'ledger_getTokenMintage',
     'getBlockByHeight' = 'ledger_getBlockByHeight',
+    'getBlockByHash' = 'ledger_getBlockByHash',
     'getBlocksByHash' = 'ledger_getBlocksByHash',
     'getBlocksByHashInToken' = 'ledger_getBlocksByHashInToken',
     'getSnapshotChainHeight' = 'ledger_getSnapshotChainHeight',
-    'getVmLogList' = 'ledger_getVmLogList'
+    'getSnapshotBlockByHash' = 'ledger_getSnapshotBlockByHash',
+    'getSnapshotBlockByHeight' = 'ledger_getSnapshotBlockByHeight',
+    'getVmLogList' = 'ledger_getVmLogList',
+    'getFittestSnapshotHash' = 'ledger_getFittestSnapshotHash'
 }
 
-export enum consensusGroup {
-    'getConditionRegisterOfPledge' = 'consensusGroup_getConditionRegisterOfPledge',
-    'getConditionVoteOfKeepToken' = 'consensusGroup_getConditionVoteOfKeepToken',
-    'getCreateConsensusGroupData' = 'consensusGroup_getCreateConsensusGroupData',
-    'getCancelConsensusGroupData' = 'consensusGroup_getCancelConsensusGroupData',
-    'getReCreateConsensusGroupData' = 'consensusGroup_getReCreateConsensusGroupData'
-}
+// export enum consensusGroup {
+//     'getConditionRegisterOfPledge' = 'consensusGroup_getConditionRegisterOfPledge',
+//     'getConditionVoteOfKeepToken' = 'consensusGroup_getConditionVoteOfKeepToken',
+//     'getCreateConsensusGroupData' = 'consensusGroup_getCreateConsensusGroupData',
+//     'getCancelConsensusGroupData' = 'consensusGroup_getCancelConsensusGroupData',
+//     'getReCreateConsensusGroupData' = 'consensusGroup_getReCreateConsensusGroupData'
+// }
 
 export enum contract {
     'getCreateContractToAddress' = 'contract_getCreateContractToAddress',
     'getCreateContractData' = 'contract_getCreateContractData',
-    'getCallContractData' = 'contract_getCallContractData'
+    'getCallContractData' = 'contract_getCallContractData',
+    'getContractInfo' = 'contract_getContractInfo',
+    'getCallOffChainData' = 'contract_getCallOffChainData',
+    'callOffChainMethod' = 'contract_callOffChainMethod'
 }
 
 export enum pledge {
@@ -341,10 +348,18 @@ export enum vote {
 export enum mintage {
     'getMintData' = 'mintage_getMintData',
     'getMintageCancelPledgeData' = 'mintage_getMintageCancelPledgeData',
+    'getIssueData' = 'mintage_getIssueData',
+    'getBurnData' = 'mintage_getBurnData',
+    'getTransferOwnerData' = 'mintage_getTransferOwnerData',
+    'getChangeTokenTypeData' = 'mintage_getChangeTokenTypeData',
     'getTokenInfoList' = 'mintage_getTokenInfoList',
     'getTokenInfoById' = 'mintage_getTokenInfoById',
     'getTokenInfoListByOwner' = 'mintage_getTokenInfoListByOwner',
-    'newTokenId' = 'mintage_newTokenId'
+}
+
+export enum dexfund {
+    'getAccountFundInfo' = 'dexfund_getAccountFundInfo',
+    'getAccountFundInfoByStatus' = 'dexfund_getAccountFundInfoByStatus'
 }
 
 export enum net {
@@ -353,21 +368,33 @@ export enum net {
     'peersCount' = 'net_peersCount'
 }
 
+export enum testapi {
+    'getTestToken' = 'testapi_getTestToken'
+}
+
+export enum pow {
+    'getPowNonce' = 'pow_getPowNonce'
+}
+
 export enum subscribe {
+    'newSnapshotBlocksFilter' = 'subscribe_newSnapshotBlocksFilter',
     'newAccountBlocksFilter' = 'subscribe_newAccountBlocksFilter',
     'newLogsFilter' = 'subscribe_newLogsFilter',
     'uninstallFilter' = 'subscribe_uninstallFilter',
     'getFilterChanges' = 'subscribe_getFilterChanges',
+    'newSnapshotBlocks' = 'subscribe_newSnapshotBlocks',
     'newAccountBlocks' = 'subscribe_newAccountBlocks',
-    'newLogs' = 'subscribe_newLogs'
+    'newLogs' = 'subscribe_newLogs',
+    'getLogs' = 'subscribe_getLogs'
 }
 
-export const _methods = { wallet, onroad, tx, ledger, consensusGroup, contract, pledge, register, vote, mintage, net, subscribe };
+export const _methods = { dexfund, wallet, onroad, tx, ledger, contract, pledge, register, vote, mintage, net, subscribe };
 
-export declare type Methods = wallet | onroad | tx | ledger | consensusGroup | contract | pledge | register | vote | mintage | net | subscribe;
+export declare type Methods = dexfund | wallet | onroad | tx | ledger | contract | pledge | register | vote | mintage | net | subscribe;
 
 export type walletFunc = {
     listEntropyFilesInStandardDir: Function;
+    extractMnemonic: Function;
     listAllEntropyFiles: Function;
     unlock: Function;
     lock: Function;
@@ -421,18 +448,25 @@ export type voteFunc = {
 export type mintageFunc = {
     getMintData: Function;
     getMintageCancelPledgeData: Function;
+    getIssueData: Function;
+    getBurnData: Function;
+    getTransferOwnerData: Function;
+    getChangeTokenTypeData: Function;
     getTokenInfoList: Function;
     getTokenInfoById: Function;
     getTokenInfoListByOwner: Function;
-    newTokenId: Function;
 }
-export type consensusGroupFunc = {
-    getConditionRegisterOfPledge: Function;
-    getConditionVoteOfKeepToken: Function;
-    getCreateConsensusGroupData: Function;
-    getCancelConsensusGroupData: Function;
-    getReCreateConsensusGroupData: Function;
+export type dexfundFunc = {
+    getAccountFundInfo: Function;
+    getAccountFundInfoByStatus: Function;
 }
+// export type consensusGroupFunc = {
+//     getConditionRegisterOfPledge: Function;
+//     getConditionVoteOfKeepToken: Function;
+//     getCreateConsensusGroupData: Function;
+//     getCancelConsensusGroupData: Function;
+//     getReCreateConsensusGroupData: Function;
+// }
 
 export type ledgerFunc = {
     getBlocksByAccAddr: Function;

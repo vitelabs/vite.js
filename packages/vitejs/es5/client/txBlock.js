@@ -404,7 +404,7 @@ var Tx = (function () {
         var accountAddress = _a.accountAddress, _b = _a.feeType, feeType = _b === void 0 ? 'burn' : _b, tokenName = _a.tokenName, isReIssuable = _a.isReIssuable, maxSupply = _a.maxSupply, ownerBurnOnly = _a.ownerBurnOnly, totalSupply = _a.totalSupply, decimals = _a.decimals, tokenSymbol = _a.tokenSymbol, height = _a.height, prevHash = _a.prevHash;
         if (requestType === void 0) { requestType = 'async'; }
         return __awaiter(this, void 0, void 0, function () {
-            var err, spendAmount, spendFee, requestBlock, block, _c, tokenId, data;
+            var err, spendAmount, spendFee, requestBlock, block, _c, data;
             return __generator(this, function (_d) {
                 switch (_d.label) {
                     case 0:
@@ -432,14 +432,7 @@ var Tx = (function () {
                         _d.label = 3;
                     case 3:
                         block = _c;
-                        return [4, this._client.mintage.newTokenId({
-                                selfAddr: accountAddress,
-                                height: block.height,
-                                prevHash: block.prevHash
-                            })];
-                    case 4:
-                        tokenId = _d.sent();
-                        data = vitejs_abi_1.encodeFunctionCall(vitejs_constant_1.Mint_Abi, [isReIssuable, tokenId, tokenName, tokenSymbol, totalSupply, decimals, maxSupply, ownerBurnOnly]);
+                        data = vitejs_abi_1.encodeFunctionCall(vitejs_constant_1.Mint_Abi, [isReIssuable, tokenName, tokenSymbol, totalSupply, decimals, maxSupply, ownerBurnOnly]);
                         block.data = Buffer.from(data, 'hex').toString('base64');
                         return [2, block];
                 }

@@ -20,8 +20,7 @@ exports.newHexAddr = newHexAddr;
 function newHexAddrFromPub(pubkey) {
     var err = vitejs_utils_1.checkParams({ pubkey: pubkey }, ['pubkey']);
     if (err) {
-        console.error(new Error(err.message));
-        return null;
+        throw new Error(err.message);
     }
     var addr = newAddrFromPub(pubkey);
     var checkSum = getAddrCheckSum(addr);
@@ -35,8 +34,7 @@ function getAddrFromHexAddr(hexAddr) {
             func: isValidHexAddr
         }]);
     if (err) {
-        console.error(new Error(err.message));
-        return null;
+        throw new Error(err.message);
     }
     return getRealAddr(hexAddr);
 }
@@ -47,8 +45,7 @@ function getHexAddrFromAddr(realAddr) {
             func: function (_realAddr) { return typeof _realAddr === 'string' && /^[0-9a-fA-F]+$/.test(_realAddr) && _realAddr.length === vars_1.ADDR_SIZE * 2; }
         }]);
     if (err) {
-        console.error(new Error(err.message));
-        return null;
+        throw new Error(err.message);
     }
     var checkSum = getAddrCheckSum(Buffer.from(realAddr, 'hex'));
     return vars_1.ADDR_PRE + realAddr + checkSum;

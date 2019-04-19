@@ -113,7 +113,6 @@ var validatedFuncs = [isValidOldKeystore, isValidVersion1, isValidVersion2, isVa
 function isValid(keystore) {
     var err = vitejs_utils_1.checkParams({ keystore: keystore }, ['keystore']);
     if (err) {
-        console.error(err);
         return false;
     }
     try {

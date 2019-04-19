@@ -33,8 +33,7 @@ var WsRpc = (function (_super) {
             path: path
         }) || this;
         if (!path) {
-            console.error(_this.ERRORS.CONNECT(path));
-            return _this.ERRORS.CONNECT(path);
+            throw _this.ERRORS.CONNECT(path);
         }
         _this.timeout = timeout;
         _this.protocol = options.protocol;

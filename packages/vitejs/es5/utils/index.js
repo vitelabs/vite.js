@@ -56,8 +56,7 @@ function getRawTokenId(tokenId) {
             func: function (_t) { return _t.indexOf('tti_') === 0 && _t.length === 28; }
         }]);
     if (err) {
-        console.error(new Error(err.message));
-        return null;
+        throw new Error(err.message);
     }
     return tokenId.slice(4, tokenId.length - 4);
 }
@@ -68,8 +67,7 @@ function getTokenIdFromRaw(rawTokenId) {
             func: function (_t) { return /^[0-9a-fA-F]+$/.test(_t) && _t.length === 20; }
         }]);
     if (err) {
-        console.error(new Error(err.message));
-        return null;
+        throw new Error(err.message);
     }
     var checkSum = blake.blake2bHex(Buffer.from(rawTokenId, 'hex'), null, 2);
     return "tti_" + rawTokenId + checkSum;
@@ -95,8 +93,7 @@ function bytesToHex(arr) {
     if (arr === void 0) { arr = Buffer.from([]); }
     var err = checkParams({ arr: arr }, ['arr']);
     if (err) {
-        console.error(new Error(err.message));
-        return null;
+        throw new Error(err.message);
     }
     var hexArr = Array.prototype.map.call(arr, function (bit) {
         return ("00" + bit.toString(16)).slice(-2);
@@ -107,8 +104,7 @@ exports.bytesToHex = bytesToHex;
 function hexToBytes(hex) {
     var err = checkParams({ hex: hex }, ['hex']);
     if (err) {
-        console.error(new Error(err.message));
-        return null;
+        throw new Error(err.message);
     }
     var typedArray = new Uint8Array(hex.match(/[\da-f]{2}/gi).map(function (h) {
         return parseInt(h, 16);
@@ -120,8 +116,7 @@ function getBytesSize(str, charset) {
     if (charset === void 0) { charset = "utf8"; }
     var err = checkParams({ str: str }, ['str']);
     if (err) {
-        console.error(new Error(err.message));
-        return null;
+        throw new Error(err.message);
     }
     var total = 0;
     var code;
@@ -156,8 +151,7 @@ function utf8ToBytes(str) {
     if (str === void 0) { str = ''; }
     var err = checkParams({ str: str }, ['str']);
     if (err) {
-        console.error(new Error(err.message));
-        return null;
+        throw new Error(err.message);
     }
     var back = [];
     var i;

@@ -67,8 +67,7 @@ exports.encryptV1ToV3 = encryptV1ToV3;
 function encryptOldKeystore(privKey, pwd, selfScryptsy) {
     var err = vitejs_utils_1.checkParams({ privKey: privKey, pwd: pwd }, ['privKey', 'pwd']);
     if (err) {
-        console.error(new Error(err.message));
-        return false;
+        throw new Error(err.message);
     }
     var key = vitejs_privtoaddr_1.newHexAddr(privKey);
     var scryptParams = {

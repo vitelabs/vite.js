@@ -1,6 +1,6 @@
 const assert = require('assert');
 
-import { getAccountBlock, getSendTxBlock, getReceiveTxBlock, getBuiltinTxType, signAccountBlock, getBlockHash } from '../src/accountBlock/index';
+import { getAccountBlock, getSendTxBlock, getReceiveTxBlock, getBuiltinTxType, signAccountBlock, getBlockHash, getCreateContractData } from '../src/accountBlock/index';
 import { BlockType } from '../src/type';
 import { Default_Hash } from '../src/constant/index';
 
@@ -26,289 +26,289 @@ import { Default_Hash } from '../src/constant/index';
 //     tokenId: 'tti_5649544520544f4b454e6e40'
 // };
 
-// describe('getAccountBlock', function () {
-//     const reqAccBlock = [ {
-//         accountAddress: 'vite_155e4e83fb0499dcc3047e0458bbfae77f2ac1270e38c176f8',
-//         blockType: 2
-//     }, {
-//         accountAddress: 'vite_155e4e83fb0499dcc3047e0458bbfae77f2ac1270e38c176f8',
-//         blockType: 2,
-//         amount: '0',
-//         toAddress: 'vite_000000000000000000000000000000000000000270a48cc491',
-//         tokenId: 'tti_5649544520544f4b454e6e40'
-//     }, {
-//         accountAddress: 'vite_155e4e83fb0499dcc3047e0458bbfae77f2ac1270e38c176f8',
-//         blockType: 4,
-//         fromBlockHash: 'ff91866c4393566c44a667e8344c1567a12fdefa27093a69fed6ecbf4cb02046',
-//         amount: '0',
-//         toAddress: 'vite_000000000000000000000000000000000000000270a48cc491',
-//         tokenId: 'tti_5649544520544f4b454e6e40',
-//         height: '19',
-//         prevHash: 'fef0b178458acb3f7d37d575b10139357d79a5a90adc3fdc8ddd96800770fce7'
-//     }, {
-//         accountAddress: 'vite_155e4e83fb0499dcc3047e0458bbfae77f2ac1270e38c176f8',
-//         blockType: 4,
-//         fromBlockHash: 'ff91866c4393566c44a667e8344c1567a12fdefa27093a69fed6ecbf4cb02046',
-//         amount: '0',
-//         toAddress: 'vite_000000000000000000000000000000000000000270a48cc491',
-//         tokenId: 'tti_5649544520544f4b454e6e40',
-//         height: '19',
-//         prevHash: 'fef0b178458acb3f7d37d575b10139357d79a5a90adc3fdc8ddd96800770fce7'
-//     }, {
-//         accountAddress: 'vite_155e4e83fb0499dcc3047e0458bbfae77f2ac1270e38c176f8',
-//         blockType: 2,
-//         height: '19',
-//         prevHash: 'fef0b178458acb3f7d37d575b10139357d79a5a90adc3fdc8ddd96800770fce7',
-//         message: '2123'
-//     }, {
-//         accountAddress: 'vite_155e4e83fb0499dcc3047e0458bbfae77f2ac1270e38c176f8',
-//         blockType: 4,
-//         fromBlockHash: 'ff91866c4393566c44a667e8344c1567a12fdefa27093a69fed6ecbf4cb02046',
-//         height: '19',
-//         prevHash: 'fef0b178458acb3f7d37d575b10139357d79a5a90adc3fdc8ddd96800770fce7',
-//         data: 'MjEyMw==',
-//         nonce: 'MjEyMw=='
-//     } ];
+describe('getAccountBlock', function () {
+    const reqAccBlock = [ {
+        accountAddress: 'vite_155e4e83fb0499dcc3047e0458bbfae77f2ac1270e38c176f8',
+        blockType: 2
+    }, {
+        accountAddress: 'vite_155e4e83fb0499dcc3047e0458bbfae77f2ac1270e38c176f8',
+        blockType: 2,
+        amount: '0',
+        toAddress: 'vite_000000000000000000000000000000000000000270a48cc491',
+        tokenId: 'tti_5649544520544f4b454e6e40'
+    }, {
+        accountAddress: 'vite_155e4e83fb0499dcc3047e0458bbfae77f2ac1270e38c176f8',
+        blockType: 4,
+        fromBlockHash: 'ff91866c4393566c44a667e8344c1567a12fdefa27093a69fed6ecbf4cb02046',
+        amount: '0',
+        toAddress: 'vite_000000000000000000000000000000000000000270a48cc491',
+        tokenId: 'tti_5649544520544f4b454e6e40',
+        height: '19',
+        prevHash: 'fef0b178458acb3f7d37d575b10139357d79a5a90adc3fdc8ddd96800770fce7'
+    }, {
+        accountAddress: 'vite_155e4e83fb0499dcc3047e0458bbfae77f2ac1270e38c176f8',
+        blockType: 4,
+        fromBlockHash: 'ff91866c4393566c44a667e8344c1567a12fdefa27093a69fed6ecbf4cb02046',
+        amount: '0',
+        toAddress: 'vite_000000000000000000000000000000000000000270a48cc491',
+        tokenId: 'tti_5649544520544f4b454e6e40',
+        height: '19',
+        prevHash: 'fef0b178458acb3f7d37d575b10139357d79a5a90adc3fdc8ddd96800770fce7'
+    }, {
+        accountAddress: 'vite_155e4e83fb0499dcc3047e0458bbfae77f2ac1270e38c176f8',
+        blockType: 2,
+        height: '19',
+        prevHash: 'fef0b178458acb3f7d37d575b10139357d79a5a90adc3fdc8ddd96800770fce7',
+        message: '2123'
+    }, {
+        accountAddress: 'vite_155e4e83fb0499dcc3047e0458bbfae77f2ac1270e38c176f8',
+        blockType: 4,
+        fromBlockHash: 'ff91866c4393566c44a667e8344c1567a12fdefa27093a69fed6ecbf4cb02046',
+        height: '19',
+        prevHash: 'fef0b178458acb3f7d37d575b10139357d79a5a90adc3fdc8ddd96800770fce7',
+        data: 'MjEyMw==',
+        nonce: 'MjEyMw=='
+    } ];
 
-//     testAccBlockCase(reqAccBlock, getAccountBlock);
-// });
+    testAccBlockCase(reqAccBlock, getAccountBlock);
+});
 
-// describe('getSendTxBlock', function () {
-//     const reqAccBlock = [ {
-//         accountAddress: 'vite_155e4e83fb0499dcc3047e0458bbfae77f2ac1270e38c176f8',
-//         amount: '0',
-//         toAddress: 'vite_000000000000000000000000000000000000000270a48cc491',
-//         tokenId: 'tti_5649544520544f4b454e6e40'
-//     }, {
-//         accountAddress: 'vite_155e4e83fb0499dcc3047e0458bbfae77f2ac1270e38c176f8',
-//         amount: '0',
-//         toAddress: 'vite_000000000000000000000000000000000000000270a48cc491',
-//         tokenId: 'tti_5649544520544f4b454e6e40',
-//         height: '19',
-//         prevHash: 'fef0b178458acb3f7d37d575b10139357d79a5a90adc3fdc8ddd96800770fce7',
-//         message: '2123'
-//     } ];
+describe('getSendTxBlock', function () {
+    const reqAccBlock = [ {
+        accountAddress: 'vite_155e4e83fb0499dcc3047e0458bbfae77f2ac1270e38c176f8',
+        amount: '0',
+        toAddress: 'vite_000000000000000000000000000000000000000270a48cc491',
+        tokenId: 'tti_5649544520544f4b454e6e40'
+    }, {
+        accountAddress: 'vite_155e4e83fb0499dcc3047e0458bbfae77f2ac1270e38c176f8',
+        amount: '0',
+        toAddress: 'vite_000000000000000000000000000000000000000270a48cc491',
+        tokenId: 'tti_5649544520544f4b454e6e40',
+        height: '19',
+        prevHash: 'fef0b178458acb3f7d37d575b10139357d79a5a90adc3fdc8ddd96800770fce7',
+        message: '2123'
+    } ];
 
-//     testAccBlockCase(reqAccBlock, getSendTxBlock, resBlock => {
-//         it('send tx: blockType = 2', function () {
-//             assert.equal(resBlock.blockType, 2);
-//         });
-//     });
-// });
+    testAccBlockCase(reqAccBlock, getSendTxBlock, resBlock => {
+        it('send tx: blockType = 2', function () {
+            assert.equal(resBlock.blockType, 2);
+        });
+    });
+});
 
-// describe('getReceiveTxBlock', function () {
-//     const reqAccBlock = [ {
-//         accountAddress: 'vite_155e4e83fb0499dcc3047e0458bbfae77f2ac1270e38c176f8',
-//         fromBlockHash: 'ff91866c4393566c44a667e8344c1567a12fdefa27093a69fed6ecbf4cb02046'
-//     }, {
-//         accountAddress: 'vite_155e4e83fb0499dcc3047e0458bbfae77f2ac1270e38c176f8',
-//         fromBlockHash: 'ff91866c4393566c44a667e8344c1567a12fdefa27093a69fed6ecbf4cb02046',
-//         height: '19',
-//         prevHash: 'fef0b178458acb3f7d37d575b10139357d79a5a90adc3fdc8ddd96800770fce7'
-//     } ];
+describe('getReceiveTxBlock', function () {
+    const reqAccBlock = [ {
+        accountAddress: 'vite_155e4e83fb0499dcc3047e0458bbfae77f2ac1270e38c176f8',
+        fromBlockHash: 'ff91866c4393566c44a667e8344c1567a12fdefa27093a69fed6ecbf4cb02046'
+    }, {
+        accountAddress: 'vite_155e4e83fb0499dcc3047e0458bbfae77f2ac1270e38c176f8',
+        fromBlockHash: 'ff91866c4393566c44a667e8344c1567a12fdefa27093a69fed6ecbf4cb02046',
+        height: '19',
+        prevHash: 'fef0b178458acb3f7d37d575b10139357d79a5a90adc3fdc8ddd96800770fce7'
+    } ];
 
-//     testAccBlockCase(reqAccBlock, getReceiveTxBlock, resBlock => {
-//         it('receive tx: blockType = 4', function () {
-//             assert.equal(resBlock.blockType, 4);
-//         });
-//     });
-// });
+    testAccBlockCase(reqAccBlock, getReceiveTxBlock, resBlock => {
+        it('receive tx: blockType = 4', function () {
+            assert.equal(resBlock.blockType, 4);
+        });
+    });
+});
 
-// describe('getBuiltinTxType', function () {
-//     // const RevokeVoting = {
-//     //     blockType: 2,
-//     //     data: 'pinFMQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB',
-//     //     toAddress: 'vite_000000000000000000000000000000000000000270a48cc491'
-//     // };
-//     // const Voting = {
-//     //     blockType: 2,
-//     //     data: '/cF/JQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA0hhbgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
-//     //     toAddress: 'vite_000000000000000000000000000000000000000270a48cc491'
-//     // };
-//     const TxRes = {
-//         blockType: 4,
-//         data: 'MjEyMw==',
-//         toAddress: 'vite_155e4e83fb0499dcc3047e0458bbfae77f2ac1270e38c176f8'
-//     };
-//     const WithdrawalOfQuota = {
-//         blockType: 2,
-//         data: 'n/nHtgAAAAAAAAAAAAAAABVeToP7BJncwwR+BFi7+ud/KsEnAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABPzBqJAn8AAA=',
-//         toAddress: 'vite_000000000000000000000000000000000000000309508ba646'
-//     };
-//     const TxReq = {
-//         blockType: 2,
-//         data: null,
-//         toAddress: 'vite_155e4e83fb0499dcc3047e0458bbfae77f2ac1270e38c176f8'
-//     };
-//     const GetQuota = {
-//         blockType: 2,
-//         data: 'jefc/QAAAAAAAAAAAAAAABVeToP7BJncwwR+BFi7+ud/KsEn',
-//         toAddress: 'vite_000000000000000000000000000000000000000309508ba646'
-//     };
-//     // const SBPreg = {
-//     //     blockType: 2,
-//     //     data: '8pxs4gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGAAAAAAAAAAAAAAAABwv7dBTikKqChmXMP0/IEF0NQACQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHMjMyMzIzMgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=',
-//     //     toAddress: 'vite_0000000000000000000000000000000000000001c9e9f25417'
-//     // };
-//     // const RevokeReg = {
-//     //     blockType: 2,
-//     //     data: 'YIYv4gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABzIzMjMyMzIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
-//     //     toAddress: 'vite_0000000000000000000000000000000000000001c9e9f25417'
-//     // };
-//     // const UpdateReg = {
-//     //     blockType: 2,
-//     //     data: 'O3vfdAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGAAAAAAAAAAAAAAAADF4fUrf0FtM5BYUSzVPhltH5VHKgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHMjMyMzIzMgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=/IEF0NQACQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHMjMyMzIzMgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=',
-//     //     toAddress: 'vite_0000000000000000000000000000000000000001c9e9f25417'
-//     // };
-//     const CreateContractReq = {
-//         blockType: 1,
-//         data: '',
-//         toAddress: 'vite_0000000000000000000000000000000000000001c9e9f25417'
-//     };
-//     const RewardReq = {
-//         blockType: 3,
-//         data: '',
-//         toAddress: 'vite_0000000000000000000000000000000000000001c9e9f25417'
-//     };
-//     const TxResFail = {
-//         blockType: 5,
-//         data: '',
-//         toAddress: 'vite_0000000000000000000000000000000000000001c9e9f25417'
-//     };
-//     const Mintage = {
-//         blockType: 2,
-//         data: 'J62HLgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACyRFUj9g6iwVfcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPQkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABHNzc3MAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFzAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==',
-//         toAddress: 'vite_00000000000000000000000000000000000000056ad6d26692'
-//     };
-//     const DexFundNewOrder = {
-//         blockType: 2,
-//         data: 'QnapywAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMJpWDkEPPlm83AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAVklURSBUT0tFTgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABTl1L8Zdh6mfYIzQeegkraivGtApAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACMTUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=',
-//         toAddress: 'vite_000000000000000000000000000000000000000617d47459a8'
-//     };
-//     const DexTradeCancelOrder = {
-//         blockType: 2,
-//         data: '8tmWHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMJpWDkEPPlm83AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAVklURSBUT0tFTgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABTjcaJPGE2zj/epXeg2UNZEzi7HBAAAAAAAAAAAAAAAAA==',
-//         toAddress: 'vite_000000000000000000000000000000000000000768ef0e6238'
-//     };
-//     const DexFundUserWithdraw = {
-//         blockType: 2,
-//         data: 'zDKRaQAAAAAAAAAAAAAAAAAAAAAAAAAAAABWSVRFIFRPS0VOAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAfOZsUOKEAAA=',
-//         toAddress: 'vite_000000000000000000000000000000000000000617d47459a8'
-//     };
-//     const DexFundUserDeposit = {
-//         blockType: 2,
-//         data: 'nftn/w==',
-//         toAddress: 'vite_000000000000000000000000000000000000000617d47459a8'
-//     };
-//     const DexFundNewMarket = {
-//         blockType: 2,
-//         data: 'Kuf4wQAAAAAAAAAAAAAAAAAAAAAAAAAAAAC29wGYeP37IZCKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFZJVEUgVE9LRU4=',
-//         toAddress: 'vite_000000000000000000000000000000000000000617d47459a8'
-//     };
+describe('getBuiltinTxType', function () {
+    // const RevokeVoting = {
+    //     blockType: 2,
+    //     data: 'pinFMQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB',
+    //     toAddress: 'vite_000000000000000000000000000000000000000270a48cc491'
+    // };
+    // const Voting = {
+    //     blockType: 2,
+    //     data: '/cF/JQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA0hhbgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+    //     toAddress: 'vite_000000000000000000000000000000000000000270a48cc491'
+    // };
+    const TxRes = {
+        blockType: 4,
+        data: 'MjEyMw==',
+        toAddress: 'vite_155e4e83fb0499dcc3047e0458bbfae77f2ac1270e38c176f8'
+    };
+    const WithdrawalOfQuota = {
+        blockType: 2,
+        data: 'n/nHtgAAAAAAAAAAAAAAABVeToP7BJncwwR+BFi7+ud/KsEnAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABPzBqJAn8AAA=',
+        toAddress: 'vite_000000000000000000000000000000000000000309508ba646'
+    };
+    const TxReq = {
+        blockType: 2,
+        data: null,
+        toAddress: 'vite_155e4e83fb0499dcc3047e0458bbfae77f2ac1270e38c176f8'
+    };
+    const GetQuota = {
+        blockType: 2,
+        data: 'jefc/QAAAAAAAAAAAAAAABVeToP7BJncwwR+BFi7+ud/KsEn',
+        toAddress: 'vite_000000000000000000000000000000000000000309508ba646'
+    };
+    // const SBPreg = {
+    //     blockType: 2,
+    //     data: '8pxs4gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGAAAAAAAAAAAAAAAABwv7dBTikKqChmXMP0/IEF0NQACQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHMjMyMzIzMgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=',
+    //     toAddress: 'vite_0000000000000000000000000000000000000001c9e9f25417'
+    // };
+    // const RevokeReg = {
+    //     blockType: 2,
+    //     data: 'YIYv4gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABzIzMjMyMzIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+    //     toAddress: 'vite_0000000000000000000000000000000000000001c9e9f25417'
+    // };
+    // const UpdateReg = {
+    //     blockType: 2,
+    //     data: 'O3vfdAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGAAAAAAAAAAAAAAAADF4fUrf0FtM5BYUSzVPhltH5VHKgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHMjMyMzIzMgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=/IEF0NQACQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHMjMyMzIzMgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=',
+    //     toAddress: 'vite_0000000000000000000000000000000000000001c9e9f25417'
+    // };
+    const CreateContractReq = {
+        blockType: 1,
+        data: '',
+        toAddress: 'vite_0000000000000000000000000000000000000001c9e9f25417'
+    };
+    const RewardReq = {
+        blockType: 3,
+        data: '',
+        toAddress: 'vite_0000000000000000000000000000000000000001c9e9f25417'
+    };
+    const TxResFail = {
+        blockType: 5,
+        data: '',
+        toAddress: 'vite_0000000000000000000000000000000000000001c9e9f25417'
+    };
+    // const Mintage = {
+    //     blockType: 2,
+    //     data: 'J62HLgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACyRFUj9g6iwVfcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPQkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABHNzc3MAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFzAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==',
+    //     toAddress: 'vite_00000000000000000000000000000000000000056ad6d26692'
+    // };
+    const DexFundNewOrder = {
+        blockType: 2,
+        data: 'QnapywAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMJpWDkEPPlm83AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAVklURSBUT0tFTgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABTl1L8Zdh6mfYIzQeegkraivGtApAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACMTUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=',
+        toAddress: 'vite_000000000000000000000000000000000000000617d47459a8'
+    };
+    const DexTradeCancelOrder = {
+        blockType: 2,
+        data: '8tmWHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMJpWDkEPPlm83AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAVklURSBUT0tFTgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABTjcaJPGE2zj/epXeg2UNZEzi7HBAAAAAAAAAAAAAAAAA==',
+        toAddress: 'vite_000000000000000000000000000000000000000768ef0e6238'
+    };
+    const DexFundUserWithdraw = {
+        blockType: 2,
+        data: 'zDKRaQAAAAAAAAAAAAAAAAAAAAAAAAAAAABWSVRFIFRPS0VOAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAfOZsUOKEAAA=',
+        toAddress: 'vite_000000000000000000000000000000000000000617d47459a8'
+    };
+    const DexFundUserDeposit = {
+        blockType: 2,
+        data: 'nftn/w==',
+        toAddress: 'vite_000000000000000000000000000000000000000617d47459a8'
+    };
+    const DexFundNewMarket = {
+        blockType: 2,
+        data: 'Kuf4wQAAAAAAAAAAAAAAAAAAAAAAAAAAAAC29wGYeP37IZCKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFZJVEUgVE9LRU4=',
+        toAddress: 'vite_000000000000000000000000000000000000000617d47459a8'
+    };
 
-//     // it('RevokeVoting', function () {
-//     //     assert.equal(getBuiltinTxType(RevokeVoting.toAddress, RevokeVoting.data, RevokeVoting.blockType), 'RevokeVoting');
-//     // });
-//     // it('Voting', function () {
-//     //     assert.equal(getBuiltinTxType(Voting.toAddress, Voting.data, Voting.blockType), 'Voting');
-//     // });
-//     it('TxRes', function () {
-//         assert.equal(getBuiltinTxType(TxRes.toAddress, TxRes.data, TxRes.blockType), 'TxRes');
-//     });
-//     it('WithdrawalOfQuota', function () {
-//         assert.equal(getBuiltinTxType(WithdrawalOfQuota.toAddress, WithdrawalOfQuota.data, WithdrawalOfQuota.blockType), 'WithdrawalOfQuota');
-//     });
-//     it('TxReq', function () {
-//         assert.equal(getBuiltinTxType(TxReq.toAddress, TxReq.data, TxReq.blockType), 'TxReq');
-//     });
-//     it('GetQuota', function () {
-//         assert.equal(getBuiltinTxType(GetQuota.toAddress, GetQuota.data, GetQuota.blockType), 'GetQuota');
-//     });
-//     // it('SBPreg', function () {
-//     //     assert.equal(getBuiltinTxType(SBPreg.toAddress, SBPreg.data, SBPreg.blockType), 'SBPreg');
-//     // });
-//     // it('RevokeReg', function () {
-//     //     assert.equal(getBuiltinTxType(RevokeReg.toAddress, RevokeReg.data, RevokeReg.blockType), 'RevokeReg');
-//     // });
-//     // it('UpdateReg', function () {
-//     //     assert.equal(getBuiltinTxType(UpdateReg.toAddress, UpdateReg.data, UpdateReg.blockType), 'UpdateReg');
-//     // });
-//     it('CreateContractReq', function () {
-//         assert.equal(getBuiltinTxType(CreateContractReq.toAddress, CreateContractReq.data, CreateContractReq.blockType), 'CreateContractReq');
-//     });
-//     it('RewardReq', function () {
-//         assert.equal(getBuiltinTxType(RewardReq.toAddress, RewardReq.data, RewardReq.blockType), 'RewardReq');
-//     });
-//     it('TxResFail', function () {
-//         assert.equal(getBuiltinTxType(TxResFail.toAddress, TxResFail.data, TxResFail.blockType), 'TxResFail');
-//     });
-//     it('Mintage', function () {
-//         assert.equal(getBuiltinTxType(Mintage.toAddress, Mintage.data, Mintage.blockType), 'Mintage');
-//     });
-//     it('DexFundNewOrder', function () {
-//         assert.equal(getBuiltinTxType(DexFundNewOrder.toAddress, DexFundNewOrder.data, DexFundNewOrder.blockType), 'DexFundNewOrder');
-//     });
-//     it('DexTradeCancelOrder', function () {
-//         assert.equal(getBuiltinTxType(DexTradeCancelOrder.toAddress, DexTradeCancelOrder.data, DexTradeCancelOrder.blockType), 'DexTradeCancelOrder');
-//     });
-//     it('DexFundUserWithdraw', function () {
-//         assert.equal(getBuiltinTxType(DexFundUserWithdraw.toAddress, DexFundUserWithdraw.data, DexFundUserWithdraw.blockType), 'DexFundUserWithdraw');
-//     });
-//     it('DexFundUserDeposit', function () {
-//         assert.equal(getBuiltinTxType(DexFundUserDeposit.toAddress, DexFundUserDeposit.data, DexFundUserDeposit.blockType), 'DexFundUserDeposit');
-//     });
-//     it('DexFundNewMarket', function () {
-//         assert.equal(getBuiltinTxType(DexFundNewMarket.toAddress, DexFundNewMarket.data, DexFundNewMarket.blockType), 'DexFundNewMarket');
-//     });
-// });
+    // it('RevokeVoting', function () {
+    //     assert.equal(getBuiltinTxType(RevokeVoting.toAddress, RevokeVoting.data, RevokeVoting.blockType), 'RevokeVoting');
+    // });
+    // it('Voting', function () {
+    //     assert.equal(getBuiltinTxType(Voting.toAddress, Voting.data, Voting.blockType), 'Voting');
+    // });
+    it('TxRes', function () {
+        assert.equal(getBuiltinTxType(TxRes.toAddress, TxRes.data, TxRes.blockType), 'TxRes');
+    });
+    it('WithdrawalOfQuota', function () {
+        assert.equal(getBuiltinTxType(WithdrawalOfQuota.toAddress, WithdrawalOfQuota.data, WithdrawalOfQuota.blockType), 'WithdrawalOfQuota');
+    });
+    it('TxReq', function () {
+        assert.equal(getBuiltinTxType(TxReq.toAddress, TxReq.data, TxReq.blockType), 'TxReq');
+    });
+    it('GetQuota', function () {
+        assert.equal(getBuiltinTxType(GetQuota.toAddress, GetQuota.data, GetQuota.blockType), 'GetQuota');
+    });
+    // it('SBPreg', function () {
+    //     assert.equal(getBuiltinTxType(SBPreg.toAddress, SBPreg.data, SBPreg.blockType), 'SBPreg');
+    // });
+    // it('RevokeReg', function () {
+    //     assert.equal(getBuiltinTxType(RevokeReg.toAddress, RevokeReg.data, RevokeReg.blockType), 'RevokeReg');
+    // });
+    // it('UpdateReg', function () {
+    //     assert.equal(getBuiltinTxType(UpdateReg.toAddress, UpdateReg.data, UpdateReg.blockType), 'UpdateReg');
+    // });
+    it('CreateContractReq', function () {
+        assert.equal(getBuiltinTxType(CreateContractReq.toAddress, CreateContractReq.data, CreateContractReq.blockType), 'CreateContractReq');
+    });
+    it('RewardReq', function () {
+        assert.equal(getBuiltinTxType(RewardReq.toAddress, RewardReq.data, RewardReq.blockType), 'RewardReq');
+    });
+    it('TxResFail', function () {
+        assert.equal(getBuiltinTxType(TxResFail.toAddress, TxResFail.data, TxResFail.blockType), 'TxResFail');
+    });
+    // it('Mintage', function () {
+    //     assert.equal(getBuiltinTxType(Mintage.toAddress, Mintage.data, Mintage.blockType), 'Mintage');
+    // });
+    it('DexFundNewOrder', function () {
+        assert.equal(getBuiltinTxType(DexFundNewOrder.toAddress, DexFundNewOrder.data, DexFundNewOrder.blockType), 'DexFundNewOrder');
+    });
+    it('DexTradeCancelOrder', function () {
+        assert.equal(getBuiltinTxType(DexTradeCancelOrder.toAddress, DexTradeCancelOrder.data, DexTradeCancelOrder.blockType), 'DexTradeCancelOrder');
+    });
+    it('DexFundUserWithdraw', function () {
+        assert.equal(getBuiltinTxType(DexFundUserWithdraw.toAddress, DexFundUserWithdraw.data, DexFundUserWithdraw.blockType), 'DexFundUserWithdraw');
+    });
+    it('DexFundUserDeposit', function () {
+        assert.equal(getBuiltinTxType(DexFundUserDeposit.toAddress, DexFundUserDeposit.data, DexFundUserDeposit.blockType), 'DexFundUserDeposit');
+    });
+    it('DexFundNewMarket', function () {
+        assert.equal(getBuiltinTxType(DexFundNewMarket.toAddress, DexFundNewMarket.data, DexFundNewMarket.blockType), 'DexFundNewMarket');
+    });
+});
 
-// describe('signAccountBlock', function () {
-//     it('test_signTX_receive', function () {
-//         const privKey = 'dcb735c454777a697c417472a5dc46333fd738c062c26f2dc6bce8a972dece1f79e0fbc083681e636fef9b389d91c5700ae5d401438158e5c7798b76232cdf88';
-//         const accountBlock = {
-//             'accountAddress': 'vite_a17465557d554fd27ff958887082f147054e0d6f75762e25cb',
-//             'height': '1',
-//             'fee': '0',
-//             'prevHash': '0000000000000000000000000000000000000000000000000000000000000000',
-//             'blockType': 4,
-//             'fromBlockHash': '382c9d11894aa45d18bb02edf4b520a281341e686915c750adbbb0655c8ba6ec',
-//             'nonce': 'xjpCTkxYBfA=',
-//             'publicKey': 'eeD7wINoHmNv75s4nZHFcArl1AFDgVjlx3mLdiMs34g=',
-//             'hash': '3bdbbc9e1c4ea2b52afadb841fdf97de55daa77e671a2c417e83bfb25b7682a9',
-//             'signature': 'XP3jYE7rq1tby7fCZ9wpU9fX1TpLHxtAHRmy5wNiWra7bfyMOIZgS89FW2UacrA1dSIlv3pGuG33pGV43+AtCg=='
-//         };
+describe('signAccountBlock', function () {
+    it('test_signTX_receive', function () {
+        const privKey = 'dcb735c454777a697c417472a5dc46333fd738c062c26f2dc6bce8a972dece1f79e0fbc083681e636fef9b389d91c5700ae5d401438158e5c7798b76232cdf88';
+        const accountBlock = {
+            'accountAddress': 'vite_a17465557d554fd27ff958887082f147054e0d6f75762e25cb',
+            'height': '1',
+            'fee': '0',
+            'prevHash': '0000000000000000000000000000000000000000000000000000000000000000',
+            'blockType': 4,
+            'fromBlockHash': '382c9d11894aa45d18bb02edf4b520a281341e686915c750adbbb0655c8ba6ec',
+            'nonce': 'xjpCTkxYBfA=',
+            'publicKey': 'eeD7wINoHmNv75s4nZHFcArl1AFDgVjlx3mLdiMs34g=',
+            'hash': '3bdbbc9e1c4ea2b52afadb841fdf97de55daa77e671a2c417e83bfb25b7682a9',
+            'signature': 'XP3jYE7rq1tby7fCZ9wpU9fX1TpLHxtAHRmy5wNiWra7bfyMOIZgS89FW2UacrA1dSIlv3pGuG33pGV43+AtCg=='
+        };
 
-//         const { hash, signature, publicKey } = signAccountBlock(accountBlock, privKey);
-//         assert.equal(hash, accountBlock.hash);
-//         assert.equal(publicKey, accountBlock.publicKey);
-//         assert.equal(signature, accountBlock.signature);
-//     });
+        const { hash, signature, publicKey } = signAccountBlock(accountBlock, privKey);
+        assert.equal(hash, accountBlock.hash);
+        assert.equal(publicKey, accountBlock.publicKey);
+        assert.equal(signature, accountBlock.signature);
+    });
 
-//     it('test_signTX_send', function () {
-//         const privKey = '39ad24b209000da30661d62b017e61640ae6c44531b6d603131477bd2f4841d6e91c860c63d01f6d4a92901971907a72103e8baa87f8878665f5a4def9ec7a36';
-//         const accountBlock = {
-//             'accountAddress': 'vite_aac0d5bb7d5585716a8d9a0ee600d6d28cb52d6695673e8f50',
-//             'height': '1',
-//             'fee': '0',
-//             'prevHash': 'a574cef0e2a22978f194e8ac818cb7ca4c14ea3b5d14649e4c4f0723c27b1bf6',
-//             'data': 'MTI=',
-//             'tokenId': 'tti_5649544520544f4b454e6e40',
-//             'toAddress': 'vite_aac0d5bb7d5585716a8d9a0ee600d6d28cb52d6695673e8f50',
-//             'amount': '1000000000000000000',
-//             'blockType': 2,
-//             'nonce': 'jnrqnJpfOb4=',
-//             'hash': '361a92a5ddaa4bbc55348e0e047d53ab7f677325bd8ddef4963f8a712d3309ed',
-//             'publicKey': '6RyGDGPQH21KkpAZcZB6chA+i6qH+IeGZfWk3vnsejY=',
-//             'signature': 'I6WxxwjkTEYjXMw9uGNMwVQPpteEUdr5/D7w/sHIm4Gg/4mbqNl7vyBSkIXRdi2JxVaIpr/hIHigr6llz/UZDQ=='
-//         };
+    it('test_signTX_send', function () {
+        const privKey = '39ad24b209000da30661d62b017e61640ae6c44531b6d603131477bd2f4841d6e91c860c63d01f6d4a92901971907a72103e8baa87f8878665f5a4def9ec7a36';
+        const accountBlock = {
+            'accountAddress': 'vite_aac0d5bb7d5585716a8d9a0ee600d6d28cb52d6695673e8f50',
+            'height': '1',
+            'fee': '0',
+            'prevHash': 'a574cef0e2a22978f194e8ac818cb7ca4c14ea3b5d14649e4c4f0723c27b1bf6',
+            'data': 'MTI=',
+            'tokenId': 'tti_5649544520544f4b454e6e40',
+            'toAddress': 'vite_aac0d5bb7d5585716a8d9a0ee600d6d28cb52d6695673e8f50',
+            'amount': '1000000000000000000',
+            'blockType': 2,
+            'nonce': 'jnrqnJpfOb4=',
+            'hash': '361a92a5ddaa4bbc55348e0e047d53ab7f677325bd8ddef4963f8a712d3309ed',
+            'publicKey': '6RyGDGPQH21KkpAZcZB6chA+i6qH+IeGZfWk3vnsejY=',
+            'signature': 'I6WxxwjkTEYjXMw9uGNMwVQPpteEUdr5/D7w/sHIm4Gg/4mbqNl7vyBSkIXRdi2JxVaIpr/hIHigr6llz/UZDQ=='
+        };
 
-//         const { hash, signature, publicKey } = signAccountBlock(accountBlock, privKey);
+        const { hash, signature, publicKey } = signAccountBlock(accountBlock, privKey);
 
-//         assert.equal(hash, accountBlock.hash);
-//         assert.equal(publicKey, accountBlock.publicKey);
-//         assert.equal(signature, accountBlock.signature);
-//     });
-// });
+        assert.equal(hash, accountBlock.hash);
+        assert.equal(publicKey, accountBlock.publicKey);
+        assert.equal(signature, accountBlock.signature);
+    });
+});
 
 describe('getBlockHash', function () {
     it('test_hash_1', function () {
@@ -371,6 +371,17 @@ describe('getBlockHash', function () {
         const hash = getBlockHash(accountBlock);
         assert.equal(hash, accountBlock.hash);
     });
+});
+
+it('encodeCreateContruct', function () {
+    const _data = getCreateContractData({
+        abi: [{ 'type': 'constructor', 'inputs': [{ 'type': 'address' }] }],
+        hexCode: '6080',
+        params: ['vite_0000000000000000000000000000000000000000a4f3a0cb58'],
+        confirmTimes: 10
+    });
+
+    assert.equal('AAAAAAAAAAAAAgEKYIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==', _data);
 });
 
 

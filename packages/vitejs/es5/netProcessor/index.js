@@ -106,7 +106,6 @@ var NetProcessor = (function () {
                         if (!this.isConnected) {
                             return [2, this._onReq.apply(this, ['request', methods].concat(args))];
                         }
-                        console.log(methods, args);
                         return [4, this._provider.request(methods, args)];
                     case 1:
                         rep = _a.sent();

@@ -80,10 +80,12 @@ export function validReqAccountBlock({ blockType, fromBlockHash, accountAddress,
     return null;
 }
 
-// [TODO] ping 确认，confirmtime如何进行补充
-export function getCreateContractData({ abi, hexCode, params }) {
+// uint8
+export function getCreateContractData({ abi, hexCode, params, confirmTimes = 0 }) {
     const jsonInterface = getConstructor(abi);
-    let data = `${ Delegate_Gid }01${ hexCode }`;
+    const _confirmTimes = new BigNumber(confirmTimes).toArray();
+    let data = `${ Delegate_Gid }01${ Buffer.from(_confirmTimes).toString('hex') }${ hexCode }`;
+    console.log(data);
     if (jsonInterface) {
         data += encodeParameters(jsonInterface, params);
     }

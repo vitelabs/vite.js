@@ -14,8 +14,7 @@ function getAccountBlock(_a) {
     var reject = function (error, errMsg) {
         if (errMsg === void 0) { errMsg = ''; }
         var message = (error.message || '') + " " + errMsg;
-        console.error(new Error(message));
-        return null;
+        throw new Error(message);
     };
     var err = exports.validReqAccountBlock({ blockType: blockType, fromBlockHash: fromBlockHash, accountAddress: accountAddress, message: message, data: data, toAddress: toAddress, amount: amount });
     if (err) {

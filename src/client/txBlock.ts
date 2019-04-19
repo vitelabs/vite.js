@@ -82,8 +82,11 @@ export default class Tx {
         return formatAccountBlock({ blockType, fromBlockHash, accountAddress, message, data, height, prevHash, toAddress, tokenId, amount, fee });
     }
 
-    async createContract({ accountAddress, tokenId, amount, fee, hexCode, abi, params, height, prevHash }: createContractBlock, requestType = 'async') {
-        const err = checkParams({ hexCode, abi, tokenId, amount, fee }, [ 'hexCode', 'abi', 'tokenId', 'amount', 'fee' ]);
+    async createContract({ accountAddress, tokenId, amount, fee, hexCode, abi, params, height, prevHash, confirmTimes = 0 }: createContractBlock, requestType = 'async') {
+        const err = checkParams({ hexCode, abi, tokenId, amount, fee, confirmTimes }, [ 'hexCode', 'abi', 'tokenId', 'amount', 'fee', 'confirmTimes' ], [{
+            name: 'confirmTimes',
+            func: _c => _c >= 0 && _c <= 75
+        }]);
         if (err) {
             return Promise.reject(err);
         }
@@ -92,7 +95,7 @@ export default class Tx {
 
         const toAddress = await this._client.contract.getCreateContractToAddress(accountAddress, block.height, block.prevHash);
         block.toAddress = toAddress;
-        block.data = getCreateContractData({ abi, hexCode, params });
+        block.data = getCreateContractData({ abi, hexCode, params, confirmTimes });
         return block;
     }
 
@@ -347,12 +350,7 @@ export default class Tx {
         requestBlock[feeType] = feeType === 'fee' ? spendFee : spendAmount;
         const block = requestType === 'async' ? await this.asyncAccountBlock(requestBlock) : _getAccountBlock(requestBlock);
 
-        const tokenId = await this._client.mintage.newTokenId({
-            selfAddr: accountAddress,
-            height: block.height,
-            prevHash: block.prevHash
-        });
-        const data = encodeFunctionCall(Mint_Abi, [ isReIssuable, tokenId, tokenName, tokenSymbol, totalSupply, decimals, maxSupply, ownerBurnOnly ]);
+        const data = encodeFunctionCall(Mint_Abi, [ isReIssuable, tokenName, tokenSymbol, totalSupply, decimals, maxSupply, ownerBurnOnly ]);
         block.data = Buffer.from(data, 'hex').toString('base64');
 
         return block;

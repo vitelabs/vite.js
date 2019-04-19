@@ -341,10 +341,13 @@ export enum vote {
 export enum mintage {
     'getMintData' = 'mintage_getMintData',
     'getMintageCancelPledgeData' = 'mintage_getMintageCancelPledgeData',
+    'getIssueData' = 'mintage_getIssueData',
+    'getBurnData' = 'mintage_getBurnData',
+    'getTransferOwnerData' = 'mintage_getTransferOwnerData',
+    'getChangeTokenTypeData' = 'mintage_getChangeTokenTypeData',
     'getTokenInfoList' = 'mintage_getTokenInfoList',
     'getTokenInfoById' = 'mintage_getTokenInfoById',
     'getTokenInfoListByOwner' = 'mintage_getTokenInfoListByOwner',
-    'newTokenId' = 'mintage_newTokenId'
 }
 
 export enum net {
@@ -421,10 +424,13 @@ export type voteFunc = {
 export type mintageFunc = {
     getMintData: Function;
     getMintageCancelPledgeData: Function;
+    getIssueData: Function;
+    getBurnData: Function;
+    getTransferOwnerData: Function;
+    getChangeTokenTypeData: Function;
     getTokenInfoList: Function;
     getTokenInfoById: Function;
     getTokenInfoListByOwner: Function;
-    newTokenId: Function;
 }
 export type consensusGroupFunc = {
     getConditionRegisterOfPledge: Function;

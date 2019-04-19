@@ -122,10 +122,13 @@ var mintage;
 (function (mintage) {
     mintage["getMintData"] = "mintage_getMintData";
     mintage["getMintageCancelPledgeData"] = "mintage_getMintageCancelPledgeData";
+    mintage["getIssueData"] = "mintage_getIssueData";
+    mintage["getBurnData"] = "mintage_getBurnData";
+    mintage["getTransferOwnerData"] = "mintage_getTransferOwnerData";
+    mintage["getChangeTokenTypeData"] = "mintage_getChangeTokenTypeData";
     mintage["getTokenInfoList"] = "mintage_getTokenInfoList";
     mintage["getTokenInfoById"] = "mintage_getTokenInfoById";
     mintage["getTokenInfoListByOwner"] = "mintage_getTokenInfoListByOwner";
-    mintage["newTokenId"] = "mintage_newTokenId";
 })(mintage = exports.mintage || (exports.mintage = {}));
 var net;
 (function (net) {
