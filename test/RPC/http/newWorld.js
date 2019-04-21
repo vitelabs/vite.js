@@ -57,8 +57,8 @@ async function TestFunc() {
     // console.log('Step 7 voting. \n');
     // await voting();
 
-    console.log('Step 7 revokeVoting. \n');
-    await revokeVoting();
+    // console.log('Step 8 revokeVoting. \n');
+    // await revokeVoting();
 
     console.log('Last One CheckMyTxList. \n');
     await CheckMyTxList();
@@ -158,10 +158,10 @@ async function CheckMyBalance() {
 async function CheckMyTxList() {
     const data = await myAccount.getTxList({
         index: 0,
-        pageCount: 1
+        pageCount: 50
     });
 
-    // console.log('[LOG] CheckMyTxList', data, '\n');
+    console.log('[LOG] CheckMyTxList', data, '\n');
 
     data.list.forEach((ele, i) => {
         console.log(`[LOG] CheckMyTxList builtinTxtype ${ i }: ${ BuiltinTxType[ele.txType] } \n`);

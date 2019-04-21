@@ -115,16 +115,16 @@ describe('getReceiveTxBlock', function () {
 });
 
 describe('getBuiltinTxType', function () {
-    // const RevokeVoting = {
-    //     blockType: 2,
-    //     data: 'pinFMQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB',
-    //     toAddress: 'vite_000000000000000000000000000000000000000270a48cc491'
-    // };
-    // const Voting = {
-    //     blockType: 2,
-    //     data: '/cF/JQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA0hhbgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
-    //     toAddress: 'vite_000000000000000000000000000000000000000270a48cc491'
-    // };
+    const RevokeVoting = {
+        blockType: 2,
+        data: 'pinFMQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB',
+        toAddress: 'vite_00000000000000000000000000000000000000042d7ef71894'
+    };
+    const Voting = {
+        blockType: 2,
+        data: '/cF/JQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADENTX1RFU1RfTk9ERQAAAAAAAAAAAAAAAAAAAAAAAAAA',
+        toAddress: 'vite_00000000000000000000000000000000000000042d7ef71894'
+    };
     const TxRes = {
         blockType: 4,
         data: 'MjEyMw==',
@@ -145,21 +145,21 @@ describe('getBuiltinTxType', function () {
     //     data: 'jefc/QAAAAAAAAAAAAAAABVeToP7BJncwwR+BFi7+ud/KsEn',
     //     toAddress: 'vite_000000000000000000000000000000000000000309508ba646'
     // };
-    // const SBPreg = {
-    //     blockType: 2,
-    //     data: '8pxs4gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGAAAAAAAAAAAAAAAABwv7dBTikKqChmXMP0/IEF0NQACQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHMjMyMzIzMgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=',
-    //     toAddress: 'vite_0000000000000000000000000000000000000001c9e9f25417'
-    // };
-    // const RevokeReg = {
-    //     blockType: 2,
-    //     data: 'YIYv4gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABzIzMjMyMzIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
-    //     toAddress: 'vite_0000000000000000000000000000000000000001c9e9f25417'
-    // };
-    // const UpdateReg = {
-    //     blockType: 2,
-    //     data: 'O3vfdAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGAAAAAAAAAAAAAAAADF4fUrf0FtM5BYUSzVPhltH5VHKgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHMjMyMzIzMgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=/IEF0NQACQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHMjMyMzIzMgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=',
-    //     toAddress: 'vite_0000000000000000000000000000000000000001c9e9f25417'
-    // };
+    const SBPreg = {
+        blockType: 2,
+        data: '8pxs4gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGAAAAAAAAAAAAAAAAAT8fjiMPL/oeAw5mTlJQM/+ZXWwgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMQ1NfVEVTVF9OT0RFAAAAAAAAAAAAAAAAAAAAAAAAAAA=',
+        toAddress: 'vite_00000000000000000000000000000000000000042d7ef71894'
+    };
+    const RevokeReg = {
+        blockType: 2,
+        data: 'YIYv4gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADENTX1RFU1RfTk9ERQAAAAAAAAAAAAAAAAAAAAAAAAAA',
+        toAddress: 'vite_00000000000000000000000000000000000000042d7ef71894'
+    };
+    const UpdateReg = {
+        blockType: 2,
+        data: 'O3vfdAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGAAAAAAAAAAAAAAAADuZxNYjnJ6lkqPR0DifdvmpSic9gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMQ1NfVEVTVF9OT0RFAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+        toAddress: 'vite_00000000000000000000000000000000000000042d7ef71894'
+    };
     const CreateContractReq = {
         blockType: 1,
         data: '',
@@ -206,12 +206,12 @@ describe('getBuiltinTxType', function () {
         toAddress: 'vite_000000000000000000000000000000000000000617d47459a8'
     };
 
-    // it('RevokeVoting', function () {
-    //     assert.equal(getBuiltinTxType(RevokeVoting.toAddress, RevokeVoting.data, RevokeVoting.blockType), 'RevokeVoting');
-    // });
-    // it('Voting', function () {
-    //     assert.equal(getBuiltinTxType(Voting.toAddress, Voting.data, Voting.blockType), 'Voting');
-    // });
+    it('RevokeVoting', function () {
+        assert.equal(getBuiltinTxType(RevokeVoting.toAddress, RevokeVoting.data, RevokeVoting.blockType), 'RevokeVoting');
+    });
+    it('Voting', function () {
+        assert.equal(getBuiltinTxType(Voting.toAddress, Voting.data, Voting.blockType), 'Voting');
+    });
     it('TxRes', function () {
         assert.equal(getBuiltinTxType(TxRes.toAddress, TxRes.data, TxRes.blockType), 'TxRes');
     });
@@ -224,15 +224,15 @@ describe('getBuiltinTxType', function () {
     // it('GetQuota', function () {
     //     assert.equal(getBuiltinTxType(GetQuota.toAddress, GetQuota.data, GetQuota.blockType), 'GetQuota');
     // });
-    // it('SBPreg', function () {
-    //     assert.equal(getBuiltinTxType(SBPreg.toAddress, SBPreg.data, SBPreg.blockType), 'SBPreg');
-    // });
-    // it('RevokeReg', function () {
-    //     assert.equal(getBuiltinTxType(RevokeReg.toAddress, RevokeReg.data, RevokeReg.blockType), 'RevokeReg');
-    // });
-    // it('UpdateReg', function () {
-    //     assert.equal(getBuiltinTxType(UpdateReg.toAddress, UpdateReg.data, UpdateReg.blockType), 'UpdateReg');
-    // });
+    it('SBPreg', function () {
+        assert.equal(getBuiltinTxType(SBPreg.toAddress, SBPreg.data, SBPreg.blockType), 'SBPreg');
+    });
+    it('RevokeReg', function () {
+        assert.equal(getBuiltinTxType(RevokeReg.toAddress, RevokeReg.data, RevokeReg.blockType), 'RevokeReg');
+    });
+    it('UpdateReg', function () {
+        assert.equal(getBuiltinTxType(UpdateReg.toAddress, UpdateReg.data, UpdateReg.blockType), 'UpdateReg');
+    });
     it('CreateContractReq', function () {
         assert.equal(getBuiltinTxType(CreateContractReq.toAddress, CreateContractReq.data, CreateContractReq.blockType), 'CreateContractReq');
     });
