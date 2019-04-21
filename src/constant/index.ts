@@ -8,7 +8,7 @@ export const Default_Hash = '000000000000000000000000000000000000000000000000000
 export const Snapshot_Gid = '00000000000000000001';
 export const Delegate_Gid = '00000000000000000002';
 
-export const Quota_Addr = 'vite_000000000000000000000000000000000000000309508ba646';
+export const Pledge_Addr = 'vite_000000000000000000000000000000000000000309508ba646';
 export const Vote_Addr = 'vite_00000000000000000000000000000000000000042d7ef71894';
 export const Register_Addr = 'vite_00000000000000000000000000000000000000042d7ef71894';
 export const Mintage_Addr = 'vite_00000000000000000000000000000000000000056ad6d26692';
@@ -95,7 +95,7 @@ export enum LangList {
 }
 
 export const contractAddrs = {
-    Quota: Quota_Addr,
+    Pledge: Pledge_Addr,
     Vote: Vote_Addr,
     Register: Register_Addr,
     Mintage: Mintage_Addr,

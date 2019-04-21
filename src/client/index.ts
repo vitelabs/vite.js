@@ -1,12 +1,12 @@
 import { methods as _methods } from '~@vite/vitejs-constant';
 import netProcessor from '~@vite/vitejs-netprocessor';
 
-import { checkParams } from '~@vite/vitejs-utils';
-import { isValidHexAddr } from '~@vite/vitejs-privtoaddr';
+import { checkParams, blake2bHex } from '~@vite/vitejs-utils';
+import { isValidHexAddr, getAddrFromHexAddr } from '~@vite/vitejs-privtoaddr';
 import { getBuiltinTxType, signAccountBlock, validReqAccountBlock } from '~@vite/vitejs-accountblock';
 
 import TxBlock from './txBlock';
-import { RPCrequest, BuiltinTxType, Address, subscribeFunc, walletFunc, netFunc, onroadFunc, contractFunc, pledgeFunc, registerFunc, voteFunc, mintageFunc, ledgerFunc, txFunc } from '../type';
+import { Address, testapiFunc, RPCrequest, BuiltinTxType, subscribeFunc, walletFunc, netFunc, onroadFunc, contractFunc, pledgeFunc, registerFunc, voteFunc, mintageFunc, ledgerFunc, txFunc, powFunc } from '../type';
 
 const { onroad } = _methods;
 const _ledger = _methods.ledger;
@@ -26,6 +26,8 @@ export default class Client extends netProcessor {
     ledger: ledgerFunc
     tx: txFunc
     subscribeFunc: subscribeFunc
+    pow: powFunc
+    testapi: testapiFunc
 
     constructor(provider: any, firstConnect: Function) {
         super(provider, firstConnect);
@@ -122,15 +124,20 @@ export default class Client extends netProcessor {
         return { list, totalNum };
     }
 
-    async sendRawTx(accountBlock, privateKey) {
+    async sendAutoPowRawTx({ accountBlock, privateKey, usePledgeQuota = true }) {
         const err = checkParams({ accountBlock, privateKey }, [ 'accountBlock', 'privateKey' ], [{
             name: 'accountBlock',
             func: _a => !validReqAccountBlock(_a)
         }]);
         if (err) {
-            return Promise.reject(err);
+            throw err;
         }
 
+        const powTx = await this.getPowRawTx(accountBlock, usePledgeQuota);
+        return this.sendRawTx(powTx.accountBlock, privateKey);
+    }
+
+    async sendRawTx(accountBlock, privateKey) {
         const _accountBlock = signAccountBlock(accountBlock, privateKey);
 
         try {
@@ -138,8 +145,39 @@ export default class Client extends netProcessor {
         } catch (err) {
             const _err = err;
             _err.accountBlock = _accountBlock;
-            return Promise.reject(_err);
+            throw _err;
         }
+    }
+
+    async getPowRawTx(accountBlock, usePledgeQuota) {
+        const data = await this.tx.calcPoWDifficulty({
+            selfAddr: accountBlock.accountAddress,
+            prevHash: accountBlock.prevHash,
+            blockType: accountBlock.blockType,
+            toAddr: accountBlock.toAddress,
+            data: accountBlock.data,
+            usePledgeQuota
+        });
+
+        if (!data.difficulty) {
+            return {
+                accountBlock,
+                ...data
+            };
+        }
+
+        const realAddr = getAddrFromHexAddr(accountBlock.accountAddress);
+        const rawHashBytes = Buffer.from(realAddr + accountBlock.prevHash, 'hex');
+        const hash = blake2bHex(rawHashBytes, null, 32);
+
+        const nonce = await this.pow.getPowNonce(data.difficulty, hash);
+
+        accountBlock.nonce = nonce;
+        accountBlock.difficulty = data.difficulty;
+        return {
+            accountBlock,
+            ...data
+        };
     }
 
     private _setMethodsName() {
@@ -161,7 +199,6 @@ export default class Client extends netProcessor {
 
             for (const methodName in spaceMethods) {
                 const name = spaceMethods[methodName];
-                // console.log(...args);
                 this[_namespace][methodName] = (...args: any[]) => this.request(name, ...args);
             }
         }

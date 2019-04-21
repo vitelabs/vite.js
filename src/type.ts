@@ -119,7 +119,6 @@ export declare type quotaBlock = {
     height?: Uint64;
 }
 
-
 export declare type sendTxBlock = {
     accountAddress: Address;
     toAddress: Address;
@@ -174,6 +173,7 @@ export declare type createContractBlock = {
     abi: string;
     amount: BigInt;
     fee: BigInt;
+    tokenId?: TokenId;
     confirmTimes: number;
     params?: string;
     prevHash?: Hex;
@@ -188,7 +188,7 @@ export declare type callContractBlock = {
     fee?: BigInt;
     tokenId?: TokenId;
     amount?: BigInt;
-    params?: Array<string>;
+    params?: Array<string | boolean>;
     prevHash?: Hex;
     height?: Uint64;
 }
@@ -305,14 +305,6 @@ export enum ledger {
     'getFittestSnapshotHash' = 'ledger_getFittestSnapshotHash'
 }
 
-// export enum consensusGroup {
-//     'getConditionRegisterOfPledge' = 'consensusGroup_getConditionRegisterOfPledge',
-//     'getConditionVoteOfKeepToken' = 'consensusGroup_getConditionVoteOfKeepToken',
-//     'getCreateConsensusGroupData' = 'consensusGroup_getCreateConsensusGroupData',
-//     'getCancelConsensusGroupData' = 'consensusGroup_getCancelConsensusGroupData',
-//     'getReCreateConsensusGroupData' = 'consensusGroup_getReCreateConsensusGroupData'
-// }
-
 export enum contract {
     'getCreateContractToAddress' = 'contract_getCreateContractToAddress',
     'getCreateContractData' = 'contract_getCreateContractData',
@@ -353,7 +345,7 @@ export enum mintage {
     'getChangeTokenTypeData' = 'mintage_getChangeTokenTypeData',
     'getTokenInfoList' = 'mintage_getTokenInfoList',
     'getTokenInfoById' = 'mintage_getTokenInfoById',
-    'getTokenInfoListByOwner' = 'mintage_getTokenInfoListByOwner',
+    'getTokenInfoListByOwner' = 'mintage_getTokenInfoListByOwner'
 }
 
 export enum dexfund {
@@ -387,9 +379,9 @@ export enum subscribe {
     'getLogs' = 'subscribe_getLogs'
 }
 
-export const _methods = { dexfund, wallet, onroad, tx, ledger, contract, pledge, register, vote, mintage, net, subscribe };
+export const _methods = { testapi, pow, dexfund, wallet, onroad, tx, ledger, contract, pledge, register, vote, mintage, net, subscribe };
 
-export declare type Methods = dexfund | wallet | onroad | tx | ledger | contract | pledge | register | vote | mintage | net | subscribe;
+export declare type Methods = testapi | pow | dexfund | wallet | onroad | tx | ledger | contract | pledge | register | vote | mintage | net | subscribe;
 
 export type walletFunc = {
     listEntropyFilesInStandardDir: Function;
@@ -409,28 +401,51 @@ export type walletFunc = {
     createTxWithPassphrase: Function;
     addEntropyStore: Function;
 }
-export type netFunc = {
-    syncInfo: Function;
-    peers: Function;
-}
 
 export type onroadFunc = {
     getOnroadBlocksByAddress: Function;
     getOnroadInfoByAddress: Function;
+    getOnroadBlocksInBatch: Function;
     getOnroadInfoInBatch: Function;
-    getAccountOnroadInfo: Function;
 }
+
+export type txFunc = {
+    sendRawTx: Function;
+    calcPoWDifficulty: Function;
+}
+
+export type ledgerFunc = {
+    getBlocksByAccAddr: Function;
+    getAccountByAccAddr: Function;
+    getLatestSnapshotChainHash: Function;
+    getLatestBlock: Function;
+    getBlockByHeight: Function;
+    getBlockByHash: Function;
+    getBlocksByHashInToken: Function;
+    getBlocksByHash: Function;
+    getSnapshotChainHeight: Function;
+    getSnapshotBlockByHash: Function;
+    getSnapshotBlockByHeight: Function;
+    getVmLogList: Function;
+    getFittestSnapshotHash: Function;
+}
+
 export type contractFunc = {
     getCreateContractToAddress: Function;
     getCreateContractData: Function;
     getCallContractData: Function;
+    getContractInfo: Function;
+    getCallOffChainData: Function;
+    callOffChainMethod: Function;
 }
+
 export type pledgeFunc = {
     getPledgeData: Function;
     getCancelPledgeData: Function;
     getPledgeQuota: Function;
     getPledgeList: Function;
 }
+
 export type registerFunc = {
     getRegistrationList: Function;
     getRegisterData: Function;
@@ -439,11 +454,13 @@ export type registerFunc = {
     getUpdateRegistrationData: Function;
     getCandidateList: Function;
 }
+
 export type voteFunc = {
     getVoteData: Function;
     getCancelVoteData: Function;
     getVoteInfo: Function;
 }
+
 export type mintageFunc = {
     getMintData: Function;
     getMintageCancelPledgeData: Function;
@@ -455,41 +472,36 @@ export type mintageFunc = {
     getTokenInfoById: Function;
     getTokenInfoListByOwner: Function;
 }
+
 export type dexfundFunc = {
     getAccountFundInfo: Function;
     getAccountFundInfoByStatus: Function;
 }
-// export type consensusGroupFunc = {
-//     getConditionRegisterOfPledge: Function;
-//     getConditionVoteOfKeepToken: Function;
-//     getCreateConsensusGroupData: Function;
-//     getCancelConsensusGroupData: Function;
-//     getReCreateConsensusGroupData: Function;
-// }
 
-export type ledgerFunc = {
-    getBlocksByAccAddr: Function;
-    getAccountByAccAddr: Function;
-    getLatestSnapshotChainHash: Function;
-    getLatestBlock: Function;
-    getBlockByHeight: Function;
-    getTokenMintage: Function;
-    getBlocksByHashInToken: Function;
-    getBlocksByHash: Function;
-    getSnapshotChainHeight: Function;
-    getVmLogList: Function;
+export type netFunc = {
+    syncInfo: Function;
+    peers: Function;
+    peersCount: Function;
 }
-export type txFunc = {
-    sendRawTx: Function;
+
+export type testapiFunc = {
+    getTestToken: Function;
+}
+
+export type powFunc = {
+    getPowNonce: Function;
 }
 
 export type subscribeFunc = {
+    newSnapshotBlocksFilter: Function;
     newAccountBlocksFilter: Function;
     newLogsFilter: Function;
     uninstallFilter: Function;
     getFilterChanges: Function;
+    newSnapshotBlocks: Function;
     newAccountBlocks: Function;
     newLogs: Function;
+    getLogs: Function;
 }
 
 export declare interface RPCrequest {

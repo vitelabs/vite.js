@@ -27,7 +27,7 @@ export default class AddrAccount {
     }
 
     getOnroad() {
-        return this._client.onroad.getAccountOnroadInfo(this.address);
+        return this._client.onroad.getOnroadInfoByAddress(this.address);
     }
 
     getOnroadBlocks({ index, pageCount = 50 }) {

@@ -139,8 +139,8 @@ class HttpRpc extends Communication {
                     return;
                 }
                 _results.push({
-                    result: results[i].result || null,
-                    error: results[i].error || null
+                    result: results && results[i] ? results[i].result || null : null,
+                    error: results && results[i] ? results[i].error || null : null
                 });
                 i++;
             });

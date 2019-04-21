@@ -1,9 +1,10 @@
 import {
     methods, Vite_TokenId, Snapshot_Gid,
-    Quota_Addr, Vote_Addr, Register_Addr, Mintage_Addr,
+    Pledge_Addr, Vote_Addr, Register_Addr, Mintage_Addr, DexFund_Addr, DexTrade_Addr,
     Register_Abi, UpdateRegistration_Abi, CancelRegister_Abi,
     Reward_Abi, Vote_Abi, CancelVote_Abi, Pledge_Abi, CancelPledge_Abi,
-    Mint_Abi, Issue_Abi, Burn_Abi, ChangeTokenType_Abi, TransferOwner_Abi, CancelMintPledge_Abi
+    Mint_Abi, Issue_Abi, Burn_Abi, ChangeTokenType_Abi, TransferOwner_Abi, CancelMintPledge_Abi,
+    DexFundUserDeposit_Abi, DexFundUserWithdraw_Abi, DexTradeCancelOrder_Abi, DexFundNewOrder_Abi, DexFundNewMarket_Abi
 } from '~@vite/vitejs-constant';
 import { checkParams, validNodeName } from '~@vite/vitejs-utils';
 import {
@@ -15,6 +16,7 @@ import {
     getCreateContractData
 } from '~@vite/vitejs-accountblock';
 import { encodeFunctionCall } from '~@vite/vitejs-abi';
+import { newHexAddr } from  '~@vite/vitejs-privtoaddr';
 
 import {
     SBPregBlock, block8, block7, revokeVotingBlock, quotaBlock,
@@ -82,43 +84,6 @@ export default class Tx {
         return formatAccountBlock({ blockType, fromBlockHash, accountAddress, message, data, height, prevHash, toAddress, tokenId, amount, fee });
     }
 
-    async createContract({ accountAddress, tokenId, amount, fee, hexCode, abi, params, height, prevHash, confirmTimes = 0 }: createContractBlock, requestType = 'async') {
-        const err = checkParams({ hexCode, abi, tokenId, amount, fee, confirmTimes }, [ 'hexCode', 'abi', 'tokenId', 'amount', 'fee', 'confirmTimes' ], [{
-            name: 'confirmTimes',
-            func: _c => _c >= 0 && _c <= 75
-        }]);
-        if (err) {
-            return Promise.reject(err);
-        }
-
-        const block = requestType === 'async' ? await this.asyncAccountBlock({ blockType: 1, accountAddress, height, prevHash, tokenId, amount, fee }) : _getAccountBlock({ blockType: 1, accountAddress, height, prevHash, tokenId, amount, fee });
-
-        const toAddress = await this._client.contract.getCreateContractToAddress(accountAddress, block.height, block.prevHash);
-        block.toAddress = toAddress;
-        block.data = getCreateContractData({ abi, hexCode, params, confirmTimes });
-        return block;
-    }
-
-    async callContract({ accountAddress, toAddress, tokenId = Vite_TokenId, amount, abi, methodName, params = [], fee, height, prevHash }: callContractBlock, requestType = 'async') {
-        const err = checkParams({ toAddress, abi }, [ 'toAddress', 'abi' ]);
-        if (err) {
-            return Promise.reject(err);
-        }
-
-        const data = encodeFunctionCall(abi, params, methodName);
-        return this[`${ requestType }AccountBlock`]({
-            blockType: 2,
-            accountAddress,
-            toAddress,
-            data: Buffer.from(data, 'hex').toString('base64'),
-            height,
-            fee,
-            prevHash,
-            tokenId,
-            amount
-        });
-    }
-
     async asyncSendTx({ accountAddress, toAddress, tokenId, amount, message, height, prevHash }: sendTxBlock) {
         const err = checkParams({ toAddress, tokenId, amount }, [ 'toAddress', 'tokenId', 'amount' ]);
         if (err) {
@@ -152,14 +117,56 @@ export default class Tx {
         });
     }
 
-    async SBPreg({ accountAddress, nodeName, toAddress, amount, tokenId, height, prevHash }: SBPregBlock, requestType = 'async') {
-        const err = checkParams({ toAddress, nodeName, tokenId, amount, requestType }, [ 'toAddress', 'nodeName', 'tokenId', 'amount' ], [ {
-            name: 'nodeName',
-            func: validNodeName
-        }, {
+    async createContract({ accountAddress, tokenId, amount, fee, hexCode, abi, params, height, prevHash, confirmTimes = 0 }: createContractBlock, requestType = 'async') {
+        const err = checkParams({ hexCode, abi, tokenId, amount, fee, confirmTimes }, [ 'hexCode', 'abi', 'tokenId', 'amount', 'fee', 'confirmTimes' ], [{
+            name: 'confirmTimes',
+            func: _c => _c >= 0 && _c <= 75
+        }]);
+        if (err) {
+            return Promise.reject(err);
+        }
+
+        const block = requestType === 'async'
+            ? await this.asyncAccountBlock({ blockType: 1, accountAddress, height, prevHash, tokenId, amount, fee })
+            : _getAccountBlock({ blockType: 1, accountAddress, height, prevHash, tokenId, amount, fee });
+
+        const toAddress = await this._client.contract.getCreateContractToAddress(accountAddress, block.height, block.prevHash);
+        const data = getCreateContractData({ abi, hexCode, params, confirmTimes });
+
+        block.toAddress = toAddress;
+        block.data = data;
+
+        return block;
+    }
+
+    async callContract({ accountAddress, toAddress, tokenId = Vite_TokenId, amount, abi, methodName, params = [], fee, height, prevHash }: callContractBlock, requestType = 'async') {
+        const err = checkParams({ toAddress, abi, requestType }, [ 'toAddress', 'abi', 'requestType' ], [{
             name: 'requestType',
             func: validReqType
-        } ]);
+        }]);
+        if (err) {
+            return Promise.reject(err);
+        }
+
+        const data = encodeFunctionCall(abi, params, methodName);
+        return this[`${ requestType }AccountBlock`]({
+            blockType: 2,
+            accountAddress,
+            toAddress,
+            data: Buffer.from(data, 'hex').toString('base64'),
+            height,
+            fee,
+            prevHash,
+            tokenId,
+            amount
+        });
+    }
+
+    async SBPreg({ accountAddress, nodeName, toAddress, amount, tokenId, height, prevHash }: SBPregBlock, requestType = 'async') {
+        const err = checkParams({ toAddress, nodeName, tokenId, amount }, [ 'toAddress', 'nodeName', 'tokenId', 'amount' ], [{
+            name: 'nodeName',
+            func: validNodeName
+        }]);
         if (err) {
             return Promise.reject(err);
         }
@@ -177,13 +184,10 @@ export default class Tx {
     }
 
     async updateReg({ accountAddress, nodeName, toAddress, tokenId, height, prevHash }: block8, requestType = 'async') {
-        const err = checkParams({ toAddress, nodeName, tokenId, requestType }, [ 'toAddress', 'nodeName', 'tokenId' ], [ {
+        const err = checkParams({ toAddress, nodeName, tokenId }, [ 'toAddress', 'nodeName', 'tokenId' ], [{
             name: 'nodeName',
             func: validNodeName
-        }, {
-            name: 'requestType',
-            func: validReqType
-        } ]);
+        }]);
         if (err) {
             return Promise.reject(err);
         }
@@ -200,13 +204,10 @@ export default class Tx {
     }
 
     async revokeReg({ accountAddress, nodeName, tokenId, height, prevHash }: block7, requestType = 'async') {
-        const err = checkParams({ nodeName, tokenId, requestType }, [ 'nodeName', 'tokenId' ], [ {
+        const err = checkParams({ nodeName, tokenId }, [ 'nodeName', 'tokenId' ], [{
             name: 'nodeName',
             func: validNodeName
-        }, {
-            name: 'requestType',
-            func: validReqType
-        } ]);
+        }]);
         if (err) {
             return Promise.reject(err);
         }
@@ -223,13 +224,10 @@ export default class Tx {
     }
 
     async retrieveReward({ accountAddress, nodeName, toAddress, tokenId, height, prevHash }: block8, requestType = 'async') {
-        const err = checkParams({ toAddress, nodeName, tokenId, requestType }, [ 'toAddress', 'nodeName', 'tokenId' ], [ {
+        const err = checkParams({ toAddress, nodeName, tokenId }, [ 'toAddress', 'nodeName', 'tokenId' ], [{
             name: 'nodeName',
             func: validNodeName
-        }, {
-            name: 'requestType',
-            func: validReqType
-        } ]);
+        }]);
         if (err) {
             return Promise.reject(err);
         }
@@ -246,13 +244,10 @@ export default class Tx {
     }
 
     async voting({ accountAddress, nodeName, tokenId, height, prevHash }: block7, requestType = 'async') {
-        const err = checkParams({ nodeName, tokenId, requestType }, [ 'nodeName', 'tokenId' ], [ {
+        const err = checkParams({ nodeName, tokenId }, [ 'nodeName', 'tokenId' ], [{
             name: 'nodeName',
             func: validNodeName
-        }, {
-            name: 'requestType',
-            func: validReqType
-        } ]);
+        }]);
         if (err) {
             return Promise.reject(err);
         }
@@ -269,10 +264,7 @@ export default class Tx {
     }
 
     async revokeVoting({ accountAddress, tokenId, height, prevHash }: revokeVotingBlock, requestType = 'async') {
-        const err = checkParams({ tokenId, requestType }, ['tokenId'], [{
-            name: 'requestType',
-            func: validReqType
-        }]);
+        const err = checkParams({ tokenId }, ['tokenId']);
         if (err) {
             return Promise.reject(err);
         }
@@ -289,17 +281,14 @@ export default class Tx {
     }
 
     async getQuota({ accountAddress, toAddress, tokenId, amount, height, prevHash }: quotaBlock, requestType = 'async') {
-        const err = checkParams({ toAddress, tokenId, amount, requestType }, [ 'toAddress', 'tokenId', 'amount' ], [{
-            name: 'requestType',
-            func: validReqType
-        }]);
+        const err = checkParams({ toAddress, tokenId, amount }, [ 'toAddress', 'tokenId', 'amount' ]);
         if (err) {
             return Promise.reject(err);
         }
 
         return this.callContract({
             abi: Pledge_Abi,
-            toAddress: Quota_Addr,
+            toAddress: Pledge_Addr,
             params: [toAddress],
             accountAddress,
             tokenId,
@@ -310,17 +299,14 @@ export default class Tx {
     }
 
     async withdrawalOfQuota({ accountAddress, toAddress, tokenId, amount, height, prevHash }: quotaBlock, requestType = 'async') {
-        const err = checkParams({ toAddress, tokenId, amount, requestType }, [ 'toAddress', 'tokenId', 'amount' ], [{
-            name: 'requestType',
-            func: validReqType
-        }]);
+        const err = checkParams({ toAddress, tokenId, amount }, [ 'toAddress', 'tokenId', 'amount' ]);
         if (err) {
             return Promise.reject(err);
         }
 
         return this.callContract({
             abi: CancelPledge_Abi,
-            toAddress: Quota_Addr,
+            toAddress: Pledge_Addr,
             params: [ toAddress, amount ],
             accountAddress,
             tokenId,
@@ -330,14 +316,12 @@ export default class Tx {
     }
 
     async mintage({ accountAddress, feeType = 'burn', tokenName, isReIssuable, maxSupply, ownerBurnOnly, totalSupply, decimals, tokenSymbol, height, prevHash }: mintageBlock, requestType = 'async') {
-        const err = checkParams({ tokenName, isReIssuable, maxSupply, ownerBurnOnly, totalSupply, decimals, tokenSymbol, requestType, feeType },
+        const err = checkParams({ tokenName, isReIssuable, maxSupply, ownerBurnOnly, totalSupply, decimals, tokenSymbol, feeType },
             [ 'tokenName', 'isReIssuable', 'maxSupply', 'ownerBurnOnly', 'totalSupply', 'decimals', 'tokenSymbol' ],
-            [ { name: 'requestType', func: validReqType },
-                {
-                    name: 'feeType',
-                    func: type => type === 'burn' || type === 'stake'
-                }
-            ]);
+            [{
+                name: 'feeType',
+                func: type => type === 'burn' || type === 'stake'
+            }]);
         if (err) {
             return Promise.reject(err);
         }
@@ -346,18 +330,21 @@ export default class Tx {
         const spendFee = '1000000000000000000000';
         feeType = feeType === 'burn' ? 'fee' : 'amount';
 
-        const requestBlock = { blockType: 2, toAddress: Mintage_Addr, accountAddress, height, prevHash };
+        const requestBlock = {
+            abi: Mint_Abi,
+            toAddress: Mintage_Addr,
+            params: [ isReIssuable, tokenName, tokenSymbol, totalSupply, decimals, maxSupply, ownerBurnOnly ],
+            accountAddress,
+            height,
+            prevHash
+        };
         requestBlock[feeType] = feeType === 'fee' ? spendFee : spendAmount;
-        const block = requestType === 'async' ? await this.asyncAccountBlock(requestBlock) : _getAccountBlock(requestBlock);
 
-        const data = encodeFunctionCall(Mint_Abi, [ isReIssuable, tokenName, tokenSymbol, totalSupply, decimals, maxSupply, ownerBurnOnly ]);
-        block.data = Buffer.from(data, 'hex').toString('base64');
-
-        return block;
+        return this.callContract(requestBlock, requestType);
     }
 
     async mintageCancelPledge({ accountAddress, tokenId, height, prevHash }: changeTokenTypeBlock, requestType = 'async') {
-        const err = checkParams({ tokenId }, ['tokenId'], [{ name: 'requestType', func: validReqType }]);
+        const err = checkParams({ tokenId }, ['tokenId']);
         if (err) {
             return Promise.reject(err);
         }
@@ -373,12 +360,7 @@ export default class Tx {
     }
 
     async mintageIssue({ accountAddress, tokenId, amount, beneficial, height, prevHash }: mintageIssueBlock, requestType = 'async') {
-        const err = checkParams({ tokenId, amount, beneficial, requestType },
-            [ 'tokenId', 'amount', 'beneficial' ],
-            [{
-                name: 'requestType',
-                func: validReqType
-            }]);
+        const err = checkParams({ tokenId, amount, beneficial }, [ 'tokenId', 'amount', 'beneficial' ]);
         if (err) {
             return Promise.reject(err);
         }
@@ -395,7 +377,7 @@ export default class Tx {
     }
 
     async mintageBurn({ accountAddress, tokenId, amount, height, prevHash }: mintageBurnBlock, requestType = 'async') {
-        const err = checkParams({ amount, requestType }, ['amount'], [{ name: 'requestType', func: validReqType }]);
+        const err = checkParams({ amount }, ['amount']);
         if (err) {
             return Promise.reject(err);
         }
@@ -424,10 +406,7 @@ export default class Tx {
     }
 
     async changeTransferOwner({ accountAddress, ownerAddress, tokenId, height, prevHash }: changeTransferOwnerBlock, requestType = 'async') {
-        const err = checkParams({ tokenId, ownerAddress, requestType }, [ 'tokenId', 'ownerAddress' ], [{
-            name: 'requestType',
-            func: validReqType
-        }]);
+        const err = checkParams({ tokenId, ownerAddress }, [ 'tokenId', 'ownerAddress' ]);
         if (err) {
             return Promise.reject(err);
         }
@@ -441,8 +420,78 @@ export default class Tx {
             prevHash
         }, requestType);
     }
+
+    async dexFundUserDeposit({ accountAddress, tokenId, amount }, requestType = 'async') {
+        return this.callContract({
+            accountAddress,
+            toAddress: DexFund_Addr,
+            abi: DexFundUserDeposit_Abi,
+            tokenId,
+            amount,
+            params: []
+        }, requestType);
+    }
+
+    async dexFundUserWithdraw({ accountAddress, tokenId, amount }, requestType = 'async') {
+        return this.callContract({
+            accountAddress,
+            toAddress: DexFund_Addr,
+            abi: DexFundUserWithdraw_Abi,
+            params: [ tokenId, amount ],
+            tokenId,
+            amount: '0'
+        }, requestType);
+    }
+
+    async dexTradeCancelOrder({ accountAddress, orderId, tradeToken, side, quoteToken }, requestType = 'async') {
+        return this.callContract({
+            accountAddress,
+            tokenId: tradeToken,
+            toAddress: DexTrade_Addr,
+            abi: DexTradeCancelOrder_Abi,
+            params: [ `0x${ Buffer.from(orderId, 'base64').toString('hex') }`, tradeToken, quoteToken, side ]
+        }, requestType);
+    }
+
+    async dexFundNewOrder({ accountAddress, tradeToken, quoteToken, side, price, quantity }, requestType = 'async') {
+        const err = checkParams({ tradeToken, quoteToken, side, price, quantity },
+            [ 'tradeToken', 'quoteToken', 'side', 'price', 'quantity' ]);
+        if (err) {
+            return Promise.reject(err);
+        }
+
+        const orderId = getOrderId();
+
+        return this.callContract({
+            accountAddress,
+            toAddress: DexFund_Addr,
+            abi: DexFundNewOrder_Abi,
+            params: [ `0x${ orderId }`, tradeToken, quoteToken, side, 0, price, quantity ],
+            tokenId: tradeToken
+        }, requestType);
+    }
+
+    async dexFundNewMarket({ accountAddress, tokenId = Vite_TokenId, amount, tradeToken, quoteToken }, requestType = 'async') {
+        const err = checkParams({ tradeToken, quoteToken }, [ 'tradeToken', 'quoteToken' ]);
+        if (err) {
+            return Promise.reject(err);
+        }
+
+        return this.callContract({
+            accountAddress,
+            toAddress: DexFund_Addr,
+            abi: DexFundNewMarket_Abi,
+            params: [ tradeToken, quoteToken ],
+            tokenId,
+            amount
+        }, requestType);
+    }
 }
 
+
+function getOrderId() {
+    return newHexAddr().addr;
+}
 
 function validReqType(type) {
     return type === 'async' || type === 'sync';

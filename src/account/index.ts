@@ -3,6 +3,8 @@ import { paramsMissing } from '~@vite/vitejs-error';
 import { checkParams, ed25519 } from '~@vite/vitejs-utils';
 import client from '~@vite/vitejs-client';
 import addrAccount from '~@vite/vitejs-addraccount';
+import { signAccountBlock } from '~@vite/vitejs-accountblock';
+import { Vite_TokenId } from '~@vite/vitejs-constant';
 
 import { Hex, SBPregBlock, block8, block7, revokeVotingBlock, quotaBlock, sendTxBlock, receiveTxBlock } from '../type';
 
@@ -13,12 +15,17 @@ class Account extends addrAccount {
     privateKey: Hex
     publicKey: Hex
     balance
+    autoPow: Boolean
+    usePledgeQuota: boolean
     private _lock: Boolean
     private _autoReceive: Boolean
 
     constructor({ privateKey, client }: {
         privateKey?: Hex | Buffer; client: client;
-    }) {
+    }, { autoPow = false, usePledgeQuota = true }: {
+        autoPow?: boolean;
+        usePledgeQuota? : boolean;
+    } = { autoPow: false, usePledgeQuota: true }) {
         if (!client) {
             throw new Error(`${ paramsMissing.message } Client.`);
         }
@@ -33,6 +40,9 @@ class Account extends addrAccount {
         this._lock = true;
         this._autoReceive = false;
         this.balance = null;
+
+        this.autoPow = autoPow;
+        this.usePledgeQuota = usePledgeQuota;
     }
 
     getPublicKey() {
@@ -48,7 +58,11 @@ class Account extends addrAccount {
         return sign(hexStr, privKey);
     }
 
-    activate(intervals: number = 2000, receiveFailAction: Function = null) {
+    signAccountBlock(accountBlock) {
+        return signAccountBlock(accountBlock, this.privateKey);
+    }
+
+    activate(intervals: number = 2000, autoPow, usePledgeQuota) {
         if (!this._lock) {
             return;
         }
@@ -76,7 +90,7 @@ class Account extends addrAccount {
                 _t();
 
                 if (balanceInfos) {
-                    this.autoReceiveTx(intervals, receiveFailAction);
+                    this.autoReceiveTx(intervals, autoPow, usePledgeQuota);
                     return;
                 }
                 this.stopAutoReceiveTx();
@@ -92,8 +106,7 @@ class Account extends addrAccount {
         this._lock = true;
     }
 
-    // [TODO] 新增判断，是否需要pow，需要则返回错误
-    autoReceiveTx(intervals: number = 2000, receiveFailAction: Function = null) {
+    autoReceiveTx(intervals: number = 2000, autoPow?, usePledgeQuota?) {
         if (this._autoReceive) {
             return;
         }
@@ -101,21 +114,18 @@ class Account extends addrAccount {
         this._autoReceive = true;
 
         const _receive = async () => {
-            const result = await this._client.onroad.getOnroadBlocksByAddress(this.address, 0, 1);
+            const result = await this.getOnroadBlocks({
+                index: 0,
+                pageCount: 1
+            });
+
             if (!result || !result.length) {
                 return null;
             }
+
             const fromBlockHash = result[0].hash;
 
-            try {
-                const data = await this.receiveTx(fromBlockHash);
-                return data;
-            } catch (err) {
-                if (!receiveFailAction) {
-                    return Promise.reject(err);
-                }
-                return receiveFailAction(err);
-            }
+            return this.receiveTx(fromBlockHash, autoPow, usePledgeQuota);
         };
 
         const loop = () => {
@@ -156,7 +166,17 @@ class Account extends addrAccount {
         return this._client.sendRawTx(accountBlock, this.privateKey);
     }
 
-    async sendTx({ toAddress, tokenId, amount, message }) {
+    sendAutoPowRawTx(accountBlock, usePledgeQuota) {
+        const _usePledgeQuota = usePledgeQuota === true || usePledgeQuota === false ? usePledgeQuota : !!this.usePledgeQuota;
+
+        return this._client.sendAutoPowRawTx({
+            accountBlock,
+            privateKey: this.privateKey,
+            usePledgeQuota: _usePledgeQuota
+        });
+    }
+
+    async sendTx({ toAddress, tokenId, amount, message }, autoPow?, usePledgeQuota?) {
         const reqBlock: sendTxBlock = {
             accountAddress: this.address,
             toAddress,
@@ -165,19 +185,19 @@ class Account extends addrAccount {
             message
         };
         const _sendTxBlock = await this._client.buildinTxBlock.asyncSendTx(reqBlock);
-        return this._client.sendRawTx(_sendTxBlock, this.privateKey);
+        return this._sendRawTx(_sendTxBlock, autoPow, usePledgeQuota);
     }
 
-    async receiveTx(fromBlockHash) {
+    async receiveTx(fromBlockHash, autoPow?, usePledgeQuota?) {
         const reqBlock: receiveTxBlock = {
             accountAddress: this.address,
             fromBlockHash
         };
         const _receiveTxBlock = await this._client.buildinTxBlock.asyncReceiveTx(reqBlock);
-        return this._client.sendRawTx(_receiveTxBlock, this.privateKey);
+        return this._sendRawTx(_receiveTxBlock, autoPow, usePledgeQuota);
     }
 
-    async SBPreg({ nodeName, toAddress, amount, tokenId }) {
+    async SBPreg({ nodeName, toAddress, amount, tokenId = Vite_TokenId }, autoPow?, usePledgeQuota?) {
         const reqBlock: SBPregBlock = {
             accountAddress: this.address,
             nodeName,
@@ -186,10 +206,10 @@ class Account extends addrAccount {
             tokenId
         };
         const _SBPregBlock = await this._client.buildinTxBlock.SBPreg(reqBlock);
-        return this._client.sendRawTx(_SBPregBlock, this.privateKey);
+        return this._sendRawTx(_SBPregBlock, autoPow, usePledgeQuota);
     }
 
-    async updateReg({ nodeName, toAddress, tokenId }) {
+    async updateReg({ nodeName, toAddress, tokenId = Vite_TokenId }, autoPow?, usePledgeQuota?) {
         const reqBlock: block8 = {
             accountAddress: this.address,
             nodeName,
@@ -197,20 +217,20 @@ class Account extends addrAccount {
             tokenId
         };
         const _updateRegBlock = await this._client.buildinTxBlock.updateReg(reqBlock);
-        return this._client.sendRawTx(_updateRegBlock, this.privateKey);
+        return this._sendRawTx(_updateRegBlock, autoPow, usePledgeQuota);
     }
 
-    async revokeReg({ nodeName, tokenId }) {
+    async revokeReg({ nodeName, tokenId = Vite_TokenId }, autoPow?, usePledgeQuota?) {
         const reqBlock: block7 = {
             accountAddress: this.address,
             nodeName,
             tokenId
         };
         const _revokeRegBlock = await this._client.buildinTxBlock.revokeReg(reqBlock);
-        return this._client.sendRawTx(_revokeRegBlock, this.privateKey);
+        return this._sendRawTx(_revokeRegBlock, autoPow, usePledgeQuota);
     }
 
-    async retrieveReward({ nodeName, toAddress, tokenId }) {
+    async retrieveReward({ nodeName, toAddress, tokenId }, autoPow?, usePledgeQuota?) {
         const reqBlock: block8 = {
             accountAddress: this.address,
             nodeName,
@@ -218,29 +238,29 @@ class Account extends addrAccount {
             tokenId
         };
         const _retrieveRewardBlock = await this._client.buildinTxBlock.retrieveReward(reqBlock);
-        return this._client.sendRawTx(_retrieveRewardBlock, this.privateKey);
+        return this._sendRawTx(_retrieveRewardBlock, autoPow, usePledgeQuota);
     }
 
-    async voting({ nodeName, tokenId }) {
+    async voting({ nodeName, tokenId = Vite_TokenId }, autoPow?, usePledgeQuota?) {
         const reqBlock: block7 = {
             accountAddress: this.address,
             nodeName,
             tokenId
         };
         const _votingBlock = await this._client.buildinTxBlock.voting(reqBlock);
-        return this._client.sendRawTx(_votingBlock, this.privateKey);
+        return this._sendRawTx(_votingBlock, autoPow, usePledgeQuota);
     }
 
-    async revokeVoting({ tokenId }) {
+    async revokeVoting({ tokenId = Vite_TokenId } = { tokenId: Vite_TokenId }, autoPow?, usePledgeQuota?) {
         const reqBlock: revokeVotingBlock = {
             accountAddress: this.address,
             tokenId
         };
         const _revokeVotingBlock = await this._client.buildinTxBlock.revokeVoting(reqBlock);
-        return this._client.sendRawTx(_revokeVotingBlock, this.privateKey);
+        return this._sendRawTx(_revokeVotingBlock, autoPow, usePledgeQuota);
     }
 
-    async getQuota({ toAddress, tokenId, amount }) {
+    async getQuota({ toAddress, tokenId, amount }, autoPow?, usePledgeQuota?) {
         const reqBlock: quotaBlock = {
             accountAddress: this.address,
             toAddress,
@@ -248,10 +268,10 @@ class Account extends addrAccount {
             amount
         };
         const _getQuotaBlock = await this._client.buildinTxBlock.getQuota(reqBlock);
-        return this._client.sendRawTx(_getQuotaBlock, this.privateKey);
+        return this._sendRawTx(_getQuotaBlock, autoPow, usePledgeQuota);
     }
 
-    async withdrawalOfQuota({ toAddress, tokenId, amount }) {
+    async withdrawalOfQuota({ toAddress, tokenId, amount }, autoPow?, usePledgeQuota?) {
         const reqBlock: quotaBlock = {
             accountAddress: this.address,
             toAddress,
@@ -259,10 +279,10 @@ class Account extends addrAccount {
             amount
         };
         const _withdrawalOfQuotaBlock = await this._client.buildinTxBlock.withdrawalOfQuota(reqBlock);
-        return this._client.sendRawTx(_withdrawalOfQuotaBlock, this.privateKey);
+        return this._sendRawTx(_withdrawalOfQuotaBlock, autoPow, usePledgeQuota);
     }
 
-    async createContract({ hexCode, abi, params, confirmTimes, amount, fee = '10000000000000000000' }) {
+    async createContract({ hexCode, abi, params, confirmTimes, amount, fee = '10000000000000000000' }, autoPow?, usePledgeQuota?) {
         const _createContractBlock = await this._client.buildinTxBlock.createContract({
             accountAddress: this.address,
             hexCode,
@@ -272,10 +292,10 @@ class Account extends addrAccount {
             amount,
             fee
         });
-        return this._client.sendRawTx(_createContractBlock, this.privateKey);
+        return this._sendRawTx(_createContractBlock, autoPow, usePledgeQuota);
     }
 
-    async callContract({ toAddress, abi, params, methodName, tokenId, amount }) {
+    async callContract({ toAddress, abi, params, methodName, tokenId, amount }, autoPow?, usePledgeQuota?) {
         const _callContractBlock = await this._client.buildinTxBlock.callContract({
             accountAddress: this.address,
             toAddress,
@@ -285,10 +305,10 @@ class Account extends addrAccount {
             tokenId,
             amount
         });
-        return this._client.sendRawTx(_callContractBlock, this.privateKey);
+        return this._sendRawTx(_callContractBlock, autoPow, usePledgeQuota);
     }
 
-    async mintage({ feeType = 'burn', tokenName, isReIssuable, maxSupply, ownerBurnOnly, totalSupply, decimals, tokenSymbol }) {
+    async mintage({ feeType = 'burn', tokenName, isReIssuable, maxSupply, ownerBurnOnly, totalSupply, decimals, tokenSymbol }, autoPow?, usePledgeQuota?) {
         const _callContractBlock = await this._client.buildinTxBlock.mintage({
             accountAddress: this.address,
             feeType,
@@ -300,51 +320,113 @@ class Account extends addrAccount {
             decimals,
             tokenSymbol
         });
-        return this._client.sendRawTx(_callContractBlock, this.privateKey);
+        return this._sendRawTx(_callContractBlock, autoPow, usePledgeQuota);
     }
 
-    async mintageCancelPledge({ tokenId }) {
+    async mintageCancelPledge({ tokenId }, autoPow?, usePledgeQuota?) {
         const _callContractBlock = await this._client.buildinTxBlock.mintageCancelPledge({
             accountAddress: this.address,
             tokenId
         });
-        return this._client.sendRawTx(_callContractBlock, this.privateKey);
+        return this._sendRawTx(_callContractBlock, autoPow, usePledgeQuota);
     }
 
-    async mintageIssue({ tokenId, amount, beneficial }) {
+    async mintageIssue({ tokenId, amount, beneficial }, autoPow?, usePledgeQuota?) {
         const _callContractBlock = await this._client.buildinTxBlock.mintageIssue({
             accountAddress: this.address,
             tokenId,
             amount,
             beneficial
         });
-        return this._client.sendRawTx(_callContractBlock, this.privateKey);
+        return this._sendRawTx(_callContractBlock, autoPow, usePledgeQuota);
     }
 
-    async mintageBurn({ amount, tokenId }) {
+    async mintageBurn({ amount, tokenId }, autoPow?, usePledgeQuota?) {
         const _callContractBlock = await this._client.buildinTxBlock.mintageBurn({
             accountAddress: this.address,
             amount,
             tokenId
         });
-        return this._client.sendRawTx(_callContractBlock, this.privateKey);
+        return this._sendRawTx(_callContractBlock, autoPow, usePledgeQuota);
     }
 
-    async changeTokenType({ tokenId }) {
+    async changeTokenType({ tokenId }, autoPow?, usePledgeQuota?) {
         const _callContractBlock = await this._client.buildinTxBlock.changeTokenType({
             accountAddress: this.address,
             tokenId
         });
-        return this._client.sendRawTx(_callContractBlock, this.privateKey);
+        return this._sendRawTx(_callContractBlock, autoPow, usePledgeQuota);
     }
 
-    async changeTransferOwner({ ownerAddress, tokenId }) {
+    async changeTransferOwner({ ownerAddress, tokenId }, autoPow?, usePledgeQuota?) {
         const _callContractBlock = await this._client.buildinTxBlock.changeTransferOwner({
             accountAddress: this.address,
             tokenId,
             ownerAddress
         });
-        return this._client.sendRawTx(_callContractBlock, this.privateKey);
+        return this._sendRawTx(_callContractBlock, autoPow, usePledgeQuota);
+    }
+
+    async dexFundUserDeposit({ tokenId, amount }, autoPow?, usePledgeQuota?) {
+        const _callContractBlock = await this._client.buildinTxBlock.dexFundUserDeposit({
+            accountAddress: this.address,
+            tokenId,
+            amount
+        });
+        return this._sendRawTx(_callContractBlock, autoPow, usePledgeQuota);
+    }
+
+    async dexFundUserWithdraw({ tokenId, amount }, autoPow?, usePledgeQuota?) {
+        const _callContractBlock = await this._client.buildinTxBlock.dexFundUserDeposit({
+            accountAddress: this.address,
+            tokenId,
+            amount
+        });
+        return this._sendRawTx(_callContractBlock, autoPow, usePledgeQuota);
+    }
+
+    async dexTradeCancelOrder({ orderId, tradeToken, side, quoteToken }, autoPow?, usePledgeQuota?) {
+        const _callContractBlock = await this._client.buildinTxBlock.dexTradeCancelOrder({
+            accountAddress: this.address,
+            orderId,
+            tradeToken,
+            side,
+            quoteToken
+        });
+        return this._sendRawTx(_callContractBlock, autoPow, usePledgeQuota);
+    }
+
+    async dexFundNewOrder({ tradeToken, quoteToken, side, price, quantity }, autoPow?, usePledgeQuota?) {
+        const _callContractBlock = await this._client.buildinTxBlock.dexFundNewOrder({
+            accountAddress: this.address,
+            tradeToken,
+            quoteToken,
+            side,
+            price,
+            quantity
+        });
+        return this._sendRawTx(_callContractBlock, autoPow, usePledgeQuota);
+    }
+
+    async dexFundNewMarket({ tokenId, amount, tradeToken, quoteToken }, autoPow?, usePledgeQuota?) {
+        const _callContractBlock = await this._client.buildinTxBlock.dexFundNewMarket({
+            accountAddress: this.address,
+            tokenId,
+            amount,
+            tradeToken,
+            quoteToken
+        });
+        return this._sendRawTx(_callContractBlock, autoPow, usePledgeQuota);
+    }
+
+    private _sendRawTx(accountBlock, autoPow?, usePledgeQuota?) {
+        const _autoPow = autoPow === true || autoPow === false ? autoPow : !!this.autoPow;
+
+        if (!_autoPow) {
+            return this.sendRawTx(accountBlock);
+        }
+
+        return this.sendAutoPowRawTx(accountBlock, usePledgeQuota);
     }
 }
 
