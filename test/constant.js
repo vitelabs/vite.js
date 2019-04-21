@@ -9,7 +9,7 @@ const property = {
 const required = [
     'Snapshot_Gid',
     'Delegate_Gid',
-    'Quota_Addr',
+    'Pledge_Addr',
     'Vote_Addr',
     'Register_Addr',
     'Mintage_Addr',
@@ -46,19 +46,25 @@ const enumType = {
 };
 
 
-it('constant.key is error', function () {
+describe('constant.key is error', function () {
     for (const key in property) {
         assert.equal(constant[key], property[key]);
     }
 
     for (const key in enumType) {
-        assert.equal(!!constant[key], true);
-        constant[key] && assert.equal(Object.keys(constant[key]).length, enumType[key]);
+        it(key, function () {
+            assert.equal(!!constant[key], true);
+        });
+        constant[key] && it(key, function () {
+            assert.equal(Object.keys(constant[key]).length, enumType[key]);
+        });
     }
 });
 
-it('constant.key is null', function () {
+describe('constant.key is null', function () {
     required.forEach(key => {
-        assert.equal(!!constant[key], true);
+        it(key, function () {
+            assert.equal(!!constant[key], true);
+        });
     });
 });

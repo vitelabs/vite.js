@@ -130,21 +130,21 @@ describe('getBuiltinTxType', function () {
         data: 'MjEyMw==',
         toAddress: 'vite_155e4e83fb0499dcc3047e0458bbfae77f2ac1270e38c176f8'
     };
-    const WithdrawalOfQuota = {
-        blockType: 2,
-        data: 'n/nHtgAAAAAAAAAAAAAAABVeToP7BJncwwR+BFi7+ud/KsEnAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABPzBqJAn8AAA=',
-        toAddress: 'vite_000000000000000000000000000000000000000309508ba646'
-    };
+    // const WithdrawalOfQuota = {
+    //     blockType: 2,
+    //     data: 'n/nHtgAAAAAAAAAAAAAAABVeToP7BJncwwR+BFi7+ud/KsEnAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABPzBqJAn8AAA=',
+    //     toAddress: 'vite_000000000000000000000000000000000000000309508ba646'
+    // };
     const TxReq = {
         blockType: 2,
         data: null,
         toAddress: 'vite_155e4e83fb0499dcc3047e0458bbfae77f2ac1270e38c176f8'
     };
-    const GetQuota = {
-        blockType: 2,
-        data: 'jefc/QAAAAAAAAAAAAAAABVeToP7BJncwwR+BFi7+ud/KsEn',
-        toAddress: 'vite_000000000000000000000000000000000000000309508ba646'
-    };
+    // const GetQuota = {
+    //     blockType: 2,
+    //     data: 'jefc/QAAAAAAAAAAAAAAABVeToP7BJncwwR+BFi7+ud/KsEn',
+    //     toAddress: 'vite_000000000000000000000000000000000000000309508ba646'
+    // };
     // const SBPreg = {
     //     blockType: 2,
     //     data: '8pxs4gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGAAAAAAAAAAAAAAAABwv7dBTikKqChmXMP0/IEF0NQACQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHMjMyMzIzMgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=',
@@ -215,15 +215,15 @@ describe('getBuiltinTxType', function () {
     it('TxRes', function () {
         assert.equal(getBuiltinTxType(TxRes.toAddress, TxRes.data, TxRes.blockType), 'TxRes');
     });
-    it('WithdrawalOfQuota', function () {
-        assert.equal(getBuiltinTxType(WithdrawalOfQuota.toAddress, WithdrawalOfQuota.data, WithdrawalOfQuota.blockType), 'WithdrawalOfQuota');
-    });
+    // it('WithdrawalOfQuota', function () {
+    //     assert.equal(getBuiltinTxType(WithdrawalOfQuota.toAddress, WithdrawalOfQuota.data, WithdrawalOfQuota.blockType), 'WithdrawalOfQuota');
+    // });
     it('TxReq', function () {
         assert.equal(getBuiltinTxType(TxReq.toAddress, TxReq.data, TxReq.blockType), 'TxReq');
     });
-    it('GetQuota', function () {
-        assert.equal(getBuiltinTxType(GetQuota.toAddress, GetQuota.data, GetQuota.blockType), 'GetQuota');
-    });
+    // it('GetQuota', function () {
+    //     assert.equal(getBuiltinTxType(GetQuota.toAddress, GetQuota.data, GetQuota.blockType), 'GetQuota');
+    // });
     // it('SBPreg', function () {
     //     assert.equal(getBuiltinTxType(SBPreg.toAddress, SBPreg.data, SBPreg.blockType), 'SBPreg');
     // });
