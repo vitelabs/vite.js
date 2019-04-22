@@ -162,8 +162,8 @@ function enumTxType() {
     txType[`${ abiFuncSignature.CancelVote }_${ contractAddrs.Vote }`] = 'RevokeVoting';
 
     // Quota
-    txType[`${ abiFuncSignature.Pledge }_${ contractAddrs.Quota }`] = 'GetQuota';
-    txType[`${ abiFuncSignature.CancelPledge }_${ contractAddrs.Quota }`] = 'WithdrawalOfQuota';
+    txType[`${ abiFuncSignature.Pledge }_${ contractAddrs.Pledge }`] = 'GetQuota';
+    txType[`${ abiFuncSignature.CancelPledge }_${ contractAddrs.Pledge }`] = 'WithdrawalOfQuota';
 
     // Mintage
     txType[`${ abiFuncSignature.Mint }_${ contractAddrs.Mintage }`] = 'Mintage';

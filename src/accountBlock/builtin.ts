@@ -80,7 +80,6 @@ export function validReqAccountBlock({ blockType, fromBlockHash, accountAddress,
     return null;
 }
 
-// uint8
 export function getCreateContractData({ abi, hexCode, params, confirmTimes = 0 }) {
     const jsonInterface = getConstructor(abi);
     const _confirmTimes = new BigNumber(confirmTimes).toArray();

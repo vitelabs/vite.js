@@ -62,7 +62,7 @@ class Account extends addrAccount {
         return signAccountBlock(accountBlock, this.privateKey);
     }
 
-    activate(intervals: number = 2000, autoPow, usePledgeQuota) {
+    activate(intervals: number = 2000, autoPow?, usePledgeQuota?) {
         if (!this._lock) {
             return;
         }

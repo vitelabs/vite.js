@@ -60,24 +60,31 @@ class Wallet {
         this.activeAccountList = [];
     }
 
-    activateAccount({ address, index = this.addrStartInx }: { address?: Address; index?: number } = { index: this.addrStartInx }, {
+    activateAccount({
+        address,
+        index = this.addrStartInx
+    }: {
+        address?: Address;
+        index?: number;
+    } = { index: this.addrStartInx }, {
         intervals = 2000,
-        receiveFailAction = null,
-        duration = 5 * 60 * 1000
-    }: { intervals?: number; receiveFailAction?: null; duration?: number } = {
+        duration = 5 * 60 * 1000,
+        autoPow = false,
+        usePledgeQuota = true
+    }: {
+        intervals?: number;
+        autoPow?: boolean;
+        usePledgeQuota?: boolean;
+        duration?: number;
+    } = {
         intervals: 2000,
-        receiveFailAction: null,
-        duration: 5 * 60 * 1000
+        duration: 5 * 60 * 1000,
+        autoPow: false,
+        usePledgeQuota: true
     }) {
-        index = validAddrParams({ address, index });
+        const activeAccount = this.getAccount({ address, index });
 
-        const addrObj: AddrObj = this.addrList[index];
-        const activeAccount = new Account({
-            privateKey: addrObj.privKey,
-            client: this._client
-        });
-
-        activeAccount.activate(intervals, receiveFailAction);
+        activeAccount.activate(intervals, autoPow, usePledgeQuota);
         if (duration > 0) {
             setTimeout(() => {
                 this.freezeAccount(activeAccount);
@@ -105,6 +112,22 @@ class Wallet {
         activeAccount = null;
     }
 
+    getAccount({
+        address,
+        index = this.addrStartInx
+    }: {
+        address?: Address;
+        index?: number;
+    } = { index: this.addrStartInx }) {
+        index = validAddrParams({ address, index });
+        const addrObj: AddrObj = this.addrList[index];
+
+        return new Account({
+            privateKey: addrObj.privKey,
+            client: this._client
+        });
+    }
+
     addAddr() {
         const index = this.addrList.length;
         if (index >= this.addrTotalNum) {
@@ -123,6 +146,7 @@ class Wallet {
 export default Wallet;
 
 
+
 function validAddrParams({ address, index = this.addrStartInx }: { address?: Address; index?: number }) {
     if (!address && !index && index !== 0) {
         throw new Error(`${ paramsMissing.message } Address or index.`);
@@ -130,6 +154,10 @@ function validAddrParams({ address, index = this.addrStartInx }: { address?: Add
 
     if (address && !isValidHexAddr(address)) {
         throw new Error(`${ addressIllegal.message }`);
+    }
+
+    if (!address && index >= this.addrList.length) {
+        throw new Error('Illegal index. Index should be smaller than this.addrList.length.');
     }
 
     if (!address) {

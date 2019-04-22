@@ -9,9 +9,13 @@ const provider = new Client(new HTTP_RPC(config.http));
 const Default_Amount = '1000000000000000000000000'; // 1000000 VITE
 
 const myHdAccount = new HdAccount({
-    mnemonic: config.myMnemonic,
+    // mnemonic: config.myMnemonic,
+    mnemonic: 'mercy present company north ceiling century pen february sign square robot quiz dilemma afford lyrics picture limb south bicycle visa unique anger stone upon',
     client: provider
 });
+
+console.log(myHdAccount.mnemonic);
+
 const myAccount = new Account({
     privateKey: myHdAccount.addrList[0].privKey,
     client: provider
@@ -33,11 +37,11 @@ TestFunc().then(() => {
 async function TestFunc() {
     // await GetViteFromWorld(myAccount.address);
 
-    // console.log('Step 0 CheckHeight. \n');
-    // await CheckHeight();
+    console.log('Step 0 CheckHeight. \n');
+    await CheckHeight();
 
-    // console.log('Step 1 CheckMyBalance. \n');
-    // await CheckMyBalance();
+    console.log('Step 1 CheckMyBalance. \n');
+    await CheckMyBalance();
 
     // console.log('Step 2 SendTxToMyself. \n');
     // await SendTxToMyself();
@@ -60,12 +64,48 @@ async function TestFunc() {
     // console.log('Step 8 revokeVoting. \n');
     // await revokeVoting();
 
+    // console.log('Step 9 getQuota. \n');
+    // await checkQuota();
+
+    // console.log('Step 10 withdrawalOfQuota. \n');
+    // await withdrawalOfQuota();
+
     console.log('Last One CheckMyTxList. \n');
     await CheckMyTxList();
 
     return null;
 }
 
+
+
+async function withdrawalOfQuota() {
+    const result = await myAccount.withdrawalOfQuota({
+        toAddress: myAccount.address, 
+        tokenId: Vite_TokenId, 
+        amount: '10000000000000000000000'
+    });
+
+    console.log('[LOG] withdrawalOfQuota', result, '\n');
+    return result;
+}
+
+async function checkQuota() {
+    const quotaResult = await myAccount.getPledgeQuota();
+    console.log('[LOG] getPledgeQuota', quotaResult, '\n');
+
+    if (+quotaResult.utps) {
+        return quotaResult;
+    }
+
+    const result = await myAccount.getQuota({
+        toAddress: myAccount.address, 
+        tokenId: Vite_TokenId, 
+        amount: '10000000000000000000000'
+    });
+
+    console.log('[LOG] getQuota', result, '\n');
+    return result;
+}
 
 async function revokeVoting() {
     const result = await myAccount.revokeVoting();
@@ -146,10 +186,11 @@ async function SendTxToMyself() {
 
 async function CheckMyBalance() {
     const data = await myAccount.getBalance();
-    console.log('[LOG] CheckMyBalance', data, '\n');
 
-    if (!data.balance) {
+    if (!data.balance || !+data.balance.totalNumber) {
         await GetViteFromWorld(myAccount.address);
+    } else {
+        console.log('[LOG] CheckMyBalance', data.balance.tokenBalanceInfoMap[Vite_TokenId], '\n');
     }
 
     return null;
@@ -158,7 +199,7 @@ async function CheckMyBalance() {
 async function CheckMyTxList() {
     const data = await myAccount.getTxList({
         index: 0,
-        pageCount: 50
+        pageCount: 2
     });
 
     console.log('[LOG] CheckMyTxList', data, '\n');
