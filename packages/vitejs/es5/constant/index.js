@@ -6,7 +6,7 @@ exports.Vite_TokenId = 'tti_5649544520544f4b454e6e40';
 exports.Default_Hash = '0000000000000000000000000000000000000000000000000000000000000000';
 exports.Snapshot_Gid = '00000000000000000001';
 exports.Delegate_Gid = '00000000000000000002';
-exports.Quota_Addr = 'vite_000000000000000000000000000000000000000309508ba646';
+exports.Pledge_Addr = 'vite_000000000000000000000000000000000000000309508ba646';
 exports.Vote_Addr = 'vite_00000000000000000000000000000000000000042d7ef71894';
 exports.Register_Addr = 'vite_00000000000000000000000000000000000000042d7ef71894';
 exports.Mintage_Addr = 'vite_00000000000000000000000000000000000000056ad6d26692';
@@ -82,7 +82,7 @@ var LangList;
     LangList["spanish"] = "spanish";
 })(LangList = exports.LangList || (exports.LangList = {}));
 exports.contractAddrs = {
-    Quota: exports.Quota_Addr,
+    Pledge: exports.Pledge_Addr,
     Vote: exports.Vote_Addr,
     Register: exports.Register_Addr,
     Mintage: exports.Mintage_Addr,

@@ -130,8 +130,8 @@ function enumTxType() {
     txType[vitejs_constant_1.abiFuncSignature.Reward + "_" + vitejs_constant_1.contractAddrs.Register] = 'RetrieveReward';
     txType[vitejs_constant_1.abiFuncSignature.Vote + "_" + vitejs_constant_1.contractAddrs.Vote] = 'Voting';
     txType[vitejs_constant_1.abiFuncSignature.CancelVote + "_" + vitejs_constant_1.contractAddrs.Vote] = 'RevokeVoting';
-    txType[vitejs_constant_1.abiFuncSignature.Pledge + "_" + vitejs_constant_1.contractAddrs.Quota] = 'GetQuota';
-    txType[vitejs_constant_1.abiFuncSignature.CancelPledge + "_" + vitejs_constant_1.contractAddrs.Quota] = 'WithdrawalOfQuota';
+    txType[vitejs_constant_1.abiFuncSignature.Pledge + "_" + vitejs_constant_1.contractAddrs.Pledge] = 'GetQuota';
+    txType[vitejs_constant_1.abiFuncSignature.CancelPledge + "_" + vitejs_constant_1.contractAddrs.Pledge] = 'WithdrawalOfQuota';
     txType[vitejs_constant_1.abiFuncSignature.Mint + "_" + vitejs_constant_1.contractAddrs.Mintage] = 'Mintage';
     txType[vitejs_constant_1.abiFuncSignature.Issue + "_" + vitejs_constant_1.contractAddrs.Mintage] = 'MintageIssue';
     txType[vitejs_constant_1.abiFuncSignature.Burn + "_" + vitejs_constant_1.contractAddrs.Mintage] = 'MintageBurn';

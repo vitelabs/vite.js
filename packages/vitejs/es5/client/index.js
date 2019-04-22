@@ -12,6 +12,17 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -87,10 +98,10 @@ var Client = (function (_super) {
                             return [2, Promise.reject(err)];
                         }
                         return [4, this.batch([{
-                                    methodName: _ledger.getAccount,
+                                    methodName: _ledger.getAccountByAccAddr,
                                     params: [addr]
                                 }, {
-                                    methodName: onroad.getAccountOnroadInfo,
+                                    methodName: onroad.getOnroadInfoByAddress,
                                     params: [addr]
                                 }])];
                     case 1:
@@ -130,7 +141,7 @@ var Client = (function (_super) {
                             }];
                         if (!totalNum) {
                             requests.push({
-                                methodName: _ledger.getAccount,
+                                methodName: _ledger.getAccountByAccAddr,
                                 params: [addr]
                             });
                         }
@@ -138,7 +149,7 @@ var Client = (function (_super) {
                     case 1:
                         data = _e.sent();
                         requests.forEach(function (_r, i) {
-                            if (_r.methodName === _ledger.getAccount) {
+                            if (_r.methodName === _ledger.getAccountByAccAddr) {
                                 totalNum = data[i].result ? data[i].result.totalNumber : 0;
                                 return;
                             }
@@ -155,19 +166,34 @@ var Client = (function (_super) {
             });
         });
     };
-    Client.prototype.sendRawTx = function (accountBlock, privateKey) {
+    Client.prototype.sendAutoPowRawTx = function (_b) {
+        var accountBlock = _b.accountBlock, privateKey = _b.privateKey, _c = _b.usePledgeQuota, usePledgeQuota = _c === void 0 ? true : _c;
         return __awaiter(this, void 0, void 0, function () {
-            var err, _accountBlock, err_1, _err;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
+            var err, powTx;
+            return __generator(this, function (_d) {
+                switch (_d.label) {
                     case 0:
                         err = vitejs_utils_1.checkParams({ accountBlock: accountBlock, privateKey: privateKey }, ['accountBlock', 'privateKey'], [{
                                 name: 'accountBlock',
                                 func: function (_a) { return !vitejs_accountblock_1.validReqAccountBlock(_a); }
                             }]);
                         if (err) {
-                            return [2, Promise.reject(err)];
+                            throw err;
                         }
+                        return [4, this.getPowRawTx(accountBlock, usePledgeQuota)];
+                    case 1:
+                        powTx = _d.sent();
+                        return [2, this.sendRawTx(powTx.accountBlock, privateKey)];
+                }
+            });
+        });
+    };
+    Client.prototype.sendRawTx = function (accountBlock, privateKey) {
+        return __awaiter(this, void 0, void 0, function () {
+            var _accountBlock, err_1, _err;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
                         _accountBlock = vitejs_accountblock_1.signAccountBlock(accountBlock, privateKey);
                         _b.label = 1;
                     case 1:
@@ -178,8 +204,39 @@ var Client = (function (_super) {
                         err_1 = _b.sent();
                         _err = err_1;
                         _err.accountBlock = _accountBlock;
-                        return [2, Promise.reject(_err)];
+                        throw _err;
                     case 4: return [2];
+                }
+            });
+        });
+    };
+    Client.prototype.getPowRawTx = function (accountBlock, usePledgeQuota) {
+        return __awaiter(this, void 0, void 0, function () {
+            var data, realAddr, rawHashBytes, hash, nonce;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0: return [4, this.tx.calcPoWDifficulty({
+                            selfAddr: accountBlock.accountAddress,
+                            prevHash: accountBlock.prevHash,
+                            blockType: accountBlock.blockType,
+                            toAddr: accountBlock.toAddress,
+                            data: accountBlock.data,
+                            usePledgeQuota: usePledgeQuota
+                        })];
+                    case 1:
+                        data = _b.sent();
+                        if (!data.difficulty) {
+                            return [2, __assign({ accountBlock: accountBlock }, data)];
+                        }
+                        realAddr = vitejs_privtoaddr_1.getAddrFromHexAddr(accountBlock.accountAddress);
+                        rawHashBytes = Buffer.from(realAddr + accountBlock.prevHash, 'hex');
+                        hash = vitejs_utils_1.blake2bHex(rawHashBytes, null, 32);
+                        return [4, this.pow.getPowNonce(data.difficulty, hash)];
+                    case 2:
+                        nonce = _b.sent();
+                        accountBlock.nonce = nonce;
+                        accountBlock.difficulty = data.difficulty;
+                        return [2, __assign({ accountBlock: accountBlock }, data)];
                 }
             });
         });

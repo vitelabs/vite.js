@@ -52,23 +52,27 @@ var privToAddr = require("./../privtoaddr");
 var vitejs_error_1 = require("./../error");
 var vitejs_utils_1 = require("./../utils");
 var vitejs_addraccount_1 = require("./../addraccount");
+var vitejs_accountblock_1 = require("./../accountblock");
+var vitejs_constant_1 = require("./../constant");
 var sign = vitejs_utils_1.ed25519.sign, getPublicKey = vitejs_utils_1.ed25519.getPublicKey;
 var Account = (function (_super) {
     __extends(Account, _super);
-    function Account(_b) {
+    function Account(_b, _c) {
         var privateKey = _b.privateKey, client = _b.client;
+        var _d = _c === void 0 ? { autoPow: false, usePledgeQuota: true } : _c, _e = _d.autoPow, autoPow = _e === void 0 ? false : _e, _f = _d.usePledgeQuota, usePledgeQuota = _f === void 0 ? true : _f;
         var _this = this;
         if (!client) {
-            _this = _super.call(this) || this;
             throw new Error(vitejs_error_1.paramsMissing.message + " Client.");
         }
-        var _c = privToAddr.newHexAddr(privateKey), pubKey = _c.pubKey, privKey = _c.privKey, hexAddr = _c.hexAddr;
+        var _g = privToAddr.newHexAddr(privateKey), pubKey = _g.pubKey, privKey = _g.privKey, hexAddr = _g.hexAddr;
         _this = _super.call(this, { address: hexAddr, client: client }) || this;
         _this.privateKey = privKey;
         _this.publicKey = pubKey;
         _this._lock = true;
         _this._autoReceive = false;
         _this.balance = null;
+        _this.autoPow = autoPow;
+        _this.usePledgeQuota = usePledgeQuota;
         return _this;
     }
     Account.prototype.getPublicKey = function () {
@@ -82,10 +86,12 @@ var Account = (function (_super) {
         var privKey = Buffer.from(this.privateKey, 'hex');
         return sign(hexStr, privKey);
     };
-    Account.prototype.activate = function (intervals, receiveFailAction) {
+    Account.prototype.signAccountBlock = function (accountBlock) {
+        return vitejs_accountblock_1.signAccountBlock(accountBlock, this.privateKey);
+    };
+    Account.prototype.activate = function (intervals, autoPow, usePledgeQuota) {
         var _this = this;
         if (intervals === void 0) { intervals = 2000; }
-        if (receiveFailAction === void 0) { receiveFailAction = null; }
         if (!this._lock) {
             return;
         }
@@ -107,7 +113,7 @@ var Account = (function (_super) {
                 var balanceInfos = onroad && onroad.tokenBalanceInfoMap ? onroad.tokenBalanceInfoMap : null;
                 _t();
                 if (balanceInfos) {
-                    _this.autoReceiveTx(intervals, receiveFailAction);
+                    _this.autoReceiveTx(intervals, autoPow, usePledgeQuota);
                     return;
                 }
                 _this.stopAutoReceiveTx();
@@ -120,39 +126,28 @@ var Account = (function (_super) {
     Account.prototype.freeze = function () {
         this._lock = true;
     };
-    Account.prototype.autoReceiveTx = function (intervals, receiveFailAction) {
+    Account.prototype.autoReceiveTx = function (intervals, autoPow, usePledgeQuota) {
         var _this = this;
         if (intervals === void 0) { intervals = 2000; }
-        if (receiveFailAction === void 0) { receiveFailAction = null; }
         if (this._autoReceive) {
             return;
         }
         this._autoReceive = true;
         var _receive = function () { return __awaiter(_this, void 0, void 0, function () {
-            var result, fromBlockHash, data, err_1;
+            var result, fromBlockHash;
             return __generator(this, function (_b) {
                 switch (_b.label) {
-                    case 0: return [4, this._client.onroad.getOnroadBlocksByAddress(this.address, 0, 1)];
+                    case 0: return [4, this.getOnroadBlocks({
+                            index: 0,
+                            pageCount: 1
+                        })];
                     case 1:
                         result = _b.sent();
                         if (!result || !result.length) {
                             return [2, null];
                         }
                         fromBlockHash = result[0].hash;
-                        _b.label = 2;
-                    case 2:
-                        _b.trys.push([2, 4, , 5]);
-                        return [4, this.receiveTx(fromBlockHash)];
-                    case 3:
-                        data = _b.sent();
-                        return [2, data];
-                    case 4:
-                        err_1 = _b.sent();
-                        if (!receiveFailAction) {
-                            return [2, Promise.reject(err_1)];
-                        }
-                        return [2, receiveFailAction(err_1)];
-                    case 5: return [2];
+                        return [2, this.receiveTx(fromBlockHash, autoPow, usePledgeQuota)];
                 }
             });
         }); };
@@ -188,7 +183,15 @@ var Account = (function (_super) {
         accountBlock.accountAddress = this.address;
         return this._client.sendRawTx(accountBlock, this.privateKey);
     };
-    Account.prototype.sendTx = function (_b) {
+    Account.prototype.sendAutoPowRawTx = function (accountBlock, usePledgeQuota) {
+        var _usePledgeQuota = usePledgeQuota === true || usePledgeQuota === false ? usePledgeQuota : !!this.usePledgeQuota;
+        return this._client.sendAutoPowRawTx({
+            accountBlock: accountBlock,
+            privateKey: this.privateKey,
+            usePledgeQuota: _usePledgeQuota
+        });
+    };
+    Account.prototype.sendTx = function (_b, autoPow, usePledgeQuota) {
         var toAddress = _b.toAddress, tokenId = _b.tokenId, amount = _b.amount, message = _b.message;
         return __awaiter(this, void 0, void 0, function () {
             var reqBlock, _sendTxBlock;
@@ -205,12 +208,12 @@ var Account = (function (_super) {
                         return [4, this._client.buildinTxBlock.asyncSendTx(reqBlock)];
                     case 1:
                         _sendTxBlock = _c.sent();
-                        return [2, this._client.sendRawTx(_sendTxBlock, this.privateKey)];
+                        return [2, this._sendRawTx(_sendTxBlock, autoPow, usePledgeQuota)];
                 }
             });
         });
     };
-    Account.prototype.receiveTx = function (fromBlockHash) {
+    Account.prototype.receiveTx = function (fromBlockHash, autoPow, usePledgeQuota) {
         return __awaiter(this, void 0, void 0, function () {
             var reqBlock, _receiveTxBlock;
             return __generator(this, function (_b) {
@@ -223,17 +226,17 @@ var Account = (function (_super) {
                         return [4, this._client.buildinTxBlock.asyncReceiveTx(reqBlock)];
                     case 1:
                         _receiveTxBlock = _b.sent();
-                        return [2, this._client.sendRawTx(_receiveTxBlock, this.privateKey)];
+                        return [2, this._sendRawTx(_receiveTxBlock, autoPow, usePledgeQuota)];
                 }
             });
         });
     };
-    Account.prototype.SBPreg = function (_b) {
-        var nodeName = _b.nodeName, toAddress = _b.toAddress, amount = _b.amount, tokenId = _b.tokenId;
+    Account.prototype.SBPreg = function (_b, autoPow, usePledgeQuota) {
+        var nodeName = _b.nodeName, toAddress = _b.toAddress, amount = _b.amount, _c = _b.tokenId, tokenId = _c === void 0 ? vitejs_constant_1.Vite_TokenId : _c;
         return __awaiter(this, void 0, void 0, function () {
             var reqBlock, _SBPregBlock;
-            return __generator(this, function (_c) {
-                switch (_c.label) {
+            return __generator(this, function (_d) {
+                switch (_d.label) {
                     case 0:
                         reqBlock = {
                             accountAddress: this.address,
@@ -244,18 +247,18 @@ var Account = (function (_super) {
                         };
                         return [4, this._client.buildinTxBlock.SBPreg(reqBlock)];
                     case 1:
-                        _SBPregBlock = _c.sent();
-                        return [2, this._client.sendRawTx(_SBPregBlock, this.privateKey)];
+                        _SBPregBlock = _d.sent();
+                        return [2, this._sendRawTx(_SBPregBlock, autoPow, usePledgeQuota)];
                 }
             });
         });
     };
-    Account.prototype.updateReg = function (_b) {
-        var nodeName = _b.nodeName, toAddress = _b.toAddress, tokenId = _b.tokenId;
+    Account.prototype.updateReg = function (_b, autoPow, usePledgeQuota) {
+        var nodeName = _b.nodeName, toAddress = _b.toAddress, _c = _b.tokenId, tokenId = _c === void 0 ? vitejs_constant_1.Vite_TokenId : _c;
         return __awaiter(this, void 0, void 0, function () {
             var reqBlock, _updateRegBlock;
-            return __generator(this, function (_c) {
-                switch (_c.label) {
+            return __generator(this, function (_d) {
+                switch (_d.label) {
                     case 0:
                         reqBlock = {
                             accountAddress: this.address,
@@ -265,18 +268,18 @@ var Account = (function (_super) {
                         };
                         return [4, this._client.buildinTxBlock.updateReg(reqBlock)];
                     case 1:
-                        _updateRegBlock = _c.sent();
-                        return [2, this._client.sendRawTx(_updateRegBlock, this.privateKey)];
+                        _updateRegBlock = _d.sent();
+                        return [2, this._sendRawTx(_updateRegBlock, autoPow, usePledgeQuota)];
                 }
             });
         });
     };
-    Account.prototype.revokeReg = function (_b) {
-        var nodeName = _b.nodeName, tokenId = _b.tokenId;
+    Account.prototype.revokeReg = function (_b, autoPow, usePledgeQuota) {
+        var nodeName = _b.nodeName, _c = _b.tokenId, tokenId = _c === void 0 ? vitejs_constant_1.Vite_TokenId : _c;
         return __awaiter(this, void 0, void 0, function () {
             var reqBlock, _revokeRegBlock;
-            return __generator(this, function (_c) {
-                switch (_c.label) {
+            return __generator(this, function (_d) {
+                switch (_d.label) {
                     case 0:
                         reqBlock = {
                             accountAddress: this.address,
@@ -285,13 +288,13 @@ var Account = (function (_super) {
                         };
                         return [4, this._client.buildinTxBlock.revokeReg(reqBlock)];
                     case 1:
-                        _revokeRegBlock = _c.sent();
-                        return [2, this._client.sendRawTx(_revokeRegBlock, this.privateKey)];
+                        _revokeRegBlock = _d.sent();
+                        return [2, this._sendRawTx(_revokeRegBlock, autoPow, usePledgeQuota)];
                 }
             });
         });
     };
-    Account.prototype.retrieveReward = function (_b) {
+    Account.prototype.retrieveReward = function (_b, autoPow, usePledgeQuota) {
         var nodeName = _b.nodeName, toAddress = _b.toAddress, tokenId = _b.tokenId;
         return __awaiter(this, void 0, void 0, function () {
             var reqBlock, _retrieveRewardBlock;
@@ -307,17 +310,17 @@ var Account = (function (_super) {
                         return [4, this._client.buildinTxBlock.retrieveReward(reqBlock)];
                     case 1:
                         _retrieveRewardBlock = _c.sent();
-                        return [2, this._client.sendRawTx(_retrieveRewardBlock, this.privateKey)];
+                        return [2, this._sendRawTx(_retrieveRewardBlock, autoPow, usePledgeQuota)];
                 }
             });
         });
     };
-    Account.prototype.voting = function (_b) {
-        var nodeName = _b.nodeName, tokenId = _b.tokenId;
+    Account.prototype.voting = function (_b, autoPow, usePledgeQuota) {
+        var nodeName = _b.nodeName, _c = _b.tokenId, tokenId = _c === void 0 ? vitejs_constant_1.Vite_TokenId : _c;
         return __awaiter(this, void 0, void 0, function () {
             var reqBlock, _votingBlock;
-            return __generator(this, function (_c) {
-                switch (_c.label) {
+            return __generator(this, function (_d) {
+                switch (_d.label) {
                     case 0:
                         reqBlock = {
                             accountAddress: this.address,
@@ -326,18 +329,18 @@ var Account = (function (_super) {
                         };
                         return [4, this._client.buildinTxBlock.voting(reqBlock)];
                     case 1:
-                        _votingBlock = _c.sent();
-                        return [2, this._client.sendRawTx(_votingBlock, this.privateKey)];
+                        _votingBlock = _d.sent();
+                        return [2, this._sendRawTx(_votingBlock, autoPow, usePledgeQuota)];
                 }
             });
         });
     };
-    Account.prototype.revokeVoting = function (_b) {
-        var tokenId = _b.tokenId;
+    Account.prototype.revokeVoting = function (_b, autoPow, usePledgeQuota) {
+        var _c = (_b === void 0 ? { tokenId: vitejs_constant_1.Vite_TokenId } : _b).tokenId, tokenId = _c === void 0 ? vitejs_constant_1.Vite_TokenId : _c;
         return __awaiter(this, void 0, void 0, function () {
             var reqBlock, _revokeVotingBlock;
-            return __generator(this, function (_c) {
-                switch (_c.label) {
+            return __generator(this, function (_d) {
+                switch (_d.label) {
                     case 0:
                         reqBlock = {
                             accountAddress: this.address,
@@ -345,13 +348,13 @@ var Account = (function (_super) {
                         };
                         return [4, this._client.buildinTxBlock.revokeVoting(reqBlock)];
                     case 1:
-                        _revokeVotingBlock = _c.sent();
-                        return [2, this._client.sendRawTx(_revokeVotingBlock, this.privateKey)];
+                        _revokeVotingBlock = _d.sent();
+                        return [2, this._sendRawTx(_revokeVotingBlock, autoPow, usePledgeQuota)];
                 }
             });
         });
     };
-    Account.prototype.getQuota = function (_b) {
+    Account.prototype.getQuota = function (_b, autoPow, usePledgeQuota) {
         var toAddress = _b.toAddress, tokenId = _b.tokenId, amount = _b.amount;
         return __awaiter(this, void 0, void 0, function () {
             var reqBlock, _getQuotaBlock;
@@ -367,12 +370,12 @@ var Account = (function (_super) {
                         return [4, this._client.buildinTxBlock.getQuota(reqBlock)];
                     case 1:
                         _getQuotaBlock = _c.sent();
-                        return [2, this._client.sendRawTx(_getQuotaBlock, this.privateKey)];
+                        return [2, this._sendRawTx(_getQuotaBlock, autoPow, usePledgeQuota)];
                 }
             });
         });
     };
-    Account.prototype.withdrawalOfQuota = function (_b) {
+    Account.prototype.withdrawalOfQuota = function (_b, autoPow, usePledgeQuota) {
         var toAddress = _b.toAddress, tokenId = _b.tokenId, amount = _b.amount;
         return __awaiter(this, void 0, void 0, function () {
             var reqBlock, _withdrawalOfQuotaBlock;
@@ -388,13 +391,13 @@ var Account = (function (_super) {
                         return [4, this._client.buildinTxBlock.withdrawalOfQuota(reqBlock)];
                     case 1:
                         _withdrawalOfQuotaBlock = _c.sent();
-                        return [2, this._client.sendRawTx(_withdrawalOfQuotaBlock, this.privateKey)];
+                        return [2, this._sendRawTx(_withdrawalOfQuotaBlock, autoPow, usePledgeQuota)];
                 }
             });
         });
     };
-    Account.prototype.createContract = function (_b) {
-        var hexCode = _b.hexCode, abi = _b.abi, params = _b.params, tokenId = _b.tokenId, amount = _b.amount, _c = _b.fee, fee = _c === void 0 ? '10000000000000000000' : _c;
+    Account.prototype.createContract = function (_b, autoPow, usePledgeQuota) {
+        var hexCode = _b.hexCode, abi = _b.abi, params = _b.params, confirmTimes = _b.confirmTimes, amount = _b.amount, _c = _b.fee, fee = _c === void 0 ? '10000000000000000000' : _c;
         return __awaiter(this, void 0, void 0, function () {
             var _createContractBlock;
             return __generator(this, function (_d) {
@@ -404,18 +407,18 @@ var Account = (function (_super) {
                             hexCode: hexCode,
                             abi: abi,
                             params: params,
-                            tokenId: tokenId,
+                            confirmTimes: confirmTimes,
                             amount: amount,
                             fee: fee
                         })];
                     case 1:
                         _createContractBlock = _d.sent();
-                        return [2, this._client.sendRawTx(_createContractBlock, this.privateKey)];
+                        return [2, this._sendRawTx(_createContractBlock, autoPow, usePledgeQuota)];
                 }
             });
         });
     };
-    Account.prototype.callContract = function (_b) {
+    Account.prototype.callContract = function (_b, autoPow, usePledgeQuota) {
         var toAddress = _b.toAddress, abi = _b.abi, params = _b.params, methodName = _b.methodName, tokenId = _b.tokenId, amount = _b.amount;
         return __awaiter(this, void 0, void 0, function () {
             var _callContractBlock;
@@ -432,12 +435,12 @@ var Account = (function (_super) {
                         })];
                     case 1:
                         _callContractBlock = _c.sent();
-                        return [2, this._client.sendRawTx(_callContractBlock, this.privateKey)];
+                        return [2, this._sendRawTx(_callContractBlock, autoPow, usePledgeQuota)];
                 }
             });
         });
     };
-    Account.prototype.mintage = function (_b) {
+    Account.prototype.mintage = function (_b, autoPow, usePledgeQuota) {
         var _c = _b.feeType, feeType = _c === void 0 ? 'burn' : _c, tokenName = _b.tokenName, isReIssuable = _b.isReIssuable, maxSupply = _b.maxSupply, ownerBurnOnly = _b.ownerBurnOnly, totalSupply = _b.totalSupply, decimals = _b.decimals, tokenSymbol = _b.tokenSymbol;
         return __awaiter(this, void 0, void 0, function () {
             var _callContractBlock;
@@ -456,12 +459,12 @@ var Account = (function (_super) {
                         })];
                     case 1:
                         _callContractBlock = _d.sent();
-                        return [2, this._client.sendRawTx(_callContractBlock, this.privateKey)];
+                        return [2, this._sendRawTx(_callContractBlock, autoPow, usePledgeQuota)];
                 }
             });
         });
     };
-    Account.prototype.mintageCancelPledge = function (_b) {
+    Account.prototype.mintageCancelPledge = function (_b, autoPow, usePledgeQuota) {
         var tokenId = _b.tokenId;
         return __awaiter(this, void 0, void 0, function () {
             var _callContractBlock;
@@ -473,12 +476,12 @@ var Account = (function (_super) {
                         })];
                     case 1:
                         _callContractBlock = _c.sent();
-                        return [2, this._client.sendRawTx(_callContractBlock, this.privateKey)];
+                        return [2, this._sendRawTx(_callContractBlock, autoPow, usePledgeQuota)];
                 }
             });
         });
     };
-    Account.prototype.mintageIssue = function (_b) {
+    Account.prototype.mintageIssue = function (_b, autoPow, usePledgeQuota) {
         var tokenId = _b.tokenId, amount = _b.amount, beneficial = _b.beneficial;
         return __awaiter(this, void 0, void 0, function () {
             var _callContractBlock;
@@ -492,12 +495,12 @@ var Account = (function (_super) {
                         })];
                     case 1:
                         _callContractBlock = _c.sent();
-                        return [2, this._client.sendRawTx(_callContractBlock, this.privateKey)];
+                        return [2, this._sendRawTx(_callContractBlock, autoPow, usePledgeQuota)];
                 }
             });
         });
     };
-    Account.prototype.mintageBurn = function (_b) {
+    Account.prototype.mintageBurn = function (_b, autoPow, usePledgeQuota) {
         var amount = _b.amount, tokenId = _b.tokenId;
         return __awaiter(this, void 0, void 0, function () {
             var _callContractBlock;
@@ -510,12 +513,12 @@ var Account = (function (_super) {
                         })];
                     case 1:
                         _callContractBlock = _c.sent();
-                        return [2, this._client.sendRawTx(_callContractBlock, this.privateKey)];
+                        return [2, this._sendRawTx(_callContractBlock, autoPow, usePledgeQuota)];
                 }
             });
         });
     };
-    Account.prototype.changeTokenType = function (_b) {
+    Account.prototype.changeTokenType = function (_b, autoPow, usePledgeQuota) {
         var tokenId = _b.tokenId;
         return __awaiter(this, void 0, void 0, function () {
             var _callContractBlock;
@@ -527,12 +530,12 @@ var Account = (function (_super) {
                         })];
                     case 1:
                         _callContractBlock = _c.sent();
-                        return [2, this._client.sendRawTx(_callContractBlock, this.privateKey)];
+                        return [2, this._sendRawTx(_callContractBlock, autoPow, usePledgeQuota)];
                 }
             });
         });
     };
-    Account.prototype.changeTransferOwner = function (_b) {
+    Account.prototype.changeTransferOwner = function (_b, autoPow, usePledgeQuota) {
         var ownerAddress = _b.ownerAddress, tokenId = _b.tokenId;
         return __awaiter(this, void 0, void 0, function () {
             var _callContractBlock;
@@ -545,10 +548,114 @@ var Account = (function (_super) {
                         })];
                     case 1:
                         _callContractBlock = _c.sent();
-                        return [2, this._client.sendRawTx(_callContractBlock, this.privateKey)];
+                        return [2, this._sendRawTx(_callContractBlock, autoPow, usePledgeQuota)];
                 }
             });
         });
+    };
+    Account.prototype.dexFundUserDeposit = function (_b, autoPow, usePledgeQuota) {
+        var tokenId = _b.tokenId, amount = _b.amount;
+        return __awaiter(this, void 0, void 0, function () {
+            var _callContractBlock;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
+                    case 0: return [4, this._client.buildinTxBlock.dexFundUserDeposit({
+                            accountAddress: this.address,
+                            tokenId: tokenId,
+                            amount: amount
+                        })];
+                    case 1:
+                        _callContractBlock = _c.sent();
+                        return [2, this._sendRawTx(_callContractBlock, autoPow, usePledgeQuota)];
+                }
+            });
+        });
+    };
+    Account.prototype.dexFundUserWithdraw = function (_b, autoPow, usePledgeQuota) {
+        var tokenId = _b.tokenId, amount = _b.amount;
+        return __awaiter(this, void 0, void 0, function () {
+            var _callContractBlock;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
+                    case 0: return [4, this._client.buildinTxBlock.dexFundUserDeposit({
+                            accountAddress: this.address,
+                            tokenId: tokenId,
+                            amount: amount
+                        })];
+                    case 1:
+                        _callContractBlock = _c.sent();
+                        return [2, this._sendRawTx(_callContractBlock, autoPow, usePledgeQuota)];
+                }
+            });
+        });
+    };
+    Account.prototype.dexTradeCancelOrder = function (_b, autoPow, usePledgeQuota) {
+        var orderId = _b.orderId, tradeToken = _b.tradeToken, side = _b.side, quoteToken = _b.quoteToken;
+        return __awaiter(this, void 0, void 0, function () {
+            var _callContractBlock;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
+                    case 0: return [4, this._client.buildinTxBlock.dexTradeCancelOrder({
+                            accountAddress: this.address,
+                            orderId: orderId,
+                            tradeToken: tradeToken,
+                            side: side,
+                            quoteToken: quoteToken
+                        })];
+                    case 1:
+                        _callContractBlock = _c.sent();
+                        return [2, this._sendRawTx(_callContractBlock, autoPow, usePledgeQuota)];
+                }
+            });
+        });
+    };
+    Account.prototype.dexFundNewOrder = function (_b, autoPow, usePledgeQuota) {
+        var tradeToken = _b.tradeToken, quoteToken = _b.quoteToken, side = _b.side, price = _b.price, quantity = _b.quantity;
+        return __awaiter(this, void 0, void 0, function () {
+            var _callContractBlock;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
+                    case 0: return [4, this._client.buildinTxBlock.dexFundNewOrder({
+                            accountAddress: this.address,
+                            tradeToken: tradeToken,
+                            quoteToken: quoteToken,
+                            side: side,
+                            price: price,
+                            quantity: quantity
+                        })];
+                    case 1:
+                        _callContractBlock = _c.sent();
+                        return [2, this._sendRawTx(_callContractBlock, autoPow, usePledgeQuota)];
+                }
+            });
+        });
+    };
+    Account.prototype.dexFundNewMarket = function (_b, autoPow, usePledgeQuota) {
+        var tokenId = _b.tokenId, amount = _b.amount, tradeToken = _b.tradeToken, quoteToken = _b.quoteToken;
+        return __awaiter(this, void 0, void 0, function () {
+            var _callContractBlock;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
+                    case 0: return [4, this._client.buildinTxBlock.dexFundNewMarket({
+                            accountAddress: this.address,
+                            tokenId: tokenId,
+                            amount: amount,
+                            tradeToken: tradeToken,
+                            quoteToken: quoteToken
+                        })];
+                    case 1:
+                        _callContractBlock = _c.sent();
+                        return [2, this._sendRawTx(_callContractBlock, autoPow, usePledgeQuota)];
+                }
+            });
+        });
+    };
+    Account.prototype._sendRawTx = function (accountBlock, autoPow, usePledgeQuota) {
+        var _autoPow = autoPow === true || autoPow === false ? autoPow : !!this.autoPow;
+        if (!_autoPow) {
+            return this.sendRawTx(accountBlock);
+        }
+        return this.sendAutoPowRawTx(accountBlock, usePledgeQuota);
     };
     return Account;
 }(vitejs_addraccount_1.default));

@@ -16,7 +16,7 @@ var AddrAccount = (function () {
         return this._client.getBalance(this.address);
     };
     AddrAccount.prototype.getOnroad = function () {
-        return this._client.onroad.getAccountOnroadInfo(this.address);
+        return this._client.onroad.getOnroadInfoByAddress(this.address);
     };
     AddrAccount.prototype.getOnroadBlocks = function (_a) {
         var index = _a.index, _b = _a.pageCount, pageCount = _b === void 0 ? 50 : _b;
@@ -27,7 +27,7 @@ var AddrAccount = (function () {
         return this._client.ledger.getBlocksByAccAddr(this.address, index, pageCount);
     };
     AddrAccount.prototype.getAccountBalance = function () {
-        return this._client.ledger.getAccount(this.address);
+        return this._client.ledger.getAccountByAccAddr(this.address);
     };
     AddrAccount.prototype.getLatestBlock = function () {
         return this._client.ledger.getLatestBlock(this.address);

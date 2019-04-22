@@ -92,7 +92,7 @@ function getAddrsFromMnemonic(mnemonic, start, num, lang, pwd) {
     }
     var addrs = [];
     var seed = bip39.mnemonicToSeedHex(mnemonic, pwd);
-    for (var i = start; i < num; i++) {
+    for (var i = start; i < start + num; i++) {
         var currentPath = getPath(i);
         var addr = getAddrFromPath(currentPath, seed);
         addrs.push(addr);

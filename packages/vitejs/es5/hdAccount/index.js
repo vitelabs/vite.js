@@ -45,19 +45,12 @@ var Wallet = (function () {
         var _c = _a === void 0 ? { index: this.addrStartInx } : _a, address = _c.address, _d = _c.index, index = _d === void 0 ? this.addrStartInx : _d;
         var _e = _b === void 0 ? {
             intervals: 2000,
-            receiveFailAction: null,
-            duration: 5 * 60 * 1000
-        } : _b, _f = _e.intervals, intervals = _f === void 0 ? 2000 : _f, _g = _e.receiveFailAction, receiveFailAction = _g === void 0 ? null : _g, _h = _e.duration, duration = _h === void 0 ? 5 * 60 * 1000 : _h;
-        index = validAddrParams({ address: address, index: index });
-        if (index === null) {
-            throw new Error("Don't have this account: address = " + address + " , index = " + index);
-        }
-        var addrObj = this.addrList[index];
-        var activeAccount = new vitejs_account_1.default({
-            privateKey: addrObj.privKey,
-            client: this._client
-        });
-        activeAccount.activate(intervals, receiveFailAction);
+            duration: 5 * 60 * 1000,
+            autoPow: false,
+            usePledgeQuota: true
+        } : _b, _f = _e.intervals, intervals = _f === void 0 ? 2000 : _f, _g = _e.duration, duration = _g === void 0 ? 5 * 60 * 1000 : _g, _h = _e.autoPow, autoPow = _h === void 0 ? false : _h, _j = _e.usePledgeQuota, usePledgeQuota = _j === void 0 ? true : _j;
+        var activeAccount = this.getAccount({ address: address, index: index });
+        activeAccount.activate(intervals, autoPow, usePledgeQuota);
         if (duration > 0) {
             setTimeout(function () {
                 _this.freezeAccount(activeAccount);
@@ -80,6 +73,15 @@ var Wallet = (function () {
         this.activeAccountList.splice(i, 1);
         activeAccount = null;
     };
+    Wallet.prototype.getAccount = function (_a) {
+        var _b = _a === void 0 ? { index: this.addrStartInx } : _a, address = _b.address, _c = _b.index, index = _c === void 0 ? this.addrStartInx : _c;
+        index = validAddrParams({ address: address, index: index });
+        var addrObj = this.addrList[index];
+        return new vitejs_account_1.default({
+            privateKey: addrObj.privKey,
+            client: this._client
+        });
+    };
     Wallet.prototype.addAddr = function () {
         var index = this.addrList.length;
         if (index >= this.addrTotalNum) {
@@ -98,12 +100,13 @@ exports.default = Wallet;
 function validAddrParams(_a) {
     var address = _a.address, _b = _a.index, index = _b === void 0 ? this.addrStartInx : _b;
     if (!address && !index && index !== 0) {
-        console.error(new Error(vitejs_error_1.paramsMissing.message + " Address or index."));
-        return null;
+        throw new Error(vitejs_error_1.paramsMissing.message + " Address or index.");
     }
-    if (address && !vitejs_hdaddr_1.isValidHexAddr) {
-        console.error(new Error("" + vitejs_error_1.addressIllegal.message));
-        return null;
+    if (address && !vitejs_hdaddr_1.isValidHexAddr(address)) {
+        throw new Error("" + vitejs_error_1.addressIllegal.message);
+    }
+    if (!address && index >= this.addrList.length) {
+        throw new Error('Illegal index. Index should be smaller than this.addrList.length.');
     }
     if (!address) {
         return index;
@@ -115,8 +118,7 @@ function validAddrParams(_a) {
         }
     }
     if (i === this.addrList.length) {
-        console.error(new Error("" + vitejs_error_1.addressMissing.message));
-        return null;
+        throw new Error("" + vitejs_error_1.addressMissing.message);
     }
     return i;
 }

@@ -72,9 +72,11 @@ function validReqAccountBlock(_a) {
 }
 exports.validReqAccountBlock = validReqAccountBlock;
 function getCreateContractData(_a) {
-    var abi = _a.abi, hexCode = _a.hexCode, params = _a.params;
+    var abi = _a.abi, hexCode = _a.hexCode, params = _a.params, _c = _a.confirmTimes, confirmTimes = _c === void 0 ? 0 : _c;
     var jsonInterface = getConstructor(abi);
-    var data = vitejs_constant_1.Delegate_Gid + "01" + hexCode;
+    var _confirmTimes = new BigNumber(confirmTimes).toArray();
+    var data = vitejs_constant_1.Delegate_Gid + "01" + Buffer.from(_confirmTimes).toString('hex') + hexCode;
+    console.log(data);
     if (jsonInterface) {
         data += vitejs_abi_1.encodeParameters(jsonInterface, params);
     }

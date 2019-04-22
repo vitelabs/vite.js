@@ -41,6 +41,7 @@ var wallet;
 (function (wallet) {
     wallet["listEntropyFilesInStandardDir"] = "wallet_listEntropyFilesInStandardDir";
     wallet["listAllEntropyFiles"] = "wallet_listAllEntropyFiles";
+    wallet["extractMnemonic"] = "wallet_extractMnemonic";
     wallet["unlock"] = "wallet_unlock";
     wallet["lock"] = "wallet_lock";
     wallet["listEntropyStoreAddresses"] = "wallet_listEntropyStoreAddresses";
@@ -59,10 +60,9 @@ var wallet;
 var onroad;
 (function (onroad) {
     onroad["getOnroadBlocksByAddress"] = "onroad_getOnroadBlocksByAddress";
-    onroad["getAccountOnroadInfo"] = "onroad_getAccountOnroadInfo";
-    onroad["listWorkingAutoReceiveWorker"] = "onroad_listWorkingAutoReceiveWorker";
-    onroad["startAutoReceive"] = "onroad_startAutoReceive";
-    onroad["stopAutoReceive"] = "onroad_stopAutoReceive";
+    onroad["getOnroadInfoByAddress"] = "onroad_getOnroadInfoByAddress";
+    onroad["getOnroadBlocksInBatch"] = "onroad_getOnroadBlocksInBatch";
+    onroad["getOnroadInfoInBatch"] = "onroad_getOnroadInfoInBatch";
 })(onroad = exports.onroad || (exports.onroad = {}));
 var tx;
 (function (tx) {
@@ -72,29 +72,27 @@ var tx;
 var ledger;
 (function (ledger) {
     ledger["getBlocksByAccAddr"] = "ledger_getBlocksByAccAddr";
-    ledger["getAccount"] = "ledger_getAccount";
+    ledger["getAccountByAccAddr"] = "ledger_getAccountByAccAddr";
     ledger["getLatestSnapshotChainHash"] = "ledger_getLatestSnapshotChainHash";
     ledger["getLatestBlock"] = "ledger_getLatestBlock";
-    ledger["getTokenMintage"] = "ledger_getTokenMintage";
     ledger["getBlockByHeight"] = "ledger_getBlockByHeight";
+    ledger["getBlockByHash"] = "ledger_getBlockByHash";
     ledger["getBlocksByHash"] = "ledger_getBlocksByHash";
     ledger["getBlocksByHashInToken"] = "ledger_getBlocksByHashInToken";
     ledger["getSnapshotChainHeight"] = "ledger_getSnapshotChainHeight";
+    ledger["getSnapshotBlockByHash"] = "ledger_getSnapshotBlockByHash";
+    ledger["getSnapshotBlockByHeight"] = "ledger_getSnapshotBlockByHeight";
     ledger["getVmLogList"] = "ledger_getVmLogList";
+    ledger["getFittestSnapshotHash"] = "ledger_getFittestSnapshotHash";
 })(ledger = exports.ledger || (exports.ledger = {}));
-var consensusGroup;
-(function (consensusGroup) {
-    consensusGroup["getConditionRegisterOfPledge"] = "consensusGroup_getConditionRegisterOfPledge";
-    consensusGroup["getConditionVoteOfKeepToken"] = "consensusGroup_getConditionVoteOfKeepToken";
-    consensusGroup["getCreateConsensusGroupData"] = "consensusGroup_getCreateConsensusGroupData";
-    consensusGroup["getCancelConsensusGroupData"] = "consensusGroup_getCancelConsensusGroupData";
-    consensusGroup["getReCreateConsensusGroupData"] = "consensusGroup_getReCreateConsensusGroupData";
-})(consensusGroup = exports.consensusGroup || (exports.consensusGroup = {}));
 var contract;
 (function (contract) {
     contract["getCreateContractToAddress"] = "contract_getCreateContractToAddress";
     contract["getCreateContractData"] = "contract_getCreateContractData";
     contract["getCallContractData"] = "contract_getCallContractData";
+    contract["getContractInfo"] = "contract_getContractInfo";
+    contract["getCallOffChainData"] = "contract_getCallOffChainData";
+    contract["callOffChainMethod"] = "contract_callOffChainMethod";
 })(contract = exports.contract || (exports.contract = {}));
 var pledge;
 (function (pledge) {
@@ -130,22 +128,38 @@ var mintage;
     mintage["getTokenInfoById"] = "mintage_getTokenInfoById";
     mintage["getTokenInfoListByOwner"] = "mintage_getTokenInfoListByOwner";
 })(mintage = exports.mintage || (exports.mintage = {}));
+var dexfund;
+(function (dexfund) {
+    dexfund["getAccountFundInfo"] = "dexfund_getAccountFundInfo";
+    dexfund["getAccountFundInfoByStatus"] = "dexfund_getAccountFundInfoByStatus";
+})(dexfund = exports.dexfund || (exports.dexfund = {}));
 var net;
 (function (net) {
     net["syncInfo"] = "net_syncInfo";
     net["peers"] = "net_peers";
     net["peersCount"] = "net_peersCount";
 })(net = exports.net || (exports.net = {}));
+var testapi;
+(function (testapi) {
+    testapi["getTestToken"] = "testapi_getTestToken";
+})(testapi = exports.testapi || (exports.testapi = {}));
+var pow;
+(function (pow) {
+    pow["getPowNonce"] = "pow_getPowNonce";
+})(pow = exports.pow || (exports.pow = {}));
 var subscribe;
 (function (subscribe) {
+    subscribe["newSnapshotBlocksFilter"] = "subscribe_newSnapshotBlocksFilter";
     subscribe["newAccountBlocksFilter"] = "subscribe_newAccountBlocksFilter";
     subscribe["newLogsFilter"] = "subscribe_newLogsFilter";
     subscribe["uninstallFilter"] = "subscribe_uninstallFilter";
     subscribe["getFilterChanges"] = "subscribe_getFilterChanges";
+    subscribe["newSnapshotBlocks"] = "subscribe_newSnapshotBlocks";
     subscribe["newAccountBlocks"] = "subscribe_newAccountBlocks";
     subscribe["newLogs"] = "subscribe_newLogs";
+    subscribe["getLogs"] = "subscribe_getLogs";
 })(subscribe = exports.subscribe || (exports.subscribe = {}));
-exports._methods = { wallet: wallet, onroad: onroad, tx: tx, ledger: ledger, consensusGroup: consensusGroup, contract: contract, pledge: pledge, register: register, vote: vote, mintage: mintage, net: net, subscribe: subscribe };
+exports._methods = { testapi: testapi, pow: pow, dexfund: dexfund, wallet: wallet, onroad: onroad, tx: tx, ledger: ledger, contract: contract, pledge: pledge, register: register, vote: vote, mintage: mintage, net: net, subscribe: subscribe };
 var LangList;
 (function (LangList) {
     LangList["english"] = "english";
