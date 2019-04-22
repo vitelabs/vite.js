@@ -5,7 +5,10 @@ import { getAddrFromHexAddr } from '~@vite/vitejs-privtoaddr';
 import { paramsFormat } from '~@vite/vitejs-error';
 import { Default_Hash, contractAddrs, abiFuncSignature } from '~@vite/vitejs-constant';
 
-import { formatAccountBlock as _formatAccountBlock, validReqAccountBlock as _validReqAccountBlock, getCreateContractData as _getCreateContractData } from './builtin';
+import {
+    formatAccountBlock as _formatAccountBlock, validReqAccountBlock as _validReqAccountBlock,
+    getCreateContractData as _getCreateContractData, getAbi as _getAbi
+} from './builtin';
 import { AccountBlock, BlockType, SignBlock, sendTxBlock, receiveTxBlock, syncFormatBlock } from '../type';
 
 const { getPublicKey, sign } = ed25519;
@@ -146,6 +149,9 @@ export const formatAccountBlock = _formatAccountBlock;
 export const validReqAccountBlock = _validReqAccountBlock;
 
 export const getCreateContractData = _getCreateContractData;
+
+export const getAbi = _getAbi;
+
 
 
 function enumTxType() {

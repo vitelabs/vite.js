@@ -3,7 +3,8 @@ import netProcessor from '~@vite/vitejs-netprocessor';
 
 import { checkParams, blake2bHex } from '~@vite/vitejs-utils';
 import { isValidHexAddr, getAddrFromHexAddr } from '~@vite/vitejs-privtoaddr';
-import { getBuiltinTxType, signAccountBlock, validReqAccountBlock } from '~@vite/vitejs-accountblock';
+import { getBuiltinTxType, signAccountBlock, validReqAccountBlock, getAbi } from '~@vite/vitejs-accountblock';
+import { encodeFunctionCall, decodeParameters } from '~@vite/vitejs-abi';
 
 import TxBlock from './txBlock';
 import { Address, testapiFunc, RPCrequest, BuiltinTxType, subscribeFunc, walletFunc, netFunc, onroadFunc, contractFunc, pledgeFunc, registerFunc, voteFunc, mintageFunc, ledgerFunc, txFunc, powFunc } from '../type';
@@ -178,6 +179,22 @@ export default class Client extends netProcessor {
             accountBlock,
             ...data
         };
+    }
+
+    async callOffChainContract({ selfAddr, abi, offChainCode }) {
+        const jsonInterface = getAbi(abi, 'offchain');
+        if (!jsonInterface) {
+            throw new Error('Can\'t find offchain');
+        }
+
+        const data = encodeFunctionCall(jsonInterface, jsonInterface.inputs || []);
+        const result = await this.contract.callOffChainMethod({
+            selfAddr,
+            offChainCode,
+            data
+        });
+
+        return decodeParameters(jsonInterface.outputs, result);
     }
 
     private _setMethodsName() {

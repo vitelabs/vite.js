@@ -397,22 +397,23 @@ var Account = (function (_super) {
         });
     };
     Account.prototype.createContract = function (_b, autoPow, usePledgeQuota) {
-        var hexCode = _b.hexCode, abi = _b.abi, params = _b.params, confirmTimes = _b.confirmTimes, amount = _b.amount, _c = _b.fee, fee = _c === void 0 ? '10000000000000000000' : _c;
+        var hexCode = _b.hexCode, abi = _b.abi, params = _b.params, confirmTimes = _b.confirmTimes, _c = _b.tokenId, tokenId = _c === void 0 ? vitejs_constant_1.Vite_TokenId : _c, _d = _b.amount, amount = _d === void 0 ? '0' : _d, _e = _b.fee, fee = _e === void 0 ? '10000000000000000000' : _e;
         return __awaiter(this, void 0, void 0, function () {
             var _createContractBlock;
-            return __generator(this, function (_d) {
-                switch (_d.label) {
+            return __generator(this, function (_f) {
+                switch (_f.label) {
                     case 0: return [4, this._client.buildinTxBlock.createContract({
                             accountAddress: this.address,
                             hexCode: hexCode,
                             abi: abi,
                             params: params,
                             confirmTimes: confirmTimes,
+                            tokenId: tokenId,
                             amount: amount,
                             fee: fee
                         })];
                     case 1:
-                        _createContractBlock = _d.sent();
+                        _createContractBlock = _f.sent();
                         return [2, this._sendRawTx(_createContractBlock, autoPow, usePledgeQuota)];
                 }
             });

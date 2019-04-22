@@ -9,21 +9,21 @@ const provider = new Client(new HTTP_RPC(config.http));
 const Default_Amount = '1000000000000000000000000'; // 1000000 VITE
 
 const myHdAccount = new HdAccount({
-    // mnemonic: config.myMnemonic,
-    mnemonic: 'mercy present company north ceiling century pen february sign square robot quiz dilemma afford lyrics picture limb south bicycle visa unique anger stone upon',
+    mnemonic: config.myMnemonic,
     client: provider
 });
 
-const myAccount = myHdAccount.getAccount();
+const myAccount = myHdAccount.getAccount({
+    autoPow: true
+});
 myHdAccount.addAddr();
 
-
 // Start Test
-// TestFunc().then(() => {
-//     console.log('Test Finish');
-// }).catch(err => {
-//     console.log('Test Error', err);
-// });
+TestFunc().then(() => {
+    console.log('Test Finish');
+}).catch(err => {
+    console.log('Test Error', err);
+});
 
 
 async function TestFunc() {
@@ -35,11 +35,11 @@ async function TestFunc() {
     console.log('Step 1 CheckMyBalance. \n');
     await CheckMyBalance();
 
-    // console.log('Step 2 SendTxToMyself. \n');
-    // await SendTxToMyself();
-
     // console.log('Step 3 ReceiveTx. \n');
     // await ReceiveTx();
+
+    // console.log('Step 2 SendTxToMyself. \n');
+    // await SendTxToMyself();
 
     // console.log('Step 4 SBPreg. \n');
     // await SBPreg();
@@ -62,6 +62,12 @@ async function TestFunc() {
     // console.log('Step 10 withdrawalOfQuota. \n');
     // await withdrawalOfQuota();
 
+    // console.log('Step 11 createContract. \n');
+    // await createContract();
+
+    console.log('Step 12 callOffChainContract. \n');
+    await callOffChainContract();
+    
     console.log('Last One CheckMyTxList. \n');
     await CheckMyTxList();
 
@@ -69,6 +75,40 @@ async function TestFunc() {
 }
 
 
+async function callOffChainContract() {
+    const result = await myAccount.callOffChainContract({
+        offChainCode: '608060405260043610610050576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff168063be46813a14610054578063f1271e08146100b157610050565b5b5b005b61008d6004803603602081101561006b5760006000fd5b81019080803569ffffffffffffffffffff169060200190929190505050610111565b60405180848152602001838152602001828152602001935050505060405180910390f35b6100b96101d1565b6040518080602001828103825283818151815260200191508051906020019060200280838360005b838110156100fd5780820151818401525b6020810190506100e1565b505050509050019250505060405180910390f35b600060006000600260005060008569ffffffffffffffffffff1669ffffffffffffffffffff16815260200190815260200160002160005060000160005054600260005060008669ffffffffffffffffffff1669ffffffffffffffffffff16815260200190815260200160002160005060010160005054600260005060008769ffffffffffffffffffff1669ffffffffffffffffffff168152602001908152602001600021600050600201600050549250925092506101ca565b9193909250565b6060600160005080548060200260200160405190810160405280929190818152602001828054801561025a57602002820191906000526020600021906000905b82829054906101000a900469ffffffffffffffffffff1669ffffffffffffffffffff16815260200190600a01906020826009010492830192600103820291508084116102115790505b50505050509050610266565b9056fea165627a7a72305820f495f61f697f25e46caa868c09b35b575ab331e3c608179880e1932b5848abaa0029',
+        abi: [{
+            "constant":true,
+            "inputs":[],
+            "name":"getTokenList",
+            "outputs":[{"name":"","type":"tokenId[]"}],
+            "payable":false,
+            "stateMutability":"view",
+            "type":"offchain"
+        }]
+    });
+
+    console.log('[LOG] callOffChainContract', result, '\n');
+    return result;
+}
+
+async function createContract() {
+    const result = await myAccount.createContract({
+        abi: [{
+            "inputs":[{"name":"proposalNames","type":"uint256[]"}],
+            "payable":false,
+            "stateMutability":"nonpayable",
+            "type":"constructor"
+        }],
+        hexCode: '608060405234801561001057600080fd5b506101ca806100206000396000f3fe608060405260043610610041576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff16806380ae0ea114610046575b600080fd5b6100bd6004803603602081101561005c57600080fd5b810190808035906020019064010000000081111561007957600080fd5b82018360208201111561008b57600080fd5b803590602001918460208302840111640100000000831117156100ad57600080fd5b90919293919293905050506100bf565b005b60006002838390508115156100d057fe5b061415156100dd57600080fd5b600080905060008090505b8383905081101561018a576000848483818110151561010357fe5b9050602002013590506000858560018501818110151561011f57fe5b905060200201359050808401935080841015151561013c57600080fd5b600081111561017d578173ffffffffffffffffffffffffffffffffffffffff164669ffffffffffffffffffff168260405160405180820390838587f1505050505b50506002810190506100e8565b50348114151561019957600080fd5b50505056fea165627a7a723058203cef4a3f93b33e64e99e0f88f586121282084394f6d4b70f1030ca8c360b74620029',
+        confirmTimes: 2,
+        params:  [["0x1111111111111111111111111111111111111111111111111111111111111111","0x2222222222222222222222222222222222222222222222222222222222222222"]]
+    }, true, true);
+
+    console.log('[LOG] createContract', result, '\n');
+    return result;
+}
 
 async function withdrawalOfQuota() {
     const result = await myAccount.withdrawalOfQuota({
@@ -158,7 +198,7 @@ async function ReceiveTx() {
         console.log('[LOG] ReceiveTx 1', null, '\n');
         return;
     }
-    console.log(data[0]);
+
     const result = await myAccount.receiveTx(data[0].hash);
 
     console.log('[LOG] ReceiveTx 2', result, '\n');

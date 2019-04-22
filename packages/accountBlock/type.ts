@@ -193,7 +193,6 @@ export declare type callContractBlock = {
     height?: Uint64;
 }
 
-
 export declare type mintageBlock = {
     accountAddress: Address;
     tokenName: string;
@@ -308,6 +307,7 @@ export enum ledger {
 export enum contract {
     'getCreateContractToAddress' = 'contract_getCreateContractToAddress',
     'getCreateContractData' = 'contract_getCreateContractData',
+    'getCreateContractParams' = 'contract_getCreateContractParams',
     'getCallContractData' = 'contract_getCallContractData',
     'getContractInfo' = 'contract_getContractInfo',
     'getCallOffChainData' = 'contract_getCallOffChainData',
@@ -433,6 +433,7 @@ export type ledgerFunc = {
 export type contractFunc = {
     getCreateContractToAddress: Function;
     getCreateContractData: Function;
+    getCreateContractParams: Function;
     getCallContractData: Function;
     getContractInfo: Function;
     getCallOffChainData: Function;

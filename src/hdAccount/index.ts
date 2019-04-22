@@ -82,7 +82,7 @@ class Wallet {
         autoPow: false,
         usePledgeQuota: true
     }) {
-        const activeAccount = this.getAccount({ address, index }, { autoPow, usePledgeQuota });
+        const activeAccount = this.getAccount({ address, index, autoPow, usePledgeQuota });
 
         activeAccount.activate(intervals, autoPow, usePledgeQuota);
         if (duration > 0) {
@@ -114,17 +114,19 @@ class Wallet {
 
     getAccount({
         address,
-        index = this.addrStartInx
-    }: {
-        address?: Address;
-        index?: number;
-    } = { index: this.addrStartInx }, {
+        index = this.addrStartInx,
         autoPow = false,
         usePledgeQuota = true
     }: {
+        address?: Address;
+        index?: number;
         autoPow?: boolean;
         usePledgeQuota? : boolean;
-    } = { autoPow: false, usePledgeQuota: true }) {
+    } = {
+        index: this.addrStartInx,
+        autoPow: false,
+        usePledgeQuota: true
+    }) {
         index = this.validAddrParams({ address, index });
         const addrObj: AddrObj = this.addrList[index];
 

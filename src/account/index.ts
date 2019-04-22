@@ -282,13 +282,14 @@ class Account extends addrAccount {
         return this._sendRawTx(_withdrawalOfQuotaBlock, autoPow, usePledgeQuota);
     }
 
-    async createContract({ hexCode, abi, params, confirmTimes, amount, fee = '10000000000000000000' }, autoPow?, usePledgeQuota?) {
+    async createContract({ hexCode, abi, params, confirmTimes, tokenId = Vite_TokenId, amount = '0', fee = '10000000000000000000' }, autoPow?, usePledgeQuota?) {
         const _createContractBlock = await this._client.buildinTxBlock.createContract({
             accountAddress: this.address,
             hexCode,
             abi,
             params,
             confirmTimes,
+            tokenId,
             amount,
             fee
         });

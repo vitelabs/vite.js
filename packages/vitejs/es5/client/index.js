@@ -64,6 +64,7 @@ var vitejs_netprocessor_1 = require("./../netprocessor");
 var vitejs_utils_1 = require("./../utils");
 var vitejs_privtoaddr_1 = require("./../privtoaddr");
 var vitejs_accountblock_1 = require("./../accountblock");
+var vitejs_abi_1 = require("./../abi");
 var txBlock_1 = require("./txBlock");
 var type_1 = require("../type");
 var onroad = vitejs_constant_1.methods.onroad;
@@ -237,6 +238,30 @@ var Client = (function (_super) {
                         accountBlock.nonce = nonce;
                         accountBlock.difficulty = data.difficulty;
                         return [2, __assign({ accountBlock: accountBlock }, data)];
+                }
+            });
+        });
+    };
+    Client.prototype.callOffChainContract = function (_b) {
+        var selfAddr = _b.selfAddr, abi = _b.abi, offChainCode = _b.offChainCode;
+        return __awaiter(this, void 0, void 0, function () {
+            var jsonInterface, data, result;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
+                    case 0:
+                        jsonInterface = vitejs_accountblock_1.getAbi(abi, 'offchain');
+                        if (!jsonInterface) {
+                            throw new Error('Can\'t find offchain');
+                        }
+                        data = vitejs_abi_1.encodeFunctionCall(jsonInterface, jsonInterface.inputs || []);
+                        return [4, this.contract.callOffChainMethod({
+                                selfAddr: selfAddr,
+                                offChainCode: offChainCode,
+                                data: data
+                            })];
+                    case 1:
+                        result = _c.sent();
+                        return [2, vitejs_abi_1.decodeParameters(jsonInterface.outputs, result)];
                 }
             });
         });

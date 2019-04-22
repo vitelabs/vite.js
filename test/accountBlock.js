@@ -163,7 +163,7 @@ describe('getBuiltinTxType', function () {
     const CreateContractReq = {
         blockType: 1,
         data: '',
-        toAddress: 'vite_0000000000000000000000000000000000000001c9e9f25417'
+        toAddress: 'vite_df735bbedcac1088c6a401742b5160ac9693ac8e114b1ed4e4'
     };
     const RewardReq = {
         blockType: 3,

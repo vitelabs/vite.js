@@ -89,6 +89,7 @@ var contract;
 (function (contract) {
     contract["getCreateContractToAddress"] = "contract_getCreateContractToAddress";
     contract["getCreateContractData"] = "contract_getCreateContractData";
+    contract["getCreateContractParams"] = "contract_getCreateContractParams";
     contract["getCallContractData"] = "contract_getCallContractData";
     contract["getContractInfo"] = "contract_getContractInfo";
     contract["getCallOffChainData"] = "contract_getCallOffChainData";

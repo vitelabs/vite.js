@@ -49,7 +49,7 @@ var Wallet = (function () {
             autoPow: false,
             usePledgeQuota: true
         } : _b, _f = _e.intervals, intervals = _f === void 0 ? 2000 : _f, _g = _e.duration, duration = _g === void 0 ? 5 * 60 * 1000 : _g, _h = _e.autoPow, autoPow = _h === void 0 ? false : _h, _j = _e.usePledgeQuota, usePledgeQuota = _j === void 0 ? true : _j;
-        var activeAccount = this.getAccount({ address: address, index: index });
+        var activeAccount = this.getAccount({ address: address, index: index, autoPow: autoPow, usePledgeQuota: usePledgeQuota });
         activeAccount.activate(intervals, autoPow, usePledgeQuota);
         if (duration > 0) {
             setTimeout(function () {
@@ -74,13 +74,27 @@ var Wallet = (function () {
         activeAccount = null;
     };
     Wallet.prototype.getAccount = function (_a) {
-        var _b = _a === void 0 ? { index: this.addrStartInx } : _a, address = _b.address, _c = _b.index, index = _c === void 0 ? this.addrStartInx : _c;
-        index = validAddrParams({ address: address, index: index });
+        var _b = _a === void 0 ? {
+            index: this.addrStartInx,
+            autoPow: false,
+            usePledgeQuota: true
+        } : _a, address = _b.address, _c = _b.index, index = _c === void 0 ? this.addrStartInx : _c, _d = _b.autoPow, autoPow = _d === void 0 ? false : _d, _e = _b.usePledgeQuota, usePledgeQuota = _e === void 0 ? true : _e;
+        index = this.validAddrParams({ address: address, index: index });
         var addrObj = this.addrList[index];
+        var i;
+        for (i = 0; i < this.activeAccountList.length; i++) {
+            var account = this.activeAccountList[i];
+            if (account.address === addrObj.hexAddr) {
+                break;
+            }
+        }
+        if (i < this.activeAccountList.length) {
+            return this.activeAccountList[i];
+        }
         return new vitejs_account_1.default({
             privateKey: addrObj.privKey,
             client: this._client
-        });
+        }, { autoPow: autoPow, usePledgeQuota: usePledgeQuota });
     };
     Wallet.prototype.addAddr = function () {
         var index = this.addrList.length;
@@ -94,31 +108,31 @@ var Wallet = (function () {
         this.addrList.push(addrObj);
         return addrObj;
     };
+    Wallet.prototype.validAddrParams = function (_a) {
+        var address = _a.address, _b = _a.index, index = _b === void 0 ? this.addrStartInx : _b;
+        if (!address && !index && index !== 0) {
+            throw new Error(vitejs_error_1.paramsMissing.message + " Address or index.");
+        }
+        if (address && !vitejs_hdaddr_1.isValidHexAddr(address)) {
+            throw new Error("" + vitejs_error_1.addressIllegal.message);
+        }
+        if (!address && index >= this.addrList.length) {
+            throw new Error('Illegal index. Index should be smaller than this.addrList.length.');
+        }
+        if (!address) {
+            return index;
+        }
+        var i;
+        for (i = 0; i < this.addrList.length; i++) {
+            if (this.addrList[i].hexAddr === address) {
+                break;
+            }
+        }
+        if (i === this.addrList.length) {
+            throw new Error("" + vitejs_error_1.addressMissing.message);
+        }
+        return i;
+    };
     return Wallet;
 }());
 exports.default = Wallet;
-function validAddrParams(_a) {
-    var address = _a.address, _b = _a.index, index = _b === void 0 ? this.addrStartInx : _b;
-    if (!address && !index && index !== 0) {
-        throw new Error(vitejs_error_1.paramsMissing.message + " Address or index.");
-    }
-    if (address && !vitejs_hdaddr_1.isValidHexAddr(address)) {
-        throw new Error("" + vitejs_error_1.addressIllegal.message);
-    }
-    if (!address && index >= this.addrList.length) {
-        throw new Error('Illegal index. Index should be smaller than this.addrList.length.');
-    }
-    if (!address) {
-        return index;
-    }
-    var i;
-    for (i = 0; i < this.addrList.length; i++) {
-        if (this.addrList[i].hexAddr === address) {
-            break;
-        }
-    }
-    if (i === this.addrList.length) {
-        throw new Error("" + vitejs_error_1.addressMissing.message);
-    }
-    return i;
-}

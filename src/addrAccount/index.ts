@@ -22,6 +22,14 @@ export default class AddrAccount {
         this._client = client;
     }
 
+    callOffChainContract({ abi, offChainCode }) {
+        return this._client.callOffChainContract({
+            selfAddr: this.address,
+            abi,
+            offChainCode
+        });
+    }
+
     getBalance() {
         return this._client.getBalance(this.address);
     }

@@ -2,7 +2,7 @@ const BigNumber = require('bn.js');
 import { paramsMissing, paramsConflict } from '~@vite/vitejs-error';
 import { Vite_TokenId, Default_Hash, Delegate_Gid } from '~@vite/vitejs-constant';
 import { isValidHexAddr } from '~@vite/vitejs-privtoaddr';
-import { checkParams, validInteger, isArray } from '~@vite/vitejs-utils';
+import { checkParams, validInteger, isArray, isObject } from '~@vite/vitejs-utils';
 import { encodeParameters } from '~@vite/vitejs-abi';
 
 import { SignBlock, formatBlock } from '../type';
@@ -81,10 +81,10 @@ export function validReqAccountBlock({ blockType, fromBlockHash, accountAddress,
 }
 
 export function getCreateContractData({ abi, hexCode, params, confirmTimes = 0 }) {
-    const jsonInterface = getConstructor(abi);
+    const jsonInterface = getAbi(abi);
     const _confirmTimes = new BigNumber(confirmTimes).toArray();
     let data = `${ Delegate_Gid }01${ Buffer.from(_confirmTimes).toString('hex') }${ hexCode }`;
-    console.log(data);
+
     if (jsonInterface) {
         data += encodeParameters(jsonInterface, params);
     }
@@ -92,16 +92,22 @@ export function getCreateContractData({ abi, hexCode, params, confirmTimes = 0 }
 }
 
 
-function getConstructor(jsonInterfaces) {
-    if (!isArray(jsonInterfaces)) {
-        if (jsonInterfaces.type === 'constructor') {
+export function getAbi(jsonInterfaces, type = 'constructor') {
+    if (!isArray(jsonInterfaces) && isObject(jsonInterfaces)) {
+        if (jsonInterfaces.type === type) {
             return jsonInterfaces;
         }
     }
 
+    if (!isArray(jsonInterfaces)) {
+        return null;
+    }
+
     for (let i = 0; i < jsonInterfaces.length; i++) {
-        if (jsonInterfaces[i].type === 'constructor') {
+        if (jsonInterfaces[i].type === type) {
             return jsonInterfaces[i];
         }
     }
+
+    return null;
 }

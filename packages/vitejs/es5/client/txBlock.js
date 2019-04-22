@@ -88,43 +88,33 @@ var Tx = (function () {
     };
     Tx.prototype.asyncSendTx = function (_a) {
         var accountAddress = _a.accountAddress, toAddress = _a.toAddress, tokenId = _a.tokenId, amount = _a.amount, message = _a.message, height = _a.height, prevHash = _a.prevHash;
-        return __awaiter(this, void 0, void 0, function () {
-            var err;
-            return __generator(this, function (_b) {
-                err = vitejs_utils_1.checkParams({ toAddress: toAddress, tokenId: tokenId, amount: amount }, ['toAddress', 'tokenId', 'amount']);
-                if (err) {
-                    return [2, Promise.reject(err)];
-                }
-                return [2, this.asyncAccountBlock({
-                        blockType: 2,
-                        accountAddress: accountAddress,
-                        toAddress: toAddress,
-                        tokenId: tokenId,
-                        amount: amount,
-                        message: message,
-                        height: height,
-                        prevHash: prevHash
-                    })];
-            });
+        var err = vitejs_utils_1.checkParams({ toAddress: toAddress, tokenId: tokenId, amount: amount }, ['toAddress', 'tokenId', 'amount']);
+        if (err) {
+            return Promise.reject(err);
+        }
+        return this.asyncAccountBlock({
+            blockType: 2,
+            accountAddress: accountAddress,
+            toAddress: toAddress,
+            tokenId: tokenId,
+            amount: amount,
+            message: message,
+            height: height,
+            prevHash: prevHash
         });
     };
     Tx.prototype.asyncReceiveTx = function (_a) {
         var accountAddress = _a.accountAddress, fromBlockHash = _a.fromBlockHash, height = _a.height, prevHash = _a.prevHash;
-        return __awaiter(this, void 0, void 0, function () {
-            var err;
-            return __generator(this, function (_b) {
-                err = vitejs_utils_1.checkParams({ fromBlockHash: fromBlockHash }, ['fromBlockHash']);
-                if (err) {
-                    return [2, Promise.reject(err)];
-                }
-                return [2, this.asyncAccountBlock({
-                        blockType: 4,
-                        fromBlockHash: fromBlockHash,
-                        accountAddress: accountAddress,
-                        height: height,
-                        prevHash: prevHash
-                    })];
-            });
+        var err = vitejs_utils_1.checkParams({ fromBlockHash: fromBlockHash }, ['fromBlockHash']);
+        if (err) {
+            return Promise.reject(err);
+        }
+        return this.asyncAccountBlock({
+            blockType: 4,
+            fromBlockHash: fromBlockHash,
+            accountAddress: accountAddress,
+            height: height,
+            prevHash: prevHash
         });
     };
     Tx.prototype.createContract = function (_a, requestType) {

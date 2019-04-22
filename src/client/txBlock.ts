@@ -84,7 +84,7 @@ export default class Tx {
         return formatAccountBlock({ blockType, fromBlockHash, accountAddress, message, data, height, prevHash, toAddress, tokenId, amount, fee });
     }
 
-    async asyncSendTx({ accountAddress, toAddress, tokenId, amount, message, height, prevHash }: sendTxBlock) {
+    asyncSendTx({ accountAddress, toAddress, tokenId, amount, message, height, prevHash }: sendTxBlock) {
         const err = checkParams({ toAddress, tokenId, amount }, [ 'toAddress', 'tokenId', 'amount' ]);
         if (err) {
             return Promise.reject(err);
@@ -102,7 +102,7 @@ export default class Tx {
         });
     }
 
-    async asyncReceiveTx({ accountAddress, fromBlockHash, height, prevHash }: receiveTxBlock) {
+    asyncReceiveTx({ accountAddress, fromBlockHash, height, prevHash }: receiveTxBlock) {
         const err = checkParams({ fromBlockHash }, ['fromBlockHash']);
         if (err) {
             return Promise.reject(err);

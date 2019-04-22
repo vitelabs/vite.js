@@ -122,6 +122,7 @@ exports.signAccountBlock = signAccountBlock;
 exports.formatAccountBlock = builtin_1.formatAccountBlock;
 exports.validReqAccountBlock = builtin_1.validReqAccountBlock;
 exports.getCreateContractData = builtin_1.getCreateContractData;
+exports.getAbi = builtin_1.getAbi;
 function enumTxType() {
     var txType = {};
     txType[vitejs_constant_1.abiFuncSignature.Register + "_" + vitejs_constant_1.contractAddrs.Register] = 'SBPreg';

@@ -12,6 +12,14 @@ var AddrAccount = (function () {
         this.realAddress = privToAddr.getAddrFromHexAddr(this.address);
         this._client = client;
     }
+    AddrAccount.prototype.callOffChainContract = function (_a) {
+        var abi = _a.abi, offChainCode = _a.offChainCode;
+        return this._client.callOffChainContract({
+            selfAddr: this.address,
+            abi: abi,
+            offChainCode: offChainCode
+        });
+    };
     AddrAccount.prototype.getBalance = function () {
         return this._client.getBalance(this.address);
     };

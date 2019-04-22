@@ -73,25 +73,30 @@ function validReqAccountBlock(_a) {
 exports.validReqAccountBlock = validReqAccountBlock;
 function getCreateContractData(_a) {
     var abi = _a.abi, hexCode = _a.hexCode, params = _a.params, _c = _a.confirmTimes, confirmTimes = _c === void 0 ? 0 : _c;
-    var jsonInterface = getConstructor(abi);
+    var jsonInterface = getAbi(abi);
     var _confirmTimes = new BigNumber(confirmTimes).toArray();
     var data = vitejs_constant_1.Delegate_Gid + "01" + Buffer.from(_confirmTimes).toString('hex') + hexCode;
-    console.log(data);
     if (jsonInterface) {
         data += vitejs_abi_1.encodeParameters(jsonInterface, params);
     }
     return Buffer.from(data, 'hex').toString('base64');
 }
 exports.getCreateContractData = getCreateContractData;
-function getConstructor(jsonInterfaces) {
-    if (!vitejs_utils_1.isArray(jsonInterfaces)) {
-        if (jsonInterfaces.type === 'constructor') {
+function getAbi(jsonInterfaces, type) {
+    if (type === void 0) { type = 'constructor'; }
+    if (!vitejs_utils_1.isArray(jsonInterfaces) && vitejs_utils_1.isObject(jsonInterfaces)) {
+        if (jsonInterfaces.type === type) {
             return jsonInterfaces;
         }
     }
+    if (!vitejs_utils_1.isArray(jsonInterfaces)) {
+        return null;
+    }
     for (var i = 0; i < jsonInterfaces.length; i++) {
-        if (jsonInterfaces[i].type === 'constructor') {
+        if (jsonInterfaces[i].type === type) {
             return jsonInterfaces[i];
         }
     }
+    return null;
 }
+exports.getAbi = getAbi;
