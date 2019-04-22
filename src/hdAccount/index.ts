@@ -82,7 +82,7 @@ class Wallet {
         autoPow: false,
         usePledgeQuota: true
     }) {
-        const activeAccount = this.getAccount({ address, index });
+        const activeAccount = this.getAccount({ address, index }, { autoPow, usePledgeQuota });
 
         activeAccount.activate(intervals, autoPow, usePledgeQuota);
         if (duration > 0) {
@@ -118,14 +118,32 @@ class Wallet {
     }: {
         address?: Address;
         index?: number;
-    } = { index: this.addrStartInx }) {
-        index = validAddrParams({ address, index });
+    } = { index: this.addrStartInx }, {
+        autoPow = false,
+        usePledgeQuota = true
+    }: {
+        autoPow?: boolean;
+        usePledgeQuota? : boolean;
+    } = { autoPow: false, usePledgeQuota: true }) {
+        index = this.validAddrParams({ address, index });
         const addrObj: AddrObj = this.addrList[index];
+
+        let i;
+        for (i = 0; i < this.activeAccountList.length; i++) {
+            const account = this.activeAccountList[i];
+            if (account.address === addrObj.hexAddr) {
+                break;
+            }
+        }
+
+        if (i < this.activeAccountList.length) {
+            return this.activeAccountList[i];
+        }
 
         return new Account({
             privateKey: addrObj.privKey,
             client: this._client
-        });
+        }, { autoPow, usePledgeQuota });
     }
 
     addAddr() {
@@ -141,38 +159,36 @@ class Wallet {
         this.addrList.push(addrObj);
         return addrObj;
     }
+
+    private validAddrParams({ address, index = this.addrStartInx }: { address?: Address; index?: number }) {
+        if (!address && !index && index !== 0) {
+            throw new Error(`${ paramsMissing.message } Address or index.`);
+        }
+
+        if (address && !isValidHexAddr(address)) {
+            throw new Error(`${ addressIllegal.message }`);
+        }
+
+        if (!address && index >= this.addrList.length) {
+            throw new Error('Illegal index. Index should be smaller than this.addrList.length.');
+        }
+
+        if (!address) {
+            return index;
+        }
+
+        let i;
+        for (i = 0; i < this.addrList.length; i++) {
+            if (this.addrList[i].hexAddr === address) {
+                break;
+            }
+        }
+
+        if (i === this.addrList.length) {
+            throw new Error(`${ addressMissing.message }`);
+        }
+        return i;
+    }
 }
 
 export default Wallet;
-
-
-
-function validAddrParams({ address, index = this.addrStartInx }: { address?: Address; index?: number }) {
-    if (!address && !index && index !== 0) {
-        throw new Error(`${ paramsMissing.message } Address or index.`);
-    }
-
-    if (address && !isValidHexAddr(address)) {
-        throw new Error(`${ addressIllegal.message }`);
-    }
-
-    if (!address && index >= this.addrList.length) {
-        throw new Error('Illegal index. Index should be smaller than this.addrList.length.');
-    }
-
-    if (!address) {
-        return index;
-    }
-
-    let i;
-    for (i = 0; i < this.addrList.length; i++) {
-        if (this.addrList[i].hexAddr === address) {
-            break;
-        }
-    }
-
-    if (i === this.addrList.length) {
-        throw new Error(`${ addressMissing.message }`);
-    }
-    return i;
-}

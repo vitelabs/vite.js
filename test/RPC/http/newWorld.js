@@ -14,24 +14,16 @@ const myHdAccount = new HdAccount({
     client: provider
 });
 
-console.log(myHdAccount.mnemonic);
-
-const myAccount = new Account({
-    privateKey: myHdAccount.addrList[0].privKey,
-    client: provider
-}, {
-    autoPow: true,
-    usePledgeQuota: true
-});
+const myAccount = myHdAccount.getAccount();
 myHdAccount.addAddr();
 
 
 // Start Test
-TestFunc().then(() => {
-    console.log('Test Finish');
-}).catch(err => {
-    console.log('Test Error', err);
-});
+// TestFunc().then(() => {
+//     console.log('Test Finish');
+// }).catch(err => {
+//     console.log('Test Error', err);
+// });
 
 
 async function TestFunc() {
