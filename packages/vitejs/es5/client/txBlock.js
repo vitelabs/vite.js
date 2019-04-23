@@ -38,25 +38,23 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var vitejs_constant_1 = require("./../constant");
 var vitejs_utils_1 = require("./../utils");
 var vitejs_accountblock_1 = require("./../accountblock");
+var builtin_1 = require("./../accountblock/builtin");
 var vitejs_abi_1 = require("./../abi");
 var vitejs_privtoaddr_1 = require("./../privtoaddr");
 var ledger = vitejs_constant_1.methods.ledger;
 var Tx = (function () {
     function Tx(client) {
         this._client = client;
-        this.getAccountBlock = {
-            sync: vitejs_accountblock_1.getAccountBlock,
-            async: this.asyncAccountBlock.bind(this)
-        };
-        this.receiveTx = {
-            sync: vitejs_accountblock_1.getReceiveTxBlock,
-            async: this.asyncReceiveTx.bind(this)
-        };
-        this.sendTx = {
-            sync: vitejs_accountblock_1.getSendTxBlock,
-            async: this.asyncSendTx.bind(this)
-        };
     }
+    Tx.prototype.getAccountBlock = function (block) {
+        return vitejs_accountblock_1.getAccountBlock(block);
+    };
+    Tx.prototype.getReceiveTxBlock = function (block) {
+        return vitejs_accountblock_1.getReceiveTxBlock(block);
+    };
+    Tx.prototype.getSendTxBlock = function (block) {
+        return vitejs_accountblock_1.getSendTxBlock(block);
+    };
     Tx.prototype.asyncAccountBlock = function (_a) {
         var blockType = _a.blockType, fromBlockHash = _a.fromBlockHash, accountAddress = _a.accountAddress, message = _a.message, data = _a.data, height = _a.height, prevHash = _a.prevHash, toAddress = _a.toAddress, _b = _a.tokenId, tokenId = _b === void 0 ? vitejs_constant_1.Vite_TokenId : _b, amount = _a.amount, fee = _a.fee;
         return __awaiter(this, void 0, void 0, function () {
@@ -72,7 +70,7 @@ var Tx = (function () {
                                 message: message
                             });
                         };
-                        err = vitejs_accountblock_1.validReqAccountBlock({ blockType: blockType, fromBlockHash: fromBlockHash, accountAddress: accountAddress, message: message, data: data, toAddress: toAddress, amount: amount });
+                        err = builtin_1.validReqAccountBlock({ blockType: blockType, fromBlockHash: fromBlockHash, accountAddress: accountAddress, message: message, data: data, toAddress: toAddress, amount: amount });
                         if (err) {
                             return [2, reject(err)];
                         }
@@ -81,7 +79,7 @@ var Tx = (function () {
                         latestBlock = _d.sent();
                         height = latestBlock && latestBlock.height ? latestBlock.height : '';
                         prevHash = latestBlock && latestBlock.hash ? latestBlock.hash : '';
-                        return [2, vitejs_accountblock_1.formatAccountBlock({ blockType: blockType, fromBlockHash: fromBlockHash, accountAddress: accountAddress, message: message, data: data, height: height, prevHash: prevHash, toAddress: toAddress, tokenId: tokenId, amount: amount, fee: fee })];
+                        return [2, builtin_1.formatAccountBlock({ blockType: blockType, fromBlockHash: fromBlockHash, accountAddress: accountAddress, message: message, data: data, height: height, prevHash: prevHash, toAddress: toAddress, tokenId: tokenId, amount: amount, fee: fee })];
                 }
             });
         });
@@ -145,7 +143,7 @@ var Tx = (function () {
                         return [4, this._client.contract.getCreateContractToAddress(accountAddress, block.height, block.prevHash)];
                     case 4:
                         toAddress = _e.sent();
-                        data = vitejs_accountblock_1.getCreateContractData({ abi: abi, hexCode: hexCode, params: params, confirmTimes: confirmTimes });
+                        data = builtin_1.getCreateContractData({ abi: abi, hexCode: hexCode, params: params, confirmTimes: confirmTimes });
                         block.toAddress = toAddress;
                         block.data = data;
                         return [2, block];

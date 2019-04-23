@@ -8,6 +8,7 @@ export default class AddrAccount {
     address: Address
     realAddress: string
     _client: client
+    getBlock: Object
 
     constructor({ address, client }: {
         address: Address; client: client;
@@ -20,11 +21,13 @@ export default class AddrAccount {
         this.realAddress = privToAddr.getAddrFromHexAddr(this.address);
 
         this._client = client;
+        this.getBlock = {};
+        this._setMethodBlock();
     }
 
     callOffChainContract({ abi, offChainCode }) {
         return this._client.callOffChainContract({
-            selfAddr: this.address,
+            addr: this.address,
             abi,
             offChainCode
         });
@@ -32,6 +35,10 @@ export default class AddrAccount {
 
     getBalance() {
         return this._client.getBalance(this.address);
+    }
+
+    getTxList({ index, pageCount = 50, totalNum = null }) {
+        return this._client.getTxList({ addr: this.address, index, pageCount, totalNum });
     }
 
     getOnroad() {
@@ -82,7 +89,21 @@ export default class AddrAccount {
         return this._client.vote.getVoteInfo(Snapshot_Gid, this.address);
     }
 
-    getTxList({ index, pageCount = 50, totalNum = null }) {
-        return this._client.getTxList({ addr: this.address, index, pageCount, totalNum });
+    getTokenInfoListByOwner() {
+        return this._client.mintage.getTokenInfoListByOwner(this.address);
+    }
+
+
+    private _setMethodBlock() {
+        for (const key in this._client.builtinTxBlock) {
+            if (key === '_client') {
+                continue;
+            }
+
+            this.getBlock[key] = (block, requestType) => {
+                block.accountAddress = this.address;
+                return this._client.builtinTxBlock[key](block, requestType);
+            };
+        }
     }
 }

@@ -1,27 +1,32 @@
 const assert = require('assert');
 
-import Client from '../src/client/index';
-import { methods } from '../src/constant';
-import HTTP_RPC from '../src/HTTP';
+import Client from '../../src/client/index';
+import netProcessor from '../../src/netProcessor';
+import { methods } from '../../src/constant';
+import HTTP_RPC from '../../src/HTTP';
 
 const myWSClient = new Client({ type: 'ws' });
 const myHTTPClient = new Client(new HTTP_RPC());
 const myIPCClient = new Client({ type: 'ipc' });
 
-describe('WS Client property', function () {
+describe('WS Client', function () {
     testFunc(['wallet'], myWSClient);
 });
 
-describe('HTTP Client property', function () {
+describe('HTTP Client', function () {
     testFunc(['wallet'], myHTTPClient);
 });
 
-describe('IPC Client property', function () {
+describe('IPC Client', function () {
     testFunc([], myIPCClient);
 });
 
 
 function testFunc(notIncluded, client) {
+    it('extends of netProcessor', function () {
+        assert.equal(client instanceof netProcessor, true);
+    });
+
     for (const space in methods) {
         if (notIncluded.indexOf(space) !== -1) {
             it(`client.${ space } null`, function () {
@@ -38,7 +43,7 @@ function testFunc(notIncluded, client) {
 
         for (const method in methods[space]) {
             it(`client.${ namespace }.${ method }`, function () {
-                assert.equal(!!client[namespace][method], true);
+                assert.equal(typeof client[namespace][method], 'function');
             });
         }
     }

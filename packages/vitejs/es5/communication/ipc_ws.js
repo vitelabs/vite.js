@@ -151,7 +151,7 @@ var IpcWs = (function (_super) {
     };
     IpcWs.prototype.on = function (type, cb) {
         var eventType = this._checkOnType(type);
-        if (eventType < 0) {
+        if (!eventType) {
             return this.ERRORS.IPC_ON(type);
         }
         if (!cb) {

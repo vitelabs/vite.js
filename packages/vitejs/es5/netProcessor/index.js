@@ -52,24 +52,6 @@ var NetProcessor = (function () {
         this.isConnected = false;
         this.connectedOnce(firstConnect);
     };
-    NetProcessor.prototype.connectedOnce = function (cb) {
-        var _this = this;
-        var connectedCB = function () {
-            _this.isConnected = true;
-            _this.requestList && _this.requestList.forEach(function (_q) {
-                _q && _q();
-            });
-            cb && cb(_this);
-        };
-        if (this._provider.type === 'http' || this._provider.connectStatus) {
-            connectedCB();
-            return;
-        }
-        this._provider.on && this._provider.on('connect', function () {
-            connectedCB();
-            _this._provider.remove('connect');
-        });
-    };
     NetProcessor.prototype.unSubscribe = function (event) {
         var i;
         for (i = 0; i < this.subscriptionList.length; i++) {
@@ -248,6 +230,24 @@ var NetProcessor = (function () {
                 return;
             }
             s.emit(result);
+        });
+    };
+    NetProcessor.prototype.connectedOnce = function (cb) {
+        var _this = this;
+        var connectedCB = function () {
+            _this.isConnected = true;
+            _this.requestList && _this.requestList.forEach(function (_q) {
+                _q && _q();
+            });
+            cb && cb(_this);
+        };
+        if (this._provider.type === 'http' || this._provider.connectStatus) {
+            connectedCB();
+            return;
+        }
+        this._provider.on && this._provider.on('connect', function () {
+            connectedCB();
+            _this._provider.remove('connect');
         });
     };
     return NetProcessor;

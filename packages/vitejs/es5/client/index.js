@@ -64,6 +64,7 @@ var vitejs_netprocessor_1 = require("./../netprocessor");
 var vitejs_utils_1 = require("./../utils");
 var vitejs_privtoaddr_1 = require("./../privtoaddr");
 var vitejs_accountblock_1 = require("./../accountblock");
+var builtin_1 = require("./../accountblock/builtin");
 var vitejs_abi_1 = require("./../abi");
 var txBlock_1 = require("./txBlock");
 var type_1 = require("../type");
@@ -73,7 +74,7 @@ var Client = (function (_super) {
     __extends(Client, _super);
     function Client(provider, firstConnect) {
         var _this = _super.call(this, provider, firstConnect) || this;
-        _this.buildinTxBlock = new txBlock_1.default(_this);
+        _this.builtinTxBlock = new txBlock_1.default(_this);
         _this._setMethodsName();
         return _this;
     }
@@ -167,6 +168,30 @@ var Client = (function (_super) {
             });
         });
     };
+    Client.prototype.callOffChainContract = function (_b) {
+        var addr = _b.addr, abi = _b.abi, offChainCode = _b.offChainCode;
+        return __awaiter(this, void 0, void 0, function () {
+            var jsonInterface, data, result;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
+                    case 0:
+                        jsonInterface = builtin_1.getAbi(abi, 'offchain');
+                        if (!jsonInterface) {
+                            throw new Error('Can\'t find offchain');
+                        }
+                        data = vitejs_abi_1.encodeFunctionCall(jsonInterface, jsonInterface.inputs || []);
+                        return [4, this.contract.callOffChainMethod({
+                                selfAddr: addr,
+                                offChainCode: offChainCode,
+                                data: data
+                            })];
+                    case 1:
+                        result = _c.sent();
+                        return [2, vitejs_abi_1.decodeParameters(jsonInterface.outputs, result)];
+                }
+            });
+        });
+    };
     Client.prototype.sendAutoPowRawTx = function (_b) {
         var accountBlock = _b.accountBlock, privateKey = _b.privateKey, _c = _b.usePledgeQuota, usePledgeQuota = _c === void 0 ? true : _c;
         return __awaiter(this, void 0, void 0, function () {
@@ -176,12 +201,12 @@ var Client = (function (_super) {
                     case 0:
                         err = vitejs_utils_1.checkParams({ accountBlock: accountBlock, privateKey: privateKey }, ['accountBlock', 'privateKey'], [{
                                 name: 'accountBlock',
-                                func: function (_a) { return !vitejs_accountblock_1.validReqAccountBlock(_a); }
+                                func: function (_a) { return !builtin_1.validReqAccountBlock(_a); }
                             }]);
                         if (err) {
                             throw err;
                         }
-                        return [4, this.getPowRawTx(accountBlock, usePledgeQuota)];
+                        return [4, this.autoGetPowRawTx(accountBlock, usePledgeQuota)];
                     case 1:
                         powTx = _d.sent();
                         return [2, this.sendRawTx(powTx.accountBlock, privateKey)];
@@ -211,9 +236,9 @@ var Client = (function (_super) {
             });
         });
     };
-    Client.prototype.getPowRawTx = function (accountBlock, usePledgeQuota) {
+    Client.prototype.autoGetPowRawTx = function (accountBlock, usePledgeQuota) {
         return __awaiter(this, void 0, void 0, function () {
-            var data, realAddr, rawHashBytes, hash, nonce;
+            var data, block;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0: return [4, this.tx.calcPoWDifficulty({
@@ -229,39 +254,29 @@ var Client = (function (_super) {
                         if (!data.difficulty) {
                             return [2, __assign({ accountBlock: accountBlock }, data)];
                         }
-                        realAddr = vitejs_privtoaddr_1.getAddrFromHexAddr(accountBlock.accountAddress);
-                        rawHashBytes = Buffer.from(realAddr + accountBlock.prevHash, 'hex');
-                        hash = vitejs_utils_1.blake2bHex(rawHashBytes, null, 32);
-                        return [4, this.pow.getPowNonce(data.difficulty, hash)];
+                        return [4, this.getPowRawTx(accountBlock, data.difficulty)];
                     case 2:
-                        nonce = _b.sent();
-                        accountBlock.nonce = nonce;
-                        accountBlock.difficulty = data.difficulty;
-                        return [2, __assign({ accountBlock: accountBlock }, data)];
+                        block = _b.sent();
+                        return [2, __assign({ accountBlock: block }, data)];
                 }
             });
         });
     };
-    Client.prototype.callOffChainContract = function (_b) {
-        var selfAddr = _b.selfAddr, abi = _b.abi, offChainCode = _b.offChainCode;
+    Client.prototype.getPowRawTx = function (accountBlock, difficulty) {
         return __awaiter(this, void 0, void 0, function () {
-            var jsonInterface, data, result;
-            return __generator(this, function (_c) {
-                switch (_c.label) {
+            var realAddr, rawHashBytes, hash, nonce;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0:
-                        jsonInterface = vitejs_accountblock_1.getAbi(abi, 'offchain');
-                        if (!jsonInterface) {
-                            throw new Error('Can\'t find offchain');
-                        }
-                        data = vitejs_abi_1.encodeFunctionCall(jsonInterface, jsonInterface.inputs || []);
-                        return [4, this.contract.callOffChainMethod({
-                                selfAddr: selfAddr,
-                                offChainCode: offChainCode,
-                                data: data
-                            })];
+                        realAddr = vitejs_privtoaddr_1.getAddrFromHexAddr(accountBlock.accountAddress);
+                        rawHashBytes = Buffer.from(realAddr + accountBlock.prevHash, 'hex');
+                        hash = vitejs_utils_1.blake2bHex(rawHashBytes, null, 32);
+                        return [4, this.pow.getPowNonce(difficulty, hash)];
                     case 1:
-                        result = _c.sent();
-                        return [2, vitejs_abi_1.decodeParameters(jsonInterface.outputs, result)];
+                        nonce = _b.sent();
+                        accountBlock.nonce = nonce;
+                        accountBlock.difficulty = difficulty;
+                        return [2, accountBlock];
                 }
             });
         });

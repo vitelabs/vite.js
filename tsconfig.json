@@ -29,7 +29,8 @@
             "~@vite/vitejs-ws": ["WS/index.js"],
             "~@vite/vitejs-http": ["HTTP/index.js"],
             "~@vite/vitejs-ipc": ["IPC/index.js"],
-            "~@vite/vitejs": ["vitejs/index.ts"]
+            "~@vite/vitejs": ["vitejs/index.ts"],
+            "~@vite/vitejs-accountblock/builtin": ["accountBlock/builtin.ts"]
         },
         "lib": [
             "es5",

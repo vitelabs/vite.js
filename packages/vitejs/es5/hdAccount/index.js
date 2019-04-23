@@ -49,7 +49,7 @@ var Wallet = (function () {
             autoPow: false,
             usePledgeQuota: true
         } : _b, _f = _e.intervals, intervals = _f === void 0 ? 2000 : _f, _g = _e.duration, duration = _g === void 0 ? 5 * 60 * 1000 : _g, _h = _e.autoPow, autoPow = _h === void 0 ? false : _h, _j = _e.usePledgeQuota, usePledgeQuota = _j === void 0 ? true : _j;
-        var activeAccount = this.getAccount({ address: address, index: index, autoPow: autoPow, usePledgeQuota: usePledgeQuota });
+        var activeAccount = this.getAccount({ address: address, index: index });
         activeAccount.activate(intervals, autoPow, usePledgeQuota);
         if (duration > 0) {
             setTimeout(function () {

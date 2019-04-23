@@ -29,26 +29,6 @@ export default class NetProcessor {
         this.connectedOnce(firstConnect);
     }
 
-    connectedOnce(cb) {
-        const connectedCB = () => {
-            this.isConnected = true;
-            this.requestList && this.requestList.forEach(_q => {
-                _q && _q();
-            });
-            cb && cb(this);
-        };
-
-        if (this._provider.type === 'http' || this._provider.connectStatus) {
-            connectedCB();
-            return;
-        }
-
-        this._provider.on && this._provider.on('connect', () => {
-            connectedCB();
-            this._provider.remove('connect');
-        });
-    }
-
     unSubscribe(event) {
         let i;
 
@@ -110,7 +90,6 @@ export default class NetProcessor {
         return reps;
     }
 
-
     async subscribe(methodName, ...args) {
         const subMethodName = this._provider.subscribe ? 'subscribe_subscribe' : `subscribe_${ methodName }Filter`;
         const params = this._provider.subscribe ? [ methodName, ...args ] : args;
@@ -142,6 +121,7 @@ export default class NetProcessor {
         this.subscriptionList.push(event);
         return event;
     }
+
 
     private _offReq(_q) {
         let i;
@@ -200,6 +180,26 @@ export default class NetProcessor {
             }
 
             s.emit(result);
+        });
+    }
+
+    private connectedOnce(cb) {
+        const connectedCB = () => {
+            this.isConnected = true;
+            this.requestList && this.requestList.forEach(_q => {
+                _q && _q();
+            });
+            cb && cb(this);
+        };
+
+        if (this._provider.type === 'http' || this._provider.connectStatus) {
+            connectedCB();
+            return;
+        }
+
+        this._provider.on && this._provider.on('connect', () => {
+            connectedCB();
+            this._provider.remove('connect');
         });
     }
 }

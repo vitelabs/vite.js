@@ -11,17 +11,23 @@ var AddrAccount = (function () {
         this.address = address;
         this.realAddress = privToAddr.getAddrFromHexAddr(this.address);
         this._client = client;
+        this.getBlock = {};
+        this._setMethodBlock();
     }
     AddrAccount.prototype.callOffChainContract = function (_a) {
         var abi = _a.abi, offChainCode = _a.offChainCode;
         return this._client.callOffChainContract({
-            selfAddr: this.address,
+            addr: this.address,
             abi: abi,
             offChainCode: offChainCode
         });
     };
     AddrAccount.prototype.getBalance = function () {
         return this._client.getBalance(this.address);
+    };
+    AddrAccount.prototype.getTxList = function (_a) {
+        var index = _a.index, _b = _a.pageCount, pageCount = _b === void 0 ? 50 : _b, _c = _a.totalNum, totalNum = _c === void 0 ? null : _c;
+        return this._client.getTxList({ addr: this.address, index: index, pageCount: pageCount, totalNum: totalNum });
     };
     AddrAccount.prototype.getOnroad = function () {
         return this._client.onroad.getOnroadInfoByAddress(this.address);
@@ -64,9 +70,24 @@ var AddrAccount = (function () {
     AddrAccount.prototype.getVoteInfo = function () {
         return this._client.vote.getVoteInfo(vitejs_constant_1.Snapshot_Gid, this.address);
     };
-    AddrAccount.prototype.getTxList = function (_a) {
-        var index = _a.index, _b = _a.pageCount, pageCount = _b === void 0 ? 50 : _b, _c = _a.totalNum, totalNum = _c === void 0 ? null : _c;
-        return this._client.getTxList({ addr: this.address, index: index, pageCount: pageCount, totalNum: totalNum });
+    AddrAccount.prototype.getTokenInfoListByOwner = function () {
+        return this._client.mintage.getTokenInfoListByOwner(this.address);
+    };
+    AddrAccount.prototype._setMethodBlock = function () {
+        var _this = this;
+        var _loop_1 = function (key) {
+            if (key === '_client') {
+                return "continue";
+            }
+            this_1.getBlock[key] = function (block, requestType) {
+                block.accountAddress = _this.address;
+                return _this._client.builtinTxBlock[key](block, requestType);
+            };
+        };
+        var this_1 = this;
+        for (var key in this._client.builtinTxBlock) {
+            _loop_1(key);
+        }
     };
     return AddrAccount;
 }());

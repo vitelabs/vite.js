@@ -5,15 +5,12 @@ import { getAddrFromHexAddr } from '~@vite/vitejs-privtoaddr';
 import { paramsFormat } from '~@vite/vitejs-error';
 import { Default_Hash, contractAddrs, abiFuncSignature } from '~@vite/vitejs-constant';
 
-import {
-    formatAccountBlock as _formatAccountBlock, validReqAccountBlock as _validReqAccountBlock,
-    getCreateContractData as _getCreateContractData, getAbi as _getAbi
-} from './builtin';
+import { formatAccountBlock, validReqAccountBlock } from './builtin';
 import { AccountBlock, BlockType, SignBlock, sendTxBlock, receiveTxBlock, syncFormatBlock } from '../type';
 
 const { getPublicKey, sign } = ed25519;
-
 const txType = enumTxType();
+
 
 export function getAccountBlock({ blockType, fromBlockHash, accountAddress, message, data, height, prevHash, toAddress, tokenId, amount, nonce }: syncFormatBlock) {
     const reject = (error, errMsg = '') => {
@@ -86,10 +83,10 @@ export function getBuiltinTxType(toAddress, data, blockType) {
 }
 
 // 1.sendBlock
-// hash = HashFunction(BlockType + PrevHash  + Height + AccountAddress + ToAddress + Amount + TokenId + Data + Fee + LogHash + Nonce + sendBlock hashList）
+// hash = HashFunction(BlockType + PrevHash  + Height + AccountAddress + ToAddress + Amount + TokenId + Data + Fee + LogHash + Nonce + sendBlock + hashList）
 
 // 2.receiveBlock
-// hash = HashFunction(BlockType + PrevHash  + Height + AccountAddress + FromBlockHash + Data + Fee + LogHash + Nonce + sendBlock hashList）
+// hash = HashFunction(BlockType + PrevHash  + Height + AccountAddress + FromBlockHash + Data + Fee + LogHash + Nonce + sendBlock + hashList）
 
 export function getBlockHash(accountBlock: SignBlock) {
     let source = '';
@@ -143,14 +140,6 @@ export function signAccountBlock(accountBlock: SignBlock, privKey: string) {
 
     return _accountBlock;
 }
-
-export const formatAccountBlock = _formatAccountBlock;
-
-export const validReqAccountBlock = _validReqAccountBlock;
-
-export const getCreateContractData = _getCreateContractData;
-
-export const getAbi = _getAbi;
 
 
 

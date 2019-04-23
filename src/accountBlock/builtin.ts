@@ -1,6 +1,6 @@
 const BigNumber = require('bn.js');
 import { paramsMissing, paramsConflict } from '~@vite/vitejs-error';
-import { Vite_TokenId, Default_Hash, Delegate_Gid } from '~@vite/vitejs-constant';
+import { Vite_TokenId, Default_Hash, Delegate_Gid, BlockType } from '~@vite/vitejs-constant';
 import { isValidHexAddr } from '~@vite/vitejs-privtoaddr';
 import { checkParams, validInteger, isArray, isObject } from '~@vite/vitejs-utils';
 import { encodeParameters } from '~@vite/vitejs-abi';
@@ -51,8 +51,8 @@ export function validReqAccountBlock({ blockType, fromBlockHash, accountAddress,
         func: isValidHexAddr
     }, {
         name: 'blockType',
-        func: _b => Number(_b) > 0 && Number(_b) < 5,
-        msg: 'BlockType should be greater than 0 and less than 6.'
+        func: _b => BlockType[_b],
+        msg: `Don\'t have blockType ${ blockType }`
     }, {
         name: 'amount',
         func: validInteger,
@@ -90,7 +90,6 @@ export function getCreateContractData({ abi, hexCode, params, confirmTimes = 0 }
     }
     return Buffer.from(data, 'hex').toString('base64');
 }
-
 
 export function getAbi(jsonInterfaces, type = 'constructor') {
     if (!isArray(jsonInterfaces) && isObject(jsonInterfaces)) {

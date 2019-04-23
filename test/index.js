@@ -1,28 +1,31 @@
 import './cover';
 
 describe('Account Test: src/account', function () {
-    require('./account');
+    require('./packages/account');
 });
 
 describe('AddrAccount Test: src/addrAccount', function () {
-    require('./addrAccount');
+    require('./packages/addrAccount');
 });
 
 describe('Client Test: src/client', function () {
-    require('./client');
-});
-
-describe('HdAccount Test: src/hdAccount', function () {
-    require('./hdAccount');
+    require('./packages/client');
 });
 
 describe('Communication Test: src/communication', function () {
-    require('./communication');
+    require('./packages/communication');
 });
 
+describe('HdAccount Test: src/hdAccount', function () {
+    require('./packages/hdAccount');
+});
+
+describe('NetProcessor Test: src/netProcessor', function () {
+    require('./packages/netProcessor');
+});
 
 // netProcessor
 // http
 // ipc
 // ws
-require('./RPC/http/newWorld.js');
+require('./RPC/newWorld.js');

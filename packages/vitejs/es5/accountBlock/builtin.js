@@ -46,8 +46,8 @@ function validReqAccountBlock(_a) {
             func: vitejs_privtoaddr_1.isValidHexAddr
         }, {
             name: 'blockType',
-            func: function (_b) { return Number(_b) > 0 && Number(_b) < 5; },
-            msg: 'BlockType should be greater than 0 and less than 6.'
+            func: function (_b) { return vitejs_constant_1.BlockType[_b]; },
+            msg: "Don't have blockType " + blockType
         }, {
             name: 'amount',
             func: vitejs_utils_1.validInteger,

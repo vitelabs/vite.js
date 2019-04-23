@@ -3,7 +3,8 @@ import netProcessor from '~@vite/vitejs-netprocessor';
 
 import { checkParams, blake2bHex } from '~@vite/vitejs-utils';
 import { isValidHexAddr, getAddrFromHexAddr } from '~@vite/vitejs-privtoaddr';
-import { getBuiltinTxType, signAccountBlock, validReqAccountBlock, getAbi } from '~@vite/vitejs-accountblock';
+import { getBuiltinTxType, signAccountBlock } from '~@vite/vitejs-accountblock';
+import { validReqAccountBlock, getAbi } from '~@vite/vitejs-accountblock/builtin';
 import { encodeFunctionCall, decodeParameters } from '~@vite/vitejs-abi';
 
 import TxBlock from './txBlock';
@@ -14,7 +15,7 @@ const _ledger = _methods.ledger;
 
 
 export default class Client extends netProcessor {
-    buildinTxBlock: TxBlock
+    builtinTxBlock: TxBlock
 
     wallet: walletFunc
     net: netFunc
@@ -33,8 +34,7 @@ export default class Client extends netProcessor {
     constructor(provider: any, firstConnect: Function) {
         super(provider, firstConnect);
 
-        this.buildinTxBlock = new TxBlock(this);
-
+        this.builtinTxBlock = new TxBlock(this);
         this._setMethodsName();
     }
 
@@ -125,6 +125,22 @@ export default class Client extends netProcessor {
         return { list, totalNum };
     }
 
+    async callOffChainContract({ addr, abi, offChainCode }) {
+        const jsonInterface = getAbi(abi, 'offchain');
+        if (!jsonInterface) {
+            throw new Error('Can\'t find offchain');
+        }
+
+        const data = encodeFunctionCall(jsonInterface, jsonInterface.inputs || []);
+        const result = await this.contract.callOffChainMethod({
+            selfAddr: addr,
+            offChainCode,
+            data
+        });
+
+        return decodeParameters(jsonInterface.outputs, result);
+    }
+
     async sendAutoPowRawTx({ accountBlock, privateKey, usePledgeQuota = true }) {
         const err = checkParams({ accountBlock, privateKey }, [ 'accountBlock', 'privateKey' ], [{
             name: 'accountBlock',
@@ -134,7 +150,7 @@ export default class Client extends netProcessor {
             throw err;
         }
 
-        const powTx = await this.getPowRawTx(accountBlock, usePledgeQuota);
+        const powTx = await this.autoGetPowRawTx(accountBlock, usePledgeQuota);
         return this.sendRawTx(powTx.accountBlock, privateKey);
     }
 
@@ -150,7 +166,7 @@ export default class Client extends netProcessor {
         }
     }
 
-    async getPowRawTx(accountBlock, usePledgeQuota) {
+    async autoGetPowRawTx(accountBlock, usePledgeQuota) {
         const data = await this.tx.calcPoWDifficulty({
             selfAddr: accountBlock.accountAddress,
             prevHash: accountBlock.prevHash,
@@ -167,34 +183,23 @@ export default class Client extends netProcessor {
             };
         }
 
-        const realAddr = getAddrFromHexAddr(accountBlock.accountAddress);
-        const rawHashBytes = Buffer.from(realAddr + accountBlock.prevHash, 'hex');
-        const hash = blake2bHex(rawHashBytes, null, 32);
-
-        const nonce = await this.pow.getPowNonce(data.difficulty, hash);
-
-        accountBlock.nonce = nonce;
-        accountBlock.difficulty = data.difficulty;
+        const block = await this.getPowRawTx(accountBlock, data.difficulty);
         return {
-            accountBlock,
+            accountBlock: block,
             ...data
         };
     }
 
-    async callOffChainContract({ selfAddr, abi, offChainCode }) {
-        const jsonInterface = getAbi(abi, 'offchain');
-        if (!jsonInterface) {
-            throw new Error('Can\'t find offchain');
-        }
+    async getPowRawTx(accountBlock, difficulty) {
+        const realAddr = getAddrFromHexAddr(accountBlock.accountAddress);
+        const rawHashBytes = Buffer.from(realAddr + accountBlock.prevHash, 'hex');
+        const hash = blake2bHex(rawHashBytes, null, 32);
 
-        const data = encodeFunctionCall(jsonInterface, jsonInterface.inputs || []);
-        const result = await this.contract.callOffChainMethod({
-            selfAddr,
-            offChainCode,
-            data
-        });
+        const nonce = await this.pow.getPowNonce(difficulty, hash);
 
-        return decodeParameters(jsonInterface.outputs, result);
+        accountBlock.nonce = nonce;
+        accountBlock.difficulty = difficulty;
+        return accountBlock;
     }
 
     private _setMethodsName() {

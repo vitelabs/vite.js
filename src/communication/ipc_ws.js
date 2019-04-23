@@ -158,7 +158,7 @@ class IpcWs extends Communication {
 
     on(type, cb) {
         const eventType = this._checkOnType(type);
-        if (eventType < 0) {
+        if (!eventType) {
             return this.ERRORS.IPC_ON(type);
         }
         if (!cb) {

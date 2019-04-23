@@ -1,9 +1,11 @@
 const assert = require('assert');
-import { Communication } from '../src/communication/index';
+import { Communication, IPC_WS } from '../../src/communication/index';
 
-const C = new Communication();
 
-describe('payload should be in the correct format', function () {
+describe('Communication', function () {
+    const C = new Communication();
+
+    // payload format
     const Method_Name = 'request_payload_method';
     const Params = { x: 1, y: 2 };
 
@@ -86,5 +88,19 @@ describe('payload should be in the correct format', function () {
     });
     it('batch_payload_no_requests_length', function () {
         assert.deepEqual(Batch_Payload_No_Requests_Length instanceof Error, true);
+    });
+});
+
+describe('IPC_WS', function () {
+    const I = new IPC_WS({});
+
+    it('extends of Communication', function () {
+        assert.equal(I instanceof Communication, true);
+    });
+
+    [ 'on', 'remove', 'request', 'notification', 'batch', 'subscribe', 'unSubscribe' ].forEach(key => {
+        it(`function ${ key }`, function () {
+            assert.equal(typeof I[key], 'function');
+        });
     });
 });

@@ -82,7 +82,7 @@ class Wallet {
         autoPow: false,
         usePledgeQuota: true
     }) {
-        const activeAccount = this.getAccount({ address, index, autoPow, usePledgeQuota });
+        const activeAccount = this.getAccount({ address, index });
 
         activeAccount.activate(intervals, autoPow, usePledgeQuota);
         if (duration > 0) {

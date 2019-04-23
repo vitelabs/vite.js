@@ -16,7 +16,7 @@ function getAccountBlock(_a) {
         var message = (error.message || '') + " " + errMsg;
         throw new Error(message);
     };
-    var err = exports.validReqAccountBlock({ blockType: blockType, fromBlockHash: fromBlockHash, accountAddress: accountAddress, message: message, data: data, toAddress: toAddress, amount: amount });
+    var err = builtin_1.validReqAccountBlock({ blockType: blockType, fromBlockHash: fromBlockHash, accountAddress: accountAddress, message: message, data: data, toAddress: toAddress, amount: amount });
     if (err) {
         return reject(err);
     }
@@ -26,7 +26,7 @@ function getAccountBlock(_a) {
     if (height && !prevHash) {
         return reject(vitejs_error_1.paramsFormat, 'No prevHash but height.');
     }
-    return exports.formatAccountBlock({ blockType: blockType, fromBlockHash: fromBlockHash, accountAddress: accountAddress, message: message, data: data, height: height, prevHash: prevHash, toAddress: toAddress, tokenId: tokenId, amount: amount, nonce: nonce });
+    return builtin_1.formatAccountBlock({ blockType: blockType, fromBlockHash: fromBlockHash, accountAddress: accountAddress, message: message, data: data, height: height, prevHash: prevHash, toAddress: toAddress, tokenId: tokenId, amount: amount, nonce: nonce });
 }
 exports.getAccountBlock = getAccountBlock;
 function getSendTxBlock(_a) {
@@ -119,10 +119,6 @@ function signAccountBlock(accountBlock, privKey) {
     return _accountBlock;
 }
 exports.signAccountBlock = signAccountBlock;
-exports.formatAccountBlock = builtin_1.formatAccountBlock;
-exports.validReqAccountBlock = builtin_1.validReqAccountBlock;
-exports.getCreateContractData = builtin_1.getCreateContractData;
-exports.getAbi = builtin_1.getAbi;
 function enumTxType() {
     var txType = {};
     txType[vitejs_constant_1.abiFuncSignature.Register + "_" + vitejs_constant_1.contractAddrs.Register] = 'SBPreg';

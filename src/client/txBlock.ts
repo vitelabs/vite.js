@@ -7,14 +7,8 @@ import {
     DexFundUserDeposit_Abi, DexFundUserWithdraw_Abi, DexTradeCancelOrder_Abi, DexFundNewOrder_Abi, DexFundNewMarket_Abi
 } from '~@vite/vitejs-constant';
 import { checkParams, validNodeName } from '~@vite/vitejs-utils';
-import {
-    getAccountBlock as _getAccountBlock,
-    getSendTxBlock,
-    getReceiveTxBlock,
-    validReqAccountBlock,
-    formatAccountBlock,
-    getCreateContractData
-} from '~@vite/vitejs-accountblock';
+import { getAccountBlock, getSendTxBlock, getReceiveTxBlock } from '~@vite/vitejs-accountblock';
+import { formatAccountBlock, validReqAccountBlock, getCreateContractData } from '~@vite/vitejs-accountblock/builtin';
 import { encodeFunctionCall } from '~@vite/vitejs-abi';
 import { newHexAddr } from  '~@vite/vitejs-privtoaddr';
 
@@ -30,36 +24,21 @@ const ledger = methods.ledger;
 
 export default class Tx {
     _client: client
-    getAccountBlock: {
-        sync: Function;
-        async: Function;
-    }
-
-    receiveTx: {
-        sync: Function;
-        async: Function;
-    }
-
-    sendTx: {
-        sync: Function;
-        async: Function;
-    }
 
     constructor(client) {
         this._client = client;
+    }
 
-        this.getAccountBlock = {
-            sync: _getAccountBlock,
-            async: this.asyncAccountBlock.bind(this)
-        };
-        this.receiveTx = {
-            sync: getReceiveTxBlock,
-            async: this.asyncReceiveTx.bind(this)
-        };
-        this.sendTx = {
-            sync: getSendTxBlock,
-            async: this.asyncSendTx.bind(this)
-        };
+    getAccountBlock(block) {
+        return getAccountBlock(block);
+    }
+
+    getReceiveTxBlock(block) {
+        return getReceiveTxBlock(block);
+    }
+
+    getSendTxBlock(block) {
+        return getSendTxBlock(block);
     }
 
     async asyncAccountBlock({ blockType, fromBlockHash, accountAddress, message, data, height, prevHash, toAddress, tokenId = Vite_TokenId, amount, fee }: formatBlock) {
@@ -128,7 +107,7 @@ export default class Tx {
 
         const block = requestType === 'async'
             ? await this.asyncAccountBlock({ blockType: 1, accountAddress, height, prevHash, tokenId, amount, fee })
-            : _getAccountBlock({ blockType: 1, accountAddress, height, prevHash, tokenId, amount, fee });
+            : getAccountBlock({ blockType: 1, accountAddress, height, prevHash, tokenId, amount, fee });
 
         const toAddress = await this._client.contract.getCreateContractToAddress(accountAddress, block.height, block.prevHash);
         const data = getCreateContractData({ abi, hexCode, params, confirmTimes });

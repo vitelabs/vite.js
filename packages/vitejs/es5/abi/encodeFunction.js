@@ -9,21 +9,6 @@ function encodeFunction(jsonFunction, mehtodName) {
     return vitejs_utils_1.blake2bHex(result, null, 32);
 }
 exports.encodeFunction = encodeFunction;
-function jsonFunctionToString(jsonFunction) {
-    var isObj = vitejs_utils_1.isObject(jsonFunction);
-    var isRightStr = /\w+\((\w\,\w)*|(\w*)\)/g;
-    if (!isObj && !isRightStr.test(jsonFunction)) {
-        throw new Error("[Error] Illegal jsonFunction. " + JSON.stringify(jsonFunction));
-    }
-    if (isRightStr.test(jsonFunction)) {
-        return jsonFunction;
-    }
-    if (jsonFunction.name && isRightStr.test(jsonFunction.name)) {
-        return jsonFunction.name;
-    }
-    var types = inputsType_1.getTypes(jsonFunction);
-    return jsonFunction.name + "(" + types.join(',') + ")";
-}
 function getFunction(jsonFunction, mehtodName) {
     if (!vitejs_utils_1.isArray(jsonFunction) && vitejs_utils_1.isObject(jsonFunction)) {
         return jsonFunction;
@@ -41,3 +26,18 @@ function getFunction(jsonFunction, mehtodName) {
     }
 }
 exports.getFunction = getFunction;
+function jsonFunctionToString(jsonFunction) {
+    var isObj = vitejs_utils_1.isObject(jsonFunction);
+    var isRightStr = /\w+\((\w\,\w)*|(\w*)\)/g;
+    if (!isObj && !isRightStr.test(jsonFunction)) {
+        throw new Error("[Error] Illegal jsonFunction. " + JSON.stringify(jsonFunction));
+    }
+    if (isRightStr.test(jsonFunction)) {
+        return jsonFunction;
+    }
+    if (jsonFunction.name && isRightStr.test(jsonFunction.name)) {
+        return jsonFunction.name;
+    }
+    var types = inputsType_1.getTypes(jsonFunction);
+    return jsonFunction.name + "(" + types.join(',') + ")";
+}

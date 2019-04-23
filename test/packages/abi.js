@@ -1,6 +1,6 @@
 const assert = require('assert');
 
-import * as abi from '../src/abi/index';
+import * as abi from '../../src/abi/index';
 
 describe('encodeParameter', function () {
     it('uint256', function () {
@@ -739,7 +739,9 @@ describe('encodeFunctionCall', function () {
     });
 });
 
-it('encode2decode', function () {
-    const result = abi.encodeParameter('string', '15');
-    assert.equal('15', abi.decodeParameter('string', result));
+describe('encode2decode', function () {
+    it('case 1', function () {
+        const result = abi.encodeParameter('string', '15');
+        assert.equal('15', abi.decodeParameter('string', result));
+    });
 });
