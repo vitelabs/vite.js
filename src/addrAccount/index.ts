@@ -4,7 +4,7 @@ import { Snapshot_Gid } from '~@vite/vitejs-constant';
 
 import { Address } from '../type';
 
-export default class AddrAccount {
+class AddrAccountClass {
     address: Address
     realAddress: string
     _client: client
@@ -93,17 +93,20 @@ export default class AddrAccount {
         return this._client.mintage.getTokenInfoListByOwner(this.address);
     }
 
-
     private _setMethodBlock() {
         for (const key in this._client.builtinTxBlock) {
             if (key === '_client') {
                 continue;
             }
 
-            this.getBlock[key] = (block, requestType) => {
+            this.getBlock[key] = (block, requestType?) => {
+                block = block || {};
                 block.accountAddress = this.address;
                 return this._client.builtinTxBlock[key](block, requestType);
             };
         }
     }
 }
+
+export const addrAccount = AddrAccountClass;
+export default AddrAccountClass;

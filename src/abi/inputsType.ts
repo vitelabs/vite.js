@@ -1,6 +1,6 @@
 import { isArray, isObject } from '~@vite/vitejs-utils';
 
-const ADDR_SIZE = 20;
+const ADDR_SIZE = 21;
 const getNum = new RegExp(/(\d+)/g);
 const typePre = [ 'uint', 'int', 'address', 'bool', 'bytes', 'string', 'tokenId', 'gid' ];
 

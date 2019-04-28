@@ -7,7 +7,7 @@ import { checkParams } from '~@vite/vitejs-utils';
 import { Address, AddrObj, Hex, LangList } from '../type';
 
 
-class Wallet {
+class HdAccountClass {
     addrList: Array<AddrObj>
     lang: LangList
     pwd: string
@@ -15,16 +15,16 @@ class Wallet {
     addrNum: number
     addrStartInx: number
     entropy: string
-    addrTotalNum: number
+    maxAddrNum: number
     id: Hex
     activeAccountList: Array<Account>
     _client: client
 
     constructor({ client, mnemonic, bits = 256, addrNum = 1, lang = LangList.english, pwd = '' }, {
-        addrTotalNum = 10,
+        maxAddrNum = 10,
         addrStartInx = 0
     } = {
-        addrTotalNum: 10,
+        maxAddrNum: 10,
         addrStartInx: 0
     }) {
         const err = checkParams({ mnemonic, client }, ['client'], [{
@@ -37,9 +37,9 @@ class Wallet {
 
         this._client = client;
 
-        this.addrTotalNum = addrTotalNum;
+        this.maxAddrNum = maxAddrNum;
         let _addrNum = Number(addrNum) && Number(addrNum) > 0 ? Number(addrNum) : 1;
-        _addrNum = _addrNum > addrTotalNum ? addrTotalNum : _addrNum;
+        _addrNum = _addrNum > maxAddrNum ? maxAddrNum : _addrNum;
         this.addrNum = _addrNum;
 
         this.lang = lang || LangList.english;
@@ -62,11 +62,11 @@ class Wallet {
 
     activateAccount({
         address,
-        index = this.addrStartInx
+        index = 0
     }: {
         address?: Address;
         index?: number;
-    } = { index: this.addrStartInx }, {
+    } = { index: 0 }, {
         intervals = 2000,
         duration = 5 * 60 * 1000,
         autoPow = false,
@@ -114,7 +114,7 @@ class Wallet {
 
     getAccount({
         address,
-        index = this.addrStartInx,
+        index = 0,
         autoPow = false,
         usePledgeQuota = true
     }: {
@@ -123,7 +123,7 @@ class Wallet {
         autoPow?: boolean;
         usePledgeQuota? : boolean;
     } = {
-        index: this.addrStartInx,
+        index: 0,
         autoPow: false,
         usePledgeQuota: true
     }) {
@@ -150,7 +150,7 @@ class Wallet {
 
     addAddr() {
         const index = this.addrList.length;
-        if (index >= this.addrTotalNum) {
+        if (index >= this.maxAddrNum) {
             return null;
         }
 
@@ -162,7 +162,7 @@ class Wallet {
         return addrObj;
     }
 
-    private validAddrParams({ address, index = this.addrStartInx }: { address?: Address; index?: number }) {
+    private validAddrParams({ address, index = 0 }: { address?: Address; index?: number }) {
         if (!address && !index && index !== 0) {
             throw new Error(`${ paramsMissing.message } Address or index.`);
         }
@@ -193,4 +193,5 @@ class Wallet {
     }
 }
 
-export default Wallet;
+export const hdAccount = HdAccountClass;
+export default HdAccountClass;

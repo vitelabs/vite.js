@@ -26,19 +26,19 @@ TestFunc().then(() => {
 
 
 async function TestFunc() {
-    // await GetViteFromWorld(myAccount.address);
+    await GetViteFromWorld('vite_553462bca137bac29f440e9af4ab2e2c1bb82493e41d2bc8b2');
 
     console.log('Step 0 CheckHeight. \n');
     await CheckHeight();
 
-    console.log('Step 1 CheckMyBalance. \n');
-    await CheckMyBalance();
+    // console.log('Step 1 CheckMyBalance. \n');
+    // await CheckMyBalance();
 
     console.log('Step 3 ReceiveTx. \n');
     await ReceiveTx();
 
-    console.log('Step 2 SendTxToMyself. \n');
-    await SendTxToMyself();
+    // console.log('Step 2 SendTxToMyself. \n');
+    // await SendTxToMyself();
 
     // console.log('Step 4 SBPreg. \n');
     // await SBPreg();
@@ -66,6 +66,12 @@ async function TestFunc() {
 
     // console.log('Step 12 callOffChainContract. \n');
     // await callOffChainContract();
+
+    console.log('Step 13 getSBPList. \n');
+    await getSBPList();
+
+    console.log('Step 13 getSBPList. \n');
+    await getVoteList();
 
     console.log('Last One CheckMyTxList. \n');
     await CheckMyTxList();
@@ -124,18 +130,18 @@ async function checkQuota() {
     const quotaResult = await myAccount.getPledgeQuota();
     console.log('[LOG] getPledgeQuota', quotaResult, '\n');
 
-    // if (+quotaResult.utps) {
-    //     return quotaResult;
-    // }
+    if (+quotaResult.utps) {
+        return quotaResult;
+    }
 
-    // const result = await myAccount.getQuota({
-    //     toAddress: myAccount.address,
-    //     tokenId: Vite_TokenId,
-    //     amount: '10000000000000000000000'
-    // });
+    const result = await myAccount.getQuota({
+        toAddress: myAccount.address,
+        tokenId: Vite_TokenId,
+        amount: '10000000000000000000000'
+    });
 
-    // console.log('[LOG] getQuota', result, '\n');
-    // return result;
+    console.log('[LOG] getQuota', result, '\n');
+    return result;
 }
 
 async function revokeVoting() {
@@ -149,6 +155,13 @@ async function voting() {
     const result = await myAccount.voting({ nodeName: 'CS_TEST_NODE' });
 
     console.log('[LOG] voting', result, '\n');
+    return result;
+}
+
+async function getVoteList() {
+    const result = await myAccount.getVoteInfo();
+
+    console.log('[LOG] getVoteList', result, '\n');
     return result;
 }
 
@@ -166,6 +179,13 @@ async function updateReg() {
     });
 
     console.log('[LOG] updateReg', result, '\n');
+    return result;
+}
+
+async function getSBPList() {
+    const result = await myAccount.getRegistrationList();
+
+    console.log('[LOG] getSBPList', result, '\n');
     return result;
 }
 

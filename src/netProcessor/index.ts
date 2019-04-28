@@ -4,7 +4,7 @@ import { RPCrequest, RPCresponse, Methods } from '../type';
 import EventEmitter from './eventEmitter';
 
 
-export default class NetProcessor {
+class NetProcessorClass {
     _provider: any
     isConnected: Boolean
     private subscriptionList: Array<EventEmitter>
@@ -203,3 +203,6 @@ export default class NetProcessor {
         });
     }
 }
+
+export const NetProcessor = NetProcessorClass;
+export default NetProcessorClass;

@@ -10,7 +10,7 @@ import { Hex } from '../type';
 const { sign, getPublicKey } = ed25519;
 
 
-class Account extends addrAccount {
+class AccountClass extends addrAccount {
     privateKey: Hex
     publicKey: Hex
     balance
@@ -200,6 +200,8 @@ class Account extends addrAccount {
                 usePledgeQuota
             });
 
+            lifeCycle = 'checkPowDone';
+
             // Don't need PoW
             if (!checkPowResult.difficulty) {
                 return _beforeSendTx(accountBlock);
@@ -211,28 +213,26 @@ class Account extends addrAccount {
         // Step 2: is continue directly
         const _beforePow = async () => {
             // Don't have the function beforePow, continue directly.
-            lifeCycle = 'checkPowDone';
-
             if (!beforePow) {
                 return powFunc();
             }
             return beforePow(accountBlock, checkPowResult, powFunc);
         };
 
-            // Step 3: run PoW
+        // Step 3: run PoW
         const powFunc = async (isReject = false) => {
             if (isReject) {
                 return { lifeCycle, checkPowResult, accountBlock };
             }
 
-            accountBlock = await this._client.getPowRawTx(accountBlock, checkPowResult.difficulty);
+            accountBlock = await this._client.builtinTxBlock.pow(accountBlock, checkPowResult.difficulty);
+
+            lifeCycle = 'powDone';
             return _beforeSendTx(accountBlock);
         };
 
-            // Step 4: is send TX
+        // Step 4: is send TX
         const _beforeSendTx = async accountBlock => {
-            lifeCycle = 'powDone';
-
             // Don't have the function beforeSendTx, break.
             if (!beforeSendTx) {
                 return sendTxFunc();
@@ -240,16 +240,17 @@ class Account extends addrAccount {
             return beforeSendTx(accountBlock, checkPowResult, sendTxFunc);
         };
 
-            // Step 5: send TX
+        // Step 5: send TX
         const sendTxFunc = async (isReject = false) => {
             if (isReject) {
                 return { lifeCycle, checkPowResult, accountBlock };
             }
 
-            const result = await this.sendRawTx(accountBlock);
+            const _accountBlock = await this.sendRawTx(accountBlock);
             return {
                 lifeCycle: 'finish',
-                result
+                accountBlock: _accountBlock,
+                checkPowResult
             };
         };
 
@@ -280,13 +281,13 @@ class Account extends addrAccount {
                 _key = _key[0].toLocaleLowerCase() + _key.slice(1);
             }
 
-            this[_key] = async (params, autoPow?, usePledgeQuota?) => {
-                params.accountAddress = this.address;
-                const block = await this.getBlock[key](params);
-                return this._sendRawTx(block, autoPow, usePledgeQuota);
+            this[_key] = async (block, autoPow?, usePledgeQuota?) => {
+                const accountBlock = await this.getBlock[key](block);
+                return this._sendRawTx(accountBlock, autoPow, usePledgeQuota);
             };
         }
     }
 }
 
-export default Account;
+export const account = AccountClass;
+export default AccountClass;

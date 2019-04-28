@@ -1,8 +1,8 @@
 import { methods as _methods } from '~@vite/vitejs-constant';
 import netProcessor from '~@vite/vitejs-netprocessor';
 
-import { checkParams, blake2bHex } from '~@vite/vitejs-utils';
-import { isValidHexAddr, getAddrFromHexAddr } from '~@vite/vitejs-privtoaddr';
+import { checkParams } from '~@vite/vitejs-utils';
+import { isValidHexAddr } from '~@vite/vitejs-privtoaddr';
 import { getBuiltinTxType, signAccountBlock } from '~@vite/vitejs-accountblock';
 import { validReqAccountBlock, getAbi } from '~@vite/vitejs-accountblock/builtin';
 import { encodeFunctionCall, decodeParameters } from '~@vite/vitejs-abi';
@@ -14,7 +14,7 @@ const { onroad } = _methods;
 const _ledger = _methods.ledger;
 
 
-export default class Client extends netProcessor {
+class ClientClass extends netProcessor {
     builtinTxBlock: TxBlock
 
     wallet: walletFunc
@@ -150,7 +150,7 @@ export default class Client extends netProcessor {
             throw err;
         }
 
-        const powTx = await this.autoGetPowRawTx(accountBlock, usePledgeQuota);
+        const powTx = await this.builtinTxBlock.autoPow(accountBlock, usePledgeQuota);
         return this.sendRawTx(powTx.accountBlock, privateKey);
     }
 
@@ -158,48 +158,13 @@ export default class Client extends netProcessor {
         const _accountBlock = signAccountBlock(accountBlock, privateKey);
 
         try {
-            return await this.tx.sendRawTx(_accountBlock);
+            await this.tx.sendRawTx(_accountBlock);
+            return _accountBlock;
         } catch (err) {
             const _err = err;
             _err.accountBlock = _accountBlock;
             throw _err;
         }
-    }
-
-    async autoGetPowRawTx(accountBlock, usePledgeQuota) {
-        const data = await this.tx.calcPoWDifficulty({
-            selfAddr: accountBlock.accountAddress,
-            prevHash: accountBlock.prevHash,
-            blockType: accountBlock.blockType,
-            toAddr: accountBlock.toAddress,
-            data: accountBlock.data,
-            usePledgeQuota
-        });
-
-        if (!data.difficulty) {
-            return {
-                accountBlock,
-                ...data
-            };
-        }
-
-        const block = await this.getPowRawTx(accountBlock, data.difficulty);
-        return {
-            accountBlock: block,
-            ...data
-        };
-    }
-
-    async getPowRawTx(accountBlock, difficulty) {
-        const realAddr = getAddrFromHexAddr(accountBlock.accountAddress);
-        const rawHashBytes = Buffer.from(realAddr + accountBlock.prevHash, 'hex');
-        const hash = blake2bHex(rawHashBytes, null, 32);
-
-        const nonce = await this.pow.getPowNonce(difficulty, hash);
-
-        accountBlock.nonce = nonce;
-        accountBlock.difficulty = difficulty;
-        return accountBlock;
     }
 
     private _setMethodsName() {
@@ -226,3 +191,6 @@ export default class Client extends netProcessor {
         }
     }
 }
+
+export const client = ClientClass;
+export default ClientClass;

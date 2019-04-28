@@ -200,7 +200,7 @@ export declare type mintageBlock = {
     feeType: string;
     maxSupply: string;
     ownerBurnOnly: string;
-    totalSupply: string;
+    totalSupply: BigInt;
     decimals: string;
     tokenSymbol: string;
     prevHash?: Hex;
