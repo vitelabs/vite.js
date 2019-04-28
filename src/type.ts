@@ -173,6 +173,7 @@ export declare type createContractBlock = {
     abi: string;
     amount: BigInt;
     fee: BigInt;
+    times: number;
     tokenId?: TokenId;
     confirmTimes: number;
     params?: string;

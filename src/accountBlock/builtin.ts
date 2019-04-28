@@ -80,10 +80,11 @@ export function validReqAccountBlock({ blockType, fromBlockHash, accountAddress,
     return null;
 }
 
-export function getCreateContractData({ abi, hexCode, params, confirmTimes = 0 }) {
+export function getCreateContractData({ abi, hexCode, params, confirmTimes = 0, times = 0 }) {
     const jsonInterface = getAbi(abi);
     const _confirmTimes = new BigNumber(confirmTimes).toArray();
-    let data = `${ Delegate_Gid }01${ Buffer.from(_confirmTimes).toString('hex') }${ hexCode }`;
+    const _times = new BigNumber(times).toArray();
+    let data = `${ Delegate_Gid }01${ Buffer.from(_confirmTimes).toString('hex') }${ Buffer.from(_times).toString('hex') }${ hexCode }`;
 
     if (jsonInterface) {
         data += encodeParameters(jsonInterface, params);

@@ -131,7 +131,7 @@ export default class Tx {
         });
     }
 
-    async createContract({ accountAddress, tokenId = Vite_TokenId, amount = '0', fee = '10000000000000000000', hexCode, abi, params, height, prevHash, confirmTimes = 0 }: createContractBlock, requestType = 'async') {
+    async createContract({ accountAddress, tokenId = Vite_TokenId, amount = '0', fee = '10000000000000000000', times = 0, hexCode, abi, params, height, prevHash, confirmTimes = 0 }: createContractBlock, requestType = 'async') {
         const err = checkParams({ hexCode, abi, tokenId, amount, fee, confirmTimes, requestType }, [ 'hexCode', 'abi', 'tokenId', 'amount', 'fee', 'confirmTimes' ], [ {
             name: 'confirmTimes',
             func: _c => _c >= 0 && _c <= 75
@@ -148,7 +148,7 @@ export default class Tx {
             : getAccountBlock({ blockType: 1, accountAddress, height, prevHash, tokenId, amount, fee });
 
         const toAddress = await this._client.contract.getCreateContractToAddress(accountAddress, block.height, block.prevHash);
-        const data = getCreateContractData({ abi, hexCode, params, confirmTimes });
+        const data = getCreateContractData({ abi, hexCode, params, confirmTimes, times });
 
         block.toAddress = toAddress;
         block.data = data;

@@ -28,4 +28,4 @@ describe('NetProcessor Test: src/netProcessor', function () {
 // http
 // ipc
 // ws
-// require('./RPC/newWorld.js');
+require('./RPC/newWorld.js');
