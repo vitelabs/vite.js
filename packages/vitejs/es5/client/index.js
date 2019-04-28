@@ -12,17 +12,6 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -70,15 +59,15 @@ var txBlock_1 = require("./txBlock");
 var type_1 = require("../type");
 var onroad = vitejs_constant_1.methods.onroad;
 var _ledger = vitejs_constant_1.methods.ledger;
-var Client = (function (_super) {
-    __extends(Client, _super);
-    function Client(provider, firstConnect) {
+var ClientClass = (function (_super) {
+    __extends(ClientClass, _super);
+    function ClientClass(provider, firstConnect) {
         var _this = _super.call(this, provider, firstConnect) || this;
         _this.builtinTxBlock = new txBlock_1.default(_this);
         _this._setMethodsName();
         return _this;
     }
-    Client.prototype.setProvider = function (provider, firstConnect, abort) {
+    ClientClass.prototype.setProvider = function (provider, firstConnect, abort) {
         this._setProvider(provider, firstConnect, abort);
         var providerType = this._provider.type || 'http';
         if (providerType.toLowerCase !== 'ipc' || this.wallet) {
@@ -86,7 +75,7 @@ var Client = (function (_super) {
         }
         this._setMethodsName();
     };
-    Client.prototype.getBalance = function (addr) {
+    ClientClass.prototype.getBalance = function (addr) {
         return __awaiter(this, void 0, void 0, function () {
             var err, data;
             return __generator(this, function (_b) {
@@ -119,7 +108,7 @@ var Client = (function (_super) {
             });
         });
     };
-    Client.prototype.getTxList = function (_b) {
+    ClientClass.prototype.getTxList = function (_b) {
         var addr = _b.addr, index = _b.index, _c = _b.pageCount, pageCount = _c === void 0 ? 50 : _c, _d = _b.totalNum, totalNum = _d === void 0 ? null : _d;
         return __awaiter(this, void 0, void 0, function () {
             var err, requests, data, rawList, list;
@@ -168,7 +157,7 @@ var Client = (function (_super) {
             });
         });
     };
-    Client.prototype.callOffChainContract = function (_b) {
+    ClientClass.prototype.callOffChainContract = function (_b) {
         var addr = _b.addr, abi = _b.abi, offChainCode = _b.offChainCode;
         return __awaiter(this, void 0, void 0, function () {
             var jsonInterface, data, result;
@@ -192,7 +181,7 @@ var Client = (function (_super) {
             });
         });
     };
-    Client.prototype.sendAutoPowRawTx = function (_b) {
+    ClientClass.prototype.sendAutoPowRawTx = function (_b) {
         var accountBlock = _b.accountBlock, privateKey = _b.privateKey, _c = _b.usePledgeQuota, usePledgeQuota = _c === void 0 ? true : _c;
         return __awaiter(this, void 0, void 0, function () {
             var err, powTx;
@@ -206,7 +195,7 @@ var Client = (function (_super) {
                         if (err) {
                             throw err;
                         }
-                        return [4, this.autoGetPowRawTx(accountBlock, usePledgeQuota)];
+                        return [4, this.builtinTxBlock.autoPow(accountBlock, usePledgeQuota)];
                     case 1:
                         powTx = _d.sent();
                         return [2, this.sendRawTx(powTx.accountBlock, privateKey)];
@@ -214,7 +203,7 @@ var Client = (function (_super) {
             });
         });
     };
-    Client.prototype.sendRawTx = function (accountBlock, privateKey) {
+    ClientClass.prototype.sendRawTx = function (accountBlock, privateKey) {
         return __awaiter(this, void 0, void 0, function () {
             var _accountBlock, err_1, _err;
             return __generator(this, function (_b) {
@@ -225,7 +214,9 @@ var Client = (function (_super) {
                     case 1:
                         _b.trys.push([1, 3, , 4]);
                         return [4, this.tx.sendRawTx(_accountBlock)];
-                    case 2: return [2, _b.sent()];
+                    case 2:
+                        _b.sent();
+                        return [2, _accountBlock];
                     case 3:
                         err_1 = _b.sent();
                         _err = err_1;
@@ -236,52 +227,7 @@ var Client = (function (_super) {
             });
         });
     };
-    Client.prototype.autoGetPowRawTx = function (accountBlock, usePledgeQuota) {
-        return __awaiter(this, void 0, void 0, function () {
-            var data, block;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
-                    case 0: return [4, this.tx.calcPoWDifficulty({
-                            selfAddr: accountBlock.accountAddress,
-                            prevHash: accountBlock.prevHash,
-                            blockType: accountBlock.blockType,
-                            toAddr: accountBlock.toAddress,
-                            data: accountBlock.data,
-                            usePledgeQuota: usePledgeQuota
-                        })];
-                    case 1:
-                        data = _b.sent();
-                        if (!data.difficulty) {
-                            return [2, __assign({ accountBlock: accountBlock }, data)];
-                        }
-                        return [4, this.getPowRawTx(accountBlock, data.difficulty)];
-                    case 2:
-                        block = _b.sent();
-                        return [2, __assign({ accountBlock: block }, data)];
-                }
-            });
-        });
-    };
-    Client.prototype.getPowRawTx = function (accountBlock, difficulty) {
-        return __awaiter(this, void 0, void 0, function () {
-            var realAddr, rawHashBytes, hash, nonce;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
-                    case 0:
-                        realAddr = vitejs_privtoaddr_1.getAddrFromHexAddr(accountBlock.accountAddress);
-                        rawHashBytes = Buffer.from(realAddr + accountBlock.prevHash, 'hex');
-                        hash = vitejs_utils_1.blake2bHex(rawHashBytes, null, 32);
-                        return [4, this.pow.getPowNonce(difficulty, hash)];
-                    case 1:
-                        nonce = _b.sent();
-                        accountBlock.nonce = nonce;
-                        accountBlock.difficulty = difficulty;
-                        return [2, accountBlock];
-                }
-            });
-        });
-    };
-    Client.prototype._setMethodsName = function () {
+    ClientClass.prototype._setMethodsName = function () {
         var _this = this;
         var providerType = (this._provider.type || 'http').toLowerCase();
         for (var namespace in vitejs_constant_1.methods) {
@@ -311,6 +257,7 @@ var Client = (function (_super) {
             }
         }
     };
-    return Client;
+    return ClientClass;
 }(vitejs_netprocessor_1.default));
-exports.default = Client;
+exports.client = ClientClass;
+exports.default = ClientClass;

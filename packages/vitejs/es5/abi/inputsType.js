@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var vitejs_utils_1 = require("./../utils");
-var ADDR_SIZE = 20;
+var ADDR_SIZE = 21;
 var getNum = new RegExp(/(\d+)/g);
 var typePre = ['uint', 'int', 'address', 'bool', 'bytes', 'string', 'tokenId', 'gid'];
 function formatType(typeStr) {

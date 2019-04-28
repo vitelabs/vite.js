@@ -37,22 +37,22 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var vitejs_error_1 = require("./../error");
 var eventEmitter_1 = require("./eventEmitter");
-var NetProcessor = (function () {
-    function NetProcessor(provider, firstConnect) {
+var NetProcessorClass = (function () {
+    function NetProcessorClass(provider, firstConnect) {
         this._provider = provider;
         this.isConnected = false;
         this.connectedOnce(firstConnect);
         this.requestList = [];
         this.subscriptionList = [];
     }
-    NetProcessor.prototype._setProvider = function (provider, firstConnect, abort) {
+    NetProcessorClass.prototype._setProvider = function (provider, firstConnect, abort) {
         abort && this._provider.abort(abort);
         this.clearSubscriptions();
         this._provider = provider;
         this.isConnected = false;
         this.connectedOnce(firstConnect);
     };
-    NetProcessor.prototype.unSubscribe = function (event) {
+    NetProcessorClass.prototype.unSubscribe = function (event) {
         var i;
         for (i = 0; i < this.subscriptionList.length; i++) {
             if (this.subscriptionList[i] === event) {
@@ -68,14 +68,14 @@ var NetProcessor = (function () {
             this._provider.unSubscribe && this._provider.unSubscribe();
         }
     };
-    NetProcessor.prototype.clearSubscriptions = function () {
+    NetProcessorClass.prototype.clearSubscriptions = function () {
         this.subscriptionList.forEach(function (s) {
             s.stopLoop();
         });
         this.subscriptionList = [];
         this._provider.unSubscribe && this._provider.unSubscribe();
     };
-    NetProcessor.prototype.request = function (methods) {
+    NetProcessorClass.prototype.request = function (methods) {
         var args = [];
         for (var _i = 1; _i < arguments.length; _i++) {
             args[_i - 1] = arguments[_i];
@@ -99,7 +99,7 @@ var NetProcessor = (function () {
             });
         });
     };
-    NetProcessor.prototype.notification = function (methods) {
+    NetProcessorClass.prototype.notification = function (methods) {
         var args = [];
         for (var _i = 1; _i < arguments.length; _i++) {
             args[_i - 1] = arguments[_i];
@@ -113,7 +113,7 @@ var NetProcessor = (function () {
             });
         });
     };
-    NetProcessor.prototype.batch = function (reqs) {
+    NetProcessorClass.prototype.batch = function (reqs) {
         return __awaiter(this, void 0, void 0, function () {
             var reps;
             return __generator(this, function (_a) {
@@ -133,7 +133,7 @@ var NetProcessor = (function () {
             });
         });
     };
-    NetProcessor.prototype.subscribe = function (methodName) {
+    NetProcessorClass.prototype.subscribe = function (methodName) {
         var args = [];
         for (var _i = 1; _i < arguments.length; _i++) {
             args[_i - 1] = arguments[_i];
@@ -176,7 +176,7 @@ var NetProcessor = (function () {
             });
         });
     };
-    NetProcessor.prototype._offReq = function (_q) {
+    NetProcessorClass.prototype._offReq = function (_q) {
         var i;
         for (i = 0; i < this.requestList.length; i++) {
             if (this.requestList[i] === _q) {
@@ -188,7 +188,7 @@ var NetProcessor = (function () {
         }
         this.requestList.splice(i, 1);
     };
-    NetProcessor.prototype._onReq = function (type, methods) {
+    NetProcessorClass.prototype._onReq = function (type, methods) {
         var _this = this;
         var args = [];
         for (var _i = 2; _i < arguments.length; _i++) {
@@ -213,7 +213,7 @@ var NetProcessor = (function () {
             }, _this._provider._timeout || 30000);
         });
     };
-    NetProcessor.prototype.subscribeCallback = function (jsonEvent) {
+    NetProcessorClass.prototype.subscribeCallback = function (jsonEvent) {
         if (!jsonEvent) {
             return;
         }
@@ -232,7 +232,7 @@ var NetProcessor = (function () {
             s.emit(result);
         });
     };
-    NetProcessor.prototype.connectedOnce = function (cb) {
+    NetProcessorClass.prototype.connectedOnce = function (cb) {
         var _this = this;
         var connectedCB = function () {
             _this.isConnected = true;
@@ -250,6 +250,7 @@ var NetProcessor = (function () {
             _this._provider.remove('connect');
         });
     };
-    return NetProcessor;
+    return NetProcessorClass;
 }());
-exports.default = NetProcessor;
+exports.NetProcessor = NetProcessorClass;
+exports.default = NetProcessorClass;

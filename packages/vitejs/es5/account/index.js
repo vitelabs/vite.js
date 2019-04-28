@@ -54,9 +54,9 @@ var vitejs_utils_1 = require("./../utils");
 var vitejs_addraccount_1 = require("./../addraccount");
 var vitejs_accountblock_1 = require("./../accountblock");
 var sign = vitejs_utils_1.ed25519.sign, getPublicKey = vitejs_utils_1.ed25519.getPublicKey;
-var Account = (function (_super) {
-    __extends(Account, _super);
-    function Account(_b, _c) {
+var AccountClass = (function (_super) {
+    __extends(AccountClass, _super);
+    function AccountClass(_b, _c) {
         var privateKey = _b.privateKey, client = _b.client;
         var _d = _c === void 0 ? { autoPow: false, usePledgeQuota: true } : _c, _e = _d.autoPow, autoPow = _e === void 0 ? false : _e, _f = _d.usePledgeQuota, usePledgeQuota = _f === void 0 ? true : _f;
         var _this = this;
@@ -75,21 +75,21 @@ var Account = (function (_super) {
         _this._setTxMethod();
         return _this;
     }
-    Account.prototype.getPublicKey = function () {
+    AccountClass.prototype.getPublicKey = function () {
         if (this.publicKey) {
             return Buffer.from(this.publicKey, 'hex');
         }
         var privKey = Buffer.from(this.privateKey, 'hex');
         return getPublicKey(privKey);
     };
-    Account.prototype.sign = function (hexStr) {
+    AccountClass.prototype.sign = function (hexStr) {
         var privKey = Buffer.from(this.privateKey, 'hex');
         return sign(hexStr, privKey);
     };
-    Account.prototype.signAccountBlock = function (accountBlock) {
+    AccountClass.prototype.signAccountBlock = function (accountBlock) {
         return vitejs_accountblock_1.signAccountBlock(accountBlock, this.privateKey);
     };
-    Account.prototype.activate = function (intervals, autoPow, usePledgeQuota) {
+    AccountClass.prototype.activate = function (intervals, autoPow, usePledgeQuota) {
         var _this = this;
         if (intervals === void 0) { intervals = 2000; }
         if (!this._lock) {
@@ -123,10 +123,10 @@ var Account = (function (_super) {
         };
         loop();
     };
-    Account.prototype.freeze = function () {
+    AccountClass.prototype.freeze = function () {
         this._lock = true;
     };
-    Account.prototype.autoReceiveTx = function (intervals, autoPow, usePledgeQuota) {
+    AccountClass.prototype.autoReceiveTx = function (intervals, autoPow, usePledgeQuota) {
         var _this = this;
         if (intervals === void 0) { intervals = 2000; }
         if (this._autoReceive) {
@@ -170,10 +170,10 @@ var Account = (function (_super) {
         };
         loop();
     };
-    Account.prototype.stopAutoReceiveTx = function () {
+    AccountClass.prototype.stopAutoReceiveTx = function () {
         this._autoReceive = false;
     };
-    Account.prototype.sendRawTx = function (accountBlock) {
+    AccountClass.prototype.sendRawTx = function (accountBlock) {
         var _this = this;
         vitejs_utils_1.checkParams({ accountBlock: accountBlock }, ['accountBlock'], [{
                 name: 'accountBlock',
@@ -183,7 +183,7 @@ var Account = (function (_super) {
         accountBlock.accountAddress = this.address;
         return this._client.sendRawTx(accountBlock, this.privateKey);
     };
-    Account.prototype.sendAutoPowRawTx = function (accountBlock, usePledgeQuota) {
+    AccountClass.prototype.sendAutoPowRawTx = function (accountBlock, usePledgeQuota) {
         var _usePledgeQuota = usePledgeQuota === true || usePledgeQuota === false ? usePledgeQuota : !!this.usePledgeQuota;
         return this._client.sendAutoPowRawTx({
             accountBlock: accountBlock,
@@ -191,7 +191,7 @@ var Account = (function (_super) {
             usePledgeQuota: _usePledgeQuota
         });
     };
-    Account.prototype.sendPowTx = function (_b) {
+    AccountClass.prototype.sendPowTx = function (_b) {
         var methodName = _b.methodName, params = _b.params, beforeCheckPow = _b.beforeCheckPow, beforePow = _b.beforePow, beforeSendTx = _b.beforeSendTx;
         return __awaiter(this, void 0, void 0, function () {
             var _c, lifeCycle, checkPowResult, accountBlock, checkFunc, _beforePow, powFunc, _beforeSendTx, sendTxFunc, result;
@@ -218,6 +218,7 @@ var Account = (function (_super) {
                                             })];
                                         case 1:
                                             checkPowResult = _b.sent();
+                                            lifeCycle = 'checkPowDone';
                                             if (!checkPowResult.difficulty) {
                                                 return [2, _beforeSendTx(accountBlock)];
                                             }
@@ -228,7 +229,6 @@ var Account = (function (_super) {
                         };
                         _beforePow = function () { return __awaiter(_this, void 0, void 0, function () {
                             return __generator(this, function (_b) {
-                                lifeCycle = 'checkPowDone';
                                 if (!beforePow) {
                                     return [2, powFunc()];
                                 }
@@ -244,9 +244,10 @@ var Account = (function (_super) {
                                             if (isReject) {
                                                 return [2, { lifeCycle: lifeCycle, checkPowResult: checkPowResult, accountBlock: accountBlock }];
                                             }
-                                            return [4, this._client.getPowRawTx(accountBlock, checkPowResult.difficulty)];
+                                            return [4, this._client.builtinTxBlock.pow(accountBlock, checkPowResult.difficulty)];
                                         case 1:
                                             accountBlock = _b.sent();
+                                            lifeCycle = 'powDone';
                                             return [2, _beforeSendTx(accountBlock)];
                                     }
                                 });
@@ -254,7 +255,6 @@ var Account = (function (_super) {
                         };
                         _beforeSendTx = function (accountBlock) { return __awaiter(_this, void 0, void 0, function () {
                             return __generator(this, function (_b) {
-                                lifeCycle = 'powDone';
                                 if (!beforeSendTx) {
                                     return [2, sendTxFunc()];
                                 }
@@ -264,7 +264,7 @@ var Account = (function (_super) {
                         sendTxFunc = function (isReject) {
                             if (isReject === void 0) { isReject = false; }
                             return __awaiter(_this, void 0, void 0, function () {
-                                var result;
+                                var _accountBlock;
                                 return __generator(this, function (_b) {
                                     switch (_b.label) {
                                         case 0:
@@ -273,10 +273,11 @@ var Account = (function (_super) {
                                             }
                                             return [4, this.sendRawTx(accountBlock)];
                                         case 1:
-                                            result = _b.sent();
+                                            _accountBlock = _b.sent();
                                             return [2, {
                                                     lifeCycle: 'finish',
-                                                    result: result
+                                                    accountBlock: _accountBlock,
+                                                    checkPowResult: checkPowResult
                                                 }];
                                     }
                                 });
@@ -289,14 +290,14 @@ var Account = (function (_super) {
             });
         });
     };
-    Account.prototype._sendRawTx = function (accountBlock, autoPow, usePledgeQuota) {
+    AccountClass.prototype._sendRawTx = function (accountBlock, autoPow, usePledgeQuota) {
         var _autoPow = autoPow === true || autoPow === false ? autoPow : !!this.autoPow;
         if (!_autoPow) {
             return this.sendRawTx(accountBlock);
         }
         return this.sendAutoPowRawTx(accountBlock, usePledgeQuota);
     };
-    Account.prototype._setTxMethod = function () {
+    AccountClass.prototype._setTxMethod = function () {
         var _this = this;
         var _loop_1 = function (key) {
             if (key === '_client' || key.endsWith('Block')) {
@@ -307,16 +308,14 @@ var Account = (function (_super) {
                 _key = _key.replace('async', '');
                 _key = _key[0].toLocaleLowerCase() + _key.slice(1);
             }
-            this_1[_key] = function (params, autoPow, usePledgeQuota) { return __awaiter(_this, void 0, void 0, function () {
-                var block;
+            this_1[_key] = function (block, autoPow, usePledgeQuota) { return __awaiter(_this, void 0, void 0, function () {
+                var accountBlock;
                 return __generator(this, function (_b) {
                     switch (_b.label) {
-                        case 0:
-                            params.accountAddress = this.address;
-                            return [4, this.getBlock[key](params)];
+                        case 0: return [4, this.getBlock[key](block)];
                         case 1:
-                            block = _b.sent();
-                            return [2, this._sendRawTx(block, autoPow, usePledgeQuota)];
+                            accountBlock = _b.sent();
+                            return [2, this._sendRawTx(accountBlock, autoPow, usePledgeQuota)];
                     }
                 });
             }); };
@@ -326,6 +325,7 @@ var Account = (function (_super) {
             _loop_1(key);
         }
     };
-    return Account;
+    return AccountClass;
 }(vitejs_addraccount_1.default));
-exports.default = Account;
+exports.account = AccountClass;
+exports.default = AccountClass;

@@ -2,8 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var privToAddr = require("./../privtoaddr");
 var vitejs_constant_1 = require("./../constant");
-var AddrAccount = (function () {
-    function AddrAccount(_a) {
+var AddrAccountClass = (function () {
+    function AddrAccountClass(_a) {
         var _b = _a === void 0 ? { address: null, client: null } : _a, address = _b.address, client = _b.client;
         if (!privToAddr.isValidHexAddr(address)) {
             throw new Error("Illegal address " + address + ".");
@@ -14,7 +14,7 @@ var AddrAccount = (function () {
         this.getBlock = {};
         this._setMethodBlock();
     }
-    AddrAccount.prototype.callOffChainContract = function (_a) {
+    AddrAccountClass.prototype.callOffChainContract = function (_a) {
         var abi = _a.abi, offChainCode = _a.offChainCode;
         return this._client.callOffChainContract({
             addr: this.address,
@@ -22,64 +22,65 @@ var AddrAccount = (function () {
             offChainCode: offChainCode
         });
     };
-    AddrAccount.prototype.getBalance = function () {
+    AddrAccountClass.prototype.getBalance = function () {
         return this._client.getBalance(this.address);
     };
-    AddrAccount.prototype.getTxList = function (_a) {
+    AddrAccountClass.prototype.getTxList = function (_a) {
         var index = _a.index, _b = _a.pageCount, pageCount = _b === void 0 ? 50 : _b, _c = _a.totalNum, totalNum = _c === void 0 ? null : _c;
         return this._client.getTxList({ addr: this.address, index: index, pageCount: pageCount, totalNum: totalNum });
     };
-    AddrAccount.prototype.getOnroad = function () {
+    AddrAccountClass.prototype.getOnroad = function () {
         return this._client.onroad.getOnroadInfoByAddress(this.address);
     };
-    AddrAccount.prototype.getOnroadBlocks = function (_a) {
+    AddrAccountClass.prototype.getOnroadBlocks = function (_a) {
         var index = _a.index, _b = _a.pageCount, pageCount = _b === void 0 ? 50 : _b;
         return this._client.onroad.getOnroadBlocksByAddress(this.address, index, pageCount);
     };
-    AddrAccount.prototype.getBlocks = function (_a) {
+    AddrAccountClass.prototype.getBlocks = function (_a) {
         var index = _a.index, _b = _a.pageCount, pageCount = _b === void 0 ? 50 : _b;
         return this._client.ledger.getBlocksByAccAddr(this.address, index, pageCount);
     };
-    AddrAccount.prototype.getAccountBalance = function () {
+    AddrAccountClass.prototype.getAccountBalance = function () {
         return this._client.ledger.getAccountByAccAddr(this.address);
     };
-    AddrAccount.prototype.getLatestBlock = function () {
+    AddrAccountClass.prototype.getLatestBlock = function () {
         return this._client.ledger.getLatestBlock(this.address);
     };
-    AddrAccount.prototype.getBlockByHeight = function (height) {
+    AddrAccountClass.prototype.getBlockByHeight = function (height) {
         return this._client.ledger.getBlockByHeight(this.address, height);
     };
-    AddrAccount.prototype.getBlocksByHash = function (_a) {
+    AddrAccountClass.prototype.getBlocksByHash = function (_a) {
         var hash = _a.hash, num = _a.num;
         return this._client.ledger.getBlocksByHash(this.address, hash, num);
     };
-    AddrAccount.prototype.getBlocksByHashInToken = function (_a) {
+    AddrAccountClass.prototype.getBlocksByHashInToken = function (_a) {
         var hash = _a.hash, tokenId = _a.tokenId, num = _a.num;
         return this._client.ledger.getBlocksByHashInToken(this.address, hash, tokenId, num);
     };
-    AddrAccount.prototype.getPledgeQuota = function () {
+    AddrAccountClass.prototype.getPledgeQuota = function () {
         return this._client.pledge.getPledgeQuota(this.address);
     };
-    AddrAccount.prototype.getPledgeList = function (_a) {
+    AddrAccountClass.prototype.getPledgeList = function (_a) {
         var index = _a.index, pageCount = _a.pageCount;
         return this._client.pledge.getPledgeList(this.address, index, pageCount);
     };
-    AddrAccount.prototype.getRegistrationList = function () {
+    AddrAccountClass.prototype.getRegistrationList = function () {
         return this._client.register.getRegistrationList(vitejs_constant_1.Snapshot_Gid, this.address);
     };
-    AddrAccount.prototype.getVoteInfo = function () {
+    AddrAccountClass.prototype.getVoteInfo = function () {
         return this._client.vote.getVoteInfo(vitejs_constant_1.Snapshot_Gid, this.address);
     };
-    AddrAccount.prototype.getTokenInfoListByOwner = function () {
+    AddrAccountClass.prototype.getTokenInfoListByOwner = function () {
         return this._client.mintage.getTokenInfoListByOwner(this.address);
     };
-    AddrAccount.prototype._setMethodBlock = function () {
+    AddrAccountClass.prototype._setMethodBlock = function () {
         var _this = this;
         var _loop_1 = function (key) {
             if (key === '_client') {
                 return "continue";
             }
             this_1.getBlock[key] = function (block, requestType) {
+                block = block || {};
                 block.accountAddress = _this.address;
                 return _this._client.builtinTxBlock[key](block, requestType);
             };
@@ -89,6 +90,7 @@ var AddrAccount = (function () {
             _loop_1(key);
         }
     };
-    return AddrAccount;
+    return AddrAccountClass;
 }());
-exports.default = AddrAccount;
+exports.addrAccount = AddrAccountClass;
+exports.default = AddrAccountClass;
