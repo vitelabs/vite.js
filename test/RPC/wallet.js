@@ -1,5 +1,6 @@
 import HTTP_RPC from '../../src/HTTP';
 import Client from '../../src/client/index';
+import Account from '../../src/account/index';
 import HdAccount from '../../src/hdAccount/index';
 import { Vite_TokenId, BuiltinTxType } from '../../src/constant/index';
 import config from '../config';
