@@ -56,9 +56,11 @@ export default class Tx {
             return reject(err);
         }
 
-        const latestBlock = await this._client.request(ledger.getLatestBlock, accountAddress);
-        height = latestBlock && latestBlock.height ? latestBlock.height : '';
-        prevHash = latestBlock && latestBlock.hash ? latestBlock.hash : '';
+        if (!height || !prevHash) {
+            const latestBlock = await this._client.request(ledger.getLatestBlock, accountAddress);
+            height = latestBlock && latestBlock.height ? latestBlock.height : '';
+            prevHash = latestBlock && latestBlock.hash ? latestBlock.hash : '';
+        }
 
         return formatAccountBlock({ blockType, fromBlockHash, accountAddress, message, data, height, prevHash, toAddress, tokenId, amount, fee });
     }
