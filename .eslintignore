@@ -4,4 +4,4 @@
 coverage/*
 dist/*
 packages/*
-test/RPC/newWorld.js
+test/RPC/*
