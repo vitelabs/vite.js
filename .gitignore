@@ -11,3 +11,4 @@ docs
 lib
 static
 lerna-debug.log
+packages/

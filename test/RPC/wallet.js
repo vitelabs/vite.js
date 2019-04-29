@@ -1,12 +1,11 @@
 import HTTP_RPC from '../../src/HTTP';
 import Client from '../../src/client/index';
-import Account from '../../src/account/index';
 import HdAccount from '../../src/hdAccount/index';
 import { Vite_TokenId, BuiltinTxType } from '../../src/constant/index';
 import config from '../config';
+import GetViteFromWorld from './getViteFromWorld';
 
 const provider = new Client(new HTTP_RPC(config.http));
-const Default_Amount = '1000000000000000000000000'; // 1000000 VITE
 
 const myHdAccount = new HdAccount({
     mnemonic: config.myMnemonic,
@@ -24,8 +23,6 @@ TestFunc().then(() => {
 
 
 async function TestFunc() {
-    // await GetViteFromWorld('vite_553462bca137bac29f440e9af4ab2e2c1bb82493e41d2bc8b2');
-
     console.log('Step 0 CheckHeight. \n');
     await CheckHeight();
 
@@ -285,26 +282,5 @@ async function CheckMyTxList() {
     data.list.forEach((ele, i) => {
         console.log(`[LOG] CheckMyTxList builtinTxtype ${ i }: ${ BuiltinTxType[ele.txType] } \n`);
     });
-    return data;
-}
-
-async function GetViteFromWorld(toAddress, amount = Default_Amount) {
-    const worldHdAccount = new HdAccount({
-        mnemonic: config.mnemonic,
-        client: provider
-    }, { addrStartInx: config.addrIndex });
-
-    const worldSecondAccount = new Account({
-        privateKey: worldHdAccount.addrList[0].privKey,
-        client: provider
-    });
-
-    const data = await worldSecondAccount.sendTx({
-        toAddress,
-        amount,
-        tokenId: Vite_TokenId
-    });
-
-    console.log('[LOG] getViteFromWorld', data, '\n');
     return data;
 }
