@@ -33,7 +33,7 @@ export function getMnemonicFromEntropy(entropy: string, lang: LangList = LangLis
     return bip39.entropyToMnemonic(entropy, getWordList(lang));
 }
 
-export function newAddr(bits: number = 256, lang: LangList = LangList.english, pwd: string = ''): {
+export function newAddr(bits: number = 256, lang: LangList = LangList.english, pwd: string = '', isContract?: boolean): {
     addr: AddrObj; entropy: string; mnemonic: string; id: Hex;
 } {
     const err = checkParams({ bits }, ['bits']);
@@ -46,13 +46,13 @@ export function newAddr(bits: number = 256, lang: LangList = LangList.english, p
     const entropy = bip39.mnemonicToEntropy(mnemonic, wordList);
     const seed = bip39.mnemonicToSeedHex(mnemonic, pwd);
     const path = getPath(0);
-    const addr = getAddrFromPath(path, seed);
+    const addr = getAddrFromPath(path, seed, isContract);
     const id = getId(mnemonic, lang);
 
     return { addr, entropy, mnemonic, id };
 }
 
-export function getAddrFromMnemonic(mnemonic, index = 0, lang: LangList = LangList.english, pwd: string = ''): AddrObj {
+export function getAddrFromMnemonic(mnemonic, index = 0, lang: LangList = LangList.english, pwd: string = '', isContract?: boolean): AddrObj {
     const err = checkParams({ mnemonic }, ['mnemonic'], [{
         name: 'mnemonic',
         func: _m => validateMnemonic(_m, lang)
@@ -68,10 +68,10 @@ export function getAddrFromMnemonic(mnemonic, index = 0, lang: LangList = LangLi
 
     const path = getPath(index);
     const seed = bip39.mnemonicToSeedHex(mnemonic, pwd);
-    return getAddrFromPath(path, seed);
+    return getAddrFromPath(path, seed, isContract);
 }
 
-export function getAddrsFromMnemonic(mnemonic, start = 0, num = 10, lang: LangList = LangList.english, pwd: string = ''): AddrObj[] {
+export function getAddrsFromMnemonic(mnemonic, start = 0, num = 10, lang: LangList = LangList.english, pwd: string = '', isContract?: boolean): AddrObj[] {
     const err = checkParams({ mnemonic }, ['mnemonic'], [{
         name: 'mnemonic',
         func: _m => validateMnemonic(_m, lang)
@@ -94,7 +94,7 @@ export function getAddrsFromMnemonic(mnemonic, start = 0, num = 10, lang: LangLi
 
     for (let i = start; i < start + num; i++) {
         const currentPath = getPath(i);
-        const addr = getAddrFromPath(currentPath, seed);
+        const addr = getAddrFromPath(currentPath, seed, isContract);
         addrs.push(addr);
     }
 
@@ -108,11 +108,11 @@ export const getAddrFromHexAddr = _getAddrFromHexAddr;
 export const isValidHexAddr = _isValidHexAddr;
 
 
-function getAddrFromPath(path: string, seed: string): AddrObj {
+function getAddrFromPath(path: string, seed: string, isContract?: boolean): AddrObj {
     const { key } = hd.derivePath(path, seed);
     const { privateKey } = hd.getPublicKey(key);
     const priv = bytesToHex(privateKey);
-    return newHexAddr(priv);
+    return newHexAddr(priv, isContract);
 }
 
 function getPath(index: number): string {
