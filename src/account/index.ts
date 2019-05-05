@@ -59,6 +59,13 @@ class AccountClass extends addrAccount {
     }
 
     signAccountBlock(accountBlock) {
+        checkParams({ accountBlock }, ['accountBlock'], [{
+            name: 'accountBlock',
+            func: _a => !_a.accountAddress || (_a.accountAddress === this.address),
+            msg: 'AccountAddress is wrong.'
+        }]);
+
+        accountBlock.accountAddress = this.address;
         return signAccountBlock(accountBlock, this.privateKey);
     }
 
@@ -156,14 +163,7 @@ class AccountClass extends addrAccount {
     }
 
     sendRawTx(accountBlock) {
-        checkParams({ accountBlock }, ['accountBlock'], [{
-            name: 'accountBlock',
-            func: _a => !_a.accountAddress || (_a.accountAddress === this.address),
-            msg: 'AccountAddress is wrong.'
-        }]);
-
-        accountBlock.accountAddress = this.address;
-        return this._client.sendRawTx(accountBlock, this.privateKey);
+        return this._client.tx.sendRawTx(this.signAccountBlock(accountBlock));
     }
 
     sendAutoPowRawTx(accountBlock, usePledgeQuota?) {
@@ -243,7 +243,11 @@ class AccountClass extends addrAccount {
         // Step 5: send TX
         const sendTxFunc = async (isReject = false) => {
             if (isReject) {
-                return { lifeCycle, checkPowResult, accountBlock };
+                return {
+                    lifeCycle,
+                    checkPowResult,
+                    accountBlock: this.signAccountBlock(accountBlock)
+                };
             }
 
             const _accountBlock = await this.sendRawTx(accountBlock);
