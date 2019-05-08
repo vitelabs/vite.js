@@ -25,6 +25,10 @@ class AddrAccountClass {
         this._setMethodBlock();
     }
 
+    sendAccountBlock(accountBlock) {
+        return this._client.sendRawTx(accountBlock);
+    }
+
     callOffChainContract({ abi, offChainCode }) {
         return this._client.callOffChainContract({
             addr: this.address,

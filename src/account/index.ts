@@ -162,10 +162,6 @@ class AccountClass extends addrAccount {
         this._autoReceive = false;
     }
 
-    sendAccountBlock(accountBlock) {
-        return this._client.sendRawTx(accountBlock);
-    }
-
     sendRawTx(accountBlock) {
         return this._client.sendTx(accountBlock, this.privateKey);
     }
