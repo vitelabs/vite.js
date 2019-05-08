@@ -50,11 +50,11 @@ async function TestFunc() {
     // console.log('Step 8 revokeVoting. \n');
     // await revokeVoting();
 
-    console.log('Step 9 getQuota. \n');
-    await checkQuota();
+    // console.log('Step 9 getQuota. \n');
+    // await checkQuota();
 
-    console.log('Step 10 withdrawalOfQuota. \n');
-    await withdrawalOfQuota();
+    // console.log('Step 10 withdrawalOfQuota. \n');
+    // await withdrawalOfQuota();
 
     // console.log('Step 11 createContract. \n');
     // await createContract();
@@ -221,19 +221,19 @@ async function SendTxToMyself() {
             toAddress: myAccount.address,
             tokenId: Vite_TokenId,
             amount: '100'
-        }]
-        // beforeCheckPow: (accountBlock, next) => {
-        //     console.log('[beforeCheckPow]', accountBlock);
-        //     return next();
-        // },
-        // beforePow: (accountBlock, checkPowResult, next) => {
-        //     console.log('[beforePow]', accountBlock, checkPowResult);
-        //     return next(false);
-        // },
-        // beforeSendTx: (accountBlock, checkPowResult, next) => {
-        //     console.log('[beforeSendTx]', accountBlock, checkPowResult);
-        //     return next(false);
-        // }
+        }],
+        beforeCheckPow: (accountBlock, next) => {
+            console.log('[beforeCheckPow]', accountBlock);
+            return next();
+        },
+        beforePow: (accountBlock, checkPowResult, next) => {
+            console.log('[beforePow]', accountBlock, checkPowResult);
+            return next(false);
+        },
+        beforeSendTx: (accountBlock, checkPowResult, next) => {
+            console.log('[beforeSendTx]', accountBlock, checkPowResult);
+            return next(false);
+        }
     });
 
     console.log('[LOG] SendTxToMyself', result, '\n');
@@ -269,7 +269,7 @@ async function CheckMyBalance() {
 async function CheckMyTxList() {
     const data = await myAccount.getTxList({
         index: 0,
-        pageCount: 1
+        pageCount: 50
     });
 
     // console.log('[LOG] CheckMyTxList', data, '\n');

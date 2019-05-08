@@ -25,6 +25,6 @@ async function GetViteFromWorld(toAddress, amount = Default_Amount) {
     return data;
 }
 
-GetViteFromWorld('vite_553462bca137bac29f440e9af4ab2e2c1bb82493e41d2bc8b2');
+// GetViteFromWorld('vite_553462bca137bac29f440e9af4ab2e2c1bb82493e41d2bc8b2');
 
 export default GetViteFromWorld;

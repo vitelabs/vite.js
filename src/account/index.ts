@@ -162,14 +162,18 @@ class AccountClass extends addrAccount {
         this._autoReceive = false;
     }
 
+    sendAccountBlock(accountBlock) {
+        return this._client.sendRawTx(accountBlock);
+    }
+
     sendRawTx(accountBlock) {
-        return this._client.tx.sendRawTx(this.signAccountBlock(accountBlock));
+        return this._client.sendTx(accountBlock, this.privateKey);
     }
 
     sendAutoPowRawTx(accountBlock, usePledgeQuota?) {
         const _usePledgeQuota = usePledgeQuota === true || usePledgeQuota === false ? usePledgeQuota : !!this.usePledgeQuota;
 
-        return this._client.sendAutoPowRawTx({
+        return this._client.sendAutoPowTx({
             accountBlock,
             privateKey: this.privateKey,
             usePledgeQuota: _usePledgeQuota
