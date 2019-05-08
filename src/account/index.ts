@@ -208,7 +208,7 @@ class AccountClass extends addrAccount {
 
             // Don't need PoW
             if (!checkPowResult.difficulty) {
-                return _beforeSendTx(accountBlock);
+                return _beforeSendTx();
             }
 
             return _beforePow();
@@ -232,11 +232,13 @@ class AccountClass extends addrAccount {
             accountBlock = await this._client.builtinTxBlock.pow(accountBlock, checkPowResult.difficulty);
 
             lifeCycle = 'powDone';
-            return _beforeSendTx(accountBlock);
+            return _beforeSendTx();
         };
 
         // Step 4: is send TX
-        const _beforeSendTx = async accountBlock => {
+        const _beforeSendTx = async () => {
+            accountBlock = this.signAccountBlock(accountBlock);
+
             // Don't have the function beforeSendTx, break.
             if (!beforeSendTx) {
                 return sendTxFunc();
@@ -250,14 +252,14 @@ class AccountClass extends addrAccount {
                 return {
                     lifeCycle,
                     checkPowResult,
-                    accountBlock: this.signAccountBlock(accountBlock)
+                    accountBlock
                 };
             }
 
-            const _accountBlock = await this.sendRawTx(accountBlock);
+            await this.sendAccountBlock(accountBlock);
             return {
                 lifeCycle: 'finish',
-                accountBlock: _accountBlock,
+                accountBlock,
                 checkPowResult
             };
         };
