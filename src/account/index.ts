@@ -231,8 +231,8 @@ class AccountClass extends addrAccount {
             }
 
             accountBlock = await this._client.builtinTxBlock.pow(accountBlock, checkPowResult.difficulty);
-
             lifeCycle = 'powDone';
+
             return _beforeSignTx();
         };
 
@@ -256,6 +256,8 @@ class AccountClass extends addrAccount {
             }
 
             accountBlock = this.signAccountBlock(accountBlock);
+            lifeCycle = 'signDone';
+
             return _beforeSendTx();
         };
 
