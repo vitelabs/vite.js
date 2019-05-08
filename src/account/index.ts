@@ -185,6 +185,7 @@ class AccountClass extends addrAccount {
         params,
         beforeCheckPow,
         beforePow,
+        beforeSignTx,
         beforeSendTx
     }) {
         let lifeCycle = 'start';
@@ -232,13 +233,34 @@ class AccountClass extends addrAccount {
             accountBlock = await this._client.builtinTxBlock.pow(accountBlock, checkPowResult.difficulty);
 
             lifeCycle = 'powDone';
+            return _beforeSignTx();
+        };
+
+        // Step 4: is Sign TX
+        const _beforeSignTx = () => {
+            if (!beforeSignTx) {
+                return signTx();
+            }
+
+            return beforeSignTx(accountBlock, checkPowResult, signTx);
+        };
+
+        // Step 5: sign TX
+        const signTx = (isReject = false) => {
+            if (isReject) {
+                return Promise.resolve({
+                    lifeCycle,
+                    checkPowResult,
+                    accountBlock
+                });
+            }
+
+            accountBlock = this.signAccountBlock(accountBlock);
             return _beforeSendTx();
         };
 
-        // Step 4: is send TX
+        // Step 6: is send TX
         const _beforeSendTx = async () => {
-            accountBlock = this.signAccountBlock(accountBlock);
-
             // Don't have the function beforeSendTx, break.
             if (!beforeSendTx) {
                 return sendTxFunc();
@@ -246,7 +268,7 @@ class AccountClass extends addrAccount {
             return beforeSendTx(accountBlock, checkPowResult, sendTxFunc);
         };
 
-        // Step 5: send TX
+        // Step 7: send TX
         const sendTxFunc = async (isReject = false) => {
             if (isReject) {
                 return {

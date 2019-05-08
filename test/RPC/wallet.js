@@ -230,6 +230,10 @@ async function SendTxToMyself() {
             console.log('[beforePow]', accountBlock, checkPowResult);
             return next(false);
         },
+        beforeSignTx: (accountBlock, checkPowResult, next) => {
+            console.log('[beforeSignTx]', accountBlock, checkPowResult);
+            return next(false);
+        },
         beforeSendTx: (accountBlock, checkPowResult, next) => {
             console.log('[beforeSendTx]', accountBlock, checkPowResult);
             return next(false);
