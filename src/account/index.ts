@@ -205,7 +205,7 @@ class AccountClass extends addrAccount {
 
             // Don't need PoW
             if (!checkPowResult.difficulty) {
-                return _beforeSendTx();
+                return _beforeSignTx();
             }
 
             return _beforePow();

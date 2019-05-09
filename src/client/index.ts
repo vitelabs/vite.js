@@ -141,6 +141,11 @@ class ClientClass extends netProcessor {
         return decodeParameters(jsonInterface.outputs, result);
     }
 
+    async sendTx(accountBlock, privateKey) {
+        const _accountBlock = signAccountBlock(accountBlock, privateKey);
+        return this.sendRawTx(_accountBlock);
+    }
+
     async sendAutoPowTx({ accountBlock, privateKey, usePledgeQuota = true }) {
         const err = checkParams({ accountBlock, privateKey }, [ 'accountBlock', 'privateKey' ], [{
             name: 'accountBlock',
@@ -152,11 +157,6 @@ class ClientClass extends netProcessor {
 
         const powTx = await this.builtinTxBlock.autoPow(accountBlock, usePledgeQuota);
         return this.sendTx(powTx.accountBlock, privateKey);
-    }
-
-    async sendTx(accountBlock, privateKey) {
-        const _accountBlock = signAccountBlock(accountBlock, privateKey);
-        return this.sendRawTx(_accountBlock);
     }
 
     async sendRawTx(accountBlock) {

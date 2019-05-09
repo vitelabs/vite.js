@@ -281,7 +281,9 @@ export enum onroad {
     'getOnroadBlocksByAddress' = 'onroad_getOnroadBlocksByAddress',
     'getOnroadInfoByAddress' = 'onroad_getOnroadInfoByAddress',
     'getOnroadBlocksInBatch' = 'onroad_getOnroadBlocksInBatch',
-    'getOnroadInfoInBatch' = 'onroad_getOnroadInfoInBatch'
+    'getOnroadInfoInBatch' = 'onroad_getOnroadInfoInBatch',
+    'getContractOnRoadTotalNum' = 'onroad_getContractOnRoadTotalNum',
+    'getContractOnRoadFrontBlocks' = 'onroad_getContractOnRoadFrontBlocks'
 }
 
 export enum tx {
@@ -319,7 +321,9 @@ export enum pledge {
     'getPledgeData' = 'pledge_getPledgeData',
     'getCancelPledgeData' = 'pledge_getCancelPledgeData',
     'getPledgeQuota' = 'pledge_getPledgeQuota',
-    'getPledgeList' = 'pledge_getPledgeList'
+    'getPledgeList' = 'pledge_getPledgeList',
+    'getAgentPledgeData' = 'pledge_getAgentPledgeData',
+    'getAgentCancelPledgeData' = 'pledge_getAgentCancelPledgeData'
 }
 
 export enum register {
@@ -328,6 +332,8 @@ export enum register {
     'getRewardData' = 'register_getRewardData',
     'getUpdateRegistrationData' = 'register_getUpdateRegistrationData',
     'getRegistrationList' = 'register_getRegistrationList',
+    'getAvailableReward' = 'register_getAvailableReward',
+    'getRewardByDay' = 'register_getRewardByDay',
     'getCandidateList' = 'register_getCandidateList'
 }
 
