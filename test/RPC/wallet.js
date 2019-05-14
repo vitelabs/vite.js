@@ -29,11 +29,11 @@ async function TestFunc() {
     console.log('Step 1 CheckMyBalance. \n');
     await CheckMyBalance();
 
-    console.log('Step 2 SendTxToMyself. \n');
-    await SendTxToMyself();
+    // console.log('Step 2 SendTxToMyself. \n');
+    // await SendTxToMyself();
 
-    console.log('Step 3 ReceiveTx. \n');
-    await ReceiveTx();
+    // console.log('Step 3 ReceiveTx. \n');
+    // await ReceiveTx();
 
     // console.log('Step 4 SBPreg. \n');
     // await SBPreg();

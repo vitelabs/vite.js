@@ -20,7 +20,8 @@ export function formatAccountBlock({ blockType, fromBlockHash, accountAddress, m
     };
 
     if (message) {
-        const msgBase64 = Buffer.from(message).toString('base64');
+        const msgHex = `0002${ Buffer.from(message).toString('hex') }`;
+        const msgBase64 = Buffer.from(msgHex, 'hex').toString('base64');
         _accountBlock.data = msgBase64;
     } else {
         data && (_accountBlock.data = data);
@@ -80,7 +81,7 @@ export function validReqAccountBlock({ blockType, fromBlockHash, accountAddress,
     return null;
 }
 
-export function getCreateContractData({ abi, hexCode, params, confirmTimes = 0, times = 0 }) {
+export function getCreateContractData({ abi, hexCode, params, confirmTimes = 0, times = 10 }) {
     const jsonInterface = getAbi(abi);
     const _confirmTimes = new BigNumber(confirmTimes).toArray();
     const _times = new BigNumber(times).toArray();

@@ -165,19 +165,19 @@ describe('getBuiltinTxType', function () {
     // MintageTransferOwner
     // MintageChangeTokenType
     // MintageCancelPledge
-    it('DexFundNewOrder', function () {
-        const DexFundNewOrder = {
-            blockType: 2,
-            data: 'QnapywAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMJpWDkEPPlm83AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAVklURSBUT0tFTgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABTl1L8Zdh6mfYIzQeegkraivGtApAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACMTUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=',
-            toAddress: 'vite_000000000000000000000000000000000000000617d47459a8'
-        };
-        assert.equal(getBuiltinTxType(DexFundNewOrder.toAddress, DexFundNewOrder.data, DexFundNewOrder.blockType), 'DexFundNewOrder');
-    });
+    // it('DexFundNewOrder', function () {
+    //     const DexFundNewOrder = {
+    //         blockType: 2,
+    //         data: 'QnapywAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMJpWDkEPPlm83AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAVklURSBUT0tFTgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABTl1L8Zdh6mfYIzQeegkraivGtApAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACMTUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=',
+    //         toAddress: 'vite_0000000000000000000000000000000000000006e82b8ba657'
+    //     };
+    //     assert.equal(getBuiltinTxType(DexFundNewOrder.toAddress, DexFundNewOrder.data, DexFundNewOrder.blockType), 'DexFundNewOrder');
+    // });
     it('DexTradeCancelOrder', function () {
         const DexTradeCancelOrder = {
             blockType: 2,
             data: '8tmWHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMJpWDkEPPlm83AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAVklURSBUT0tFTgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABTjcaJPGE2zj/epXeg2UNZEzi7HBAAAAAAAAAAAAAAAAA==',
-            toAddress: 'vite_000000000000000000000000000000000000000768ef0e6238'
+            toAddress: 'vite_00000000000000000000000000000000000000079710f19dc7'
         };
         assert.equal(getBuiltinTxType(DexTradeCancelOrder.toAddress, DexTradeCancelOrder.data, DexTradeCancelOrder.blockType), 'DexTradeCancelOrder');
     });
@@ -185,7 +185,7 @@ describe('getBuiltinTxType', function () {
         const DexFundUserWithdraw = {
             blockType: 2,
             data: 'zDKRaQAAAAAAAAAAAAAAAAAAAAAAAAAAAABWSVRFIFRPS0VOAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAfOZsUOKEAAA=',
-            toAddress: 'vite_000000000000000000000000000000000000000617d47459a8'
+            toAddress: 'vite_0000000000000000000000000000000000000006e82b8ba657'
         };
         assert.equal(getBuiltinTxType(DexFundUserWithdraw.toAddress, DexFundUserWithdraw.data, DexFundUserWithdraw.blockType), 'DexFundUserWithdraw');
     });
@@ -193,7 +193,7 @@ describe('getBuiltinTxType', function () {
         const DexFundUserDeposit = {
             blockType: 2,
             data: 'nftn/w==',
-            toAddress: 'vite_000000000000000000000000000000000000000617d47459a8'
+            toAddress: 'vite_0000000000000000000000000000000000000006e82b8ba657'
         };
         assert.equal(getBuiltinTxType(DexFundUserDeposit.toAddress, DexFundUserDeposit.data, DexFundUserDeposit.blockType), 'DexFundUserDeposit');
     });
@@ -201,7 +201,7 @@ describe('getBuiltinTxType', function () {
         const DexFundNewMarket = {
             blockType: 2,
             data: 'Kuf4wQAAAAAAAAAAAAAAAAAAAAAAAAAAAAC29wGYeP37IZCKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFZJVEUgVE9LRU4=',
-            toAddress: 'vite_000000000000000000000000000000000000000617d47459a8'
+            toAddress: 'vite_0000000000000000000000000000000000000006e82b8ba657'
         };
         assert.equal(getBuiltinTxType(DexFundNewMarket.toAddress, DexFundNewMarket.data, DexFundNewMarket.blockType), 'DexFundNewMarket');
     });
@@ -363,7 +363,7 @@ describe('accountBlock builtin function', function () {
             confirmTimes: 10
         });
 
-        assert.equal('AAAAAAAAAAAAAgEKAGCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=', _data);
+        assert.equal('AAAAAAAAAAAAAgEKCmCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=', _data);
     });
 
     it('encodeCreateContruct case 2', function () {
@@ -423,7 +423,11 @@ function testAccBlockCase(reqAccBlock, func, validFunc) {
 
         (reqBlock.message || reqBlock.data)
         && it('message to base64 string, data is not change.', function () {
-            reqBlock.message && assert.equal(resBlock.data, Buffer.from(reqBlock.message).toString('base64'));
+            if (reqBlock.message) {
+                const msgHex = `0002${ Buffer.from(reqBlock.message).toString('hex') }`;
+                const msgBase64 = Buffer.from(msgHex, 'hex').toString('base64');
+                assert.equal(resBlock.data, msgBase64);
+            }
             reqBlock.data && assert.equal(resBlock.data, reqBlock.data);
         });
     });

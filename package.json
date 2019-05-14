@@ -38,6 +38,7 @@
         "@types/buffers": "^0.1.31",
         "@types/core-js": "^2.5.0",
         "@types/node": "^10.12.10",
+        "@types/mocha": "^5.2.5",
         "babel-eslint": "^10.0.1",
         "babel-plugin-istanbul": "^5.0.1",
         "babelify": "^10.0.0-beta.1",
@@ -73,7 +74,6 @@
     "dependencies": {
         "@sisi/ed25519-blake2b-hd-key": "^1.0.2",
         "@sisi/tweetnacl-blake2b": "^1.0.0",
-        "@types/mocha": "^5.2.5",
         "babel-loader": "^8.0.4",
         "bip39": "^2.5.0",
         "blake2b": "^2.1.3",

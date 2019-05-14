@@ -4,6 +4,7 @@ const traversing = require('./traversing');
 
 const typePath = path.join(__dirname, '../src/type.ts');
 const packageJsonContent = require('../common/package.json');
+const currPackageJsonContent = require('../package.json');
 const lernaJsonContent = require('../lerna.json');
 
 // Change `packages/dist/${packageName}.${"node"||"web"}.js` to `${packageName}/index.${"node"||"web"}.js`
@@ -41,6 +42,10 @@ fs.rmdirSync('./packages/dist');
 function copyFile({ fromPath, name }) {
     packageJsonContent.name = name;
     packageJsonContent.version = lernaJsonContent.version;
+
+    if (name === '@vite/vitejs') {
+        packageJsonContent.dependencies = currPackageJsonContent.dependencies;
+    }
 
     const typeFile = path.join(fromPath, './type.ts');
     fs.writeFileSync(typeFile, fs.readFileSync(typePath));

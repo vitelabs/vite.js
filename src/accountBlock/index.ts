@@ -34,7 +34,7 @@ export function getAccountBlock({ blockType, fromBlockHash, accountAddress, mess
     return formatAccountBlock({ blockType, fromBlockHash, accountAddress, message, data, height, prevHash, toAddress, tokenId, amount, nonce });
 }
 
-export function getSendTxBlock({ accountAddress, toAddress, tokenId, amount, message, height, prevHash }: sendTxBlock) {
+export function getSendTxBlock({ accountAddress, toAddress, tokenId, amount, message, data, height, prevHash }: sendTxBlock) {
     const err = checkParams({ toAddress, tokenId, amount }, [ 'toAddress', 'tokenId', 'amount' ]);
     if (err) {
         throw new Error(err.message);
@@ -47,6 +47,7 @@ export function getSendTxBlock({ accountAddress, toAddress, tokenId, amount, mes
         tokenId,
         amount,
         message,
+        data,
         height,
         prevHash
     });

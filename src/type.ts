@@ -125,6 +125,7 @@ export declare type sendTxBlock = {
     tokenId: TokenId;
     amount: BigInt;
 
+    data?: Base64;
     message?: string;
     prevHash?: Hex;
     height?: Uint64;
@@ -198,7 +199,6 @@ export declare type mintageBlock = {
     accountAddress: Address;
     tokenName: string;
     isReIssuable: boolean;
-    feeType: string;
     maxSupply: string;
     ownerBurnOnly: string;
     totalSupply: BigInt;
@@ -345,7 +345,6 @@ export enum vote {
 
 export enum mintage {
     'getMintData' = 'mintage_getMintData',
-    'getMintageCancelPledgeData' = 'mintage_getMintageCancelPledgeData',
     'getIssueData' = 'mintage_getIssueData',
     'getBurnData' = 'mintage_getBurnData',
     'getTransferOwnerData' = 'mintage_getTransferOwnerData',

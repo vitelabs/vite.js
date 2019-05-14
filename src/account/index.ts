@@ -5,7 +5,7 @@ import client from '~@vite/vitejs-client';
 import addrAccount from '~@vite/vitejs-addraccount';
 import { signAccountBlock } from '~@vite/vitejs-accountblock';
 
-import { Hex } from '../type';
+import { Hex, Address } from '../type';
 
 const { sign, getPublicKey } = ed25519;
 
@@ -13,14 +13,15 @@ const { sign, getPublicKey } = ed25519;
 class AccountClass extends addrAccount {
     privateKey: Hex
     publicKey: Hex
+    address: Address
     balance
     autoPow: Boolean
     usePledgeQuota: boolean
     private _lock: Boolean
     private _autoReceive: Boolean
 
-    constructor({ privateKey, client }: {
-        privateKey?: Hex | Buffer; client: client;
+    constructor({ privateKey, client, address }: {
+        client: client; privateKey?: Hex | Buffer; address?: Address;
     }, { autoPow = false, usePledgeQuota = true }: {
         autoPow?: boolean;
         usePledgeQuota? : boolean;
@@ -29,12 +30,21 @@ class AccountClass extends addrAccount {
             throw new Error(`${ paramsMissing.message } Client.`);
         }
 
-        const { pubKey, privKey, hexAddr } = privToAddr.newHexAddr(privateKey);
+        if (!privateKey && address) {
+            super({ address, client });
+            this.privateKey = null;
+            this.publicKey = null;
+        } else {
+            const { pubKey, privKey, hexAddr } = privToAddr.newHexAddr(privateKey);
 
-        super({ address: hexAddr, client });
+            if (privateKey && address && hexAddr !== address) {
+                throw new Error(`Private key does not match address ${ address }`);
+            }
 
-        this.privateKey = privKey;
-        this.publicKey = pubKey;
+            super({ address: hexAddr, client });
+            this.privateKey = privKey;
+            this.publicKey = pubKey;
+        }
 
         this._lock = true;
         this._autoReceive = false;
@@ -45,7 +55,25 @@ class AccountClass extends addrAccount {
         this._setTxMethod();
     }
 
+    setPrivateKey(privateKey) {
+        if (this.privateKey) {
+            throw new Error('Can\'t reset privateKey.');
+        }
+
+        const { pubKey, privKey, hexAddr } = privToAddr.newHexAddr(privateKey);
+        if (hexAddr !== this.address) {
+            throw new Error(`Private key does not match address ${ this.address }`);
+        }
+
+        this.privateKey = privKey;
+        this.publicKey = pubKey;
+    }
+
     getPublicKey() {
+        if (!this.privateKey) {
+            throw new Error('Please set privateKey before calling this method');
+        }
+
         if (this.publicKey) {
             return Buffer.from(this.publicKey, 'hex');
         }
@@ -54,11 +82,19 @@ class AccountClass extends addrAccount {
     }
 
     sign(hexStr: Hex) {
+        if (!this.privateKey) {
+            throw new Error('Please set privateKey before calling this method');
+        }
+
         const privKey = Buffer.from(this.privateKey, 'hex');
         return sign(hexStr, privKey);
     }
 
     signAccountBlock(accountBlock) {
+        if (!this.privateKey) {
+            throw new Error('Please set privateKey before calling this method');
+        }
+
         checkParams({ accountBlock }, ['accountBlock'], [{
             name: 'accountBlock',
             func: _a => !_a.accountAddress || (_a.accountAddress === this.address),
@@ -70,6 +106,10 @@ class AccountClass extends addrAccount {
     }
 
     activate(intervals: number = 2000, autoPow?, usePledgeQuota?) {
+        if (!this.privateKey) {
+            throw new Error('Please set privateKey before calling this method');
+        }
+
         if (!this._lock) {
             return;
         }
@@ -114,6 +154,10 @@ class AccountClass extends addrAccount {
     }
 
     autoReceiveTx(intervals: number = 2000, autoPow?, usePledgeQuota?) {
+        if (!this.privateKey) {
+            throw new Error('Please set privateKey before calling this method');
+        }
+
         if (this._autoReceive) {
             return;
         }
@@ -163,10 +207,18 @@ class AccountClass extends addrAccount {
     }
 
     sendRawTx(accountBlock) {
+        if (!this.privateKey) {
+            throw new Error('Please set privateKey before calling this method');
+        }
+
         return this._client.sendTx(accountBlock, this.privateKey);
     }
 
     sendAutoPowRawTx(accountBlock, usePledgeQuota?) {
+        if (!this.privateKey) {
+            throw new Error('Please set privateKey before calling this method');
+        }
+
         const _usePledgeQuota = usePledgeQuota === true || usePledgeQuota === false ? usePledgeQuota : !!this.usePledgeQuota;
 
         return this._client.sendAutoPowTx({
@@ -184,6 +236,10 @@ class AccountClass extends addrAccount {
         beforeSignTx,
         beforeSendTx
     }) {
+        if (!this.privateKey) {
+            throw new Error('Please set privateKey before calling this method');
+        }
+
         let lifeCycle = 'start';
         let checkPowResult;
 
@@ -312,6 +368,10 @@ class AccountClass extends addrAccount {
             }
 
             this[_key] = async (block, autoPow?, usePledgeQuota?) => {
+                if (!this.privateKey) {
+                    throw new Error('Please set privateKey before calling this method');
+                }
+
                 const accountBlock = await this.getBlock[key](block);
                 return this._sendRawTx(accountBlock, autoPow, usePledgeQuota);
             };

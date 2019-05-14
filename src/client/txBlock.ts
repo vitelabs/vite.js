@@ -4,13 +4,14 @@ import {
     Register_Abi, UpdateRegistration_Abi, CancelRegister_Abi,
     Reward_Abi, Vote_Abi, CancelVote_Abi, Pledge_Abi, CancelPledge_Abi,
     Mint_Abi, Issue_Abi, Burn_Abi, ChangeTokenType_Abi, TransferOwner_Abi, CancelMintPledge_Abi,
-    DexFundUserDeposit_Abi, DexFundUserWithdraw_Abi, DexTradeCancelOrder_Abi, DexFundNewOrder_Abi, DexFundNewMarket_Abi
+    DexFundUserDeposit_Abi, DexFundUserWithdraw_Abi, DexTradeCancelOrder_Abi, DexFundNewOrder_Abi, DexFundNewMarket_Abi,
+    DexFundSetOwner_Abi, DexFundConfigMineMarket_Abi, DexFundPledgeForVx_Abi, DexFundPledgeForVip_Abi
 } from '~@vite/vitejs-constant';
 import { checkParams, validNodeName, blake2bHex } from '~@vite/vitejs-utils';
 import { getAccountBlock, getSendTxBlock, getReceiveTxBlock } from '~@vite/vitejs-accountblock';
 import { formatAccountBlock, validReqAccountBlock, getCreateContractData } from '~@vite/vitejs-accountblock/builtin';
 import { encodeFunctionCall } from '~@vite/vitejs-abi';
-import { newHexAddr, getAddrFromHexAddr } from  '~@vite/vitejs-privtoaddr';
+import { getAddrFromHexAddr } from  '~@vite/vitejs-privtoaddr';
 
 import {
     SBPregBlock, block8, block7, revokeVotingBlock, quotaBlock,
@@ -100,7 +101,7 @@ export default class Tx {
         };
     }
 
-    asyncSendTx({ accountAddress, toAddress, tokenId, amount, message, height, prevHash }: sendTxBlock) {
+    asyncSendTx({ accountAddress, toAddress, tokenId, amount, message, data, height, prevHash }: sendTxBlock) {
         const err = checkParams({ toAddress, tokenId, amount }, [ 'toAddress', 'tokenId', 'amount' ]);
         if (err) {
             return Promise.reject(err);
@@ -113,6 +114,7 @@ export default class Tx {
             tokenId,
             amount,
             message,
+            data,
             height,
             prevHash
         });
@@ -133,10 +135,13 @@ export default class Tx {
         });
     }
 
-    async createContract({ accountAddress, tokenId = Vite_TokenId, amount = '0', fee = '10000000000000000000', times = 0, hexCode, abi, params, height, prevHash, confirmTimes = 0 }: createContractBlock, requestType = 'async') {
-        const err = checkParams({ hexCode, abi, tokenId, amount, fee, confirmTimes, requestType }, [ 'hexCode', 'abi', 'tokenId', 'amount', 'fee', 'confirmTimes' ], [ {
+    async createContract({ accountAddress, tokenId = Vite_TokenId, amount = '0', fee = '10000000000000000000', times = 10, hexCode, abi, params, height, prevHash, confirmTimes = 0 }: createContractBlock, requestType = 'async') {
+        const err = checkParams({ hexCode, abi, tokenId, amount, fee, confirmTimes, requestType, times }, [ 'hexCode', 'abi', 'tokenId', 'amount', 'fee', 'confirmTimes', 'times' ], [ {
             name: 'confirmTimes',
             func: _c => _c >= 0 && _c <= 75
+        }, {
+            name: 'times',
+            func: _c => _c >= 10 && _c <= 100
         }, {
             name: 'requestType',
             func: validReqType
@@ -158,7 +163,7 @@ export default class Tx {
         return block;
     }
 
-    async callContract({ accountAddress, toAddress, tokenId = Vite_TokenId, amount, abi, methodName, params = [], fee, height, prevHash }: callContractBlock, requestType = 'async') {
+    async callContract({ accountAddress, toAddress, tokenId = Vite_TokenId, amount = '0', abi, methodName, params = [], fee, height, prevHash }: callContractBlock, requestType = 'async') {
         const err = checkParams({ toAddress, abi, requestType }, [ 'toAddress', 'abi', 'requestType' ], [{
             name: 'requestType',
             func: validReqType
@@ -334,20 +339,12 @@ export default class Tx {
         }, requestType);
     }
 
-    async mintage({ accountAddress, feeType = 'burn', tokenName, isReIssuable, maxSupply, ownerBurnOnly, totalSupply, decimals, tokenSymbol, height, prevHash }: mintageBlock, requestType = 'async') {
-        const err = checkParams({ tokenName, isReIssuable, maxSupply, ownerBurnOnly, totalSupply, decimals, tokenSymbol, feeType },
-            [ 'tokenName', 'isReIssuable', 'maxSupply', 'ownerBurnOnly', 'totalSupply', 'decimals', 'tokenSymbol' ],
-            [{
-                name: 'feeType',
-                func: type => type === 'burn' || type === 'stake'
-            }]);
+    async mintage({ accountAddress, tokenName, isReIssuable, maxSupply, ownerBurnOnly, totalSupply, decimals, tokenSymbol, height, prevHash }: mintageBlock, requestType = 'async') {
+        const err = checkParams({ tokenName, isReIssuable, maxSupply, ownerBurnOnly, totalSupply, decimals, tokenSymbol },
+            [ 'tokenName', 'isReIssuable', 'maxSupply', 'ownerBurnOnly', 'totalSupply', 'decimals', 'tokenSymbol' ]);
         if (err) {
             return Promise.reject(err);
         }
-
-        const spendAmount = '100000000000000000000000';
-        const spendFee = '1000000000000000000000';
-        feeType = feeType === 'burn' ? 'fee' : 'amount';
 
         const requestBlock = {
             abi: Mint_Abi,
@@ -355,9 +352,9 @@ export default class Tx {
             params: [ isReIssuable, tokenName, tokenSymbol, totalSupply, decimals, maxSupply, ownerBurnOnly ],
             accountAddress,
             height,
-            prevHash
+            prevHash,
+            fee: '1000000000000000000000'
         };
-        requestBlock[feeType] = feeType === 'fee' ? spendFee : spendAmount;
 
         return this.callContract(requestBlock, requestType);
     }
@@ -479,13 +476,11 @@ export default class Tx {
             return Promise.reject(err);
         }
 
-        const orderId = getOrderId();
-
         return this.callContract({
             accountAddress,
             toAddress: DexFund_Addr,
             abi: DexFundNewOrder_Abi,
-            params: [ `0x${ orderId }`, tradeToken, quoteToken, side, 0, price, quantity ],
+            params: [ tradeToken, quoteToken, side, 0, price, quantity ],
             tokenId: tradeToken
         }, requestType);
     }
@@ -505,11 +500,69 @@ export default class Tx {
             amount
         }, requestType);
     }
-}
 
+    async dexFundSetOwner({ accountAddress, tokenId = Vite_TokenId, amount, newOwner }, requestType = 'async') {
+        const err = checkParams({ newOwner }, ['newOwner']);
+        if (err) {
+            return Promise.reject(err);
+        }
 
-function getOrderId() {
-    return newHexAddr().addr;
+        return this.callContract({
+            accountAddress,
+            toAddress: DexFund_Addr,
+            abi: DexFundSetOwner_Abi,
+            params: [newOwner],
+            tokenId,
+            amount
+        }, requestType);
+    }
+
+    async dexFundConfigMineMarket({ accountAddress, tokenId = Vite_TokenId, amount, allowMine, tradeToken, quoteToken }, requestType = 'async') {
+        const err = checkParams({ allowMine, tradeToken, quoteToken }, [ 'allowMine', 'tradeToken', 'quoteToken' ]);
+        if (err) {
+            return Promise.reject(err);
+        }
+
+        return this.callContract({
+            accountAddress,
+            toAddress: DexFund_Addr,
+            abi: DexFundConfigMineMarket_Abi,
+            params: [ allowMine, tradeToken, quoteToken ],
+            tokenId,
+            amount
+        }, requestType);
+    }
+
+    async dexFundPledgeForVx({ accountAddress, tokenId = Vite_TokenId, actionType, amount }, requestType = 'async') {
+        const err = checkParams({ actionType, amount }, [ 'actionType', 'amount' ]);
+        if (err) {
+            return Promise.reject(err);
+        }
+
+        return this.callContract({
+            accountAddress,
+            toAddress: DexFund_Addr,
+            abi: DexFundPledgeForVx_Abi,
+            params: [ actionType, amount ],
+            tokenId
+        }, requestType);
+    }
+
+    async dexFundPledgeForVip({ accountAddress, actionType, tokenId = Vite_TokenId, amount }, requestType = 'async') {
+        const err = checkParams({ actionType, amount }, [ 'actionType', 'amount' ]);
+        if (err) {
+            return Promise.reject(err);
+        }
+
+        return this.callContract({
+            accountAddress,
+            toAddress: DexFund_Addr,
+            abi: DexFundPledgeForVip_Abi,
+            params: [actionType],
+            tokenId,
+            amount
+        }, requestType);
+    }
 }
 
 function validReqType(type) {

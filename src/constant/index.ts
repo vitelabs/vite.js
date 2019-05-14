@@ -12,8 +12,8 @@ export const Pledge_Addr = 'vite_0000000000000000000000000000000000000003f6af745
 export const Vote_Addr = 'vite_0000000000000000000000000000000000000004d28108e76b';
 export const Register_Addr = 'vite_0000000000000000000000000000000000000004d28108e76b';
 export const Mintage_Addr = 'vite_000000000000000000000000000000000000000595292d996d';
-export const DexFund_Addr = 'vite_000000000000000000000000000000000000000617d47459a8';
-export const DexTrade_Addr = 'vite_000000000000000000000000000000000000000768ef0e6238';
+export const DexFund_Addr = 'vite_0000000000000000000000000000000000000006e82b8ba657';
+export const DexTrade_Addr = 'vite_00000000000000000000000000000000000000079710f19dc7';
 
 // SBP
 export const Register_Abi = { 'type': 'function', 'name': 'Register', 'inputs': [ { 'name': 'gid', 'type': 'gid' }, { 'name': 'name', 'type': 'string' }, { 'name': 'nodeAddr', 'type': 'address' } ] };
@@ -38,11 +38,15 @@ export const ChangeTokenType_Abi = { 'type': 'function', 'name': 'ChangeTokenTyp
 export const CancelMintPledge_Abi = { 'type': 'function', 'name': 'CancelMintPledge', 'inputs': [{ 'name': 'tokenId', 'type': 'tokenId' }] };
 
 // DEX
+export const DexTradeCancelOrder_Abi = { 'type': 'function', 'name': 'DexTradeCancelOrder', 'inputs': [ { 'name': 'orderId', 'type': 'bytes' }, { 'name': 'tradeToken', 'type': 'tokenId' }, { 'name': ',quoteToken', 'type': 'tokenId' }, { 'name': 'side', 'type': 'bool' } ] };
 export const DexFundUserDeposit_Abi = { 'type': 'function', 'name': 'DexFundUserDeposit', 'inputs': [] };
 export const DexFundUserWithdraw_Abi = { 'type': 'function', 'name': 'DexFundUserWithdraw', 'inputs': [ { 'name': 'token', 'type': 'tokenId' }, { 'name': 'amount', 'type': 'uint256' } ] };
-export const DexTradeCancelOrder_Abi = { 'type': 'function', 'name': 'DexTradeCancelOrder', 'inputs': [ { 'name': 'orderId', 'type': 'bytes' }, { 'name': 'tradeToken', 'type': 'tokenId' }, { 'name': ',quoteToken', 'type': 'tokenId' }, { 'name': 'side', 'type': 'bool' } ] };
-export const DexFundNewOrder_Abi = { 'type': 'function', 'name': 'DexFundNewOrder', 'inputs': [ { 'name': 'orderId', 'type': 'bytes' }, { 'name': 'tradeToken', 'type': 'tokenId' }, { 'name': 'quoteToken', 'type': 'tokenId' }, { 'name': 'side', 'type': 'bool' }, { 'name': 'orderType', 'type': 'uint32' }, { 'name': 'price', 'type': 'string' }, { 'name': 'quantity', 'type': 'uint256' } ] };
+export const DexFundNewOrder_Abi = { 'type': 'function', 'name': 'DexFundNewOrder', 'inputs': [ { 'name': 'tradeToken', 'type': 'tokenId' }, { 'name': 'quoteToken', 'type': 'tokenId' }, { 'name': 'side', 'type': 'bool' }, { 'name': 'orderType', 'type': 'uint32' }, { 'name': 'price', 'type': 'string' }, { 'name': 'quantity', 'type': 'uint256' } ] };
 export const DexFundNewMarket_Abi = { 'type': 'function', 'name': 'DexFundNewMarket', 'inputs': [ { 'name': 'tradeToken', 'type': 'tokenId' }, { 'name': 'quoteToken', 'type': 'tokenId' } ] };
+export const DexFundSetOwner_Abi = { 'type': 'function', 'name': 'DexFundSetOwner', 'inputs': [{ 'name': 'newOwner', 'type': 'address' }] };
+export const DexFundConfigMineMarket_Abi = { 'type': 'function', 'name': 'DexFundConfigMineMarket', 'inputs': [ { 'name': 'allowMine', 'type': 'bool' }, { 'name': 'tradeToken', 'type': 'tokenId' }, { 'name': 'quoteToken', 'type': 'tokenId' } ] };
+export const DexFundPledgeForVx_Abi = { 'type': 'function', 'name': 'DexFundPledgeForVx', 'inputs': [ { 'name': 'actionType', 'type': 'int8' }, { 'name': 'amount', 'type': 'uint256' } ] };
+export const DexFundPledgeForVip_Abi = { 'type': 'function', 'name': 'DexFundPledgeForVip', 'inputs': [{ 'name': 'actionType', 'type': 'int8' }] };
 
 export enum BlockType {
     'CreateContractReq' = 1,
