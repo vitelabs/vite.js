@@ -63,7 +63,7 @@ class AccountClass extends addrAccount {
 
     setPrivateKey(privateKey) {
         if (this.privateKey) {
-            throw new Error('Can\'t reset privateKey.');
+            return;
         }
 
         const { pubKey, privKey, hexAddr } = privToAddr.newHexAddr(privateKey);
