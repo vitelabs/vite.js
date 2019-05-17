@@ -1,7 +1,3 @@
-describe('Require package', function () {
-    require('./envTest/es5');
-});
-
 describe('Abi Test: src/abi', function () {
     require('./packages/abi');
 });

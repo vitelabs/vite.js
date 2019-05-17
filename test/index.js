@@ -1,5 +1,9 @@
 import './cover';
 
+describe('Require package', function () {
+    require('./envTest/es5');
+});
+
 describe('Account Test: src/account', function () {
     require('./packages/account');
 });
