@@ -5,6 +5,6 @@ cache:
   directories:
   - node_modules
 script:
-  - npm run test:coverage
-  - npm run lint
-after_success: npm run coverage
+  - yarn test:coverage
+  - yarn lint
+after_success: yarn coverage
