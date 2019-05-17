@@ -136,5 +136,5 @@ it('withdrawalOfQuota', function(done) {
 
 
 function getTxType(block) {
-    return getBuiltinTxType(block.toAddress, block.data, block.blockType)
+    return getBuiltinTxType(block)
 }

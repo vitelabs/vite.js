@@ -117,7 +117,7 @@ class ClientClass extends netProcessor {
 
         const list: any[] = [];
         rawList.forEach((item: any) => {
-            const txType = getBuiltinTxType(item.toAddress, item.data, Number(item.blockType));
+            const txType = getBuiltinTxType(item);
             item.txType = BuiltinTxType[txType];
             list.push(item);
         });
