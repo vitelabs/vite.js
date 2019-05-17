@@ -55,6 +55,12 @@ class AccountClass extends addrAccount {
         this._setTxMethod();
     }
 
+    clearPrivateKey() {
+        this.freeze();
+        this.privateKey = null;
+        this.publicKey = null;
+    }
+
     setPrivateKey(privateKey) {
         if (this.privateKey) {
             throw new Error('Can\'t reset privateKey.');
