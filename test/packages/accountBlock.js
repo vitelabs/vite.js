@@ -246,7 +246,37 @@ describe('getBuiltinTxType', function () {
         assert.equal(getBuiltinTxType(TxResFail), 'TxResFail');
     });
     // SendRefund
-    // GenesisReceive
+    it('GenesisReceive', function () {
+        const GenesisReceive = {
+ accountAddress: 'vite_5c27a294374ee43adf400cc1c0820af965225e4770a306431e',
+            amount: null,
+            blockType: 7,
+            confirmedHash: 'bad1f104eb77cb5e75dc1793d4bb1792568eeacda666d4cbcb6cb4c87673e526',
+            confirmedTimes: '1695',
+            data: null,
+            difficulty: null,
+            fee: null,
+            fromAddress: 'vite_0000000000000000000000000000000000000000a4f3a0cb58',
+            fromBlockHash: '0000000000000000000000000000000000000000000000000000000000000000',
+            hash: 'dad22f439714d15efa13436b739b8c1d5d1f27213d083c794c8bf3a7a24052b6',
+            height: '1',
+            logHash: null,
+            nonce: null,
+            prevHash: '0000000000000000000000000000000000000000000000000000000000000000',
+            publicKey: null,
+            quota: '0',
+            quotaUsed: '0',
+            receiveBlockHash: null,
+            receiveBlockHeight: null,
+            sendBlockList: null,
+            signature: null,
+            timestamp: 1557892800,
+            toAddress: 'vite_0000000000000000000000000000000000000000a4f3a0cb58',
+            tokenId: 'tti_000000000000000000004cfd',
+            tokenInfo: null
+        };
+        assert.equal(getBuiltinTxType(GenesisReceive), 'GenesisReceive');
+    });
 });
 
 describe('getBlockHash', function () {

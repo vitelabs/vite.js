@@ -149,7 +149,10 @@ var ClientClass = (function (_super) {
                         list = [];
                         rawList.forEach(function (item) {
                             var txType = vitejs_accountblock_1.getBuiltinTxType(item);
+                            console.log(txType);
                             item.txType = type_1.BuiltinTxType[txType];
+                            console.log(type_1.BuiltinTxType);
+                            console.log(item.txType);
                             list.push(item);
                         });
                         return [2, { list: list, totalNum: totalNum }];
