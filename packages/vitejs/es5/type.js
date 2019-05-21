@@ -26,6 +26,8 @@ var BuiltinTxType;
     BuiltinTxType[BuiltinTxType["RewardReq"] = 21] = "RewardReq";
     BuiltinTxType[BuiltinTxType["TxRes"] = 22] = "TxRes";
     BuiltinTxType[BuiltinTxType["TxResFail"] = 23] = "TxResFail";
+    BuiltinTxType[BuiltinTxType["SendRefund"] = 24] = "SendRefund";
+    BuiltinTxType[BuiltinTxType["GenesisReceive"] = 25] = "GenesisReceive";
 })(BuiltinTxType = exports.BuiltinTxType || (exports.BuiltinTxType = {}));
 var BlockType;
 (function (BlockType) {

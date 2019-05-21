@@ -30,7 +30,9 @@ export enum BuiltinTxType {
     'TxReq',
     'RewardReq',
     'TxRes',
-    'TxResFail'
+    'TxResFail',
+    'SendRefund',
+    'GenesisReceive'
 }
 
 export declare type SignBlock = {
