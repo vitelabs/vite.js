@@ -459,13 +459,13 @@ export default class Tx {
         }, requestType);
     }
 
-    async dexTradeCancelOrder({ accountAddress, orderId, tradeToken, side, quoteToken }, requestType = 'async') {
+    async dexTradeCancelOrder({ accountAddress, orderId, tradeToken }, requestType = 'async') {
         return this.callContract({
             accountAddress,
             tokenId: tradeToken,
             toAddress: DexTrade_Addr,
             abi: DexTradeCancelOrder_Abi,
-            params: [ `0x${ Buffer.from(orderId, 'base64').toString('hex') }`, tradeToken, quoteToken, side ]
+            params: [`0x${ Buffer.from(orderId, 'base64').toString('hex') }`]
         }, requestType);
     }
 

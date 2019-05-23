@@ -176,7 +176,7 @@ describe('getBuiltinTxType', function () {
     it('DexTradeCancelOrder', function () {
         const DexTradeCancelOrder = {
             blockType: 2,
-            data: '8tmWHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMJpWDkEPPlm83AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAVklURSBUT0tFTgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABTjcaJPGE2zj/epXeg2UNZEzi7HBAAAAAAAAAAAAAAAAA==',
+            data: 'slGtxQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABYAAAIBAAAAAAoAAAAAAABdIFhSAAAOAAAAAAAAAAAAAA==',
             toAddress: 'vite_00000000000000000000000000000000000000079710f19dc7'
         };
         assert.equal(getBuiltinTxType(DexTradeCancelOrder), 'DexTradeCancelOrder');
@@ -248,7 +248,7 @@ describe('getBuiltinTxType', function () {
     // SendRefund
     it('GenesisReceive', function () {
         const GenesisReceive = {
- accountAddress: 'vite_5c27a294374ee43adf400cc1c0820af965225e4770a306431e',
+            accountAddress: 'vite_5c27a294374ee43adf400cc1c0820af965225e4770a306431e',
             amount: null,
             blockType: 7,
             confirmedHash: 'bad1f104eb77cb5e75dc1793d4bb1792568eeacda666d4cbcb6cb4c87673e526',
