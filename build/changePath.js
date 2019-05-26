@@ -7,36 +7,29 @@ const packageJsonContent = require('../common/package.json');
 const currPackageJsonContent = require('../package.json');
 const lernaJsonContent = require('../lerna.json');
 
-// Change `packages/dist/${packageName}.${"node"||"web"}.js` to `${packageName}/index.${"node"||"web"}.js`
-traversing('./packages/dist', (fPath, next, name) => {
+// Change `dist/${packageName}.${"node"||"web"}.js` to `src/${packageName}/index.${"node"||"web"}.js`
+traversing('./dist', (fPath, next, name) => {
     const stats = fs.statSync(fPath);
     if (!stats.isFile()) {
         return;
     }
 
     const packageName = name.split('.')[0];
-    const packagePath = path.join(__dirname, `../packages/${ packageName }`);
+    const packagePath = path.join(__dirname, `../src/${ packageName }`);
+    const distPath = path.join(__dirname, `../src/${ packageName }/dist`);
 
-    if (fs.existsSync(packagePath)) {
-        return;
+    if (!fs.existsSync(distPath)) {
+        fs.mkdirSync(distPath);
     }
 
-    fs.mkdirSync(packagePath);
-    fs.writeFileSync(`${ packagePath }/index.node.js`, fs.readFileSync(`packages/dist/${ packageName }.node.js`));
-    fs.writeFileSync(`${ packagePath }/index.web.js`, fs.readFileSync(`packages/dist/${ packageName }.web.js`));
+    fs.writeFileSync(`${ distPath }/index.node.js`, fs.readFileSync(`dist/${ packageName }.node.js`));
+    fs.writeFileSync(`${ distPath }/index.web.js`, fs.readFileSync(`dist/${ packageName }.web.js`));
 
     copyFile({
-        fromPath: `./packages/${ packageName }`,
+        fromPath: packagePath,
         name: packageName.toLowerCase() === 'vitejs' ? '@vite/vitejs' : `@vite/vitejs-${ packageName.toLowerCase() }`
     });
 });
-
-// Delete packages/dist
-traversing('./packages/dist', fPath => {
-    fs.unlinkSync(fPath);
-});
-fs.rmdirSync('./packages/dist');
-
 
 
 function copyFile({ fromPath, name }) {

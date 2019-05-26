@@ -32,4 +32,4 @@ describe('NetProcessor Test: src/netProcessor', function () {
 // http
 // ipc
 // ws
-require('./RPC/index.js');
+// require('./RPC/index.js');

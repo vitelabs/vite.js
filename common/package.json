@@ -1,8 +1,8 @@
 {
     "name": "@vite/vitejs-abi",
     "version": "2.0.0-alpha.4",
-    "main": "index.node.js",
-    "browser": "index.web.js",
+    "main": "dist/index.node.js",
+    "browser": "dist/index.web.js",
     "typings": "type.ts",
     "repository": {
         "type": "git",

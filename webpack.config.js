@@ -44,7 +44,7 @@ module.exports = {
         umdNamedDefine: true,
         library: '$vite_[name]',
         filename: `[name].${ target }.js`,
-        path: path.join(__dirname, 'packages/dist')
+        path: path.join(__dirname, 'dist')
     },
     optimization: {
         splitChunks: {

@@ -19,7 +19,7 @@ import {
     createContractBlock, callContractBlock,
     mintageBlock, mintageIssueBlock, mintageBurnBlock, changeTokenTypeBlock, changeTransferOwnerBlock
 } from '../type';
-import client from '.';
+import client from './index';
 
 const ledger = methods.ledger;
 
