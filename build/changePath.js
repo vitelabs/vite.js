@@ -45,4 +45,7 @@ function copyFile({ fromPath, name }) {
 
     const packageFile = path.join(fromPath, './package.json');
     fs.writeFileSync(packageFile, JSON.stringify(packageJsonContent));
+
+    const npmignoreFile = path.join(fromPath, './.npmignore');
+    fs.writeFileSync(npmignoreFile, fs.readFileSync('.npmignore'));
 }
