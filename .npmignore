@@ -5,8 +5,4 @@ node_modules
 coverage
 .nyc_output/
 package-lock.json
-dist
-docs
-lib
-static
 lerna-debug.log
