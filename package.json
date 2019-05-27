@@ -9,9 +9,9 @@
         "build:es5": "mkdir ./src/vitejs/dist && tsc && node build/vitejsES5",
         "build": "yarn run clean && yarn run build:es5 && yarn run build:node && yarn run build:web && node build/changePath.js",
         "rpc": "node test/RPC/bin/startRPC",
-        "test:rpc": "yarn run clean && cross-env NODE_ENV=test nyc mocha --compilers ts:ts-node/register -r tsconfig-paths/register test/rpc/index.js",
-        "test:coverage": "yarn run clean && cross-env NODE_ENV=test nyc mocha --compilers ts:ts-node/register -r tsconfig-paths/register test/cover.js  --no-timeouts",
-        "test": "yarn run clean && cross-env NODE_ENV=test nyc mocha --compilers ts:ts-node/register -r tsconfig-paths/register test/index.js  --no-timeouts",
+        "test:rpc": "yarn run clean && cross-env NODE_ENV=test nyc mocha --compilers ts:ts-node/register -r tsconfig-paths/register test/rpc/index.js && yarn run build",
+        "test:coverage": "yarn run clean && cross-env NODE_ENV=test nyc mocha --compilers ts:ts-node/register -r tsconfig-paths/register test/cover.js  --no-timeouts && yarn run build",
+        "test": "yarn run clean && cross-env NODE_ENV=test nyc mocha --compilers ts:ts-node/register -r tsconfig-paths/register test/index.js  --no-timeouts && yarn run build",
         "coverage": "nyc report --reporter=text-lcov | coveralls",
         "lint": "eslint --ext js,ts --cache --fix .",
         "lint-all": "eslint --ext js,ts --fix .",
@@ -95,10 +95,6 @@
         "xhr2": "^0.1.4"
     },
     "nyc": {
-        "require": [
-            "ts-node/register",
-            "@babel/register"
-        ],
         "extension": [
             ".js",
             ".ts"
@@ -107,7 +103,8 @@
             "src/*"
         ],
         "exclude": [
-            "*.d.ts"
+            "*.d.ts",
+            "src/*/dist/**"
         ],
         "reporter": [
             "html",
