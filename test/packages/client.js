@@ -1,7 +1,7 @@
 const assert = require('assert');
 
 import Client from '../../src/client/index';
-import netProcessor from '../../src/netProcessor';
+import netProcessor from '../../src/netProcessor/index';
 import { methods } from '../../src/constant';
 import HTTP_RPC from '../../src/HTTP';
 

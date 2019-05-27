@@ -1,0 +1,19 @@
+{
+    "extension": [
+        ".js",
+        ".ts"
+    ],
+    "include": [
+        "src/*"
+    ],
+    "exclude": [
+        "*.d.ts",
+        "src/*/dist/**"
+    ],
+    "reporter": [
+        "html",
+        "text"
+    ],
+    "sourceMap": false,
+    "instrument": true
+}
