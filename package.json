@@ -104,7 +104,8 @@
         ],
         "exclude": [
             "*.d.ts",
-            "src/*/dist/**"
+            "src/*/dist/**",
+            "src/*/es5/**"
         ],
         "reporter": [
             "html",
