@@ -1,7 +1,7 @@
 const fs = require('fs');
 const traversing = require('./traversing');
 
-traversing('./src/vitejs/dist/es5', (fPath, next, val, folderLevel) => {
+traversing('./src/vitejs/es5', (fPath, next, val, folderLevel) => {
     const stats = fs.statSync(fPath);
 
     if (stats.isDirectory()) {

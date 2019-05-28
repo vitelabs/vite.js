@@ -6,7 +6,7 @@
         "clean": "rm -rf ./dist && node build/clean",
         "build:node": "build_target=node webpack",
         "build:web": "build_target=web webpack",
-        "build:es5": "mkdir ./src/vitejs/dist && tsc && node build/vitejsES5",
+        "build:es5": "tsc && node build/vitejsES5",
         "build": "yarn run clean && yarn run build:es5 && yarn run build:node && yarn run build:web && node build/changePath.js",
         "rpc": "node test/RPC/bin/startRPC",
         "test:rpc": "cross-env NODE_ENV=test nyc mocha --compilers ts:ts-node/register -r tsconfig-paths/register test/rpc/index.js",

@@ -38,7 +38,7 @@
             "es2015",
             "es2017.typedarrays"
         ],
-        "outDir": "./src/vitejs/dist/es5"
+        "outDir": "./src/vitejs/es5"
     },
     "include": [
         "src/**/*"

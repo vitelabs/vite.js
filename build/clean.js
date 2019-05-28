@@ -11,6 +11,13 @@ files.forEach(val => {
         return;
     }
 
+    if (val === 'vitejs') {
+        const es5Path = path.join(firstP, 'es5');
+        if (fs.existsSync(es5Path)) {
+            deleteFolder(es5Path);
+        }
+    }
+
     const fPath = path.join(firstP, 'dist');
     if (!fs.existsSync(fPath)) {
         return;
