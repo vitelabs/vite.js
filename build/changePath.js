@@ -2,7 +2,6 @@ const fs = require('fs');
 const path = require('path');
 const traversing = require('./traversing');
 
-const typePath = path.join(__dirname, '../src/type.ts');
 const packageJsonContent = require('../common/package.json');
 const currPackageJsonContent = require('../package.json');
 const lernaJsonContent = require('../lerna.json');
@@ -39,9 +38,6 @@ function copyFile({ fromPath, name }) {
     if (name === '@vite/vitejs') {
         packageJsonContent.dependencies = currPackageJsonContent.dependencies;
     }
-
-    const typeFile = path.join(fromPath, './type.ts');
-    fs.writeFileSync(typeFile, fs.readFileSync(typePath));
 
     const packageFile = path.join(fromPath, './package.json');
     fs.writeFileSync(packageFile, JSON.stringify(packageJsonContent));
