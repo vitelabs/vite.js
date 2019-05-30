@@ -15,8 +15,6 @@ import _addrAccount from '~@vite/vitejs-addraccount';
 import _account from '~@vite/vitejs-account';
 import _hdAccount from '~@vite/vitejs-hdaccount';
 
-// yes
-// export {* as constant} from '~@vite/vitejs-constant';
 
 export const constant = _constant;
 export const error = _error;

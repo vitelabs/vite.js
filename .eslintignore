@@ -3,5 +3,5 @@
 # Ignore built files except build/index.js
 coverage/*
 dist/*
-packages/*
 test/RPC/*
+common/vitejs.ts

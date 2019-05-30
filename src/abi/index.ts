@@ -5,14 +5,14 @@ import { encodeParameter as _encodeParameter, encodeParameters as _encodeParamet
 import { getTypes } from './inputsType';
 
 
-export function encodeLogSignature(jsonFunction, mehtodName?) {
+export function encodeLogSignature(jsonFunction, mehtodName?: string) {
     return encodeFunction(jsonFunction, mehtodName);
 }
-export function encodeFunctionSignature(jsonFunction, mehtodName?) {
+export function encodeFunctionSignature(jsonFunction, mehtodName?: string) {
     const result = encodeFunction(jsonFunction, mehtodName);
     return result.slice(0, 8);
 }
-export function encodeFunctionCall(jsonInterface, params, methodName?) {
+export function encodeFunctionCall(jsonInterface, params, methodName?: string) {
     return encodeFunctionSignature(jsonInterface, methodName) + encodeParameters(jsonInterface, params, methodName);
 }
 
@@ -21,7 +21,7 @@ export function encodeParameter(type, param) {
 }
 export const decodeParameter = _decodeParameter;
 
-export function encodeParameters(types, params, mehtodName?) {
+export function encodeParameters(types, params, mehtodName?: string) {
     try {
         const func = getFunction(types, mehtodName);
         types = getTypes(func);
@@ -29,7 +29,7 @@ export function encodeParameters(types, params, mehtodName?) {
 
     return _encodeParameters(getTypes(types), params);
 }
-export function decodeParameters(types, params, mehtodName?) {
+export function decodeParameters(types, params, mehtodName?: string) {
     try {
         const func = getFunction(types, mehtodName);
         types = getTypes(func);
@@ -38,7 +38,7 @@ export function decodeParameters(types, params, mehtodName?) {
     return _decodeParameters(getTypes(types), params);
 }
 
-export function decodeLog(inputs, data = '', topics, mehtodName?) {
+export function decodeLog(inputs, data = '', topics, mehtodName?: string) {
     let topicCount = 0;
     topics = isArray(topics) ? topics : [topics];
 
@@ -79,7 +79,7 @@ export function decodeLog(inputs, data = '', topics, mehtodName?) {
 }
 
 
-function getInputs(inputs, mehtodName?) {
+function getInputs(inputs, mehtodName?: string) {
     try {
         const func = getFunction(inputs, mehtodName);
         func && (inputs = func);

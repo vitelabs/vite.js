@@ -1791,6 +1791,13 @@ acorn-jsx@^3.0.0:
   dependencies:
     acorn "^3.0.4"
 
+acorn-loose@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/acorn-loose/-/acorn-loose-6.0.0.tgz#0445820e84027952ebfee2b03f3de5426fe5af35"
+  integrity sha512-gJff4bSdy882CwS6toeHixdBn9+IP8ojffjCW9hXnb2Ly7uVyAMaH2pLehtwS10wj2FIQ9Iw564MTDSsaQW9ng==
+  dependencies:
+    acorn "^6.0.0"
+
 acorn-node@^1.2.0, acorn-node@^1.3.0, acorn-node@^1.5.2, acorn-node@^1.6.1:
   version "1.6.2"
   resolved "https://registry.yarnpkg.com/acorn-node/-/acorn-node-1.6.2.tgz#b7d7ceca6f22e6417af933a62cad4de01048d5d2"
@@ -1800,7 +1807,7 @@ acorn-node@^1.2.0, acorn-node@^1.3.0, acorn-node@^1.5.2, acorn-node@^1.6.1:
     acorn-walk "^6.1.0"
     xtend "^4.0.1"
 
-acorn-walk@^6.1.0:
+acorn-walk@^6.0.0, acorn-walk@^6.1.0:
   version "6.1.1"
   resolved "https://registry.yarnpkg.com/acorn-walk/-/acorn-walk-6.1.1.tgz#d363b66f5fac5f018ff9c3a1e7b6f8e310cc3913"
 
@@ -1812,7 +1819,7 @@ acorn@^5.5.0:
   version "5.7.3"
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-5.7.3.tgz#67aa231bf8812974b85235a96771eb6bd07ea279"
 
-acorn@^6.0.2, acorn@^6.0.5:
+acorn@^6.0.0, acorn@^6.0.2, acorn@^6.0.5:
   version "6.1.1"
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-6.1.1.tgz#7d25ae05bb8ad1f9b699108e1094ecd7884adc1f"
 
@@ -3361,6 +3368,16 @@ end-of-stream@^1.0.0, end-of-stream@^1.1.0:
   resolved "https://registry.yarnpkg.com/end-of-stream/-/end-of-stream-1.4.1.tgz#ed29634d19baba463b6ce6b80a37213eab71ec43"
   dependencies:
     once "^1.4.0"
+
+enhanced-resolve@^2.2.2:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/enhanced-resolve/-/enhanced-resolve-2.3.0.tgz#a115c32504b6302e85a76269d7a57ccdd962e359"
+  integrity sha1-oRXDJQS2MC6Fp2Jp16V8zdli41k=
+  dependencies:
+    graceful-fs "^4.1.2"
+    memory-fs "^0.3.0"
+    object-assign "^4.0.1"
+    tapable "^0.2.3"
 
 enhanced-resolve@^4.0.0, enhanced-resolve@^4.1.0:
   version "4.1.0"
@@ -5082,6 +5099,14 @@ mem@^4.0.0:
     mimic-fn "^1.0.0"
     p-is-promise "^2.0.0"
 
+memory-fs@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/memory-fs/-/memory-fs-0.3.0.tgz#7bcc6b629e3a43e871d7e29aca6ae8a7f15cbb20"
+  integrity sha1-e8xrYp46Q+hx1+Kaymrop/FcuyA=
+  dependencies:
+    errno "^0.1.3"
+    readable-stream "^2.0.1"
+
 memory-fs@^0.4.0, memory-fs@~0.4.1:
   version "0.4.1"
   resolved "https://registry.yarnpkg.com/memory-fs/-/memory-fs-0.4.1.tgz#3a9a20b8462523e447cfbc7e8bb80ed667bfc552"
@@ -5182,7 +5207,7 @@ minimalistic-crypto-utils@^1.0.0, minimalistic-crypto-utils@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/minimalistic-crypto-utils/-/minimalistic-crypto-utils-1.0.1.tgz#f6c00c1c0b082246e5c4d99dfb8c7c083b2b582a"
 
-minimatch@3.0.4, minimatch@^3.0.0, minimatch@^3.0.2, minimatch@^3.0.4:
+minimatch@3.0.4, minimatch@^3.0.0, minimatch@^3.0.2, minimatch@^3.0.3, minimatch@^3.0.4:
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/minimatch/-/minimatch-3.0.4.tgz#5166e286457f03306064be5497e8dbb0c3d32083"
   dependencies:
@@ -6481,6 +6506,11 @@ resolve-dir@^1.0.0, resolve-dir@^1.0.1:
     expand-tilde "^2.0.0"
     global-modules "^1.0.0"
 
+resolve-from@2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/resolve-from/-/resolve-from-2.0.0.tgz#9480ab20e94ffa1d9e80a804c7ea147611966b57"
+  integrity sha1-lICrIOlP+h2egKgEx+oUdhGWa1c=
+
 resolve-from@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/resolve-from/-/resolve-from-1.0.1.tgz#26cbfe935d1aeeeabb29bc3fe5aeb01e93d44226"
@@ -7047,6 +7077,11 @@ table@4.0.2:
     slice-ansi "1.0.0"
     string-width "^2.1.1"
 
+tapable@^0.2.3:
+  version "0.2.9"
+  resolved "https://registry.yarnpkg.com/tapable/-/tapable-0.2.9.tgz#af2d8bbc9b04f74ee17af2b4d9048f807acd18a8"
+  integrity sha512-2wsvQ+4GwBvLPLWsNfLCDYGsW6xb7aeC6utq2Qh0PFwgEy7K7dsma9Jsmb2zSQj7GvYAyUGSntLtsv++GmgL1A==
+
 tapable@^1.0.0, tapable@^1.1.0:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/tapable/-/tapable-1.1.1.tgz#4d297923c5a72a42360de2ab52dadfaaec00018e"
@@ -7093,6 +7128,19 @@ temp-write@^3.4.0:
     pify "^3.0.0"
     temp-dir "^1.0.0"
     uuid "^3.0.1"
+
+tern@^0.23.0:
+  version "0.23.0"
+  resolved "https://registry.yarnpkg.com/tern/-/tern-0.23.0.tgz#35d76bc910c3d1cb053b9db879cdeb5b39421b9b"
+  integrity sha512-lST8jq/DougDUADb+vBaufwjqNChwABSJTkWf+5GG4xNVJoR/atEaMe/G7buaVZrpGCy+zoaq1TuycQy8xX+Bg==
+  dependencies:
+    acorn "^6.0.0"
+    acorn-loose "^6.0.0"
+    acorn-walk "^6.0.0"
+    enhanced-resolve "^2.2.2"
+    glob "^7.1.1"
+    minimatch "^3.0.3"
+    resolve-from "2.0.0"
 
 terser-webpack-plugin@^1.1.0:
   version "1.2.3"

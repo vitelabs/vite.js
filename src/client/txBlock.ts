@@ -18,7 +18,7 @@ import {
     sendTxBlock, receiveTxBlock, formatBlock,
     createContractBlock, callContractBlock,
     mintageBlock, mintageIssueBlock, mintageBurnBlock, changeTokenTypeBlock, changeTransferOwnerBlock
-} from '../type';
+} from './type';
 import client from './index';
 
 const ledger = methods.ledger;

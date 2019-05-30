@@ -5,7 +5,7 @@ import client from '~@vite/vitejs-client';
 import addrAccount from '~@vite/vitejs-addraccount';
 import { signAccountBlock } from '~@vite/vitejs-accountblock';
 
-import { Hex, Address } from '../type';
+import { Hex, Address } from './type';
 
 const { sign, getPublicKey } = ed25519;
 

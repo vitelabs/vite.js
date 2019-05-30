@@ -1,5 +1,5 @@
 import netProcessor from './index';
-import { subscribe } from '../type';
+import { subscribe } from './type';
 
 class EventEmitter {
     id: string

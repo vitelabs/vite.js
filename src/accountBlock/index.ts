@@ -3,10 +3,11 @@ const BigNumber = require('bn.js');
 import { ed25519, bytesToHex, blake2b, blake2bHex, checkParams, getRawTokenId } from '~@vite/vitejs-utils';
 import { getAddrFromHexAddr } from '~@vite/vitejs-privtoaddr';
 import { paramsFormat } from '~@vite/vitejs-error';
-import { Default_Hash, contractAddrs, abiFuncSignature } from '~@vite/vitejs-constant';
+import { Default_Hash, contractAddrs } from '~@vite/vitejs-constant';
 
+import { abiFuncSignature } from './abiFuncSignature';
 import { formatAccountBlock, validReqAccountBlock } from './builtin';
-import { AccountBlock, BlockType, SignBlock, sendTxBlock, receiveTxBlock, syncFormatBlock } from '../type';
+import { AccountBlock, BlockType, SignBlock, sendTxBlock, receiveTxBlock, syncFormatBlock } from './type';
 
 const { getPublicKey, sign } = ed25519;
 const txType = enumTxType();

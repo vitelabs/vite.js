@@ -45,7 +45,7 @@
     ],
     "exclude": [
         "node_modules",
-        "**/*.spec.ts",
-        "src/**/dist/*"
+        "src/**/dist/*",
+        "src/**/distSrc/*"
     ]
 }

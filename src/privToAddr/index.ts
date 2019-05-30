@@ -2,7 +2,7 @@ import { checkParams, ed25519, blake2b } from '~@vite/vitejs-utils';
 import { addressIllegal } from '~@vite/vitejs-error';
 
 import { ADDR_PRE, ADDR_SIZE, ADDR_CHECK_SUM_SIZE, ADDR_LEN, ADDR_TYPE } from './vars';
-import { Hex, AddrObj } from '../type';
+import { Hex, AddrObj } from './type';
 
 const { keyPair, getPublicKey } = ed25519;
 

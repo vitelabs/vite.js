@@ -8,7 +8,7 @@ import { validReqAccountBlock, getAbi } from '~@vite/vitejs-accountblock/builtin
 import { encodeFunctionCall, decodeParameters } from '~@vite/vitejs-abi';
 
 import TxBlock from './txBlock';
-import { Address, testapiFunc, RPCrequest, BuiltinTxType, subscribeFunc, walletFunc, netFunc, onroadFunc, contractFunc, pledgeFunc, registerFunc, voteFunc, mintageFunc, ledgerFunc, txFunc, powFunc } from '../type';
+import { Address, testapiFunc, RPCrequest, BuiltinTxType, subscribeFunc, walletFunc, netFunc, onroadFunc, contractFunc, pledgeFunc, registerFunc, voteFunc, mintageFunc, ledgerFunc, txFunc, powFunc } from './type';
 
 const { onroad } = _methods;
 const _ledger = _methods.ledger;

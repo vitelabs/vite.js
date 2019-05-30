@@ -4,7 +4,7 @@ import client from '~@vite/vitejs-client';
 import { paramsMissing, addressIllegal, addressMissing } from '~@vite/vitejs-error';
 import { checkParams } from '~@vite/vitejs-utils';
 
-import { Address, AddrObj, Hex, LangList } from '../type';
+import { Address, AddrObj, Hex, LangList } from './type';
 
 
 class HdAccountClass {

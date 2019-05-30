@@ -2,7 +2,7 @@ import * as privToAddr from '~@vite/vitejs-privtoaddr';
 import client from '~@vite/vitejs-client';
 import { Snapshot_Gid } from '~@vite/vitejs-constant';
 
-import { Address } from '../type';
+import { Address } from './type';
 
 class AddrAccountClass {
     address: Address

@@ -3,7 +3,7 @@ import { stringify } from 'qs';
 
 import { paramsMissing, paramsFormat } from '~@vite/vitejs-error';
 import * as _e from './ed25519';
-import { Hex } from '../type';
+import { Hex } from './type';
 
 declare const enum Charset {
     'utf16' = 'utf16',

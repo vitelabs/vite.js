@@ -37,6 +37,7 @@ function copyFile({ fromPath, name }) {
 
     if (name === '@vite/vitejs') {
         packageJsonContent.dependencies = currPackageJsonContent.dependencies;
+        packageJsonContent.typings = './distSrc/index.ts';
     }
 
     const packageFile = path.join(fromPath, './package.json');

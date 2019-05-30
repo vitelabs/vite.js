@@ -1,5 +1,4 @@
-import { encodeFunctionSignature } from '~@vite/vitejs-abi';
-import { _methods } from '../type';
+import { _methods } from './type';
 
 export const Vite_TokenId = 'tti_5649544520544f4b454e6e40';
 
@@ -105,28 +104,6 @@ export const contractAddrs = {
     Mintage: Mintage_Addr,
     DexFund: DexFund_Addr,
     DexTrade: DexTrade_Addr
-};
-
-export const abiFuncSignature = {
-    Register: encodeFunctionSignature(Register_Abi),
-    UpdateRegistration: encodeFunctionSignature(UpdateRegistration_Abi),
-    CancelRegister: encodeFunctionSignature(CancelRegister_Abi),
-    Reward: encodeFunctionSignature(Reward_Abi),
-    Vote: encodeFunctionSignature(Vote_Abi),
-    CancelVote: encodeFunctionSignature(CancelVote_Abi),
-    Pledge: encodeFunctionSignature(Pledge_Abi),
-    CancelPledge: encodeFunctionSignature(CancelPledge_Abi),
-    Mint: encodeFunctionSignature(Mint_Abi),
-    Issue: encodeFunctionSignature(Issue_Abi),
-    Burn: encodeFunctionSignature(Burn_Abi),
-    TransferOwner: encodeFunctionSignature(TransferOwner_Abi),
-    ChangeTokenType: encodeFunctionSignature(ChangeTokenType_Abi),
-    CancelMintPledge: encodeFunctionSignature(CancelMintPledge_Abi),
-    DexFundUserDeposit: encodeFunctionSignature(DexFundUserDeposit_Abi),
-    DexFundUserWithdraw: encodeFunctionSignature(DexFundUserWithdraw_Abi),
-    DexFundNewOrder: encodeFunctionSignature(DexFundNewOrder_Abi),
-    DexTradeCancelOrder: encodeFunctionSignature(DexTradeCancelOrder_Abi),
-    DexFundNewMarket: encodeFunctionSignature(DexFundNewMarket_Abi)
 };
 
 export const methods = _methods;

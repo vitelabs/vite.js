@@ -16,6 +16,10 @@ files.forEach(val => {
         if (fs.existsSync(es5Path)) {
             deleteFolder(es5Path);
         }
+        const distSrcPath = path.join(firstP, 'distSrc');
+        if (fs.existsSync(distSrcPath)) {
+            deleteFolder(distSrcPath);
+        }
     }
 
     const fPath = path.join(firstP, 'dist');

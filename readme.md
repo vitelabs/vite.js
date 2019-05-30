@@ -13,9 +13,7 @@
 
 ## Testing (mocha) 
 
-1. `yarn run rpc`
-2. `yarn run test`
-
+`yarn run test`
 
 ## Starting
 
@@ -25,10 +23,10 @@
 ### Branch naming rules
 
 * Develop on branch 'dev/{version}/{function name}'
-* Test on branch 'test'
 * Fixed version on branch 'dev/{version}'
 
-> Notice: development branch split from `dev/{last_version}`. If `dev/{last_version}` is not exist, split from `master`
+> Notice 1: development branch split from `dev/{last_version}`. If `dev/{last_version}` is not exist, split from `master`
+> Notice 2: change `src/type.ts`. You should run `yarn run format-type` after changing the file `src/type.ts`
 
 #### Examples
 

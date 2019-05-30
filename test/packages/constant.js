@@ -35,7 +35,6 @@ const required = [
     'DexFundNewOrder_Abi',
     'DexFundNewMarket_Abi',
     'contractAddrs',
-    'abiFuncSignature',
     'methods'
 ];
 

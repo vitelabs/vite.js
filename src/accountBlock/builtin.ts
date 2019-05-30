@@ -5,7 +5,7 @@ import { isValidHexAddr } from '~@vite/vitejs-privtoaddr';
 import { checkParams, validInteger, isArray, isObject } from '~@vite/vitejs-utils';
 import { encodeParameters } from '~@vite/vitejs-abi';
 
-import { SignBlock, formatBlock } from '../type';
+import { SignBlock, formatBlock } from './type';
 
 
 export function formatAccountBlock({ blockType, fromBlockHash, accountAddress, message, data, height, prevHash, tokenId = Vite_TokenId, fee, toAddress, amount, nonce }: formatBlock) {
