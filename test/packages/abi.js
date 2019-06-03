@@ -269,9 +269,17 @@ describe('encodeParameter', function () {
         const encodeParameterResult5899 = abi.encodeParameter('bytes', 'df3234');
         assert.equal('00000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000003df32340000000000000000000000000000000000000000000000000000000000', encodeParameterResult5899);
     });
-    it('string', function () {
+    it('string foobar', function () {
         const encodeParameterResult60 = abi.encodeParameter('string', 'foobar');
         assert.equal('0000000000000000000000000000000000000000000000000000000000000006666f6f6261720000000000000000000000000000000000000000000000000000', encodeParameterResult60);
+    });
+    it('string 0x02', function () {
+        const encodeParameterResult60 = abi.encodeParameter('string', '0x02');
+        assert.equal('00000000000000000000000000000000000000000000000000000000000000043078303200000000000000000000000000000000000000000000000000000000', encodeParameterResult60);
+    });
+    it('string 02ab', function () {
+        const encodeParameterResult60 = abi.encodeParameter('string', '02ab');
+        assert.equal('00000000000000000000000000000000000000000000000000000000000000043032616200000000000000000000000000000000000000000000000000000000', encodeParameterResult60);
     });
     it('uint8[2]', function () {
         const encodeParameterResult6000 = abi.encodeParameter('uint8[2]', [ '1', '2' ]);
@@ -472,6 +480,14 @@ describe('decodeParameter', function () {
     it('string', function () {
         const encodeParameterResult60 = abi.decodeParameter('string', '0000000000000000000000000000000000000000000000000000000000000006666f6f6261720000000000000000000000000000000000000000000000000000');
         assert.equal('foobar', encodeParameterResult60);
+    });
+    it('string 0x02', function () {
+        const encodeParameterResult60 = abi.decodeParameter('string', '00000000000000000000000000000000000000000000000000000000000000043078303200000000000000000000000000000000000000000000000000000000');
+        assert.equal('0x02', encodeParameterResult60);
+    });
+    it('string 02ab', function () {
+        const encodeParameterResult60 = abi.decodeParameter('string', '00000000000000000000000000000000000000000000000000000000000000043032616200000000000000000000000000000000000000000000000000000000');
+        assert.equal('02ab', encodeParameterResult60);
     });
     // Not support
     it('uint32[2][3][4]', function () {
@@ -743,5 +759,13 @@ describe('encode2decode', function () {
     it('case 1', function () {
         const result = abi.encodeParameter('string', '15');
         assert.equal('15', abi.decodeParameter('string', result));
+    });
+    it('case 2', function () {
+        const result = abi.encodeParameter('string', '0x15');
+        assert.equal('0x15', abi.decodeParameter('string', result));
+    });
+    it('case 3', function () {
+        const result = abi.encodeParameter('string', '我也圣诞节');
+        assert.equal('我也圣诞节', abi.decodeParameter('string', result));
     });
 });

@@ -50,6 +50,10 @@ function getBytesData(type, params) {
         throw new Error('[Error] Illegal params. Should be String');
     }
 
+    if (type === 'string') {
+        return Buffer.from(params, 'utf8');
+    }
+
     const isHex = /^0x[0-9a-fA-F]+$/.test(params) && params.length % 2 === 0;
     const isCommonHex = /^[0-9a-fA-F]+$/.test(params) && params.length % 2 === 0 && type === 'bytes';
 
@@ -57,13 +61,10 @@ function getBytesData(type, params) {
         throw new Error('[Error] Illegal params. Should be hex-string.');
     }
 
-    if (isHex) {
-        return Buffer.from(params.substring(2), 'hex');
-    }
     if (isCommonHex) {
         return Buffer.from(params, 'hex');
     }
-    return Buffer.from(params, 'utf8');
+    return Buffer.from(params.substring(2), 'hex');
 }
 
 function dynamicEncode(bytesData) {
