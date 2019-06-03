@@ -54,14 +54,14 @@ function getBytesData(type, params) {
         return Buffer.from(params, 'utf8');
     }
 
-    const isHex = /^0x[0-9a-fA-F]+$/.test(params) && params.length % 2 === 0;
-    const isCommonHex = /^[0-9a-fA-F]+$/.test(params) && params.length % 2 === 0 && type === 'bytes';
+    const is0xHex = /^0x[0-9a-fA-F]+$/.test(params) && params.length % 2 === 0;
+    const isHex = /^[0-9a-fA-F]+$/.test(params) && params.length % 2 === 0;
 
-    if (type === 'bytes' && !isCommonHex && !isHex) {
+    if (type === 'bytes' && !is0xHex && !isHex) {
         throw new Error('[Error] Illegal params. Should be hex-string.');
     }
 
-    if (isCommonHex) {
+    if (isHex) {
         return Buffer.from(params, 'hex');
     }
     return Buffer.from(params.substring(2), 'hex');
