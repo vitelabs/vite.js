@@ -4,7 +4,6 @@ import HTTP_RPC from '../../src/HTTP';
 import Client from '../../src/client/index';
 import AddrAccount from '../../src/addrAccount/index';
 import { newHexAddr } from '../../src/privToAddr/index';
-import config from '../config.js';
 
 const addrObj = newHexAddr();
 const myHTTPClient = new Client(new HTTP_RPC());
@@ -39,7 +38,13 @@ describe('New AddrAccount: function', function () {
         });
     }
 
-    config.addrAccountFuncList.forEach(key => {
+    [ 'getBalance', 'callOffChainContract', 'getTxList',
+        'getOnroad', 'getOnroadBlocks', 'getBlocks',
+        'getAccountBalance', 'getLatestBlock',
+        'getBlockByHeight', 'getBlocksByHash',
+        'getBlocksByHashInToken', 'getPledgeQuota',
+        'getPledgeList', 'getRegistrationList', 'getVoteInfo'
+    ].forEach(key => {
         it(key, function () {
             assert(typeof myAddrAccount[key], 'function');
         });
