@@ -124,7 +124,7 @@ function getWordList(lang: LangList = LangList.english) {
     return bip39.wordlists[lang];
 }
 
-function _getId(mnemonic: string, lang: LangList = LangList.english): Hex {
+function _getId(mnemonic: string, lang: LangList = LangList.english, pwd: string = '', isContract?: boolean): Hex {
     const err = checkParams({ mnemonic }, ['mnemonic'], [{
         name: 'mnemonic',
         func: _m => validateMnemonic(_m, lang)
@@ -134,7 +134,7 @@ function _getId(mnemonic: string, lang: LangList = LangList.english): Hex {
         return null;
     }
 
-    const addrObj = getAddrFromMnemonic(mnemonic, 0);
+    const addrObj = getAddrFromMnemonic(mnemonic, 0, lang, pwd, isContract);
     const keyBuffer = Buffer.from(addrObj.hexAddr);
     const idByte = blake2b(keyBuffer, null, 32);
     return Buffer.from(idByte).toString('hex');

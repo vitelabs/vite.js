@@ -58,7 +58,7 @@ class HdAccountClass {
 
         this.addrStartInx = addrStartInx;
         this.addrList = getAddrsFromMnemonic(this.mnemonic, addrStartInx, this.addrNum, this.lang, this.pwd);
-        this.id = getId(this.mnemonic, this.lang);
+        this.id = getId(this.mnemonic, this.lang, this.pwd);
 
         this.activeAccountList = [];
     }
