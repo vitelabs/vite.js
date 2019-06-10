@@ -1630,15 +1630,15 @@
     "@types/glob" "*"
     "@types/node" "*"
 
-"@vite/vitejs-ws@^2.1.2-alpha.1":
-  version "2.1.2-alpha.1"
-  resolved "https://registry.yarnpkg.com/@vite/vitejs-ws/-/vitejs-ws-2.1.2-alpha.1.tgz#fda3ac9170a6dfbc6eda3825a4c75a933807e461"
-  integrity sha512-67PJeSjP57b3WGjUtuvPNhzsSQfxV3pRKmGqe61SsRwrVkVnhRZY7DIRy3LTJR1I5WmoUMkNoO1PT/LTk4ez1Q==
+"@vite/vitejs-ws@2.1.2":
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/@vite/vitejs-ws/-/vitejs-ws-2.1.2.tgz#d58b46b8e1869e10260297e68ad0c1558ed35cc5"
+  integrity sha512-1YOQpog+hQ51bugzS/+hdwP/SR4baDZHAWImxLFGNVVdrLB6d5JNzYu0z0siV5wO6ulysdRhR7ezIhbdp6HA5w==
 
-"@vite/vitejs@^2.1.2-alpha.1":
-  version "2.1.2-alpha.1"
-  resolved "https://registry.yarnpkg.com/@vite/vitejs/-/vitejs-2.1.2-alpha.1.tgz#f6474b9e652ef47088f44812b6a9cf3ca0b41c6a"
-  integrity sha512-eX01pv9lq+0gpNuwG/wux07xcSfOqR92f1wd4U4lcItpLsD7ZKny/xgvZE4ZZUiWFYIOEhMhaqzVNT6JdhMlEw==
+"@vite/vitejs@^2.1.2":
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/@vite/vitejs/-/vitejs-2.1.2.tgz#96406913e1cc135cabe4d3dbbec283259ee4bd33"
+  integrity sha512-RYn9yHgu21LjsvJlBwrZ8Xukd101diA93ma5XjAX0et9bqOp0QGbbukDhM29y1QEL60WmA7Z7iwKoVBYXo8dCg==
   dependencies:
     "@sisi/ed25519-blake2b-hd-key" "^1.0.2"
     "@sisi/tweetnacl-blake2b" "^1.0.0"
