@@ -380,7 +380,8 @@ export enum subscribe {
     'newAccountBlocksFilter' = 'subscribe_newAccountBlocksFilter',
     'newLogsFilter' = 'subscribe_newLogsFilter',
     'uninstallFilter' = 'subscribe_uninstallFilter',
-    'getFilterChanges' = 'subscribe_getFilterChanges'
+    'getFilterChanges' = 'subscribe_getFilterChanges',
+    'subscribe' = 'subscribe_subscribe'
 }
 
 export const _methods = { testapi, pow, dexfund, wallet, onroad, tx, ledger, contract, pledge, register, vote, mintage, net, subscribe };

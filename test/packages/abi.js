@@ -597,7 +597,6 @@ describe('encodeFunctionSignature', function () {
         const encodeMethodResult1 = abi.encodeFunctionSignature({ 'type': 'function', 'name': 'singleParam', 'inputs': [{ 'name': 'param1', 'type': 'address' }] });
         assert.equal('053f71a4', encodeMethodResult1);
     });
-
     it('case 2', function () {
         const encodeMethodResult2 = abi.encodeFunctionSignature({ 'type': 'function', 'name': 'twoParams', 'inputs': [ { 'name': 'param1', 'type': 'tokenId' }, { 'name': 'param2', 'type': 'uint256[2]' } ] });
         assert.equal('41bdf4f6', encodeMethodResult2);
@@ -616,6 +615,10 @@ describe('encodeFunctionSignature', function () {
     it('case 5', function () {
         const encodeMethodResult5 = abi.encodeFunctionSignature('singleParam(address)');
         assert.equal('053f71a4', encodeMethodResult5);
+    });
+    it('case 6', function () {
+        const encodeMethodResult1 = abi.encodeFunctionSignature({ 'type': 'function', 'name': 'noParam' });
+        assert.equal('e3cb7377', encodeMethodResult1);
     });
 });
 
