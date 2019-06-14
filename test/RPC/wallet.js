@@ -1,11 +1,15 @@
 import HTTP_RPC from '../../src/HTTP';
 import Client from '../../src/client/index';
 import HdAccount from '../../src/hdAccount/index';
-import { Vite_TokenId, BuiltinTxType } from '../../src/constant/index';
-import config from '../config';
+import { Vite_TokenId } from '../../src/constant/index';
+import config from '../../rpcConfig';
 import GetViteFromWorld from './getViteFromWorld';
 
-const provider = new Client(new HTTP_RPC(config.http));
+const provider = new Client(new HTTP_RPC(config.http), () => {
+    console.log('Connetct');
+}, {
+    isDecodeTx: true
+});
 
 const myHdAccount = new HdAccount({
     mnemonic: config.myMnemonic,
@@ -279,7 +283,8 @@ async function CheckMyTxList() {
     // console.log('[LOG] CheckMyTxList', data, '\n');
 
     data.list.forEach((ele, i) => {
-        console.log(`[LOG] CheckMyTxList builtinTxtype ${ i }: ${ BuiltinTxType[ele.txType] } \n`);
+        console.log(`[LOG] CheckMyTxList TxType ${ i }: ${ ele.txType } \n`);
+        console.log(`[LOG] CheckMyTxList Contract ${ i }: ${ JSON.stringify(ele.contract) } \n`);
     });
     return data;
 }

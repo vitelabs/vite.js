@@ -1,5 +1,6 @@
 const assert = require('assert');
 
+import { encodeFunctionSignature } from '../../src/abi/index';
 import Client from '../../src/client/index';
 import netProcessor from '../../src/netProcessor/index';
 import { methods } from '../../src/constant';
@@ -48,3 +49,16 @@ function testFunc(notIncluded, client) {
         }
     }
 }
+
+describe('Client addTxType', function () {
+    const abi = { methodName: 'hello', inputs: [] };
+    const contractAddr = 'vite_553462bca137bac29f440e9af4ab2e2c1bb82493e41d2bc8b2';
+
+    myHTTPClient.addTxType({ helloWorld: { contractAddr, abi }});
+    const signFunc = encodeFunctionSignature(abi);
+
+    it('isHaveTxType', function () {
+        assert(myHTTPClient.customTxType[`${ signFunc }_${ contractAddr }`].txType, 'helloWorld');
+    });
+});
+

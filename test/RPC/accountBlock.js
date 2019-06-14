@@ -1,11 +1,11 @@
 const assert = require('assert');
 
-import { getBuiltinTxType } from '../../src/accountBlock/index';
+import { getTxType as _getTxType } from '../../src/accountBlock/index';
 import HTTP_RPC from '../../src/HTTP';
 import Client from '../../src/client/index';
 import HdAccount from '../../src/hdAccount/index';
-import { Vite_TokenId, BuiltinTxType } from '../../src/constant/index';
-import config from '../config';
+import { Vite_TokenId } from '../../src/constant/index';
+import config from '../../rpcConfig';
 
 const provider = new Client(new HTTP_RPC(config.http));
 const myHdAccount = new HdAccount({
@@ -136,5 +136,5 @@ it('withdrawalOfQuota', function(done) {
 
 
 function getTxType(block) {
-    return getBuiltinTxType(block)
+    return _getTxType(block).txType
 }

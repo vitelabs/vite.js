@@ -6,7 +6,7 @@ export declare type Int64 = number;
 export declare type Uint64 = string;
 export declare type BigInt = string;
 
-export enum BuiltinTxType {
+export enum TxType {
     'SBPreg' = 0,
     'UpdateReg',
     'RevokeReg',
@@ -380,7 +380,8 @@ export enum subscribe {
     'newAccountBlocksFilter' = 'subscribe_newAccountBlocksFilter',
     'newLogsFilter' = 'subscribe_newLogsFilter',
     'uninstallFilter' = 'subscribe_uninstallFilter',
-    'getFilterChanges' = 'subscribe_getFilterChanges'
+    'getFilterChanges' = 'subscribe_getFilterChanges',
+    'subscribe' = 'subscribe_subscribe'
 }
 
 export const _methods = { testapi, pow, dexfund, wallet, onroad, tx, ledger, contract, pledge, register, vote, mintage, net, subscribe };
@@ -503,6 +504,7 @@ export type subscribeFunc = {
     newLogsFilter: Function;
     uninstallFilter: Function;
     getFilterChanges: Function;
+    subscribe: Function;
 }
 
 export declare interface RPCrequest {

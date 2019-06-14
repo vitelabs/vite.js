@@ -1,10 +1,12 @@
 const assert = require('assert');
 
-import { getAccountBlock, getSendTxBlock, getReceiveTxBlock, getBuiltinTxType, signAccountBlock, getBlockHash } from '../../src/accountBlock/index';
-import { getCreateContractData, getAbi } from '../../src/accountBlock/builtin';
-
+import { getAccountBlock, getSendTxBlock, getReceiveTxBlock, getTxType, decodeBlockByContract, signAccountBlock, getBlockHash } from '../../src/accountBlock/index';
+import { getCreateContractData, getAbi, getContractTxType } from '../../src/accountBlock/builtin';
 import { BlockType } from '../../src/type';
-import { Default_Hash } from '../../src/constant/index';
+import { Default_Hash, Contracts } from '../../src/constant/index';
+
+import config from '../config';
+
 
 describe('getAccountBlock', function () {
     const reqAccBlock = [ {
@@ -94,189 +96,40 @@ describe('getReceiveTxBlock', function () {
     });
 });
 
-describe('getBuiltinTxType', function () {
-    it('SBPreg', function () {
-        const SBPreg = {
-            blockType: 2,
-            data: '8pxs4gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGAAAAAAAAAAAAAAABPx+OIw8v+h4DDmZOUlAz/5ldbCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMQ1NfVEVTVF9OT0RFAAAAAAAAAAAAAAAAAAAAAAAAAAA=',
-            toAddress: 'vite_0000000000000000000000000000000000000004d28108e76b'
-        };
-        assert.equal(getBuiltinTxType(SBPreg), 'SBPreg');
-    });
-    it('UpdateReg', function () {
-        const UpdateReg = {
-            blockType: 2,
-            data: 'O3vfdAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGAAAAAAAAAAAAAAAO5nE1iOcnqWSo9HQOJ92+alKJz2AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMQ1NfVEVTVF9OT0RFAAAAAAAAAAAAAAAAAAAAAAAAAAA=',
-            toAddress: 'vite_0000000000000000000000000000000000000004d28108e76b'
-        };
-        assert.equal(getBuiltinTxType(UpdateReg), 'UpdateReg');
-    });
-    it('RevokeReg', function () {
-        const RevokeReg = {
-            blockType: 2,
-            data: 'YIYv4gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADENTX1RFU1RfTk9ERQAAAAAAAAAAAAAAAAAAAAAAAAAA',
-            toAddress: 'vite_0000000000000000000000000000000000000004d28108e76b'
-        };
-        assert.equal(getBuiltinTxType(RevokeReg), 'RevokeReg');
-    });
-    // RetrieveReward
-    it('Voting', function () {
-        const Voting = {
-            blockType: 2,
-            data: '/cF/JQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADENTX1RFU1RfTk9ERQAAAAAAAAAAAAAAAAAAAAAAAAAA',
-            toAddress: 'vite_0000000000000000000000000000000000000004d28108e76b'
-        };
-        assert.equal(getBuiltinTxType(Voting), 'Voting');
-    });
-    it('RevokeVoting', function () {
-        const RevokeVoting = {
-            blockType: 2,
-            data: 'pinFMQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB',
-            toAddress: 'vite_0000000000000000000000000000000000000004d28108e76b'
-        };
-        assert.equal(getBuiltinTxType(RevokeVoting), 'RevokeVoting');
-    });
-    it('GetQuota', function () {
-        const GetQuota = {
-            blockType: 2,
-            data: 'jefc/QAAAAAAAAAAAAAAE/H44jDy/6HgMOZk5SUDP/mV1sIA',
-            toAddress: 'vite_0000000000000000000000000000000000000003f6af7459b9'
-        };
-        assert.equal(getBuiltinTxType(GetQuota), 'GetQuota');
-    });
-    it('WithdrawalOfQuota', function () {
-        const WithdrawalOfQuota = {
-            blockType: 2,
-            data: 'n/nHtgAAAAAAAAAAAAAAE/H44jDy/6HgMOZk5SUDP/mV1sIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIeGeDJurJAAAA=',
-            toAddress: 'vite_0000000000000000000000000000000000000003f6af7459b9'
-        };
-        assert.equal(getBuiltinTxType(WithdrawalOfQuota), 'WithdrawalOfQuota');
-    });
-    // it('Mintage', function () {
-    //     const Mintage = {
-    //         blockType: 2,
-    //         data: 'J62HLgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACyRFUj9g6iwVfcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPQkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABHNzc3MAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFzAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==',
-    //         toAddress: 'vite_00000000000000000000000000000000000000056ad6d26692'
-    //     };
-    //     assert.equal(getBuiltinTxType(Mintage), 'Mintage');
-    // });
-    // MintageIssue
-    // MintageBurn
-    // MintageTransferOwner
-    // MintageChangeTokenType
-    // MintageCancelPledge
-    // it('DexFundNewOrder', function () {
-    //     const DexFundNewOrder = {
-    //         blockType: 2,
-    //         data: 'QnapywAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMJpWDkEPPlm83AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAVklURSBUT0tFTgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABTl1L8Zdh6mfYIzQeegkraivGtApAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACMTUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=',
-    //         toAddress: 'vite_0000000000000000000000000000000000000006e82b8ba657'
-    //     };
-    //     assert.equal(getBuiltinTxType(DexFundNewOrder), 'DexFundNewOrder');
-    // });
-    it('DexTradeCancelOrder', function () {
-        const DexTradeCancelOrder = {
-            blockType: 2,
-            data: 'slGtxQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABYAAAIBAAAAAAoAAAAAAABdIFhSAAAOAAAAAAAAAAAAAA==',
-            toAddress: 'vite_00000000000000000000000000000000000000079710f19dc7'
-        };
-        assert.equal(getBuiltinTxType(DexTradeCancelOrder), 'DexTradeCancelOrder');
-    });
-    it('DexFundUserWithdraw', function () {
-        const DexFundUserWithdraw = {
-            blockType: 2,
-            data: 'zDKRaQAAAAAAAAAAAAAAAAAAAAAAAAAAAABWSVRFIFRPS0VOAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAfOZsUOKEAAA=',
-            toAddress: 'vite_0000000000000000000000000000000000000006e82b8ba657'
-        };
-        assert.equal(getBuiltinTxType(DexFundUserWithdraw), 'DexFundUserWithdraw');
-    });
-    it('DexFundUserDeposit', function () {
-        const DexFundUserDeposit = {
-            blockType: 2,
-            data: 'nftn/w==',
-            toAddress: 'vite_0000000000000000000000000000000000000006e82b8ba657'
-        };
-        assert.equal(getBuiltinTxType(DexFundUserDeposit), 'DexFundUserDeposit');
-    });
-    it('DexFundNewMarket', function () {
-        const DexFundNewMarket = {
-            blockType: 2,
-            data: 'Kuf4wQAAAAAAAAAAAAAAAAAAAAAAAAAAAAC29wGYeP37IZCKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFZJVEUgVE9LRU4=',
-            toAddress: 'vite_0000000000000000000000000000000000000006e82b8ba657'
-        };
-        assert.equal(getBuiltinTxType(DexFundNewMarket), 'DexFundNewMarket');
-    });
-    it('CreateContractReq', function () {
-        const CreateContractReq = {
-            blockType: 1,
-            data: '',
-            toAddress: 'vite_4f18fea624550533edcda473ae2dbdb6bf7e41d6016e260ab2'
-        };
-        assert.equal(getBuiltinTxType(CreateContractReq), 'CreateContractReq');
-    });
-    it('TxReq', function () {
-        const TxReq = {
-            blockType: 2,
-            data: null,
-            toAddress: 'vite_155e4e83fb0499dcc3047e0458bbfae77f2ac1270e38c176f8'
-        };
-        assert.equal(getBuiltinTxType(TxReq), 'TxReq');
-    });
-    it('RewardReq', function () {
-        const RewardReq = {
-            blockType: 3,
-            data: '',
-            toAddress: 'vite_0000000000000000000000000000000000000001c9e9f25417'
-        };
-        assert.equal(getBuiltinTxType(RewardReq), 'RewardReq');
-    });
-    it('TxRes', function () {
-        const TxRes = {
-            blockType: 4,
-            data: 'MjEyMw==',
-            toAddress: 'vite_155e4e83fb0499dcc3047e0458bbfae77f2ac1270e38c176f8'
-        };
-        assert.equal(getBuiltinTxType(TxRes), 'TxRes');
-    });
-    it('TxResFail', function () {
-        const TxResFail = {
-            blockType: 5,
-            data: '',
-            toAddress: 'vite_0000000000000000000000000000000000000001c9e9f25417'
-        };
-        assert.equal(getBuiltinTxType(TxResFail), 'TxResFail');
-    });
-    // SendRefund
-    it('GenesisReceive', function () {
-        const GenesisReceive = {
-            accountAddress: 'vite_5c27a294374ee43adf400cc1c0820af965225e4770a306431e',
-            amount: null,
-            blockType: 7,
-            confirmedHash: 'bad1f104eb77cb5e75dc1793d4bb1792568eeacda666d4cbcb6cb4c87673e526',
-            confirmedTimes: '1695',
-            data: null,
-            difficulty: null,
-            fee: null,
-            fromAddress: 'vite_0000000000000000000000000000000000000000a4f3a0cb58',
-            fromBlockHash: '0000000000000000000000000000000000000000000000000000000000000000',
-            hash: 'dad22f439714d15efa13436b739b8c1d5d1f27213d083c794c8bf3a7a24052b6',
-            height: '1',
-            logHash: null,
-            nonce: null,
-            prevHash: '0000000000000000000000000000000000000000000000000000000000000000',
-            publicKey: null,
-            quota: '0',
-            quotaUsed: '0',
-            receiveBlockHash: null,
-            receiveBlockHeight: null,
-            sendBlockList: null,
-            signature: null,
-            timestamp: 1557892800,
-            toAddress: 'vite_0000000000000000000000000000000000000000a4f3a0cb58',
-            tokenId: 'tti_000000000000000000004cfd',
-            tokenInfo: null
-        };
-        assert.equal(getBuiltinTxType(GenesisReceive), 'GenesisReceive');
-    });
+describe('getTxType', function () {
+    for (const txType in config.blockList) {
+        it(txType, function () {
+            assert.equal(getTxType(config.blockList[txType]).txType, txType);
+        });
+    }
+});
+
+describe('decodeBlockByContract', function () {
+    for (const txType in config.blockList) {
+        if (!Contracts[txType]) {
+            continue;
+        }
+
+        describe(txType, function () {
+            const abi = Contracts[txType].abi;
+            const decodeRes = decodeBlockByContract({
+                accountBlock: config.blockList[txType],
+                contractAddr: Contracts[txType].contractAddr,
+                abi
+            });
+
+            it(`${ txType } have decodeRes`, function () {
+                assert.equal(!!decodeRes, true);
+            });
+
+            for (let i = 0; i < (abi.inputs || []).length; i++) {
+                const item = abi.inputs[i];
+                it(`${ txType } ${ item.name }`, function () {
+                    assert.equal(!!decodeRes[item.name], true);
+                });
+            }
+        });
+    }
 });
 
 describe('getBlockHash', function () {
@@ -414,6 +267,25 @@ describe('accountBlock builtin function', function () {
         ], type);
 
         assert.equal(_data.type, type);
+    });
+
+    describe('getContractTxType', function () {
+        const res = getContractTxType(Contracts);
+        for (const key in res) {
+            const _res = res[key];
+            it(`Contracts have type ${ _res.txType }`, function () {
+                assert(!!Contracts[_res.txType], true);
+            });
+            it(`key have contractAddr ${ _res.contractAddr }`, function () {
+                assert(key.indexOf(Contracts[_res.txType].contractAddr) === 9, true);
+            });
+            it(`${ _res.txType } have abi`, function () {
+                assert(!!_res.abi, true);
+            });
+            it(`${ _res.txType } have contractAddr`, function () {
+                assert(!!_res.abi, true);
+            });
+        }
     });
 });
 

@@ -16,7 +16,7 @@ export const DexTrade_Addr = 'vite_00000000000000000000000000000000000000079710f
 
 // SBP
 export const Register_Abi = { 'type': 'function', 'name': 'Register', 'inputs': [ { 'name': 'gid', 'type': 'gid' }, { 'name': 'name', 'type': 'string' }, { 'name': 'nodeAddr', 'type': 'address' } ] };
-export const UpdateRegistration_Abi = { 'type': 'function', 'name': 'UpdateRegistration', 'inputs': [ { 'name': 'gid', 'type': 'gid' }, { 'Name': 'name', 'type': 'string' }, { 'name': 'nodeAddr', 'type': 'address' } ] };
+export const UpdateRegistration_Abi = { 'type': 'function', 'name': 'UpdateRegistration', 'inputs': [ { 'name': 'gid', 'type': 'gid' }, { 'name': 'name', 'type': 'string' }, { 'name': 'nodeAddr', 'type': 'address' } ] };
 export const CancelRegister_Abi = { 'type': 'function', 'name': 'CancelRegister', 'inputs': [ { 'name': 'gid', 'type': 'gid' }, { 'name': 'name', 'type': 'string' } ] };
 export const Reward_Abi = { 'type': 'function', 'name': 'Reward', 'inputs': [ { 'name': 'gid', 'type': 'gid' }, { 'name': 'name', 'type': 'string' }, { 'name': 'beneficialAddr', 'type': 'address' } ] };
 
@@ -42,6 +42,7 @@ export const DexFundUserDeposit_Abi = { 'type': 'function', 'name': 'DexFundUser
 export const DexFundUserWithdraw_Abi = { 'type': 'function', 'name': 'DexFundUserWithdraw', 'inputs': [ { 'name': 'token', 'type': 'tokenId' }, { 'name': 'amount', 'type': 'uint256' } ] };
 export const DexFundNewOrder_Abi = { 'type': 'function', 'name': 'DexFundNewOrder', 'inputs': [ { 'name': 'tradeToken', 'type': 'tokenId' }, { 'name': 'quoteToken', 'type': 'tokenId' }, { 'name': 'side', 'type': 'bool' }, { 'name': 'orderType', 'type': 'int8' }, { 'name': 'price', 'type': 'string' }, { 'name': 'quantity', 'type': 'uint256' } ] };
 export const DexFundNewMarket_Abi = { 'type': 'function', 'name': 'DexFundNewMarket', 'inputs': [ { 'name': 'tradeToken', 'type': 'tokenId' }, { 'name': 'quoteToken', 'type': 'tokenId' } ] };
+// [TODO] DEX Add
 export const DexFundSetOwner_Abi = { 'type': 'function', 'name': 'DexFundSetOwner', 'inputs': [{ 'name': 'newOwner', 'type': 'address' }] };
 export const DexFundConfigMineMarket_Abi = { 'type': 'function', 'name': 'DexFundConfigMineMarket', 'inputs': [ { 'name': 'allowMine', 'type': 'bool' }, { 'name': 'tradeToken', 'type': 'tokenId' }, { 'name': 'quoteToken', 'type': 'tokenId' } ] };
 export const DexFundPledgeForVx_Abi = { 'type': 'function', 'name': 'DexFundPledgeForVx', 'inputs': [ { 'name': 'actionType', 'type': 'int8' }, { 'name': 'amount', 'type': 'uint256' } ] };
@@ -49,35 +50,6 @@ export const DexFundPledgeForVip_Abi = { 'type': 'function', 'name': 'DexFundPle
 
 export enum BlockType {
     'CreateContractReq' = 1,
-    'TxReq',
-    'RewardReq',
-    'TxRes',
-    'TxResFail',
-    'SendRefund',
-    'GenesisReceive'
-}
-
-export enum BuiltinTxType {
-    'SBPreg' = 0,
-    'UpdateReg',
-    'RevokeReg',
-    'RetrieveReward',
-    'Voting',
-    'RevokeVoting',
-    'GetQuota',
-    'WithdrawalOfQuota',
-    'Mintage',
-    'MintageIssue',
-    'MintageBurn',
-    'MintageTransferOwner',
-    'MintageChangeTokenType',
-    'MintageCancelPledge',
-    'DexFundUserDeposit',
-    'DexFundUserWithdraw',
-    'DexFundNewOrder',
-    'DexTradeCancelOrder',
-    'DexFundNewMarket',
-    'CreateContractReq',
     'TxReq',
     'RewardReq',
     'TxRes',
@@ -97,13 +69,83 @@ export enum LangList {
     'spanish' = 'spanish'
 }
 
-export const contractAddrs = {
-    Pledge: Pledge_Addr,
-    Vote: Vote_Addr,
-    Register: Register_Addr,
-    Mintage: Mintage_Addr,
-    DexFund: DexFund_Addr,
-    DexTrade: DexTrade_Addr
+export const Contracts = {
+    SBPreg: {
+        contractAddr: Register_Addr,
+        abi: Register_Abi
+    },
+    UpdateReg: {
+        contractAddr: Register_Addr,
+        abi: UpdateRegistration_Abi
+    },
+    RevokeReg: {
+        contractAddr: Register_Addr,
+        abi: CancelRegister_Abi
+    },
+    RetrieveReward: {
+        contractAddr: Register_Addr,
+        abi: Reward_Abi
+    },
+    Voting: {
+        contractAddr: Vote_Addr,
+        abi: Vote_Abi
+    },
+    RevokeVoting: {
+        contractAddr: Vote_Addr,
+        abi: CancelVote_Abi
+    },
+    GetQuota: {
+        contractAddr: Pledge_Addr,
+        abi: Pledge_Abi
+    },
+    WithdrawalOfQuota: {
+        contractAddr: Pledge_Addr,
+        abi: CancelPledge_Abi
+    },
+    Mintage: {
+        contractAddr: Mintage_Addr,
+        abi: Mint_Abi
+    },
+    MintageIssue: {
+        contractAddr: Mintage_Addr,
+        abi: Issue_Abi
+    },
+    MintageBurn: {
+        contractAddr: Mintage_Addr,
+        abi: Burn_Abi
+    },
+    MintageTransferOwner: {
+        contractAddr: Mintage_Addr,
+        abi: TransferOwner_Abi
+    },
+    MintageChangeTokenType: {
+        contractAddr: Mintage_Addr,
+        abi: ChangeTokenType_Abi
+    },
+    MintageCancelPledge: {
+        contractAddr: Mintage_Addr,
+        abi: CancelMintPledge_Abi
+    },
+    DexFundUserDeposit: {
+        contractAddr: DexFund_Addr,
+        abi: DexFundUserDeposit_Abi
+    },
+    DexFundUserWithdraw: {
+        contractAddr: DexFund_Addr,
+        abi: DexFundUserWithdraw_Abi
+    },
+    DexFundNewOrder: {
+        contractAddr: DexFund_Addr,
+        abi: DexFundNewOrder_Abi
+    },
+    DexTradeCancelOrder: {
+        contractAddr: DexTrade_Addr,
+        abi: DexTradeCancelOrder_Abi
+    },
+    DexFundNewMarket: {
+        contractAddr: DexFund_Addr,
+        abi: DexFundNewMarket_Abi
+    }
 };
 
 export const methods = _methods;

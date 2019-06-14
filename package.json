@@ -14,7 +14,7 @@
         "build": "yarn run build:vitejs && yarn run build:all && node build/writePkgJson.js",
         "test:rpc": "cross-env NODE_ENV=test nyc mocha --compilers ts:ts-node/register -r tsconfig-paths/register test/rpc/index.js",
         "test:coverage": "cross-env NODE_ENV=test nyc mocha --compilers ts:ts-node/register -r tsconfig-paths/register test/cover.js  --no-timeouts",
-        "test": "cross-env NODE_ENV=test nyc mocha --compilers ts:ts-node/register -r tsconfig-paths/register test/index.js  --no-timeouts",
+        "test": "yarn run format-type && cross-env NODE_ENV=test nyc mocha --compilers ts:ts-node/register -r tsconfig-paths/register test/index.js  --no-timeouts",
         "coverage": "nyc report --reporter=text-lcov | coveralls",
         "lint": "eslint --ext js,ts --cache --fix .",
         "lint-all": "eslint --ext js,ts --fix .",

@@ -9,7 +9,7 @@ import {
 } from '~@vite/vitejs-constant';
 import { checkParams, validNodeName, blake2bHex } from '~@vite/vitejs-utils';
 import { getAccountBlock, getSendTxBlock, getReceiveTxBlock } from '~@vite/vitejs-accountblock';
-import { formatAccountBlock, validReqAccountBlock, getCreateContractData } from '~@vite/vitejs-accountblock/builtin';
+import { formatAccountBlock, isAccountBlock, getCreateContractData } from '~@vite/vitejs-accountblock/builtin';
 import { encodeFunctionCall } from '~@vite/vitejs-abi';
 import { getAddrFromHexAddr } from  '~@vite/vitejs-privtoaddr';
 
@@ -43,18 +43,9 @@ export default class Tx {
     }
 
     async asyncAccountBlock({ blockType, fromBlockHash, accountAddress, message, data, height, prevHash, toAddress, tokenId = Vite_TokenId, amount, fee }: formatBlock) {
-        const reject = (error, errMsg = '') => {
-            const message = `${ error.msg } ${ errMsg }`;
-            return Promise.reject({
-                code: error.code,
-                message
-            });
-        };
-
-        const err = validReqAccountBlock({ blockType, fromBlockHash, accountAddress, message, data, toAddress, amount });
-
+        const err = isAccountBlock({ blockType, fromBlockHash, accountAddress, message, data, toAddress, amount });
         if (err) {
-            return reject(err);
+            throw err;
         }
 
         if (!height || !prevHash) {

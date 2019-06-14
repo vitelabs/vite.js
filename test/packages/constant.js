@@ -1,5 +1,5 @@
 const assert = require('assert');
-import * as constant from '../../src/constant';
+import * as constant from '../../src/constant/index';
 
 const property = {
     'Vite_TokenId': 'tti_5649544520544f4b454e6e40',
@@ -34,13 +34,12 @@ const required = [
     'DexTradeCancelOrder_Abi',
     'DexFundNewOrder_Abi',
     'DexFundNewMarket_Abi',
-    'contractAddrs',
+    'Contracts',
     'methods'
 ];
 
 const enumType = {
     'BlockType': 7 * 2,
-    'BuiltinTxType': 26 * 2,
     'LangList': 8
 };
 

@@ -3,7 +3,7 @@ import { paramsMissing, paramsConflict } from '~@vite/vitejs-error';
 import { Vite_TokenId, Default_Hash, Delegate_Gid, BlockType } from '~@vite/vitejs-constant';
 import { isValidHexAddr } from '~@vite/vitejs-privtoaddr';
 import { checkParams, validInteger, isArray, isObject } from '~@vite/vitejs-utils';
-import { encodeParameters } from '~@vite/vitejs-abi';
+import { encodeParameters, encodeFunctionSignature } from '~@vite/vitejs-abi';
 
 import { SignBlock, formatBlock } from './type';
 
@@ -43,7 +43,7 @@ export function formatAccountBlock({ blockType, fromBlockHash, accountAddress, m
     return _accountBlock;
 }
 
-export function validReqAccountBlock({ blockType, fromBlockHash, accountAddress, message, data, toAddress, amount }: formatBlock) {
+export function isAccountBlock({ blockType, fromBlockHash, accountAddress, message, data, toAddress, amount }: formatBlock) {
     const err = checkParams({ blockType, accountAddress, toAddress, amount }, [ 'accountAddress', 'blockType' ], [ {
         name: 'accountAddress',
         func: isValidHexAddr
@@ -67,14 +67,14 @@ export function validReqAccountBlock({ blockType, fromBlockHash, accountAddress,
     if (Number(blockType) === 4 && !fromBlockHash) {
         return {
             code: paramsMissing.code,
-            msg: `${ paramsMissing.message } ReceiveBlock must have fromBlockHash.`
+            message: `${ paramsMissing.message } ReceiveBlock must have fromBlockHash.`
         };
     }
 
     if (message && data) {
         return {
             code: paramsConflict.code,
-            msg: `${ paramsConflict.message } Message and data are only allowed to exist one.`
+            message: `${ paramsConflict.message } Message and data are only allowed to exist one.`
         };
     }
 
@@ -111,4 +111,36 @@ export function getAbi(jsonInterfaces, type = 'constructor') {
     }
 
     return null;
+}
+
+export function getContractTxType(_contracts: Object) {
+    const err = checkParams({ _contracts }, ['_contracts'], [{
+        name: '_contracts',
+        func: isObject
+    }]);
+    if (err) {
+        throw err;
+    }
+
+    const txType = {};
+
+    for (const type in _contracts) {
+        const _c = _contracts[type];
+
+        const err = checkParams(_c, [ 'contractAddr', 'abi' ], [{
+            name: 'contractAddr',
+            func: isValidHexAddr
+        }]);
+        if (err) {
+            throw err;
+        }
+
+        const funcSign = encodeFunctionSignature(_c.abi);
+        txType[`${ funcSign }_${ _c.contractAddr }`] = {
+            txType: type,
+            ..._c
+        };
+    }
+
+    return txType;
 }
