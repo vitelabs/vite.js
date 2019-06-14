@@ -6,6 +6,9 @@ import { checkParams } from '~@vite/vitejs-utils';
 
 import { Address, AddrObj, Hex, LangList } from './type';
 
+// [TODO]  AddrList {0, 1, address1, address2}
+// [TODO]  Add Wallet: Save and Load, browser only || node
+
 
 class HdAccountClass {
     addrList: Array<AddrObj>
@@ -55,7 +58,7 @@ class HdAccountClass {
 
         this.addrStartInx = addrStartInx;
         this.addrList = getAddrsFromMnemonic(this.mnemonic, addrStartInx, this.addrNum, this.lang, this.pwd);
-        this.id = getId(this.mnemonic, this.lang);
+        this.id = getId(this.mnemonic, this.lang, this.pwd);
 
         this.activeAccountList = [];
     }

@@ -497,13 +497,22 @@ describe('decodeParameter', function () {
 });
 
 describe('encodeParameters', function () {
-    it('1 abi constructor', function () {
+    it('1 abi constructor array', function () {
         const encodeParametersResult1 = abi.encodeParameters({
             'type': 'constructor',
             'inputs': [
                 { 'type': 'uint8[]' }, { 'type': 'bytes' }
             ]
         }, [[ '34', '43' ], '324567ff' ]);
+        assert.equal('000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000022000000000000000000000000000000000000000000000000000000000000002b0000000000000000000000000000000000000000000000000000000000000004324567ff00000000000000000000000000000000000000000000000000000000', encodeParametersResult1);
+    });
+    it('1 abi constructor string', function () {
+        const encodeParametersResult1 = abi.encodeParameters({
+            'type': 'constructor',
+            'inputs': [
+                { 'type': 'uint8[]' }, { 'type': 'bytes' }
+            ]
+        }, JSON.stringify([[ '34', '43' ], '324567ff' ]));
         assert.equal('000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000022000000000000000000000000000000000000000000000000000000000000002b0000000000000000000000000000000000000000000000000000000000000004324567ff00000000000000000000000000000000000000000000000000000000', encodeParametersResult1);
     });
     it('multi abi constructor', function () {
@@ -588,7 +597,6 @@ describe('encodeFunctionSignature', function () {
         const encodeMethodResult1 = abi.encodeFunctionSignature({ 'type': 'function', 'name': 'singleParam', 'inputs': [{ 'name': 'param1', 'type': 'address' }] });
         assert.equal('053f71a4', encodeMethodResult1);
     });
-
     it('case 2', function () {
         const encodeMethodResult2 = abi.encodeFunctionSignature({ 'type': 'function', 'name': 'twoParams', 'inputs': [ { 'name': 'param1', 'type': 'tokenId' }, { 'name': 'param2', 'type': 'uint256[2]' } ] });
         assert.equal('41bdf4f6', encodeMethodResult2);
@@ -607,6 +615,10 @@ describe('encodeFunctionSignature', function () {
     it('case 5', function () {
         const encodeMethodResult5 = abi.encodeFunctionSignature('singleParam(address)');
         assert.equal('053f71a4', encodeMethodResult5);
+    });
+    it('case 6', function () {
+        const encodeMethodResult1 = abi.encodeFunctionSignature({ 'type': 'function', 'name': 'noParam' });
+        assert.equal('e3cb7377', encodeMethodResult1);
     });
 });
 

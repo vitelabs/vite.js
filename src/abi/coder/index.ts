@@ -39,6 +39,10 @@ export function encodeParameter(typeStr, params) {
 }
 
 export function encodeParameters(types, params) {
+    if (typeof params === 'string') {
+        params = JSON.parse(params);
+    }
+
     if (!isArray(types) || !isArray(params) || types.length !== params.length) {
         throw new Error('[Error] Illegal types or params. Types and params should be array.');
     }
