@@ -5,7 +5,7 @@ import {
     Reward_Abi, Vote_Abi, CancelVote_Abi, Pledge_Abi, CancelPledge_Abi,
     Mint_Abi, Issue_Abi, Burn_Abi, ChangeTokenType_Abi, TransferOwner_Abi, CancelMintPledge_Abi,
     DexFundUserDeposit_Abi, DexFundUserWithdraw_Abi, DexTradeCancelOrder_Abi, DexFundNewOrder_Abi, DexFundNewMarket_Abi,
-    DexFundSetOwner_Abi, DexFundConfigMineMarket_Abi, DexFundPledgeForVx_Abi, DexFundPledgeForVip_Abi
+    DexFundConfigMineMarket_Abi, DexFundPledgeForVx_Abi, DexFundPledgeForVip_Abi
 } from '~@vite/vitejs-constant';
 import { checkParams, validNodeName, blake2bHex } from '~@vite/vitejs-utils';
 import { getAccountBlock, getSendTxBlock, getReceiveTxBlock } from '~@vite/vitejs-accountblock';
@@ -487,22 +487,6 @@ export default class Tx {
             toAddress: DexFund_Addr,
             abi: DexFundNewMarket_Abi,
             params: [ tradeToken, quoteToken ],
-            tokenId,
-            amount
-        }, requestType);
-    }
-
-    async dexFundSetOwner({ accountAddress, tokenId = Vite_TokenId, amount, newOwner }, requestType = 'async') {
-        const err = checkParams({ newOwner }, ['newOwner']);
-        if (err) {
-            return Promise.reject(err);
-        }
-
-        return this.callContract({
-            accountAddress,
-            toAddress: DexFund_Addr,
-            abi: DexFundSetOwner_Abi,
-            params: [newOwner],
             tokenId,
             amount
         }, requestType);
