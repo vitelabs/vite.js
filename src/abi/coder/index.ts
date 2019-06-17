@@ -43,8 +43,16 @@ export function encodeParameters(types, params) {
         params = JSON.parse(params);
     }
 
-    if (!isArray(types) || !isArray(params) || types.length !== params.length) {
-        throw new Error('[Error] Illegal types or params. Types and params should be array.');
+    if (!isArray(types)) {
+        throw new Error('[Error] Illegal inputs. Inputs should be array.');
+    }
+
+    if (!types.length) {
+        return '';
+    }
+
+    if (!isArray(params) || types.length !== params.length) {
+        throw new Error('[Error] Illegal params. Params should be array and the length should be equal to inputs.length');
     }
 
     const tempResult = [];

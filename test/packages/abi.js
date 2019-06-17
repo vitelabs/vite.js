@@ -515,6 +515,14 @@ describe('encodeParameters', function () {
         }, JSON.stringify([[ '34', '43' ], '324567ff' ]));
         assert.equal('000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000022000000000000000000000000000000000000000000000000000000000000002b0000000000000000000000000000000000000000000000000000000000000004324567ff00000000000000000000000000000000000000000000000000000000', encodeParametersResult1);
     });
+    it('no inputs', function () {
+        const encodeParametersResult1 = abi.encodeParameters({ 'type': 'constructor' });
+        assert.equal('', encodeParametersResult1);
+    });
+    it('inputs []', function () {
+        const encodeParametersResult1 = abi.encodeParameters({ 'type': 'constructor', inputs: [] });
+        assert.equal('', encodeParametersResult1);
+    });
     it('multi abi constructor', function () {
         const encodeParametersResult12 = abi.encodeParameters([
             { 'type': 'constructor', 'name': 'myMethods', 'inputs': [ { 'type': 'uint8[]' }, { 'type': 'bytes' } ] },

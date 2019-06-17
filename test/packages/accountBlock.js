@@ -251,6 +251,27 @@ describe('accountBlock builtin function', function () {
 
     it('encodeCreateContruct case 2', function () {
         const _data = getCreateContractData({
+            abi: [{ 'type': 'constructor', 'inputs': [] }],
+            hexCode: '6080',
+            confirmTimes: 10
+        });
+
+        assert.equal('AAAAAAAAAAAAAgEKCmCA', _data);
+    });
+
+
+    it('encodeCreateContruct case 3', function () {
+        const _data = getCreateContractData({
+            abi: [{ 'type': 'constructor' }],
+            hexCode: '6080',
+            confirmTimes: 10
+        });
+
+        assert.equal('AAAAAAAAAAAAAgEKCmCA', _data);
+    });
+
+    it('encodeCreateContruct case 4', function () {
+        const _data = getCreateContractData({
             hexCode: '6080',
             confirmTimes: 10,
             times: 1.5
