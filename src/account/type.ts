@@ -358,7 +358,9 @@ export enum mintage {
 
 export enum dexfund {
     'getAccountFundInfo' = 'dexfund_getAccountFundInfo',
-    'getAccountFundInfoByStatus' = 'dexfund_getAccountFundInfoByStatus'
+    'getAccountFundInfoByStatus' = 'dexfund_getAccountFundInfoByStatus',
+    'isPledgeVip' = 'dexfund_isPledgeVip',
+    'getMarketInfo' = 'dexfund_getMarketInfo'
 }
 
 export enum net {
@@ -482,6 +484,8 @@ export type mintageFunc = {
 export type dexfundFunc = {
     getAccountFundInfo: Function;
     getAccountFundInfoByStatus: Function;
+    isPledgeVip: Function;
+    getMarketInfo: Function;
 }
 
 export type netFunc = {
