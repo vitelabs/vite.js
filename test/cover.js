@@ -1,4 +1,6 @@
-// [TODO] test type
+describe('Type Test: src/type', function () {
+    require('./packages/type');
+});
 
 describe('Abi Test: src/abi', function () {
     require('./packages/abi');
