@@ -7,7 +7,7 @@ export declare type Uint64 = string;
 export declare type BigInt = string;
 
 export enum TxType {
-    'SBPreg' = 0,
+    'SBPreg' = 1,
     'UpdateReg',
     'RevokeReg',
     'RetrieveReward',
