@@ -40,6 +40,7 @@ function formatType(typeStr) {
     }
 
     return {
+        typeStr,
         type,
         byteLength: Math.ceil(byteLength / 32) * 32,
         actualByteLen: byteLength,
@@ -66,7 +67,7 @@ function validType(typeStr) {
         throw new Error(`[Error] Illegal type. ${ typeStr }`);
     }
 
-    // int uint ==> int
+    // int uint ==> number
     type = type.indexOf('int') >= 0 ? 'number' : type;
 
     let _size;

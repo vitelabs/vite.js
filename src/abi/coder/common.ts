@@ -6,20 +6,15 @@ import { getRawTokenId, getTokenIdFromRaw } from '~@vite/vitejs-utils';
 
 
 export function encode(typeObj, params) {
-    const Bytes_Data = getBytesData(typeObj.type, params);
+    const Bytes_Data = getBytesData(typeObj, params);
     return encodeBytesData(typeObj, Bytes_Data);
 }
 
 export function encodeBytesData(typeObj, Bytes_Data) {
-    const Actual_Byte_Len = typeObj.actualByteLen;
-    if (Actual_Byte_Len < Bytes_Data.length) {
-        throw lengthError(typeObj, Bytes_Data.length);
-    }
-
     const Byte_Len = typeObj.byteLength;
     const Offset = Byte_Len - Bytes_Data.length;
     if (Offset < 0) {
-        throw lengthError(typeObj, Bytes_Data.length);
+        throw lengthError(typeObj, Bytes_Data.length, 'Offset');
     }
 
     const result = new Uint8Array(Byte_Len);
@@ -52,7 +47,8 @@ export function decodeToHexData(typeObj, params) {
 
     return {
         result: typeObj.type === 'bytes' ? _params.substring(0, _params.length - Offset * 2) : _params.substring(Offset * 2),
-        params: params.substring(Data_Len * 2)
+        params: params.substring(Data_Len * 2),
+        _params
     };
 }
 
@@ -61,20 +57,20 @@ export function decode(typeObj, params) {
     const res = decodeToHexData(typeObj, params);
 
     return {
-        result: getRawData(typeObj.type, res.result),
+        result: getRawData(typeObj, res.result, res._params),
         params: res.params
     };
 }
 
 
-function getRawData(type, params) {
+function getRawData({ type, typeStr, actualByteLen }, params, _params) {
     switch (type) {
     case 'address':
         return showAddr(params);
     case 'bool':
-        return showNumber(params ? '1' : '0');
+        return showNumber(params ? '1' : '0', 'uint');
     case 'number':
-        return showNumber(params);
+        return showNumber(params, typeStr, actualByteLen, _params);
     case 'gid':
         return params;
     case 'tokenId':
@@ -82,14 +78,14 @@ function getRawData(type, params) {
     }
 }
 
-function getBytesData(type, params) {
+function getBytesData({ type, typeStr, actualByteLen }, params) {
     switch (type) {
     case 'address':
         return formatAddr(params);
     case 'bool':
-        return formatNumber(params ? '1' : '0');
+        return formatNumber(params ? '1' : '0', 'uint');
     case 'number':
-        return formatNumber(params);
+        return formatNumber(params, typeStr, actualByteLen);
     case 'gid':
         return formatGid(params);
     case 'tokenId':
@@ -112,8 +108,22 @@ function formatGid(gid) {
     return Buffer.from(gid, 'hex');
 }
 
-function formatNumber(params) {
-    return new BigNumber(params).toArray();
+function formatNumber(params, typeStr, actualByteLen?) {
+    const num = new BigNumber(params);
+    const bitLen = num.bitLength();
+
+    if (bitLen > actualByteLen * 8) {
+        throw new Error(`[Error] Out of range: ${ params }, ${ typeStr }`);
+    }
+
+    if (typeStr.indexOf('uint') === 0) {
+        if (num.cmp(new BigNumber(0)) < 0) {
+            throw new Error(`[Error] Uint shouldn't be a negative number ${ params }`);
+        }
+        return num.toArray();
+    }
+
+    return num.toTwos(256).toArray('be');
 }
 
 function fomatTokenId(tokenId) {
@@ -132,8 +142,21 @@ function showAddr(address) {
     return addr;
 }
 
-function showNumber(str) {
-    return new BigNumber(str, 16).toString();
+function showNumber(str, typeStr, actualByteLen?, _params?) {
+    let num = new BigNumber(str, 16);
+    let actualNum = new BigNumber(_params, 16);
+
+    if (typeStr.indexOf('int') === 0) {
+        num = num.fromTwos(actualByteLen ? actualByteLen * 8 : '');
+        actualNum = actualNum.fromTwos(256);
+    }
+
+    const bitLen = actualNum.bitLength();
+    if (bitLen > actualByteLen * 8) {
+        throw new Error(`[Error] Out of range: ${ _params }, ${ typeStr }`);
+    }
+
+    return num.toString();
 }
 
 function showTokenId(rawTokenId) {
@@ -145,6 +168,6 @@ function showTokenId(rawTokenId) {
 }
 
 
-function lengthError(typeObj, length) {
-    return new Error(`[Error] Illegal length. ${ JSON.stringify(typeObj) }, data length: ${ length }`);
+function lengthError(typeObj, length, type = '') {
+    return new Error(`[Error] Illegal length. ${ JSON.stringify(typeObj) }, data length: ${ length }, ${ type }`);
 }

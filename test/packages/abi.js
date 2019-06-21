@@ -19,9 +19,17 @@ describe('encodeParameter', function () {
         const encodeParameterResult1 = abi.encodeParameter('uint8', '2');
         assert.equal('0000000000000000000000000000000000000000000000000000000000000002', encodeParameterResult1);
     });
-    it('int', function () {
+    it('int 2', function () {
         const encodeParameterResult1111 = abi.encodeParameter('int', '2');
         assert.equal('0000000000000000000000000000000000000000000000000000000000000002', encodeParameterResult1111);
+    });
+    it('int -2', function () {
+        const encodeParameterResult1111 = abi.encodeParameter('int', '-2');
+        assert.equal('fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe', encodeParameterResult1111);
+    });
+    it('int -19999999999999999999999999999999999999999999999999999999999999', function () {
+        const encodeParameterResult1111 = abi.encodeParameter('int', '-19999999999999999999999999999999999999999999999999999999999999');
+        assert.equal('fffffffffffff38dd0f10627f5529bdb2c52d4846810af0ac000000000000001', encodeParameterResult1111);
     });
     it('bytes', function () {
         const _xxx = abi.encodeParameter('bytes', '0xdf3234');
@@ -67,31 +75,60 @@ describe('encodeParameter', function () {
         const encodeParameterResult11 = abi.encodeParameter('int8', '2');
         assert.equal('0000000000000000000000000000000000000000000000000000000000000002', encodeParameterResult11);
     });
+    it('int8 -2', function () {
+        const encodeParameterResult1111 = abi.encodeParameter('int8', '-2');
+        assert.equal('fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe', encodeParameterResult1111);
+    });
     it('int8[]', function () {
         const encodeParameterResult12 = abi.encodeParameter('int8[]', [ 1, 2 ]);
         assert.equal('000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000002', encodeParameterResult12);
+    });
+    it('int8[] -', function () {
+        const encodeParameterResult14 = abi.encodeParameter('int8[]', [ -2, -99 ]);
+        assert.equal('0000000000000000000000000000000000000000000000000000000000000002fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffeffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff9d', encodeParameterResult14);
     });
     it('int16', function () {
         const encodeParameterResult13 = abi.encodeParameter('int16', '2');
         assert.equal('0000000000000000000000000000000000000000000000000000000000000002', encodeParameterResult13);
     });
+    it('int16 -2', function () {
+        const encodeParameterResult1111 = abi.encodeParameter('int16', '-2');
+        assert.equal('fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe', encodeParameterResult1111);
+    });
     it('int16[]', function () {
         const encodeParameterResult14 = abi.encodeParameter('int16[]', [ 1, 2 ]);
         assert.equal('000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000002', encodeParameterResult14);
     });
+    it('int16[] -', function () {
+        const encodeParameterResult14 = abi.encodeParameter('int16[]', [ -2, -99 ]);
+        assert.equal('0000000000000000000000000000000000000000000000000000000000000002fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffeffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff9d', encodeParameterResult14);
+    });
+
     it('int32', function () {
         const encodeParameterResult15 = abi.encodeParameter('int32', '2');
         assert.equal('0000000000000000000000000000000000000000000000000000000000000002', encodeParameterResult15);
+    });
+    it('int32 -2', function () {
+        const encodeParameterResult1111 = abi.encodeParameter('int32', '-2');
+        assert.equal('fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe', encodeParameterResult1111);
     });
     it('int32[]', function () {
         const encodeParameterResult16 = abi.encodeParameter('int32[]', [ 1, 2 ]);
         assert.equal('000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000002', encodeParameterResult16);
     });
+    it('int32[] -', function () {
+        const encodeParameterResult14 = abi.encodeParameter('int16[]', [ -2, -99 ]);
+        assert.equal('0000000000000000000000000000000000000000000000000000000000000002fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffeffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff9d', encodeParameterResult14);
+    });
     it('int64', function () {
         const encodeParameterResult17 = abi.encodeParameter('int64', '2');
         assert.equal('0000000000000000000000000000000000000000000000000000000000000002', encodeParameterResult17);
     });
-    it('nt64[]', function () {
+    it('int64 -2', function () {
+        const encodeParameterResult1111 = abi.encodeParameter('int64', '-2');
+        assert.equal('fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe', encodeParameterResult1111);
+    });
+    it('int64[]', function () {
         const encodeParameterResult18 = abi.encodeParameter('int64[]', [ 1, 2 ]);
         assert.equal('000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000002', encodeParameterResult18);
     });
@@ -99,6 +136,10 @@ describe('encodeParameter', function () {
     it('int256', function () {
         const encodeParameterResult19 = abi.encodeParameter('int256', '2');
         assert.equal('0000000000000000000000000000000000000000000000000000000000000002', encodeParameterResult19);
+    });
+    it('int256 -2', function () {
+        const encodeParameterResult1111 = abi.encodeParameter('int256', '-2');
+        assert.equal('fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe', encodeParameterResult1111);
     });
 
     it('int256[]', function () {
@@ -325,21 +366,53 @@ describe('decodeParameter', function () {
         const encodeParameterResult11 = abi.decodeParameter('int8', '0000000000000000000000000000000000000000000000000000000000000002');
         assert.equal('2', encodeParameterResult11);
     });
+    it('int8 -2', function () {
+        const encodeParameterResult1111 = abi.decodeParameter('int8', 'fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe');
+        assert.equal('-2', encodeParameterResult1111);
+    });
+    it('int8[] -', function () {
+        const encodeParameterResult14 = abi.decodeParameter('int8[]', '0000000000000000000000000000000000000000000000000000000000000002fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffeffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff9d');
+        assert.deepEqual([ -2, -99 ], encodeParameterResult14);
+    });
     it('int16', function () {
         const encodeParameterResult13 = abi.decodeParameter('int16', '0000000000000000000000000000000000000000000000000000000000000002');
         assert.equal('2', encodeParameterResult13);
+    });
+    it('int16 -2', function () {
+        const encodeParameterResult1111 = abi.decodeParameter('int16', 'fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe');
+        assert.equal('-2', encodeParameterResult1111);
+    });
+    it('int16[] -', function () {
+        const encodeParameterResult14 = abi.decodeParameter('int16[]', '0000000000000000000000000000000000000000000000000000000000000002fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffeffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff9d');
+        assert.deepEqual([ -2, -99 ], encodeParameterResult14);
     });
     it('int32', function () {
         const encodeParameterResult15 = abi.decodeParameter('int32', '0000000000000000000000000000000000000000000000000000000000000002');
         assert.equal('2', encodeParameterResult15);
     });
+    it('int32 -2', function () {
+        const encodeParameterResult1111 = abi.decodeParameter('int32', 'fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe');
+        assert.equal('-2', encodeParameterResult1111);
+    });
+    it('int32[] -', function () {
+        const encodeParameterResult14 = abi.decodeParameter('int16[]', '0000000000000000000000000000000000000000000000000000000000000002fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffeffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff9d');
+        assert.deepEqual([ -2, -99 ], encodeParameterResult14);
+    });
     it('int64', function () {
         const encodeParameterResult17 = abi.decodeParameter('int64', '0000000000000000000000000000000000000000000000000000000000000002');
         assert.equal('2', encodeParameterResult17);
     });
+    it('int64 -2', function () {
+        const encodeParameterResult1111 = abi.decodeParameter('int64', 'fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe');
+        assert.equal(-2, encodeParameterResult1111);
+    });
     it('int256', function () {
         const encodeParameterResult19 = abi.decodeParameter('int256', '0000000000000000000000000000000000000000000000000000000000000002');
         assert.equal('2', encodeParameterResult19);
+    });
+    it('int256 -2', function () {
+        const encodeParameterResult1111 = abi.decodeParameter('int256', 'fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe');
+        assert.equal(-2, encodeParameterResult1111);
     });
     it('uint16[]', function () {
         const encodeParameterResult4 = abi.decodeParameter('uint16[]', '000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000002');
@@ -552,6 +625,10 @@ describe('encodeParameters', function () {
         const encodeParametersResult6 = abi.encodeParameters([ 'string', 'bytes32[]', 'address' ], [ '4829482nsdkjskd', [ '0x0100000000000000000000000000000000000000000000000000000000000000', '0x0200000000000000000000000000000000000000000000000000000000000000' ], 'vite_010000000000000000000000000000000000000063bef3da00' ]);
         assert.equal('000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000a00000000000000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000f343832393438326e73646b6a736b640000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000201000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000', encodeParametersResult6);
     });
+    it('[ int64, int32[], int8 ]', function () {
+        const encodeParametersResult6 = abi.encodeParameters([ 'int64', 'int32[]', 'int8' ], [ -1, [ -99, -5 ], -9 ]);
+        assert.equal('ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000060fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff70000000000000000000000000000000000000000000000000000000000000002ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff9dfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffb', encodeParametersResult6);
+    });
 });
 
 describe('decodeParameters', function () {
@@ -597,6 +674,10 @@ describe('decodeParameters', function () {
     it('case 7', function () {
         const encodeParametersResult6 = abi.decodeParameters([ 'string', 'bytes32[]', 'address' ], '000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000f343832393438326e73646b6a736b640000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000201000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000');
         assert.deepEqual([ '4829482nsdkjskd', [ '0100000000000000000000000000000000000000000000000000000000000000', '0200000000000000000000000000000000000000000000000000000000000000' ], 'vite_00010000000000000000000000000000000000005cce05dbde' ], encodeParametersResult6);
+    });
+    it('case 8', function () {
+        const encodeParametersResult6 = abi.decodeParameters([ 'int64', 'int32[]', 'int8' ], 'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000060fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff70000000000000000000000000000000000000000000000000000000000000002ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff9dfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffb');
+        assert.deepEqual([ -1, [ -99, -5 ], -9 ], encodeParametersResult6);
     });
 });
 
@@ -773,6 +854,14 @@ describe('encodeFunctionCall', function () {
         } ], [ '2345675643', 'Hello!%' ], 'myMethod');
         assert.equal('96173f6c000000000000000000000000000000000000000000000000000000008bd02b7b0000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000000748656c6c6f212500000000000000000000000000000000000000000000000000', result1);
     });
+    it('case 3 int16[]', function () {
+        const encodeParameterResult14 = abi.encodeFunctionCall({ 'constant': false, 'inputs': [{ 'name': 'proposal', 'type': 'int16[]' }], 'name': 'vote', 'outputs': [], 'payable': false, 'stateMutability': 'nonpayable', 'type': 'function' }, [[ -2, -2 ]]);
+        assert.equal('aa941d3300000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000002fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffefffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe', encodeParameterResult14);
+    });
+    it('case 4 int16[]', function () {
+        const encodeParameterResult14 = abi.encodeFunctionCall({ 'constant': false, 'inputs': [{ 'name': 'proposal', 'type': 'int16[]' }], 'name': 'vote', 'outputs': [], 'payable': false, 'stateMutability': 'nonpayable', 'type': 'function' }, [[ -2, -9999 ]]);
+        assert.equal('aa941d3300000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000002fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffeffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffd8f1', encodeParameterResult14);
+    });
 });
 
 describe('encode2decode', function () {
@@ -788,4 +877,32 @@ describe('encode2decode', function () {
         const result = abi.encodeParameter('string', '我也圣诞节');
         assert.equal('我也圣诞节', abi.decodeParameter('string', result));
     });
+    it('case 4', function () {
+        const result = abi.encodeParameter('int8', -1);
+        assert.equal(-1, abi.decodeParameter('int8', result));
+    });
+    it('case 5', function () {
+        const result = abi.encodeParameter('int', '-199999999999999999');
+        assert.equal(-199999999999999999, abi.decodeParameter('int', result));
+    });
 });
+
+// describe('en', function () {
+//     it('uint', function () {
+//         const _r1 = abi.encodeParameter('uint', '-2');
+//         assert.equal('000000000000000000000000000000000000000000000000000000008bd02b7b', _r1);
+//     });
+//     it('int', function () {
+//         const _r1 = abi.encodeParameter('int8', '-9999');
+//         assert.equal('000000000000000000000000000000000000000000000000000000008bd02b7b', _r1);
+//     });
+//     it('int', function () {
+//         const _r1 = abi.encodeParameter('int8', '9999');
+//         assert.equal('000000000000000000000000000000000000000000000000000000008bd02b7b', _r1);
+//     });
+//     it('int -19999999999999999999999999999999999999999999999999999999999999', function () {
+//         const encodeParameterResult1111 = abi.decodeParameter('int8', 'fffffffffffff38dd0f10627f5529bdb2c52d4846810af0ac000000000000001');
+//         assert.equal('-99', encodeParameterResult1111);
+//     });
+// });
+

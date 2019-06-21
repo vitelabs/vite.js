@@ -11,7 +11,7 @@ export function encode(typeObj, params) {
     let result = dynamicEncode(Bytes_Data);
     if (typeObj.type === 'bytes') {
         const dataLength = 32 * Math.ceil(Bytes_Data.length / 32);
-        result = commonEncode({ type: 'number', byteLength: 32 }, dataLength).result + result;
+        result = commonEncode({ type: 'number', typeStr: 'uint', byteLength: 32 }, dataLength).result + result;
     }
 
     return { result, typeObj };
@@ -71,7 +71,7 @@ function dynamicEncode(bytesData) {
     const Str_Len = bytesData.length;
     const Data_Length = 32 * Math.ceil(Str_Len / 32);
 
-    const bytesLen = commonEncode({ type: 'number', byteLength: 32 }, Str_Len).result;
+    const bytesLen = commonEncode({ type: 'number', typeStr: 'uint', byteLength: 32 }, Str_Len).result;
 
     const len = bytesLen.length / 2 + Data_Length;
     const arr = new Uint8Array(len);
@@ -82,7 +82,7 @@ function dynamicEncode(bytesData) {
 }
 
 function dynamicDecode(params) {
-    const Str_Len = commonDecode({ type: 'number', byteLength: 32 }, params.substring(0, 64)).result;
+    const Str_Len = commonDecode({ type: 'number', typeStr: 'uint', byteLength: 32 }, params.substring(0, 64)).result;
     const Data_Length = 32 * Math.ceil(Str_Len / 32);
 
     return {

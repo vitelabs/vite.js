@@ -87,7 +87,7 @@ export function encodeParameters(types, params) {
         }
 
         const index = (totalLength + dynamicResult.length) / 2;
-        result += encode.number({ type: 'number', byteLength: 32, isArr: false }, index).result;
+        result += encode.number({ type: 'number', typeStr: 'uint', byteLength: 32, isArr: false }, index).result;
         dynamicResult += dynamicRes.shift();
     });
 
@@ -124,7 +124,7 @@ export function decodeParameters(types, params) {
             return;
         }
 
-        const _res = decode.number({ type: 'number', byteLength: 32, isArr: false }, _params);
+        const _res = decode.number({ type: 'number', typeStr: 'uint', byteLength: 32, isArr: false }, _params);
         const index = _res.result;
         _params = _res.params;
         indexArr.push(index * 2);
@@ -152,7 +152,7 @@ export function decodeParameters(types, params) {
 
         if (_res.typeObj.type === 'bytes' && !_res.typeObj.isArr) {
             const len = 32 * Math.ceil(_p.length / 2 / 32);
-            _p = encode.number({ type: 'number', byteLength: 32 }, len).result + _p;
+            _p = encode.number({ type: 'number', typeStr: 'uint', byteLength: 32 }, len).result + _p;
         }
         currentInx++;
 
@@ -175,7 +175,7 @@ function encodeArr(typeObj, arrLen, params) {
     });
 
     const bytesArrLen = arrLen ? ''
-        : encode.number({ type: 'number', byteLength: 32, isArr: false }, params.length).result;
+        : encode.number({ type: 'number', typeStr: 'uint', byteLength: 32, isArr: false }, params.length).result;
 
     return bytesArrLen + result;
 }
@@ -203,7 +203,7 @@ function decodeArr(typeObj, arrLen, params) {
     let _param = params;
     if (typeObj.isDynamic) {
         const len = params.substring(0, 64);
-        arrLen = decode.number({ type: 'number', byteLength: 32, isArr: false }, len).result;
+        arrLen = decode.number({ type: 'number', typeStr: 'uint', byteLength: 32, isArr: false }, len).result;
         _param = params.substring(64);
     }
 
