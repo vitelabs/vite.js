@@ -6,7 +6,7 @@ import { paramsFormat } from '~@vite/vitejs-error';
 import { Default_Hash, Contracts } from '~@vite/vitejs-constant';
 import { encodeFunctionSignature, decodeLog } from '~@vite/vitejs-abi';
 
-import { formatAccountBlock, isAccountBlock, getContractTxType } from './builtin';
+import { formatAccountBlock, isAccountBlock, getContractTxType, checkBlock } from './builtin';
 import { AccountBlock, Address, BlockType, SignBlock, sendTxBlock, receiveTxBlock, syncFormatBlock } from './type';
 
 const { getPublicKey, sign } = ed25519;
@@ -97,6 +97,8 @@ export function getTxType({ toAddress, data, blockType }, contractTxType?): {
 // hash = HashFunction(BlockType + PrevHash  + Height + AccountAddress + FromBlockHash + Data + Fee + LogHash + Nonce + sendBlock + hashList）
 
 export function getBlockHash(accountBlock: SignBlock) {
+    checkBlock(accountBlock);
+
     let source = '';
 
     const blockType = Buffer.from([accountBlock.blockType]).toString('hex');
@@ -135,6 +137,8 @@ export function getBlockHash(accountBlock: SignBlock) {
 }
 
 export function signAccountBlock(accountBlock: SignBlock, privKey: string) {
+    checkBlock(accountBlock);
+
     const hashHex = getBlockHash(accountBlock);
     const _privKey = Buffer.from(privKey, 'hex');
     const pubKey = getPublicKey(_privKey);
@@ -156,7 +160,7 @@ export function decodeBlockByContract({ accountBlock, contractAddr, abi, topics 
     topics?: any;
     mehtodName?: string;
 }) {
-    let err = checkParams({ accountBlock, contractAddr, abi }, [ 'accountBlock', 'contractAddr', 'abi' ], [{
+    const err = checkParams({ accountBlock, contractAddr, abi }, [ 'accountBlock', 'contractAddr', 'abi' ], [{
         name: 'contractAddr',
         func: isValidHexAddr
     }]);
@@ -164,10 +168,7 @@ export function decodeBlockByContract({ accountBlock, contractAddr, abi, topics 
         throw err;
     }
 
-    err = isAccountBlock(accountBlock);
-    if (err) {
-        throw err;
-    }
+    checkBlock(accountBlock);
 
     if (accountBlock.blockType !== BlockType.TxReq) {
         throw new Error(`AccountBlock's blockType isn't ${ BlockType.TxReq }`);

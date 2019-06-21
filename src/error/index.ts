@@ -28,6 +28,16 @@ export const addressMissing = {
     message: 'Address does not exist'
 };
 
+export const integerIllegal = {
+    code: '200003',
+    message: 'Illegal integer'
+};
+
+export const unsafeInteger = {
+    code: '200004',
+    message: 'Unsafe integer'
+};
+
 export const requestTimeout = {
     code: '300001',
     message: 'Request timeout'

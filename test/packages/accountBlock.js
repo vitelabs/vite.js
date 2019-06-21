@@ -238,7 +238,7 @@ describe('signAccountBlock', function () {
 });
 
 describe('accountBlock builtin function', function () {
-    it('encodeCreateContruct case 1', function () {
+    it('getCreateContractData case 1', function () {
         const _data = getCreateContractData({
             abi: [{ 'type': 'constructor', 'inputs': [{ 'type': 'address' }] }],
             hexCode: '6080',
@@ -249,7 +249,7 @@ describe('accountBlock builtin function', function () {
         assert.equal('AAAAAAAAAAAAAgEKCmCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=', _data);
     });
 
-    it('encodeCreateContruct case 2', function () {
+    it('getCreateContractData case 2', function () {
         const _data = getCreateContractData({
             abi: [{ 'type': 'constructor', 'inputs': [] }],
             hexCode: '6080',
@@ -260,7 +260,7 @@ describe('accountBlock builtin function', function () {
     });
 
 
-    it('encodeCreateContruct case 3', function () {
+    it('getCreateContractData case 3', function () {
         const _data = getCreateContractData({
             abi: [{ 'type': 'constructor' }],
             hexCode: '6080',
@@ -270,14 +270,14 @@ describe('accountBlock builtin function', function () {
         assert.equal('AAAAAAAAAAAAAgEKCmCA', _data);
     });
 
-    it('encodeCreateContruct case 4', function () {
+    it('getCreateContractData case 4', function () {
         const _data = getCreateContractData({
             hexCode: '6080',
             confirmTimes: 10,
-            times: 1.5
+            times: 15
         });
 
-        assert.equal('AAAAAAAAAAAAAgEKAWCA', _data);
+        assert.equal('AAAAAAAAAAAAAgEKD2CA', _data);
     });
 
     it('getAbi', function () {

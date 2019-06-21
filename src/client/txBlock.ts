@@ -138,7 +138,7 @@ export default class Tx {
             func: validReqType
         } ]);
         if (err) {
-            return Promise.reject(err);
+            throw err;
         }
 
         const block = requestType === 'async'

@@ -1,14 +1,19 @@
 const BigNumber = require('bn.js');
-import { paramsMissing, paramsConflict } from '~@vite/vitejs-error';
+
+import { paramsMissing, paramsConflict, integerIllegal, unsafeInteger } from '~@vite/vitejs-error';
 import { Vite_TokenId, Default_Hash, Delegate_Gid, BlockType } from '~@vite/vitejs-constant';
 import { isValidHexAddr } from '~@vite/vitejs-privtoaddr';
-import { checkParams, validInteger, isArray, isObject } from '~@vite/vitejs-utils';
+import { checkParams, isSafeInteger, isArray, isObject, isNonNegativeInteger } from '~@vite/vitejs-utils';
 import { encodeParameters, encodeFunctionSignature } from '~@vite/vitejs-abi';
 
 import { SignBlock, formatBlock } from './type';
 
 
-export function formatAccountBlock({ blockType, fromBlockHash, accountAddress, message, data, height, prevHash, tokenId = Vite_TokenId, fee, toAddress, amount, nonce }: formatBlock) {
+export function formatAccountBlock(accountBlock: formatBlock) {
+    checkBlock(accountBlock);
+
+    const { blockType, fromBlockHash, accountAddress, message, data, height, prevHash, tokenId = Vite_TokenId, fee, toAddress, amount, nonce } = accountBlock;
+
     const _height = height ? new BigNumber(height).add(new BigNumber(1)).toString() : '1';
     const _prevHash = prevHash || Default_Hash;
 
@@ -56,8 +61,8 @@ export function isAccountBlock({ blockType, fromBlockHash, accountAddress, messa
         msg: `Don\'t have blockType ${ blockType }`
     }, {
         name: 'amount',
-        func: validInteger,
-        msg: 'Amount must be an integer string.'
+        func: isNonNegativeInteger,
+        msg: 'Amount must be an non-negative integer string.'
     } ]);
 
     if (err) {
@@ -82,6 +87,17 @@ export function isAccountBlock({ blockType, fromBlockHash, accountAddress, messa
 }
 
 export function getCreateContractData({ abi, hexCode, params, confirmTimes = 0, times = 10 }) {
+    const err = checkParams({ confirmTimes, times }, [ 'confirmTimes', 'times' ], [ {
+        name: 'confirmTimes',
+        func: _c => _c >= 0 && _c <= 75
+    }, {
+        name: 'times',
+        func: _c => _c >= 10 && _c <= 100
+    } ]);
+    if (err) {
+        throw err;
+    }
+
     const jsonInterface = getAbi(abi);
     const _confirmTimes = new BigNumber(confirmTimes).toArray();
     const _times = new BigNumber(times).toArray();
@@ -143,4 +159,22 @@ export function getContractTxType(_contracts: Object) {
     }
 
     return txType;
+}
+
+export function checkBlock(accountBlock) {
+    const err = isAccountBlock(accountBlock);
+    if (err) {
+        throw err;
+    }
+
+    if (!accountBlock.height) {
+        return;
+    }
+
+    const isSafe = isSafeInteger(accountBlock.height);
+    if (isSafe === -1) {
+        throw new Error(`${ integerIllegal.message } accountBlock.height ${ accountBlock.height }`);
+    } else if (isSafe === 0) {
+        throw new Error(`${ unsafeInteger.message } accountBlock.height ${ accountBlock.height }`);
+    }
 }

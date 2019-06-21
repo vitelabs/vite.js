@@ -27,6 +27,8 @@ export enum TxType {
     'DexTradeCancelOrder',
     'DexFundNewMarket',
     'CreateContractReq',
+    'dexFundPledgeForVx',
+    'DexFundPledgeForVip',
     'TxReq',
     'RewardReq',
     'TxRes',

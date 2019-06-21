@@ -2,9 +2,9 @@ const assert = require('assert');
 
 import {
     hexToBytes, utf8ToBytes, bytesToHex, getBytesSize,
-    getRawTokenId, validNodeName, validInteger, getTokenIdFromRaw, uriStringify,
-    ed25519
-} from '../../src/utils';
+    getRawTokenId, validNodeName, isNonNegativeInteger,
+    isInteger, getTokenIdFromRaw, uriStringify, ed25519
+} from '../../src/utils/index';
 
 const { keyPair, verify, getPublicKey, sign, random } = ed25519;
 
@@ -65,12 +65,25 @@ describe('tools', function () {
         assert.equal(false, validNodeName('2323_sd  sd'));
         assert.equal(false, validNodeName('232涉及到法律是否啊3_sd  sd'));
     });
-    it('validInteger', function () {
-        assert.equal(false, validInteger('232   2323'));
-        assert.equal(true, validInteger('2323'));
-        assert.equal(false, validInteger('0000'));
-        assert.equal(true, validInteger('0'));
-        assert.equal(false, validInteger('0.23829'));
+    it('isNonNegativeInteger', function () {
+        assert.equal(false, isNonNegativeInteger('232   2323'));
+        assert.equal(true, isNonNegativeInteger('2323'));
+        assert.equal(false, isNonNegativeInteger('0000'));
+        assert.equal(true, isNonNegativeInteger('0'));
+        assert.equal(false, isNonNegativeInteger('0.23829'));
+    });
+    it('isInteger', function () {
+        assert.equal(false, isInteger('232   2323'));
+        assert.equal(true, isInteger('2323'));
+        assert.equal(true, isInteger('209823'));
+        assert.equal(false, isInteger('09823'));
+        assert.equal(false, isInteger('-09823'));
+        assert.equal(false, isInteger('0000'));
+        assert.equal(true, isInteger('0'));
+        assert.equal(false, isInteger('-0'));
+        assert.equal(true, isInteger('-209823'));
+        assert.equal(false, isInteger('-2.323'));
+        assert.equal(false, isInteger('0.23829'));
     });
 });
 

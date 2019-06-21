@@ -1,8 +1,10 @@
 // address bool gid number
 
 const BigNumber = require('bn.js');
+
+import { unsafeInteger, integerIllegal } from '~@vite/vitejs-error';
 import { getHexAddrFromAddr, getAddrFromHexAddr } from '~@vite/vitejs-privtoaddr';
-import { getRawTokenId, getTokenIdFromRaw } from '~@vite/vitejs-utils';
+import { getRawTokenId, getTokenIdFromRaw, isSafeInteger } from '~@vite/vitejs-utils';
 
 
 export function encode(typeObj, params) {
@@ -109,6 +111,13 @@ function formatGid(gid) {
 }
 
 function formatNumber(params, typeStr, actualByteLen?) {
+    const isSafe = isSafeInteger(params);
+    if (isSafe === -1) {
+        throw new Error(`${ integerIllegal.message }, number: ${ params }, type: ${ typeStr }`);
+    } else if (isSafe === 0) {
+        throw new Error(`${ unsafeInteger.message }, number: ${ params }, type: ${ typeStr }`);
+    }
+
     const num = new BigNumber(params);
     const bitLen = num.bitLength();
 

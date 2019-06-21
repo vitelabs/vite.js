@@ -143,6 +143,14 @@ export const Contracts = {
     DexFundNewMarket: {
         contractAddr: DexFund_Addr,
         abi: DexFundNewMarket_Abi
+    },
+    DexFundPledgeForVx: {
+        contractAddr: DexFund_Addr,
+        abi: DexFundPledgeForVx_Abi
+    },
+    DexFundPledgeForVip: {
+        contractAddr: DexFund_Addr,
+        abi: DexFundPledgeForVip_Abi
     }
 };
 

@@ -92,8 +92,12 @@ export function validNodeName(nodeName) {
     return /^[a-zA-Z0-9_\.]+(\s{1}[a-zA-Z0-9_\.]+)*$/g.test(nodeName) && nodeName.length <= 40;
 }
 
-export function validInteger(num) {
+export function isNonNegativeInteger(num) {
     return num && (/(^[1-9]\d*$)/g.test(num) || num === '0');
+}
+
+export function isInteger(num) {
+    return num && (/^[\-]{0,1}[1-9]\d*$/g.test(num) || num === '0');
 }
 
 export const isArray = Array.isArray || function (obj) {
@@ -191,6 +195,19 @@ export function utf8ToBytes(str = '') {
     }
 
     return new Uint8Array(back);
+}
+
+export function isSafeInteger(num) {
+    if (typeof num === 'string') {
+        return isInteger(num) ? 1 : -1;
+    }
+    if (typeof num !== 'number') {
+        return -1;
+    }
+    if (!Number.isSafeInteger(num)) {
+        return 0;
+    }
+    return 1;
 }
 
 export const _Buffer = Buffer;
