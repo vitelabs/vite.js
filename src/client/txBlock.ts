@@ -3,7 +3,7 @@ import {
     Pledge_Addr, Vote_Addr, Register_Addr, Mintage_Addr, DexFund_Addr, DexTrade_Addr,
     Register_Abi, UpdateRegistration_Abi, CancelRegister_Abi,
     Reward_Abi, Vote_Abi, CancelVote_Abi, Pledge_Abi, CancelPledge_Abi,
-    Mint_Abi, Issue_Abi, Burn_Abi, ChangeTokenType_Abi, TransferOwner_Abi, CancelMintPledge_Abi,
+    Mint_Abi, Issue_Abi, Burn_Abi, ChangeTokenType_Abi, TransferOwner_Abi,
     DexFundUserDeposit_Abi, DexFundUserWithdraw_Abi, DexTradeCancelOrder_Abi, DexFundNewOrder_Abi, DexFundNewMarket_Abi,
     DexFundConfigMineMarket_Abi, DexFundPledgeForVx_Abi, DexFundPledgeForVip_Abi
 } from '~@vite/vitejs-constant';
@@ -160,11 +160,11 @@ export default class Tx {
             func: validReqType
         }]);
         if (err) {
-            return Promise.reject(err);
+            throw err;
         }
 
         const data = encodeFunctionCall(abi, params, methodName);
-        return this[`${ requestType }AccountBlock`]({
+        const item = {
             blockType: 2,
             accountAddress,
             toAddress,
@@ -174,7 +174,13 @@ export default class Tx {
             prevHash,
             tokenId,
             amount
-        });
+        };
+
+        if (requestType === 'sync') {
+            return getAccountBlock(item);
+        }
+
+        return this.asyncAccountBlock(item);
     }
 
     async SBPreg({ accountAddress, nodeName, toAddress, amount, tokenId = Vite_TokenId, height, prevHash }: SBPregBlock, requestType = 'async') {
@@ -337,7 +343,7 @@ export default class Tx {
             return Promise.reject(err);
         }
 
-        const requestBlock = {
+        return this.callContract({
             abi: Mint_Abi,
             toAddress: Mintage_Addr,
             params: [ isReIssuable, tokenName, tokenSymbol, totalSupply, decimals, maxSupply, ownerBurnOnly ],
@@ -345,24 +351,6 @@ export default class Tx {
             height,
             prevHash,
             fee: '1000000000000000000000'
-        };
-
-        return this.callContract(requestBlock, requestType);
-    }
-
-    async mintageCancelPledge({ accountAddress, tokenId, height, prevHash }: changeTokenTypeBlock, requestType = 'async') {
-        const err = checkParams({ tokenId }, ['tokenId']);
-        if (err) {
-            return Promise.reject(err);
-        }
-
-        return this.callContract({
-            abi: CancelMintPledge_Abi,
-            params: [tokenId],
-            toAddress: Mintage_Addr,
-            accountAddress,
-            height,
-            prevHash
         }, requestType);
     }
 
@@ -412,8 +400,8 @@ export default class Tx {
         }, requestType);
     }
 
-    async changeTransferOwner({ accountAddress, ownerAddress, tokenId, height, prevHash }: changeTransferOwnerBlock, requestType = 'async') {
-        const err = checkParams({ tokenId, ownerAddress }, [ 'tokenId', 'ownerAddress' ]);
+    async changeTransferOwner({ accountAddress, newOwner, tokenId, height, prevHash }: changeTransferOwnerBlock, requestType = 'async') {
+        const err = checkParams({ tokenId, newOwner }, [ 'tokenId', 'newOwner' ]);
         if (err) {
             return Promise.reject(err);
         }
@@ -421,7 +409,7 @@ export default class Tx {
         return this.callContract({
             abi: TransferOwner_Abi,
             toAddress: Mintage_Addr,
-            params: [ tokenId, ownerAddress ],
+            params: [ tokenId, newOwner ],
             accountAddress,
             height,
             prevHash

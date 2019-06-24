@@ -34,7 +34,6 @@ export const Issue_Abi = { 'type': 'function', 'name': 'Issue', 'inputs': [ { 'n
 export const Burn_Abi = { 'type': 'function', 'name': 'Burn', 'inputs': [] };
 export const TransferOwner_Abi = { 'type': 'function', 'name': 'TransferOwner', 'inputs': [ { 'name': 'tokenId', 'type': 'tokenId' }, { 'name': 'newOwner', 'type': 'address' } ] };
 export const ChangeTokenType_Abi = { 'type': 'function', 'name': 'ChangeTokenType', 'inputs': [{ 'name': 'tokenId', 'type': 'tokenId' }] };
-export const CancelMintPledge_Abi = { 'type': 'function', 'name': 'CancelMintPledge', 'inputs': [{ 'name': 'tokenId', 'type': 'tokenId' }] };
 
 // DEX
 export const DexTradeCancelOrder_Abi = { 'type': 'function', 'name': 'DexTradeCancelOrder', 'inputs': [{ 'name': 'orderId', 'type': 'bytes' }] };
@@ -119,10 +118,6 @@ export const Contracts = {
     MintageChangeTokenType: {
         contractAddr: Mintage_Addr,
         abi: ChangeTokenType_Abi
-    },
-    MintageCancelPledge: {
-        contractAddr: Mintage_Addr,
-        abi: CancelMintPledge_Abi
     },
     DexFundUserDeposit: {
         contractAddr: DexFund_Addr,

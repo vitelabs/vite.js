@@ -239,7 +239,7 @@ export declare type changeTokenTypeBlock = {
 export declare type changeTransferOwnerBlock = {
     accountAddress: Address;
     tokenId: TokenId;
-    ownerAddress: Address;
+    newOwner: Address;
     prevHash?: Hex;
     height?: Uint64;
 }

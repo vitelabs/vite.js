@@ -28,7 +28,6 @@ const required = [
     'Burn_Abi',
     'TransferOwner_Abi',
     'ChangeTokenType_Abi',
-    'CancelMintPledge_Abi',
     'DexFundUserDeposit_Abi',
     'DexFundUserWithdraw_Abi',
     'DexTradeCancelOrder_Abi',
