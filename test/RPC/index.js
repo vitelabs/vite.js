@@ -1,7 +1,7 @@
 // import './getViteFromWorld';
 
-require('./wallet');
+// require('./wallet');
 
-// describe('RPC AccountBlock Test', function() {
-//     require('./accountBlock');
-// });
+describe('RPC AccountBlock Test', function() {
+    require('./accountBlock');
+});

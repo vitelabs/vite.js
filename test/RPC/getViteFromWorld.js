@@ -1,8 +1,9 @@
+const config = require('../../rpcConfig.js');
+
 import HTTP_RPC from '../../src/HTTP';
 import Client from '../../src/client/index';
 import HdAccount from '../../src/hdAccount/index';
 import { Vite_TokenId } from '../../src/constant/index';
-import config from '../../rpcConfig';
 
 const Default_Amount = '1000000000000000000000000'; // 1000000 VITE
 

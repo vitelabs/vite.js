@@ -1,8 +1,9 @@
+const config = require('../../rpcConfig.js');
+
 import HTTP_RPC from '../../src/HTTP';
 import Client from '../../src/client/index';
 import HdAccount from '../../src/hdAccount/index';
 import { Vite_TokenId } from '../../src/constant/index';
-import config from '../../rpcConfig';
 import GetViteFromWorld from './getViteFromWorld';
 
 const provider = new Client(new HTTP_RPC(config.http), () => {
@@ -36,8 +37,8 @@ async function TestFunc() {
     console.log('Step 2 SendTxToMyself. \n');
     await SendTxToMyself();
 
-    // console.log('Step 3 ReceiveTx. \n');
-    // await ReceiveTx();
+    console.log('Step 3 ReceiveTx. \n');
+    await ReceiveTx();
 
     // console.log('Step 4 SBPreg. \n');
     // await SBPreg();
@@ -54,14 +55,14 @@ async function TestFunc() {
     // console.log('Step 8 revokeVoting. \n');
     // await revokeVoting();
 
-    // console.log('Step 9 getQuota. \n');
-    // await checkQuota();
+    console.log('Step 9 getQuota. \n');
+    await checkQuota();
 
-    // console.log('Step 10 withdrawalOfQuota. \n');
-    // await withdrawalOfQuota();
+    console.log('Step 10 withdrawalOfQuota. \n');
+    await withdrawalOfQuota();
 
-    // console.log('Step 11 createContract. \n');
-    // await createContract();
+    console.log('Step 11 createContract. \n');
+    await createContract();
 
     console.log('Step 12 callOffChainContract. \n');
     await callOffChainContract();
