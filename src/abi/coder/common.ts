@@ -16,7 +16,7 @@ export function encodeBytesData(typeObj, Bytes_Data) {
     const Byte_Len = typeObj.byteLength;
     const Offset = Byte_Len - Bytes_Data.length;
     if (Offset < 0) {
-        throw lengthError(typeObj, Bytes_Data.length, 'Offset');
+        throw lengthError(typeObj, Bytes_Data.length, 'Offset < 0');
     }
 
     const result = new Uint8Array(Byte_Len);
@@ -38,13 +38,13 @@ export function decodeToHexData(typeObj, params) {
     const Data_Len = _params.length / 2;
 
     if (Byte_Len !== Data_Len) {
-        throw lengthError(typeObj, Data_Len);
+        throw lengthError(typeObj, Data_Len, 'Byte_Len !== Data_Len');
     }
 
     const Actual_Byte_Len = typeObj.actualByteLen;
     const Offset = Byte_Len - Actual_Byte_Len;
     if (Data_Len < Offset) {
-        throw lengthError(typeObj, Actual_Byte_Len);
+        throw lengthError(typeObj, Actual_Byte_Len, 'Data_Len < Offset');
     }
 
     return {

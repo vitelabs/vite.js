@@ -1,10 +1,11 @@
 const assert = require('assert');
 
-import { encodeFunctionSignature } from '../../src/abi/index';
+import { encodeFunctionSignature, encodeFunctionCall } from '../../src/abi/index';
 import Client from '../../src/client/index';
 import netProcessor from '../../src/netProcessor/index';
-import { methods } from '../../src/constant';
-import HTTP_RPC from '../../src/HTTP';
+import { methods } from '../../src/constant/index';
+import HTTP_RPC from '../../src/HTTP/index';
+import { getTxType } from '../../src/accountblock/index';
 
 const myWSClient = new Client({ type: 'ws' });
 const myHTTPClient = new Client(new HTTP_RPC());
@@ -56,9 +57,19 @@ describe('Client addTxType', function () {
 
     myHTTPClient.addTxType({ helloWorld: { contractAddr, abi }});
     const signFunc = encodeFunctionSignature(abi);
+    const key = `${ signFunc }_${ contractAddr }`;
 
     it('isHaveTxType', function () {
-        assert(myHTTPClient.customTxType[`${ signFunc }_${ contractAddr }`].txType, 'helloWorld');
+        assert(myHTTPClient.customTxType[key].txType, 'helloWorld');
+    });
+
+    it('getTxType custom', function () {
+        const txtypeObj = getTxType({
+            blockType: 2,
+            data: Buffer.from(encodeFunctionCall(abi), 'hex').toString('base64'),
+            toAddress: contractAddr // [TODO] Whether is contractAddress or not
+        }, myHTTPClient.customTxType);
+        assert.deepEqual(txtypeObj, myHTTPClient.customTxType[key]);
     });
 });
 

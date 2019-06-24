@@ -31,14 +31,14 @@ async function TestFunc() {
     console.log('Step 0 CheckHeight. \n');
     await CheckHeight();
 
-    console.log('Step 1 CheckMyBalance. \n');
-    await CheckMyBalance();
+    // console.log('Step 1 CheckMyBalance. \n');
+    // await CheckMyBalance();
 
-    console.log('Step 2 SendTxToMyself. \n');
-    await SendTxToMyself();
+    // console.log('Step 2 SendTxToMyself. \n');
+    // await SendTxToMyself();
 
-    console.log('Step 3 ReceiveTx. \n');
-    await ReceiveTx();
+    // console.log('Step 3 ReceiveTx. \n');
+    // await ReceiveTx();
 
     // console.log('Step 4 SBPreg. \n');
     // await SBPreg();
@@ -55,14 +55,14 @@ async function TestFunc() {
     // console.log('Step 8 revokeVoting. \n');
     // await revokeVoting();
 
-    console.log('Step 9 getQuota. \n');
-    await checkQuota();
+    // console.log('Step 9 getQuota. \n');
+    // await checkQuota();
 
-    console.log('Step 10 withdrawalOfQuota. \n');
-    await withdrawalOfQuota();
+    // console.log('Step 10 withdrawalOfQuota. \n');
+    // await withdrawalOfQuota();
 
-    console.log('Step 11 createContract. \n');
-    await createContract();
+    // console.log('Step 11 createContract. \n');
+    // await createContract();
 
     console.log('Step 12 callOffChainContract. \n');
     await callOffChainContract();

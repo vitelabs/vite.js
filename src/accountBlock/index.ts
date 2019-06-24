@@ -6,7 +6,7 @@ import { paramsFormat } from '~@vite/vitejs-error';
 import { Default_Hash, Contracts } from '~@vite/vitejs-constant';
 import { encodeFunctionSignature, decodeLog } from '~@vite/vitejs-abi';
 
-import { formatAccountBlock, isAccountBlock, getContractTxType, checkBlock } from './builtin';
+import { formatAccountBlock, getContractTxType, checkBlock } from './builtin';
 import { AccountBlock, Address, BlockType, SignBlock, sendTxBlock, receiveTxBlock, syncFormatBlock } from './type';
 
 const { getPublicKey, sign } = ed25519;
@@ -18,11 +18,6 @@ export function getAccountBlock({ blockType, fromBlockHash, accountAddress, mess
         const message = `${ error.message || '' } ${ errMsg }`;
         throw new Error(message);
     };
-
-    const err = isAccountBlock({ blockType, fromBlockHash, accountAddress, message, data, toAddress, amount });
-    if (err) {
-        throw err;
-    }
 
     if (!height && prevHash) {
         return reject(paramsFormat, 'No height but prevHash.');
@@ -74,6 +69,19 @@ export function getTxType({ toAddress, data, blockType }, contractTxType?): {
     contractAddr?: Address;
     abi?: Object;
 } {
+    const err = checkParams({ blockType, toAddress }, [ 'blockType', 'toAddress' ], [ {
+        name: 'toAddress',
+        func: isValidHexAddr
+    }, {
+        name: 'blockType',
+        func: _b => BlockType[_b],
+        msg: `Don\'t have blockType ${ blockType }`
+    } ]);
+
+    if (err) {
+        throw err;
+    }
+
     blockType = Number(blockType);
     const defaultType = { txType: BlockType[blockType] };
 

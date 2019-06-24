@@ -1,13 +1,13 @@
 const assert = require('assert');
 
-const { client } = require('../../src/vitejs');
-const { WS_RPC } = require('../../src/WS');
-const { HTTP_RPC } = require('../../src/HTTP');
-const { IPC_RPC } = require('../../src/IPC');
-const { addrAccount } = require('../../src/addrAccount');
-const { account } = require('../../src/account');
-const { hdAccount } = require('../../src/hdAccount');
-const { netProcessor } = require('../../src/netProcessor');
+const { account } = require('../../src/account/index');
+const { addrAccount } = require('../../src/addrAccount/index');
+const { client } = require('../../src/vitejs/index');
+const { WS_RPC } = require('../../src/WS/index');
+const { HTTP_RPC } = require('../../src/HTTP/index');
+const { IPC_RPC } = require('../../src/IPC/index');
+const { hdAccount } = require('../../src/hdAccount/index');
+const { netProcessor } = require('../../src/netProcessor/index');
 
 it('client', function () {
     assert(typeof client, 'function');

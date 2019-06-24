@@ -3,7 +3,8 @@ const assert = require('assert');
 import {
     hexToBytes, utf8ToBytes, bytesToHex, getBytesSize,
     getRawTokenId, validNodeName, isNonNegativeInteger,
-    isInteger, getTokenIdFromRaw, uriStringify, ed25519
+    isInteger, getTokenIdFromRaw, uriStringify, ed25519,
+    isSafeInteger
 } from '../../src/utils/index';
 
 const { keyPair, verify, getPublicKey, sign, random } = ed25519;
@@ -84,6 +85,22 @@ describe('tools', function () {
         assert.equal(true, isInteger('-209823'));
         assert.equal(false, isInteger('-2.323'));
         assert.equal(false, isInteger('0.23829'));
+    });
+    it('isSafeInteger', function () {
+        assert.equal(-1, isSafeInteger('232   2323'));
+        assert.equal(1, isSafeInteger('2323'));
+        assert.equal(1, isSafeInteger(209823));
+        assert.equal(-1, isSafeInteger('09823'));
+        assert.equal(-1, isSafeInteger('-09823'));
+        assert.equal(-1, isSafeInteger('0000'));
+        assert.equal(1, isSafeInteger('0'));
+        assert.equal(-1, isSafeInteger('-0'));
+        assert.equal(1, isSafeInteger('-209823'));
+        assert.equal(0, isSafeInteger(-2.323));
+        assert.equal(-1, isSafeInteger('0.23829'));
+        assert.equal(0, isSafeInteger(0.23829));
+        assert.equal(0, isSafeInteger(-1000000000000000000));
+        assert.equal(0, isSafeInteger(1000000000000000000));
     });
 });
 
