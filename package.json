@@ -19,7 +19,13 @@
         "lint": "eslint --ext js,ts --cache --fix .",
         "lint-all": "eslint --ext js,ts --fix .",
         "publish-alpha": "yarn run build && lerna publish --dist-tag alpha",
-        "publish-latest": "yarn run build && lerna publish"
+        "publish-latest": "yarn run build && lerna publish",
+        "changelog": "conventional-changelog -p angular -i CHANGELOG.md"
+    },
+    "config": {
+        "commitizen": {
+            "path": "./node_modules/cz-conventional-changelog"
+        }
     },
     "repository": {
         "type": "git",
@@ -88,6 +94,8 @@
         "bn.js": "^4.11.8",
         "browserify-aes": "^1.2.0",
         "buffer": "~5.2.1",
+        "commitizen": "^3.1.1",
+        "conventional-changelog-cli": "^2.0.21",
         "create-hmac": "^1.1.7",
         "es6-promise": "^4.2.5",
         "jsonrpc-lite": "^2.0.3",
