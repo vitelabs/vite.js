@@ -238,25 +238,36 @@ describe('signAccountBlock', function () {
 });
 
 describe('accountBlock builtin function', function () {
+    it('getCreateContractData case 0', function () {
+        const _data = getCreateContractData({
+            'confirmTime': 2,
+            'seedCount': 1,
+            'quotaRatio': 10,
+            'hexCode': '608060405234801561001057600080fd5b506101ca806100206000396000f3fe608060405260043610610041576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff16806380ae0ea114610046575b600080fd5b6100bd6004803603602081101561005c57600080fd5b810190808035906020019064010000000081111561007957600080fd5b82018360208201111561008b57600080fd5b803590602001918460208302840111640100000000831117156100ad57600080fd5b90919293919293905050506100bf565b005b60006002838390508115156100d057fe5b061415156100dd57600080fd5b600080905060008090505b8383905081101561018a576000848483818110151561010357fe5b9050602002013590506000858560018501818110151561011f57fe5b905060200201359050808401935080841015151561013c57600080fd5b600081111561017d578173ffffffffffffffffffffffffffffffffffffffff164669ffffffffffffffffffff168260405160405180820390838587f1505050505b50506002810190506100e8565b50348114151561019957600080fd5b50505056fea165627a7a723058203cef4a3f93b33e64e99e0f88f586121282084394f6d4b70f1030ca8c360b74620029',
+            'params': ''
+        });
+
+        assert.equal('AAAAAAAAAAAAAgECAQpggGBAUjSAFWEAEFdgAID9W1BhAcqAYQAgYAA5YADz/mCAYEBSYAQ2EGEAQVdgADV8AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACQBGP/////FoBjgK4OoRRhAEZXW2AAgP1bYQC9YASANgNgIIEQFWEAXFdgAID9W4EBkICANZBgIAGQZAEAAAAAgREVYQB5V2AAgP1bggGDYCCCAREVYQCLV2AAgP1bgDWQYCABkYRgIIMChAERZAEAAAAAgxEXFWEArVdgAID9W5CRkpORkpOQUFBQYQC/VlsAW2AAYAKDg5BQgRUVYQDQV/5bBhQVFWEA3VdgAID9W2AAgJBQYACAkFBbg4OQUIEQFWEBildgAISEg4GBEBUVYQEDV/5bkFBgIAIBNZBQYACFhWABhQGBgRAVFWEBH1f+W5BQYCACATWQUICEAZNQgIQQFRUVYQE8V2AAgP1bYACBERVhAX1XgXP//////////////////////////xZGaf////////////8WgmBAUWBAUYCCA5CDhYfxUFBQUFtQUGACgQGQUGEA6FZbUDSBFBUVYQGZV2AAgP1bUFBQVv6hZWJ6enIwWCA870o/k7M+ZOmeD4j1hhISgghDlPbUtw8QMMqMNgt0YgAp', _data);
+    });
+
     it('getCreateContractData case 1', function () {
         const _data = getCreateContractData({
             abi: [{ 'type': 'constructor', 'inputs': [{ 'type': 'address' }] }],
             hexCode: '6080',
-            params: ['vite_0000000000000000000000000000000000000000a4f3a0cb58'],
-            confirmTimes: 10
+            params: ['vite_0000000000000000000000000000000000000000a4f3a0cb58']
         });
 
-        assert.equal('AAAAAAAAAAAAAgEKCmCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=', _data);
+        assert.equal('AAAAAAAAAAAAAgEAAApggAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', _data);
     });
 
     it('getCreateContractData case 2', function () {
         const _data = getCreateContractData({
             abi: [{ 'type': 'constructor', 'inputs': [] }],
             hexCode: '6080',
-            confirmTimes: 10
+            confirmTime: 10
         });
 
-        assert.equal('AAAAAAAAAAAAAgEKCmCA', _data);
+        assert.equal('AAAAAAAAAAAAAgEKAApggA==', _data);
     });
 
 
@@ -264,20 +275,20 @@ describe('accountBlock builtin function', function () {
         const _data = getCreateContractData({
             abi: [{ 'type': 'constructor' }],
             hexCode: '6080',
-            confirmTimes: 10
+            confirmTime: 10
         });
 
-        assert.equal('AAAAAAAAAAAAAgEKCmCA', _data);
+        assert.equal('AAAAAAAAAAAAAgEKAApggA==', _data);
     });
 
     it('getCreateContractData case 4', function () {
         const _data = getCreateContractData({
             hexCode: '6080',
-            confirmTimes: 10,
-            times: 15
+            confirmTime: 10,
+            quotaRatio: 15
         });
 
-        assert.equal('AAAAAAAAAAAAAgEKD2CA', _data);
+        assert.equal('AAAAAAAAAAAAAgEKAA9ggA==', _data);
     });
 
     it('getAbi', function () {

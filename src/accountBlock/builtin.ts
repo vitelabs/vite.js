@@ -86,22 +86,27 @@ export function isAccountBlock({ blockType, fromBlockHash, accountAddress, messa
     return null;
 }
 
-export function getCreateContractData({ abi, hexCode, params, confirmTimes = 0, times = 10 }) {
-    const err = checkParams({ confirmTimes, times }, [ 'confirmTimes', 'times' ], [ {
-        name: 'confirmTimes',
-        func: _c => _c >= 0 && _c <= 75
+// gid + contractType + confirmTime + seedCount + quotaRatio + bytecode
+export function getCreateContractData({ abi, hexCode, params, confirmTime = '0', quotaRatio = '10', seedCount = '0' }) {
+    const err = checkParams({ confirmTime, quotaRatio, seedCount }, [ 'confirmTime', 'quotaRatio', 'seedCount' ], [ {
+        name: 'confirmTime',
+        func: _c => Number(_c) >= 0 && Number(_c) <= 75
     }, {
-        name: 'times',
-        func: _c => _c >= 10 && _c <= 100
+        name: 'quotaRatio',
+        func: _c => Number(_c) >= 10 && Number(_c) <= 100
+    }, {
+        name: 'seedCount',
+        func: _c => Number(_c) >= 0 && Number(_c) <= 75
     } ]);
     if (err) {
         throw err;
     }
 
     const jsonInterface = getAbi(abi);
-    const _confirmTimes = new BigNumber(confirmTimes).toArray();
-    const _times = new BigNumber(times).toArray();
-    let data = `${ Delegate_Gid }01${ Buffer.from(_confirmTimes).toString('hex') }${ Buffer.from(_times).toString('hex') }${ hexCode }`;
+    const _confirmTime = new BigNumber(confirmTime).toArray();
+    const _seedCount = new BigNumber(seedCount).toArray();
+    const _quotaRatio = new BigNumber(quotaRatio).toArray();
+    let data = `${ Delegate_Gid }01${ Buffer.from(_confirmTime).toString('hex') }${ Buffer.from(_seedCount).toString('hex') }${ Buffer.from(_quotaRatio).toString('hex') }${ hexCode }`;
 
     if (jsonInterface) {
         data += encodeParameters(jsonInterface, params);

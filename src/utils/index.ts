@@ -21,8 +21,8 @@ export function uriStringify(o: {
     const _target_address = target_address || '';
     const _chain_id = chain_id ? `@${ chain_id }` : '';
     const _function_name = function_name ? `/${ function_name }` : '';
-    if(params&&(params as any).data){
-        (params as any).data=(params as any).data.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');// base64 urlsafe
+    if (params && (params as any).data) {
+        (params as any).data = (params as any).data.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');// base64 urlsafe
     }
     const _params = params ? `?${ stringify(params, { encode: false }) }` : '';
     const str = `${ _schema }${ _prefix }${ _target_address }${ _chain_id }${ _function_name }${ _params }`;

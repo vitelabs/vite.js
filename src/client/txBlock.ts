@@ -126,17 +126,21 @@ export default class Tx {
         });
     }
 
-    async createContract({ accountAddress, tokenId = Vite_TokenId, amount = '0', fee = '10000000000000000000', times = 10, hexCode, abi, params, height, prevHash, confirmTimes = 0 }: createContractBlock, requestType = 'async') {
-        const err = checkParams({ hexCode, abi, tokenId, amount, fee, confirmTimes, requestType, times }, [ 'hexCode', 'abi', 'tokenId', 'amount', 'fee', 'confirmTimes', 'times' ], [ {
-            name: 'confirmTimes',
-            func: _c => _c >= 0 && _c <= 75
-        }, {
-            name: 'times',
-            func: _c => _c >= 10 && _c <= 100
-        }, {
-            name: 'requestType',
-            func: validReqType
-        } ]);
+    async createContract({ accountAddress, tokenId = Vite_TokenId, amount = '0', fee = '10000000000000000000', confirmTime = '0', quotaRatio = '10', seedCount = '0', hexCode, abi, params, height, prevHash }: createContractBlock, requestType = 'async') {
+        const err = checkParams({ hexCode, abi, tokenId, amount, fee, confirmTime, requestType, quotaRatio, seedCount }, [ 'hexCode', 'abi', 'tokenId', 'amount', 'fee', 'confirmTime', 'quotaRatio', 'seedCount' ],
+            [ {
+                name: 'confirmTime',
+                func: _c => Number(_c) >= 0 && Number(_c) <= 75
+            }, {
+                name: 'quotaRatio',
+                func: _c => Number(_c) >= 10 && Number(_c) <= 100
+            }, {
+                name: 'seedCount',
+                func: _c => Number(_c) >= 0 && Number(_c) <= 75
+            }, {
+                name: 'requestType',
+                func: validReqType
+            } ]);
         if (err) {
             throw err;
         }
@@ -146,7 +150,7 @@ export default class Tx {
             : getAccountBlock({ blockType: 1, accountAddress, height, prevHash, tokenId, amount, fee });
 
         const toAddress = await this._client.contract.getCreateContractToAddress(accountAddress, block.height, block.prevHash);
-        const data = getCreateContractData({ abi, hexCode, params, confirmTimes, times });
+        const data = getCreateContractData({ abi, hexCode, params, confirmTime, quotaRatio, seedCount });
 
         block.toAddress = toAddress;
         block.data = data;
