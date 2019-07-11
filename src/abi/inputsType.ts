@@ -94,7 +94,13 @@ function validType(typeStr) {
 
 function getTypes(jsonInterface) {
     if (isArray(jsonInterface)) {
-        return jsonInterface;
+        const types = [];
+        jsonInterface && jsonInterface.forEach(function (param) {
+            const type = typeof param === 'string' ? param : param.type;
+            validType(type);
+            types.push(type);
+        });
+        return types;
     }
 
     if (!isObject(jsonInterface)) {

@@ -34,7 +34,6 @@ export function decodeParameters(types, params, mehtodName?: string) {
         const func = getFunction(types, mehtodName);
         types = getTypes(func);
     } catch (err) {}
-
     return _decodeParameters(getTypes(types), params);
 }
 

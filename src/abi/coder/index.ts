@@ -107,13 +107,16 @@ export function decodeParameters(types, params) {
         throw new Error('[Error] Illegal types. Should be array.');
     }
 
+    if (!params) {
+        return null;
+    }
+
     let _params = params;
     const resArr = [];
     const indexArr = [];
 
     types.forEach(type => {
         const typeObj = formatType(type);
-
         if (!typeObj.isDynamic) {
             const _res = decode[typeObj.type](typeObj, _params);
             _params = _res.params;
