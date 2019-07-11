@@ -29,11 +29,12 @@ class AddrAccountClass {
         return this._client.sendRawTx(accountBlock);
     }
 
-    callOffChainContract({ abi, offChainCode }) {
+    callOffChainContract({ abi, offChainCode, params }) {
         return this._client.callOffChainContract({
             addr: this.address,
             abi,
-            offChainCode
+            offChainCode,
+            params
         });
     }
 

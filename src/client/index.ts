@@ -153,13 +153,13 @@ class ClientClass extends netProcessor {
         return { list, totalNum };
     }
 
-    async callOffChainContract({ addr, abi, offChainCode }) {
+    async callOffChainContract({ addr, abi, offChainCode, params }) {
         const jsonInterface = getAbi(abi, 'offchain');
         if (!jsonInterface) {
             throw new Error('Can\'t find offchain');
         }
 
-        const data = encodeFunctionCall(jsonInterface, jsonInterface.inputs || []);
+        const data = encodeFunctionCall(jsonInterface, params || []);
         const result = await this.contract.callOffChainMethod({
             selfAddr: addr,
             offChainCode,

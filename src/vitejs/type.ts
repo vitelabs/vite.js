@@ -3,6 +3,7 @@ export declare type Address = string;
 export declare type Base64 = string;
 export declare type TokenId = string;
 export declare type Int64 = number;
+export declare type Uint8 = string;
 export declare type Uint64 = string;
 export declare type BigInt = string;
 
@@ -178,9 +179,10 @@ export declare type createContractBlock = {
     abi: string;
     amount: BigInt;
     fee: BigInt;
-    times: number;
+    confirmTime: Uint8;
+    quotaRatio: Uint8;
+    seedCount: Uint8;
     tokenId?: TokenId;
-    confirmTimes: number;
     params?: string;
     prevHash?: Hex;
     height?: Uint64;
