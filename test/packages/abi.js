@@ -570,6 +570,26 @@ describe('decodeParameter', function () {
 });
 
 describe('encodeParameters', function () {
+    it('0 abi encodeParameters address[]', function () {
+        const result1 = abi.encodeParameters([
+            { name: 'jackpot', type: 'uint256' },
+            { name: 'offset', type: 'uint8' },
+            { name: 'round', type: 'uint64' },
+            { name: 'addrs', type: 'address[9]' }
+        ], [ '500000000000000000',
+            '2',
+            '2', [ 'vite_2fe3a97151de7a57b5e8c58a5f32d602efe4dc7277e12c0930',
+                'vite_2fe3a97151de7a57b5e8c58a5f32d602efe4dc7277e12c0930',
+                'vite_2fe3a97151de7a57b5e8c58a5f32d602efe4dc7277e12c0930',
+                'vite_2fe3a97151de7a57b5e8c58a5f32d602efe4dc7277e12c0930',
+                'vite_2fe3a97151de7a57b5e8c58a5f32d602efe4dc7277e12c0930',
+                'vite_2fe3a97151de7a57b5e8c58a5f32d602efe4dc7277e12c0930',
+                'vite_2fe3a97151de7a57b5e8c58a5f32d602efe4dc7277e12c0930',
+                'vite_2fe3a97151de7a57b5e8c58a5f32d602efe4dc7277e12c0930',
+                'vite_2fe3a97151de7a57b5e8c58a5f32d602efe4dc7277e12c0930' ]]);
+
+        assert.equal(Buffer.from(result1, 'hex').toString('base64'), 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABvBbWdOyAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAv46lxUd56V7XoxYpfMtYC7+TccgAAAAAAAAAAAAAAAC/jqXFR3npXtejFil8y1gLv5NxyAAAAAAAAAAAAAAAAL+OpcVHeele16MWKXzLWAu/k3HIAAAAAAAAAAAAAAAAv46lxUd56V7XoxYpfMtYC7+TccgAAAAAAAAAAAAAAAC/jqXFR3npXtejFil8y1gLv5NxyAAAAAAAAAAAAAAAAL+OpcVHeele16MWKXzLWAu/k3HIAAAAAAAAAAAAAAAAv46lxUd56V7XoxYpfMtYC7+TccgAAAAAAAAAAAAAAAC/jqXFR3npXtejFil8y1gLv5NxyAAAAAAAAAAAAAAAAL+OpcVHeele16MWKXzLWAu/k3HIA');
+    });
     it('0 abi constructor array', function () {
         const encodeParametersResult1 = abi.encodeParameters([
             { 'type': 'uint8[]' }, { 'type': 'bytes' }
@@ -638,6 +658,27 @@ describe('encodeParameters', function () {
 });
 
 describe('decodeParameters', function () {
+    it('case decode parameters addr[]', function () {
+        const result = abi.decodeParameters([
+            { name: 'jackpot', type: 'uint256' },
+            { name: 'offset', type: 'uint8' },
+            { name: 'round', type: 'uint64' },
+            { name: 'addrs', type: 'address[9]' }
+        ], Buffer.from('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABvBbWdOyAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAv46lxUd56V7XoxYpfMtYC7+TccgAAAAAAAAAAAAAAAC/jqXFR3npXtejFil8y1gLv5NxyAAAAAAAAAAAAAAAAL+OpcVHeele16MWKXzLWAu/k3HIAAAAAAAAAAAAAAAAv46lxUd56V7XoxYpfMtYC7+TccgAAAAAAAAAAAAAAAC/jqXFR3npXtejFil8y1gLv5NxyAAAAAAAAAAAAAAAAL+OpcVHeele16MWKXzLWAu/k3HIAAAAAAAAAAAAAAAAv46lxUd56V7XoxYpfMtYC7+TccgAAAAAAAAAAAAAAAC/jqXFR3npXtejFil8y1gLv5NxyAAAAAAAAAAAAAAAAL+OpcVHeele16MWKXzLWAu/k3HIA', 'base64').toString('hex'));
+
+        assert.deepEqual([ '500000000000000000',
+            '2',
+            '2',
+            [ 'vite_2fe3a97151de7a57b5e8c58a5f32d602efe4dc7277e12c0930',
+                'vite_2fe3a97151de7a57b5e8c58a5f32d602efe4dc7277e12c0930',
+                'vite_2fe3a97151de7a57b5e8c58a5f32d602efe4dc7277e12c0930',
+                'vite_2fe3a97151de7a57b5e8c58a5f32d602efe4dc7277e12c0930',
+                'vite_2fe3a97151de7a57b5e8c58a5f32d602efe4dc7277e12c0930',
+                'vite_2fe3a97151de7a57b5e8c58a5f32d602efe4dc7277e12c0930',
+                'vite_2fe3a97151de7a57b5e8c58a5f32d602efe4dc7277e12c0930',
+                'vite_2fe3a97151de7a57b5e8c58a5f32d602efe4dc7277e12c0930',
+                'vite_2fe3a97151de7a57b5e8c58a5f32d602efe4dc7277e12c0930' ]], result);
+    });
     it('case 0', function () {
         const result = abi.decodeParameters([
             { 'type': 'uint8[]' }, { 'type': 'bytes' }
@@ -877,6 +918,53 @@ describe('encodeFunctionCall', function () {
 });
 
 describe('encode2decode', function () {
+    it('abi encodeParameters address[9] to decodeParameters', function () {
+        const obj = [ '500000000000000000',
+            [ 'vite_2fe3a97151de7a57b5e8c58a5f32d602efe4dc7277e12c0930',
+                'vite_2fe3a97151de7a57b5e8c58a5f32d602efe4dc7277e12c0930',
+                'vite_2fe3a97151de7a57b5e8c58a5f32d602efe4dc7277e12c0930',
+                'vite_2fe3a97151de7a57b5e8c58a5f32d602efe4dc7277e12c0930',
+                'vite_2fe3a97151de7a57b5e8c58a5f32d602efe4dc7277e12c0930',
+                'vite_2fe3a97151de7a57b5e8c58a5f32d602efe4dc7277e12c0930',
+                'vite_2fe3a97151de7a57b5e8c58a5f32d602efe4dc7277e12c0930',
+                'vite_2fe3a97151de7a57b5e8c58a5f32d602efe4dc7277e12c0930',
+                'vite_2fe3a97151de7a57b5e8c58a5f32d602efe4dc7277e12c0930' ],
+            '2',
+            '2' ];
+        const types = [
+            { name: 'jackpot', type: 'uint256' },
+            { name: 'addrs', type: 'address[9]' },
+            { name: 'offset', type: 'uint8' },
+            { name: 'round', type: 'uint64' }
+        ];
+
+        const result1 = abi.encodeParameters(types, obj);
+        assert.deepEqual(obj, abi.decodeParameters(types, result1));
+    });
+
+    it('abi encodeParameters address[] to decodeParameters', function () {
+        const obj = [ '500000000000000000',
+            [ 'vite_2fe3a97151de7a57b5e8c58a5f32d602efe4dc7277e12c0930',
+                'vite_2fe3a97151de7a57b5e8c58a5f32d602efe4dc7277e12c0930',
+                'vite_2fe3a97151de7a57b5e8c58a5f32d602efe4dc7277e12c0930',
+                'vite_2fe3a97151de7a57b5e8c58a5f32d602efe4dc7277e12c0930',
+                'vite_2fe3a97151de7a57b5e8c58a5f32d602efe4dc7277e12c0930',
+                'vite_2fe3a97151de7a57b5e8c58a5f32d602efe4dc7277e12c0930',
+                'vite_2fe3a97151de7a57b5e8c58a5f32d602efe4dc7277e12c0930',
+                'vite_2fe3a97151de7a57b5e8c58a5f32d602efe4dc7277e12c0930',
+                'vite_2fe3a97151de7a57b5e8c58a5f32d602efe4dc7277e12c0930' ],
+            '2',
+            '2' ];
+        const types = [
+            { name: 'jackpot', type: 'uint256' },
+            { name: 'addrs', type: 'address[]' },
+            { name: 'offset', type: 'uint8' },
+            { name: 'round', type: 'uint64' }
+        ];
+
+        const result1 = abi.encodeParameters(types, obj);
+        assert.deepEqual(obj, abi.decodeParameters(types, result1));
+    });
     it('case 1', function () {
         const result = abi.encodeParameter('string', '15');
         assert.equal('15', abi.decodeParameter('string', result));

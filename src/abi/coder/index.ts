@@ -117,6 +117,21 @@ export function decodeParameters(types, params) {
 
     types.forEach(type => {
         const typeObj = formatType(type);
+
+        if (!typeObj.isDynamic && typeObj.isArr) {
+            let len = 0;
+            typeObj.arrLen.forEach(_l => {
+                len += _l * typeObj.byteLength;
+            });
+            const _p = _params.slice(0, len * 2);
+            _params = _params.slice(len * 2);
+            resArr.push({
+                isDynamic: false,
+                result: decodeArrs(typeObj, _p)
+            });
+            return;
+        }
+
         if (!typeObj.isDynamic) {
             const _res = decode[typeObj.type](typeObj, _params);
             _params = _res.params;
