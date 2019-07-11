@@ -163,10 +163,13 @@ class ClientClass extends netProcessor {
         const result = await this.contract.callOffChainMethod({
             selfAddr: addr,
             offChainCode,
-            data
+            data: Buffer.from(data, 'hex').toString('base64')
         });
 
-        return decodeParameters(jsonInterface.outputs, result);
+        if (!result) {
+            return result;
+        }
+        return decodeParameters(jsonInterface.outputs, Buffer.from(result, 'base64').toString('hex'));
     }
 
     async sendTx(accountBlock, privateKey) {
