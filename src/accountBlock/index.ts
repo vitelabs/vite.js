@@ -13,7 +13,7 @@ const { getPublicKey, sign } = ed25519;
 
 export const DefaultContractTxType = getContractTxType(Contracts);
 
-export function getAccountBlock({ blockType, fromBlockHash, accountAddress, message, data, height, prevHash, toAddress, tokenId, amount, nonce }: syncFormatBlock) {
+export function getAccountBlock({ blockType, fromBlockHash, accountAddress, message, data, height, prevHash, toAddress, tokenId, amount, nonce, fee }: syncFormatBlock) {
     const reject = (error, errMsg = '') => {
         const message = `${ error.message || '' } ${ errMsg }`;
         throw new Error(message);
@@ -27,7 +27,7 @@ export function getAccountBlock({ blockType, fromBlockHash, accountAddress, mess
         return reject(paramsFormat, 'No prevHash but height.');
     }
 
-    return formatAccountBlock({ blockType, fromBlockHash, accountAddress, message, data, height, prevHash, toAddress, tokenId, amount, nonce });
+    return formatAccountBlock({ blockType, fromBlockHash, accountAddress, message, data, height, prevHash, toAddress, tokenId, amount, nonce, fee });
 }
 
 export function getSendTxBlock({ accountAddress, toAddress, tokenId, amount, message, data, height, prevHash }: sendTxBlock) {
