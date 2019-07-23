@@ -150,6 +150,9 @@ class ClientClass extends netProcessor {
             list.push(item);
         });
 
+        if (list.length > totalNum) {
+            console.warn('[client.getTxList] Please confirm that totalNum is correct.');
+        }
         return { list, totalNum };
     }
 
