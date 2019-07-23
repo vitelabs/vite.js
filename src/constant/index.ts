@@ -1,6 +1,12 @@
 import { _methods } from './type';
 
 export const Vite_TokenId = 'tti_5649544520544f4b454e6e40';
+export const Vite_Token_Info = {
+    decimals: 18,
+    tokenId: Vite_TokenId,
+    tokenName: 'Vite Token',
+    tokenSymbol: 'VITE'
+};
 
 export const Default_Hash = '0000000000000000000000000000000000000000000000000000000000000000'; // A total of 64 0
 

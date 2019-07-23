@@ -22,6 +22,11 @@ files.forEach(val => {
         }
     }
 
+    const tsPath = path.join(firstP, 'tsconfig.json');
+    if (fs.existsSync(tsPath)) {
+        fs.unlinkSync(tsPath);
+    }
+
     const fPath = path.join(firstP, 'dist');
     if (!fs.existsSync(fPath)) {
         return;
