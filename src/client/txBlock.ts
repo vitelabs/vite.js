@@ -5,7 +5,8 @@ import {
     Reward_Abi, Vote_Abi, CancelVote_Abi, Pledge_Abi, CancelPledge_Abi,
     Mint_Abi, Issue_Abi, Burn_Abi, ChangeTokenType_Abi, TransferOwner_Abi,
     DexFundUserDeposit_Abi, DexFundUserWithdraw_Abi, DexTradeCancelOrder_Abi, DexFundNewOrder_Abi, DexFundNewMarket_Abi,
-    DexFundConfigMineMarket_Abi, DexFundPledgeForVx_Abi, DexFundPledgeForVip_Abi
+    DexFundPledgeForVx_Abi, DexFundPledgeForVip_Abi, DexFundBindInviteCode_Abi, DexFundNewInviter_Abi,
+    DexFundTransferTokenOwner_Abi, DexFundMarketOwnerConfig_Abi
 } from '~@vite/vitejs-constant';
 import { checkParams, validNodeName, blake2bHex } from '~@vite/vitejs-utils';
 import { getAccountBlock, getSendTxBlock, getReceiveTxBlock } from '~@vite/vitejs-accountblock';
@@ -437,8 +438,7 @@ export default class Tx {
             toAddress: DexFund_Addr,
             abi: DexFundUserWithdraw_Abi,
             params: [ tokenId, amount ],
-            tokenId,
-            amount: '0'
+            tokenId
         }, requestType);
     }
 
@@ -468,7 +468,7 @@ export default class Tx {
         }, requestType);
     }
 
-    async dexFundNewMarket({ accountAddress, tokenId = Vite_TokenId, amount, tradeToken, quoteToken }, requestType = 'async') {
+    async dexFundNewMarket({ accountAddress, tradeToken, quoteToken }, requestType = 'async') {
         const err = checkParams({ tradeToken, quoteToken }, [ 'tradeToken', 'quoteToken' ]);
         if (err) {
             return Promise.reject(err);
@@ -478,29 +478,11 @@ export default class Tx {
             accountAddress,
             toAddress: DexFund_Addr,
             abi: DexFundNewMarket_Abi,
-            params: [ tradeToken, quoteToken ],
-            tokenId,
-            amount
+            params: [ tradeToken, quoteToken ]
         }, requestType);
     }
 
-    async dexFundConfigMineMarket({ accountAddress, tokenId = Vite_TokenId, amount, allowMine, tradeToken, quoteToken }, requestType = 'async') {
-        const err = checkParams({ allowMine, tradeToken, quoteToken }, [ 'allowMine', 'tradeToken', 'quoteToken' ]);
-        if (err) {
-            return Promise.reject(err);
-        }
-
-        return this.callContract({
-            accountAddress,
-            toAddress: DexFund_Addr,
-            abi: DexFundConfigMineMarket_Abi,
-            params: [ allowMine, tradeToken, quoteToken ],
-            tokenId,
-            amount
-        }, requestType);
-    }
-
-    async dexFundPledgeForVx({ accountAddress, tokenId = Vite_TokenId, actionType, amount }, requestType = 'async') {
+    async dexFundPledgeForVx({ accountAddress, actionType, amount }, requestType = 'async') {
         const err = checkParams({ actionType, amount }, [ 'actionType', 'amount' ]);
         if (err) {
             return Promise.reject(err);
@@ -510,13 +492,12 @@ export default class Tx {
             accountAddress,
             toAddress: DexFund_Addr,
             abi: DexFundPledgeForVx_Abi,
-            params: [ actionType, amount ],
-            tokenId
+            params: [ actionType, amount ]
         }, requestType);
     }
 
-    async dexFundPledgeForVip({ accountAddress, actionType, tokenId = Vite_TokenId, amount }, requestType = 'async') {
-        const err = checkParams({ actionType, amount }, [ 'actionType', 'amount' ]);
+    async dexFundPledgeForVip({ accountAddress, actionType }, requestType = 'async') {
+        const err = checkParams({ actionType }, [ 'actionType', 'amount' ]);
         if (err) {
             return Promise.reject(err);
         }
@@ -525,9 +506,61 @@ export default class Tx {
             accountAddress,
             toAddress: DexFund_Addr,
             abi: DexFundPledgeForVip_Abi,
-            params: [actionType],
-            tokenId,
-            amount
+            params: [actionType]
+        }, requestType);
+    }
+
+    async dexFundBindInviteCode({ accountAddress, code }, requestType = 'async') {
+        const err = checkParams({ code }, ['code']);
+        if (err) {
+            return Promise.reject(err);
+        }
+
+        return this.callContract({
+            accountAddress,
+            toAddress: DexFund_Addr,
+            abi: DexFundBindInviteCode_Abi,
+            params: [code]
+        }, requestType);
+    }
+
+    async dexFundNewInviter({ accountAddress }, requestType = 'async') {
+        return this.callContract({
+            accountAddress,
+            toAddress: DexFund_Addr,
+            abi: DexFundNewInviter_Abi,
+            params: []
+        }, requestType);
+    }
+
+    async dexFundTransferTokenOwner({ accountAddress, tokenId, owner }, requestType = 'async') {
+        const err = checkParams({ tokenId, owner }, [ 'tokenId', 'owner' ]);
+        if (err) {
+            return Promise.reject(err);
+        }
+
+        return this.callContract({
+            accountAddress,
+            toAddress: DexFund_Addr,
+            abi: DexFundTransferTokenOwner_Abi,
+            params: [ tokenId, owner ],
+            tokenId
+        }, requestType);
+    }
+
+    async dexFundMarketOwnerConfig({ accountAddress, operationCode, tradeToken, quoteToken, owner, takerFeeRate, makerFeeRate, stopMarket }, requestType = 'async') {
+        const err = checkParams({ operationCode, tradeToken, quoteToken, owner, takerFeeRate, makerFeeRate, stopMarket },
+            [ 'operationCode', 'tradeToken', 'quoteToken', 'owner', 'takerFeeRate', 'makerFeeRate', 'stopMarket' ]);
+        if (err) {
+            return Promise.reject(err);
+        }
+
+        return this.callContract({
+            accountAddress,
+            toAddress: DexFund_Addr,
+            abi: DexFundMarketOwnerConfig_Abi,
+            params: [ operationCode, tradeToken, quoteToken, owner, takerFeeRate, makerFeeRate, !!stopMarket ],
+            tokenId: quoteToken
         }, requestType);
     }
 }

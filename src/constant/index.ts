@@ -45,11 +45,14 @@ export const ChangeTokenType_Abi = { 'type': 'function', 'name': 'ChangeTokenTyp
 export const DexTradeCancelOrder_Abi = { 'type': 'function', 'name': 'DexTradeCancelOrder', 'inputs': [{ 'name': 'orderId', 'type': 'bytes' }] };
 export const DexFundUserDeposit_Abi = { 'type': 'function', 'name': 'DexFundUserDeposit', 'inputs': [] };
 export const DexFundUserWithdraw_Abi = { 'type': 'function', 'name': 'DexFundUserWithdraw', 'inputs': [ { 'name': 'token', 'type': 'tokenId' }, { 'name': 'amount', 'type': 'uint256' } ] };
-export const DexFundNewOrder_Abi = { 'type': 'function', 'name': 'DexFundNewOrder', 'inputs': [ { 'name': 'tradeToken', 'type': 'tokenId' }, { 'name': 'quoteToken', 'type': 'tokenId' }, { 'name': 'side', 'type': 'bool' }, { 'name': 'orderType', 'type': 'int8' }, { 'name': 'price', 'type': 'string' }, { 'name': 'quantity', 'type': 'uint256' } ] };
+export const DexFundNewOrder_Abi = { 'type': 'function', 'name': 'DexFundNewOrder', 'inputs': [ { 'name': 'tradeToken', 'type': 'tokenId' }, { 'name': 'quoteToken', 'type': 'tokenId' }, { 'name': 'side', 'type': 'bool' }, { 'name': 'orderType', 'type': 'uint8' }, { 'name': 'price', 'type': 'string' }, { 'name': 'quantity', 'type': 'uint256' } ] };
 export const DexFundNewMarket_Abi = { 'type': 'function', 'name': 'DexFundNewMarket', 'inputs': [ { 'name': 'tradeToken', 'type': 'tokenId' }, { 'name': 'quoteToken', 'type': 'tokenId' } ] };
-export const DexFundConfigMineMarket_Abi = { 'type': 'function', 'name': 'DexFundConfigMineMarket', 'inputs': [ { 'name': 'allowMine', 'type': 'bool' }, { 'name': 'tradeToken', 'type': 'tokenId' }, { 'name': 'quoteToken', 'type': 'tokenId' } ] };
 export const DexFundPledgeForVx_Abi = { 'type': 'function', 'name': 'DexFundPledgeForVx', 'inputs': [ { 'name': 'actionType', 'type': 'uint8' }, { 'name': 'amount', 'type': 'uint256' } ] };
 export const DexFundPledgeForVip_Abi = { 'type': 'function', 'name': 'DexFundPledgeForVip', 'inputs': [{ 'name': 'actionType', 'type': 'uint8' }] };
+export const DexFundBindInviteCode_Abi = { 'type': 'function', 'name': 'DexFundBindInviteCode', 'inputs': [{ 'name': 'code', 'type': 'uint32' }] };
+export const DexFundNewInviter_Abi = { 'type': 'function', 'name': 'DexFundNewInviter', 'inputs': [] };
+export const DexFundTransferTokenOwner_Abi = { 'type': 'function', 'name': 'DexFundTransferTokenOwner', 'inputs': [ { 'name': 'token', 'type': 'tokenId' }, { 'name': 'owner', 'type': 'address' } ] };
+export const DexFundMarketOwnerConfig_Abi = { 'type': 'function', 'name': 'DexFundMarketOwnerConfig', 'inputs': [ { 'name': 'operationCode', 'type': 'uint8' }, { 'name': 'tradeToken', 'type': 'tokenId' }, { 'name': 'quoteToken', 'type': 'tokenId' }, { 'name': 'owner', 'type': 'address' }, { 'name': 'takerFeeRate', 'type': 'int32' }, { 'name': 'makerFeeRate', 'type': 'int32' }, { 'name': 'stopMarket', 'type': 'bool' } ] };
 
 export enum BlockType {
     'CreateContractReq' = 1,
@@ -152,6 +155,22 @@ export const Contracts = {
     DexFundPledgeForVip: {
         contractAddr: DexFund_Addr,
         abi: DexFundPledgeForVip_Abi
+    },
+    DexFundBindInviteCode: {
+        contractAddr: DexFund_Addr,
+        abi: DexFundBindInviteCode_Abi
+    },
+    DexFundNewInviter: {
+        contractAddr: DexFund_Addr,
+        abi: DexFundNewInviter_Abi
+    },
+    DexFundTransferTokenOwner: {
+        contractAddr: DexFund_Addr,
+        abi: DexFundTransferTokenOwner_Abi
+    },
+    DexFundMarketOwnerConfig: {
+        contractAddr: DexFund_Addr,
+        abi: DexFundMarketOwnerConfig_Abi
     }
 };
 

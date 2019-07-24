@@ -27,9 +27,13 @@ export enum TxType {
     'DexFundNewOrder',
     'DexTradeCancelOrder',
     'DexFundNewMarket',
-    'CreateContractReq',
     'DexFundPledgeForVx',
     'DexFundPledgeForVip',
+    'DexFundBindInviteCode',
+    'DexFundNewInviter',
+    'DexFundTransferTokenOwner',
+    'DexFundMarketOwnerConfig',
+    'CreateContractReq',
     'TxReq',
     'RewardReq',
     'TxRes',
@@ -364,7 +368,8 @@ export enum dexfund {
     'getAccountFundInfo' = 'dexfund_getAccountFundInfo',
     'getAccountFundInfoByStatus' = 'dexfund_getAccountFundInfoByStatus',
     'isPledgeVip' = 'dexfund_isPledgeVip',
-    'getMarketInfo' = 'dexfund_getMarketInfo'
+    'getMarketInfo' = 'dexfund_getMarketInfo',
+    'getCurrentDividendPools' = 'dexfund_getCurrentDividendPools'
 }
 
 export enum net {
