@@ -442,17 +442,16 @@ export default class Tx {
         }, requestType);
     }
 
-    async dexTradeCancelOrder({ accountAddress, orderId, tradeToken }, requestType = 'async') {
+    async dexTradeCancelOrder({ accountAddress, orderId }, requestType = 'async') {
         return this.callContract({
             accountAddress,
-            tokenId: tradeToken,
             toAddress: DexTrade_Addr,
             abi: DexTradeCancelOrder_Abi,
             params: [`0x${ Buffer.from(orderId, 'base64').toString('hex') }`]
         }, requestType);
     }
 
-    async dexFundNewOrder({ accountAddress, tradeToken, quoteToken, side, price, quantity }, requestType = 'async') {
+    async dexFundNewOrder({ accountAddress, tradeToken, quoteToken, side, price, quantity, orderType = 0 }, requestType = 'async') {
         const err = checkParams({ tradeToken, quoteToken, side, price, quantity },
             [ 'tradeToken', 'quoteToken', 'side', 'price', 'quantity' ]);
         if (err) {
@@ -463,7 +462,7 @@ export default class Tx {
             accountAddress,
             toAddress: DexFund_Addr,
             abi: DexFundNewOrder_Abi,
-            params: [ tradeToken, quoteToken, side, 0, price, quantity ],
+            params: [ tradeToken, quoteToken, side, orderType, price, quantity ],
             tokenId: tradeToken
         }, requestType);
     }
