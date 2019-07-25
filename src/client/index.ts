@@ -18,6 +18,7 @@ class ClientClass extends netProcessor {
     builtinTxBlock: TxBlock
     customTxType: Object
     isDecodeTx: boolean
+    decodeTxTypeList: Array<string>
 
     wallet: walletFunc
     net: netFunc
@@ -33,11 +34,15 @@ class ClientClass extends netProcessor {
     pow: powFunc
     testapi: testapiFunc
 
-    constructor(provider: any, firstConnect: Function, config: { isDecodeTx?: boolean } = { isDecodeTx: false }) {
+    constructor(provider: any, firstConnect: Function, config: {
+        isDecodeTx?: boolean;
+        decodeTxTypeList?: Array<string>;
+    } = { isDecodeTx: false }) {
         super(provider, firstConnect);
 
         this.builtinTxBlock = new TxBlock(this);
         this.isDecodeTx = !!config.isDecodeTx;
+        this.decodeTxTypeList = config.decodeTxTypeList;
         this.customTxType = null;       // { [funcSign + contractAddr]: {contractAddr, abi, txType} }
 
         this._setMethodsName();
@@ -140,13 +145,17 @@ class ClientClass extends netProcessor {
             const typeObj = getTxType(item, this.customTxType);
             item.txType = typeObj.txType;
 
-            if (this.isDecodeTx) {
+            const isDecodeTx = this.isDecodeTx && typeObj.contractAddr && typeObj.abi
+                && (!this.decodeTxTypeList || this.decodeTxTypeList.indexOf(item.txType) !== -1);
+
+            if (isDecodeTx) {
                 item.contract = typeObj.contractAddr && typeObj.abi ? decodeBlockByContract({
                     accountBlock: item,
                     contractAddr: typeObj.contractAddr,
                     abi: typeObj.abi
                 }) : null;
             }
+
             list.push(item);
         });
 

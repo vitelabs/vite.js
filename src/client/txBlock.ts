@@ -496,7 +496,7 @@ export default class Tx {
     }
 
     async dexFundPledgeForVip({ accountAddress, actionType }, requestType = 'async') {
-        const err = checkParams({ actionType }, [ 'actionType', 'amount' ]);
+        const err = checkParams({ actionType }, ['actionType']);
         if (err) {
             return Promise.reject(err);
         }
