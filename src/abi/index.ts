@@ -23,16 +23,20 @@ export const decodeParameter = _decodeParameter;
 
 export function encodeParameters(types, params, mehtodName?: string) {
     try {
-        const func = getFunction(types, mehtodName);
-        types = getTypes(func);
+        if (mehtodName || !isArray(types) && isObject(types)) {
+            const func = getFunction(types, mehtodName);
+            types = getTypes(func);
+        }
     } catch (err) {}
 
     return _encodeParameters(getTypes(types), params);
 }
 export function decodeParameters(types, params, mehtodName?: string) {
     try {
-        const func = getFunction(types, mehtodName);
-        types = getTypes(func);
+        if (mehtodName || !isArray(types) && isObject(types)) {
+            const func = getFunction(types, mehtodName);
+            types = getTypes(func);
+        }
     } catch (err) {}
     return _decodeParameters(getTypes(types), params);
 }

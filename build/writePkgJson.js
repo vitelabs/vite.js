@@ -4,6 +4,7 @@ const traversing = require('./traversing');
 
 const packageJsonContent = require('../common/package.json');
 const currPackageJsonContent = require('../package.json');
+const currTsConfigJsonContent = require('../tsconfig.json');
 const lernaJsonContent = require('../lerna.json');
 
 // Change `dist/${packageName}.${"node"||"web"}.js` to `src/${packageName}/index.${"node"||"web"}.js`
@@ -42,4 +43,12 @@ function copyFile({ fromPath, name }) {
 
     const packageFile = path.join(fromPath, './package.json');
     fs.writeFileSync(packageFile, JSON.stringify(packageJsonContent));
+
+    const tsConfigFile = path.join(fromPath, './tsconfig.json');
+    delete currTsConfigJsonContent.compilerOptions.baseUrl;
+    delete currTsConfigJsonContent.compilerOptions.paths;
+    delete currTsConfigJsonContent.compilerOptions.outDir;
+    delete currTsConfigJsonContent.include;
+    delete currTsConfigJsonContent.exclude;
+    fs.writeFileSync(tsConfigFile, JSON.stringify(currTsConfigJsonContent));
 }

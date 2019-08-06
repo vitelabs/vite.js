@@ -47,6 +47,7 @@ export function encodeParameters(types, params) {
         throw new Error('[Error] Illegal inputs. Inputs should be array.');
     }
 
+    // console.log(types);
     if (!types.length) {
         return '';
     }
@@ -103,6 +104,8 @@ export function decodeParameter(typeStr, params) {
 }
 
 export function decodeParameters(types, params) {
+    // console.log('startDecode', types, params);
+
     if (!isArray(types)) {
         throw new Error('[Error] Illegal types. Should be array.');
     }
@@ -117,6 +120,21 @@ export function decodeParameters(types, params) {
 
     types.forEach(type => {
         const typeObj = formatType(type);
+        // console.log(typeObj);
+        if (!typeObj.isDynamic && typeObj.isArr) {
+            let len = 0;
+            typeObj.arrLen.forEach(_l => {
+                len += _l * typeObj.byteLength;
+            });
+            const _p = _params.slice(0, len * 2);
+            _params = _params.slice(len * 2);
+            resArr.push({
+                isDynamic: false,
+                result: decodeArrs(typeObj, _p)
+            });
+            return;
+        }
+
         if (!typeObj.isDynamic) {
             const _res = decode[typeObj.type](typeObj, _params);
             _params = _res.params;

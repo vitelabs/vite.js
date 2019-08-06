@@ -331,10 +331,10 @@ describe('encodeParameter', function () {
         const encodeParameterResult54 = abi.encodeParameter('uint32[2][3][4]', [[[ 1, 2 ], [ 3, 4 ], [ 5, 6 ]], [[ 7, 8 ], [ 9, 10 ], [ 11, 12 ]], [[ 13, 14 ], [ 15, 16 ], [ 17, 18 ]], [[ 19, 20 ], [ 21, 22 ], [ 23, 24 ]]]);
         assert.equal('000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000003000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000050000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000700000000000000000000000000000000000000000000000000000000000000080000000000000000000000000000000000000000000000000000000000000009000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000b000000000000000000000000000000000000000000000000000000000000000c000000000000000000000000000000000000000000000000000000000000000d000000000000000000000000000000000000000000000000000000000000000e000000000000000000000000000000000000000000000000000000000000000f000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000110000000000000000000000000000000000000000000000000000000000000012000000000000000000000000000000000000000000000000000000000000001300000000000000000000000000000000000000000000000000000000000000140000000000000000000000000000000000000000000000000000000000000015000000000000000000000000000000000000000000000000000000000000001600000000000000000000000000000000000000000000000000000000000000170000000000000000000000000000000000000000000000000000000000000018', encodeParameterResult54);
     });
-    // it('bytes[][][]',function() {
-    //     let encodeParameterResult65 = abi.encodeParameter('bytes[][][]', [[['0x0100000000000000000000000000000000000000000000000000000000000000'],['0x0100000000000000000000000000000000000000000000000000000000000000','0x0100000000000000000000000000000000000000000000000000000000000000'],['0x0100000000000000000000000000000000000000000000000000000000000000']]]);
+    // it('bytes[][][]', function () {
+    //     const encodeParameterResult65 = abi.encodeParameter('bytes[][][]', [[['0x0100000000000000000000000000000000000000000000000000000000000000'], [ '0x0100000000000000000000000000000000000000000000000000000000000000', '0x0100000000000000000000000000000000000000000000000000000000000000' ], ['0x0100000000000000000000000000000000000000000000000000000000000000']]]);
     //     assert.equal('', encodeParameterResult65);
-    // })
+    // });
 });
 
 describe('decodeParameter', function () {
@@ -570,6 +570,26 @@ describe('decodeParameter', function () {
 });
 
 describe('encodeParameters', function () {
+    it('0 abi encodeParameters address[]', function () {
+        const result1 = abi.encodeParameters([
+            { name: 'jackpot', type: 'uint256' },
+            { name: 'offset', type: 'uint8' },
+            { name: 'round', type: 'uint64' },
+            { name: 'addrs', type: 'address[9]' }
+        ], [ '500000000000000000',
+            '2',
+            '2', [ 'vite_2fe3a97151de7a57b5e8c58a5f32d602efe4dc7277e12c0930',
+                'vite_2fe3a97151de7a57b5e8c58a5f32d602efe4dc7277e12c0930',
+                'vite_2fe3a97151de7a57b5e8c58a5f32d602efe4dc7277e12c0930',
+                'vite_2fe3a97151de7a57b5e8c58a5f32d602efe4dc7277e12c0930',
+                'vite_2fe3a97151de7a57b5e8c58a5f32d602efe4dc7277e12c0930',
+                'vite_2fe3a97151de7a57b5e8c58a5f32d602efe4dc7277e12c0930',
+                'vite_2fe3a97151de7a57b5e8c58a5f32d602efe4dc7277e12c0930',
+                'vite_2fe3a97151de7a57b5e8c58a5f32d602efe4dc7277e12c0930',
+                'vite_2fe3a97151de7a57b5e8c58a5f32d602efe4dc7277e12c0930' ]]);
+
+        assert.equal(Buffer.from(result1, 'hex').toString('base64'), 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABvBbWdOyAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAv46lxUd56V7XoxYpfMtYC7+TccgAAAAAAAAAAAAAAAC/jqXFR3npXtejFil8y1gLv5NxyAAAAAAAAAAAAAAAAL+OpcVHeele16MWKXzLWAu/k3HIAAAAAAAAAAAAAAAAv46lxUd56V7XoxYpfMtYC7+TccgAAAAAAAAAAAAAAAC/jqXFR3npXtejFil8y1gLv5NxyAAAAAAAAAAAAAAAAL+OpcVHeele16MWKXzLWAu/k3HIAAAAAAAAAAAAAAAAv46lxUd56V7XoxYpfMtYC7+TccgAAAAAAAAAAAAAAAC/jqXFR3npXtejFil8y1gLv5NxyAAAAAAAAAAAAAAAAL+OpcVHeele16MWKXzLWAu/k3HIA');
+    });
     it('0 abi constructor array', function () {
         const encodeParametersResult1 = abi.encodeParameters([
             { 'type': 'uint8[]' }, { 'type': 'bytes' }
@@ -638,6 +658,27 @@ describe('encodeParameters', function () {
 });
 
 describe('decodeParameters', function () {
+    it('case decode parameters addr[]', function () {
+        const result = abi.decodeParameters([
+            { name: 'jackpot', type: 'uint256' },
+            { name: 'offset', type: 'uint8' },
+            { name: 'round', type: 'uint64' },
+            { name: 'addrs', type: 'address[9]' }
+        ], Buffer.from('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABvBbWdOyAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAv46lxUd56V7XoxYpfMtYC7+TccgAAAAAAAAAAAAAAAC/jqXFR3npXtejFil8y1gLv5NxyAAAAAAAAAAAAAAAAL+OpcVHeele16MWKXzLWAu/k3HIAAAAAAAAAAAAAAAAv46lxUd56V7XoxYpfMtYC7+TccgAAAAAAAAAAAAAAAC/jqXFR3npXtejFil8y1gLv5NxyAAAAAAAAAAAAAAAAL+OpcVHeele16MWKXzLWAu/k3HIAAAAAAAAAAAAAAAAv46lxUd56V7XoxYpfMtYC7+TccgAAAAAAAAAAAAAAAC/jqXFR3npXtejFil8y1gLv5NxyAAAAAAAAAAAAAAAAL+OpcVHeele16MWKXzLWAu/k3HIA', 'base64').toString('hex'));
+
+        assert.deepEqual([ '500000000000000000',
+            '2',
+            '2',
+            [ 'vite_2fe3a97151de7a57b5e8c58a5f32d602efe4dc7277e12c0930',
+                'vite_2fe3a97151de7a57b5e8c58a5f32d602efe4dc7277e12c0930',
+                'vite_2fe3a97151de7a57b5e8c58a5f32d602efe4dc7277e12c0930',
+                'vite_2fe3a97151de7a57b5e8c58a5f32d602efe4dc7277e12c0930',
+                'vite_2fe3a97151de7a57b5e8c58a5f32d602efe4dc7277e12c0930',
+                'vite_2fe3a97151de7a57b5e8c58a5f32d602efe4dc7277e12c0930',
+                'vite_2fe3a97151de7a57b5e8c58a5f32d602efe4dc7277e12c0930',
+                'vite_2fe3a97151de7a57b5e8c58a5f32d602efe4dc7277e12c0930',
+                'vite_2fe3a97151de7a57b5e8c58a5f32d602efe4dc7277e12c0930' ]], result);
+    });
     it('case 0', function () {
         const result = abi.decodeParameters([
             { 'type': 'uint8[]' }, { 'type': 'bytes' }
@@ -877,6 +918,77 @@ describe('encodeFunctionCall', function () {
 });
 
 describe('encode2decode', function () {
+    it('array 1', function () {
+        const obj = ['23'];
+        const types = [{ name: 'jackpot', type: 'uint256' }];
+
+        const result1 = abi.encodeParameters(types, obj);
+        const result2 = abi.decodeParameters(types, result1);
+
+        assert.deepEqual(obj, result2);
+    });
+    // it('uint32[2][3][4]', function () {
+    //     const obj = [
+    //         // '23',
+    //         [[[ 1, 2 ], [ 3, 4 ], [ 5, 6 ]], [[ 7, 8 ], [ 9, 10 ], [ 11, 12 ]], [[ 13, 14 ], [ 15, 16 ], [ 17, 18 ]], [[ 19, 20 ], [ 21, 22 ], [ 23, 24 ]]]
+    //     ];
+    //     const types = [
+    //         // { name: 'jackpot', type: 'uint256' },
+    //         { name: 'round', type: 'uint32[2][3][4]' }
+    //     ];
+
+    //     const result1 = abi.encodeParameters(types, obj);
+    //     // console.log(result1);
+    //     const result2 = abi.decodeParameters(types, result1);
+
+    //     assert.deepEqual(obj, result2);
+    // });
+    it('abi encodeParameters address[9] to decodeParameters', function () {
+        const obj = [ '500000000000000000',
+            [ 'vite_2fe3a97151de7a57b5e8c58a5f32d602efe4dc7277e12c0930',
+                'vite_2fe3a97151de7a57b5e8c58a5f32d602efe4dc7277e12c0930',
+                'vite_2fe3a97151de7a57b5e8c58a5f32d602efe4dc7277e12c0930',
+                'vite_2fe3a97151de7a57b5e8c58a5f32d602efe4dc7277e12c0930',
+                'vite_2fe3a97151de7a57b5e8c58a5f32d602efe4dc7277e12c0930',
+                'vite_2fe3a97151de7a57b5e8c58a5f32d602efe4dc7277e12c0930',
+                'vite_2fe3a97151de7a57b5e8c58a5f32d602efe4dc7277e12c0930',
+                'vite_2fe3a97151de7a57b5e8c58a5f32d602efe4dc7277e12c0930',
+                'vite_2fe3a97151de7a57b5e8c58a5f32d602efe4dc7277e12c0930' ],
+            '2',
+            '2' ];
+        const types = [
+            { name: 'jackpot', type: 'uint256' },
+            { name: 'addrs', type: 'address[9]' },
+            { name: 'offset', type: 'uint8' },
+            { name: 'round', type: 'uint64' }
+        ];
+
+        const result1 = abi.encodeParameters(types, obj);
+        assert.deepEqual(obj, abi.decodeParameters(types, result1));
+    });
+    it('abi encodeParameters address[] to decodeParameters', function () {
+        const obj = [ '500000000000000000',
+            [ 'vite_2fe3a97151de7a57b5e8c58a5f32d602efe4dc7277e12c0930',
+                'vite_2fe3a97151de7a57b5e8c58a5f32d602efe4dc7277e12c0930',
+                'vite_2fe3a97151de7a57b5e8c58a5f32d602efe4dc7277e12c0930',
+                'vite_2fe3a97151de7a57b5e8c58a5f32d602efe4dc7277e12c0930',
+                'vite_2fe3a97151de7a57b5e8c58a5f32d602efe4dc7277e12c0930',
+                'vite_2fe3a97151de7a57b5e8c58a5f32d602efe4dc7277e12c0930',
+                'vite_2fe3a97151de7a57b5e8c58a5f32d602efe4dc7277e12c0930',
+                'vite_2fe3a97151de7a57b5e8c58a5f32d602efe4dc7277e12c0930',
+                'vite_2fe3a97151de7a57b5e8c58a5f32d602efe4dc7277e12c0930' ],
+            '2',
+            '2' ];
+        const types = [
+            { name: 'jackpot', type: 'uint256' },
+            { name: 'addrs', type: 'address[]' },
+            { name: 'offset', type: 'uint8' },
+            { name: 'round', type: 'uint64' }
+        ];
+
+        const result1 = abi.encodeParameters(types, obj);
+        assert.deepEqual(obj, abi.decodeParameters(types, result1));
+    });
     it('case 1', function () {
         const result = abi.encodeParameter('string', '15');
         assert.equal('15', abi.decodeParameter('string', result));
@@ -917,4 +1029,3 @@ describe('encode2decode', function () {
 //         assert.equal('-99', encodeParameterResult1111);
 //     });
 // });
-

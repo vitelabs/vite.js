@@ -4,6 +4,7 @@ import { stringify } from 'qs';
 import { paramsMissing, paramsFormat } from '~@vite/vitejs-error';
 import * as _e from './ed25519';
 import { Hex } from './type';
+const bn = require('bn.js');
 
 declare const enum Charset {
     'utf16' = 'utf16',
@@ -213,8 +214,10 @@ export function isSafeInteger(num) {
     return 1;
 }
 
-export const _Buffer = Buffer;
-
 export const blake2b = blake.blake2b;
 
 export const blake2bHex = blake.blake2bHex;
+
+export const _Buffer = Buffer;
+
+export const _bn = bn;
