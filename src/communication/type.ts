@@ -30,6 +30,8 @@ export enum TxType {
     'DexFundPledgeForVx',
     'DexFundPledgeForVip',
     'DexFundBindInviteCode',
+    'DexFundPledgeForSuperVip',
+    'DexFundConfigMarketsAgent',
     'DexFundNewInviter',
     'DexFundTransferTokenOwner',
     'DexFundMarketOwnerConfig',
