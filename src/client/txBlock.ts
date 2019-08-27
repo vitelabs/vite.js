@@ -6,7 +6,7 @@ import {
     Mint_Abi, Issue_Abi, Burn_Abi, ChangeTokenType_Abi, TransferOwner_Abi,
     DexFundUserDeposit_Abi, DexFundUserWithdraw_Abi, DexTradeCancelOrder_Abi, DexFundNewOrder_Abi, DexFundNewMarket_Abi,
     DexFundPledgeForVx_Abi, DexFundPledgeForVip_Abi, DexFundBindInviteCode_Abi, DexFundNewInviter_Abi,
-    DexFundTransferTokenOwner_Abi, DexFundMarketOwnerConfig_Abi
+    DexFundTransferTokenOwner_Abi, DexFundMarketOwnerConfig_Abi,DexFundConfigMarketsAgent_Abi,DexFundPledgeForSuperVip_Abi
 } from '~@vite/vitejs-constant';
 import { checkParams, validNodeName, blake2bHex } from '~@vite/vitejs-utils';
 import { getAccountBlock, getSendTxBlock, getReceiveTxBlock } from '~@vite/vitejs-accountblock';
@@ -560,6 +560,32 @@ export default class Tx {
             abi: DexFundMarketOwnerConfig_Abi,
             params: [ operationCode, tradeToken, quoteToken, owner, takerFeeRate, makerFeeRate, !!stopMarket ],
             tokenId: quoteToken
+        }, requestType);
+    }
+    async dexFundPledgeForSuperVip({ accountAddress,actionType }, requestType = 'async') {
+        const err = checkParams({ accountAddress,actionType }, [ 'accountAddress','actionType']);
+        if (err) {
+            return Promise.reject(err);
+        }
+
+        return this.callContract({
+            accountAddress,
+            toAddress: DexFund_Addr,
+            abi: DexFundPledgeForSuperVip_Abi,
+            params: [ actionType ]
+        }, requestType);
+    }
+    async dexFundConfigMarketsAgent({ accountAddress, actionType, agent,tradeTokens,quoteTokens }, requestType = 'async') {
+        const err = checkParams({ accountAddress,actionType, agent,tradeTokens,quoteTokens }, [ 'accountAddress', 'actionType', 'agent','tradeTokens','quoteTokens' ]);
+        if (err) {
+            return Promise.reject(err);
+        }
+
+        return this.callContract({
+            accountAddress,
+            toAddress: DexFund_Addr,
+            abi: DexFundConfigMarketsAgent_Abi,
+            params: [actionType, agent,tradeTokens,quoteTokens]
         }, requestType);
     }
 }
