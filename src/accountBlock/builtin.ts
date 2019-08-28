@@ -25,7 +25,7 @@ export function formatAccountBlock(accountBlock: formatBlock) {
     };
 
     if (message) {
-        const msgHex = `0002${ Buffer.from(message).toString('hex') }`;
+        const msgHex = `${ Buffer.from(message).toString('hex') }`;
         const msgBase64 = Buffer.from(msgHex, 'hex').toString('base64');
         _accountBlock.data = msgBase64;
     } else {

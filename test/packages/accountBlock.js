@@ -358,7 +358,7 @@ function testAccBlockCase(reqAccBlock, func, validFunc) {
         (reqBlock.message || reqBlock.data)
         && it('message to base64 string, data is not change.', function () {
             if (reqBlock.message) {
-                const msgHex = `0002${ Buffer.from(reqBlock.message).toString('hex') }`;
+                const msgHex = `${ Buffer.from(reqBlock.message).toString('hex') }`;
                 const msgBase64 = Buffer.from(msgHex, 'hex').toString('base64');
                 assert.equal(resBlock.data, msgBase64);
             }
