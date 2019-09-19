@@ -3,7 +3,7 @@
 const BigNumber = require('bn.js');
 
 import { unsafeInteger, integerIllegal } from '~@vite/vitejs-error';
-import { getAddressFromRealAddress, getRealAddressFromAddress } from '~@vite/vitejs-privtoaddr';
+import { getAddressFromRealAddress, getRealAddressFromAddress } from '~@vite/vitejs-address';
 import { getRawTokenId, getTokenIdFromRaw, isSafeInteger } from '~@vite/vitejs-utils';
 
 

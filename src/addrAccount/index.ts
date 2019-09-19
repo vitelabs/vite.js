@@ -1,4 +1,4 @@
-import * as privToAddr from '~@vite/vitejs-privtoaddr';
+import * as viteAddress from '~@vite/vitejs-address';
 import client from '~@vite/vitejs-client';
 import { Snapshot_Gid } from '~@vite/vitejs-constant';
 
@@ -13,12 +13,12 @@ class AddrAccountClass {
     constructor({ address, client }: {
         address: Address; client: client;
     } = { address: null, client: null }) {
-        if (!privToAddr.isAddress(address)) {
+        if (!viteAddress.isAddress(address)) {
             throw new Error(`Illegal address ${ address }.`);
         }
 
         this.address = address;
-        this.realAddress = privToAddr.getRealAddressFromAddress(this.address);
+        this.realAddress = viteAddress.getRealAddressFromAddress(this.address);
 
         this._client = client;
         this.getBlock = {};

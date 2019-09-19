@@ -1,7 +1,7 @@
 const UUID = require('pure-uuid');
 
 import { checkParams, ed25519, hexToBytes, bytesToHex } from '~@vite/vitejs-utils';
-import { createAddressByPrivateKey } from '~@vite/vitejs-privtoaddr';
+import { createAddressByPrivateKey } from '~@vite/vitejs-address';
 import { paramsFormat } from '~@vite/vitejs-error';
 
 import isValid from './validated';

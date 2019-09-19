@@ -1,6 +1,6 @@
 const bip39 = require('bip39');
 const hd = require('@sisi/ed25519-blake2b-hd-key');
-import { createAddressByPrivateKey, isAddress as _isAddress, getRealAddressFromAddress as _getRealAddressFromAddress } from '~@vite/vitejs-privtoaddr';
+import { createAddressByPrivateKey, isAddress as _isAddress, getRealAddressFromAddress as _getRealAddressFromAddress } from '~@vite/vitejs-address';
 import { paramsFormat } from '~@vite/vitejs-error';
 import { checkParams, blake2b } from '~@vite/vitejs-utils';
 

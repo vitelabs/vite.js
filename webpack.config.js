@@ -32,7 +32,7 @@ module.exports = {
         hdAddr: path.join(baseDir, '/hdAddr/index.ts'),
         keystore: path.join(baseDir, '/keystore/index.ts'),
         subscription: path.join(baseDir, '/subscription/index.ts'),
-        privToAddr: path.join(baseDir, '/privToAddr/index.ts'),
+        address: path.join(baseDir, '/address/index.ts'),
         utils: path.join(baseDir, '/utils/index.ts'),
         vitejs: path.join(baseDir, '/vitejs/index.ts'),
         WS: path.join(baseDir, 'WS/index.js'),
@@ -89,7 +89,7 @@ module.exports = {
             '~@vite/vitejs-hdaddr': path.join(__dirname, '/src/hdAddr/'),
             '~@vite/vitejs-keystore': path.join(__dirname, '/src/keystore/'),
             '~@vite/vitejs-subscription': path.join(__dirname, '/src/subscription/'),
-            '~@vite/vitejs-privtoaddr': path.join(__dirname, '/src/privToAddr/'),
+            '~@vite/vitejs-address': path.join(__dirname, '/src/address/'),
             '~@vite/vitejs-utils': path.join(__dirname, '/src/utils/'),
             '~@vite/vitejs': path.join(__dirname, '/src/vitejs/')
         },

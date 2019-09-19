@@ -22,8 +22,8 @@ describe('Keystore Test: src/keystore', function () {
     require('./packages/keystore');
 });
 
-describe('PrivToAddr Test: src/privToAddr', function () {
-    require('./packages/privToAddr');
+describe('Address Test: src/address', function () {
+    require('./packages/address');
 });
 
 describe('Utils Test: src/utils', function () {

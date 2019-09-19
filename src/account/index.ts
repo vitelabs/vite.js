@@ -1,4 +1,4 @@
-import * as privToAddr from '~@vite/vitejs-privtoaddr';
+import * as viteAddress from '~@vite/vitejs-address';
 import { paramsMissing } from '~@vite/vitejs-error';
 import { checkParams, ed25519 } from '~@vite/vitejs-utils';
 import client from '~@vite/vitejs-client';
@@ -35,7 +35,7 @@ class AccountClass extends addrAccount {
             this.privateKey = null;
             this.publicKey = null;
         } else {
-            const addrObj = privToAddr.createAddressByPrivateKey(privateKey);
+            const addrObj = viteAddress.createAddressByPrivateKey(privateKey);
 
             if (privateKey && address && addrObj.address !== address) {
                 throw new Error(`Private key does not match address ${ address }`);
@@ -66,7 +66,7 @@ class AccountClass extends addrAccount {
             return;
         }
 
-        const addrObj = privToAddr.createAddressByPrivateKey(privateKey);
+        const addrObj = viteAddress.createAddressByPrivateKey(privateKey);
         if (addrObj.address !== this.address) {
             throw new Error(`Private key does not match address ${ this.address }`);
         }
