@@ -48,7 +48,7 @@
         "@types/buffers": "^0.1.31",
         "@types/core-js": "^2.5.0",
         "@types/mocha": "^5.2.5",
-        "@types/node": "^10.12.10",
+        "@types/node": "^12.7.5",
         "@vite/vitejs": "^2.1.2",
         "@vite/vitejs-ws": "^2.1.2",
         "babel-eslint": "^10.0.1",

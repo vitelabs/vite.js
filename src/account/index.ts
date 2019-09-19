@@ -11,8 +11,8 @@ const { sign, getPublicKey } = ed25519;
 
 
 class AccountClass extends addrAccount {
-    privateKey: Hex
-    publicKey: Hex
+    privateKey: Buffer
+    publicKey: Buffer
     address: Address
     balance
     autoPow: Boolean
@@ -81,19 +81,16 @@ class AccountClass extends addrAccount {
         }
 
         if (this.publicKey) {
-            return Buffer.from(this.publicKey, 'hex');
+            return this.publicKey;
         }
-        const privKey = Buffer.from(this.privateKey, 'hex');
-        return getPublicKey(privKey);
+        return getPublicKey(this.privateKey);
     }
 
     sign(hexStr: Hex) {
         if (!this.privateKey) {
             throw new Error('Please set privateKey before calling this method');
         }
-
-        const privKey = Buffer.from(this.privateKey, 'hex');
-        return sign(hexStr, privKey);
+        return sign(hexStr, this.privateKey);
     }
 
     signAccountBlock(accountBlock) {

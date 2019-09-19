@@ -253,9 +253,9 @@ export declare type changeTransferOwnerBlock = {
 }
 
 export declare type AddrObj = {
-    realAddress: string;
-    publicKey: Hex;
-    privateKey: Hex;
+    realAddress: Hex;
+    publicKey: Buffer;
+    privateKey: Buffer;
     address: Address;
 }
 

@@ -1,13 +1,23 @@
 import { checkParams, ed25519, blake2b } from '~@vite/vitejs-utils';
 import { addressIllegal } from '~@vite/vitejs-error';
 
-import { ADDR_PRE, ADDR_SIZE, ADDR_CHECK_SUM_SIZE, ADDR_LEN, ADDR_TYPE } from './vars';
 import { Hex, AddrObj, Address } from './type';
 
 const { keyPair, getPublicKey } = ed25519;
 
+export const ADDR_PRE = 'vite_';
+export const ADDR_SIZE = 20;
+export const ADDR_CHECK_SUM_SIZE = 5;
+export const ADDR_LEN = ADDR_PRE.length + ADDR_SIZE * 2 + ADDR_CHECK_SUM_SIZE * 2;
+export enum ADDR_TYPE {
+    'Illegal' = 0,
+    'Account',
+    'Contract'
+}
+
+
 export function createAddressByPrivateKey(priv?: Hex | Buffer, isContract?: boolean): AddrObj {
-    // realAddr = Blake2b(PubKey)(len:20) + (isContract ? 1 : 0)(len:1)
+    // realAddress = Blake2b(PubKey)(len:20) + (isContract ? 1 : 0)(len:1)
     const { realAddr, privKey } = newAddr(priv, isContract);
 
     // checkSum = isContract ? reverse(Blake2b(address[0:20])(len:5)) : Blake2b(address[0:20])(len:5)
@@ -45,7 +55,7 @@ export function getRealAddressFromAddress(hexAddr: Hex): Hex {
     return getRealAddr(hexAddr, addrType);
 }
 
-export function getAddressFromRealAddress(realAddr: Hex, isContract? : boolean): Hex {
+export function getAddressFromRealAddress(realAddr: Hex, isContract? : boolean): Address {
     const err = checkParams({ realAddr }, ['realAddr'], [{
         name: 'realAddr',
         func: _realAddr => typeof _realAddr === 'string' && /^[0-9a-fA-F]+$/.test(_realAddr) && (_realAddr.length === ADDR_SIZE * 2 || _realAddr.length === (ADDR_SIZE + 1) * 2)
@@ -68,7 +78,7 @@ export function isAddress(hexAddr: Hex): ADDR_TYPE {
 
 
 
-function getRealAddr(hexAddr: Hex, addrType: ADDR_TYPE): string {
+function getRealAddr(hexAddr: Hex, addrType: ADDR_TYPE): Hex {
     const addr = hexAddr.slice(ADDR_PRE.length, ADDR_PRE.length + ADDR_SIZE * 2);
     if (addrType === ADDR_TYPE.Account) {
         return `${ addr }00`;
@@ -94,7 +104,8 @@ function newAddr(privKey?: Buffer | Hex, isContract?: boolean): { realAddr: Buff
 }
 
 function newAddrFromPub(pubKey: Hex | Buffer, isContract?: boolean): Buffer {
-    const _pre = blake2b(pubKey, null, ADDR_SIZE);
+    const _pubKey = pubKey instanceof Buffer ? pubKey : Buffer.from(pubKey, 'hex');
+    const _pre = blake2b(_pubKey, null, ADDR_SIZE);
     const isContractByte = isContract ? 1 : 0;
 
     const pre = new Uint8Array(21);
@@ -126,15 +137,15 @@ function getAddrCheckSum(addr: Buffer, isContract? : boolean): Hex {
     return Buffer.from(newCheckSum).toString('hex');
 }
 
-function getHexAddr(realAddr: Buffer, checkSum: Hex): string {
+function getHexAddr(realAddr: Buffer, checkSum: Hex): Address {
     return ADDR_PRE + realAddr.slice(0, 20).toString('hex') + checkSum;
 }
 
-function isValidHex(hexAddr) {
+function isValidHex(hexAddr: Address): Boolean {
     return hexAddr && hexAddr.length === ADDR_LEN && hexAddr.indexOf(ADDR_PRE) === 0;
 }
 
-function isValidCheckSum(hexAddr) {
+function isValidCheckSum(hexAddr: Address): ADDR_TYPE {
     const currentChecksum = hexAddr.slice(ADDR_PRE.length + ADDR_SIZE * 2);
     const _addr = hexAddr.slice(ADDR_PRE.length, ADDR_PRE.length + ADDR_SIZE * 2);
     const addr = Buffer.from(_addr, 'hex');

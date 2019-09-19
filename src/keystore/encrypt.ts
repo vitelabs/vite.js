@@ -92,7 +92,7 @@ export function encryptOldKeystore(privKey, pwd, selfScryptsy) {
     const getResult = (_encryptPwd, res) => {
         const nonce = random(12);
         const text = cipheriv({
-            rawText: addrObj.privateKey,
+            rawText: addrObj.privateKey.toString('hex'),
             pwd: _encryptPwd,
             nonce,
             algorithm

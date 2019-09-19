@@ -206,7 +206,7 @@ describe('signAccountBlock', function () {
             publicKey: 'iE0KOlLusSBOImOb6BA/tTzocFgtW2q0iHVM1WsFkuA='
         };
 
-        const { hash, signature, publicKey } = signAccountBlock(accountBlock, privKey);
+        const { hash, signature, publicKey } = signAccountBlock(accountBlock, Buffer.from(privKey, 'hex'));
         assert.equal(hash, accountBlock.hash);
         assert.equal(publicKey, accountBlock.publicKey);
         assert.equal(signature, accountBlock.signature);
@@ -229,7 +229,7 @@ describe('signAccountBlock', function () {
             publicKey: 'iE0KOlLusSBOImOb6BA/tTzocFgtW2q0iHVM1WsFkuA='
         };
 
-        const { hash, signature, publicKey } = signAccountBlock(accountBlock, privKey);
+        const { hash, signature, publicKey } = signAccountBlock(accountBlock, Buffer.from(privKey, 'hex'));
 
         assert.equal(hash, accountBlock.hash);
         assert.equal(publicKey, accountBlock.publicKey);
