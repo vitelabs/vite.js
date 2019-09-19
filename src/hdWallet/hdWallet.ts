@@ -1,6 +1,8 @@
 const bip39 = require('bip39');
 const blake = require('blakejs/blake2b');
 
+import { checkParams } from '~@vite/vitejs-utils';
+
 import * as hdKey from './hdKey';
 import * as addressLib from './address';
 import { Hex, Address } from './type';
@@ -19,7 +21,7 @@ class HDWallet {
     readonly wordlist: Array<String>
     readonly pwd: String
     readonly seed: Buffer
-    readonly seedHex: String
+    readonly seedHex: Hex
 
     private walletList: Object
 
@@ -58,7 +60,7 @@ class HDWallet {
 
     deriveWallet(index: number) {
         const path = hdKey.getPath(index);
-        const { privateKey, publicKey } = hdKey.deriveKeyPairByPath(this.seed, path);
+        const { privateKey, publicKey } = hdKey.deriveKeyPairByPath(this.seedHex, path);
         const address = addressLib.getAddressFromPublicKey(publicKey);
         const realAddress = addressLib.getRealAddressFromAddress(address);
 
@@ -72,6 +74,24 @@ class HDWallet {
 
         this.walletList[index] = wallet;
         return wallet;
+    }
+
+    deriveWalletList(startIndex: number, endIndex: number) {
+        const err = checkParams({ startIndex, endIndex }, [ 'startIndex', 'endIndex' ]);
+        if (err) {
+            throw new Error(err.message);
+        }
+
+        if (startIndex >= endIndex) {
+            throw new Error('Illegal index');
+        }
+
+        const walletList: Array<Wallet> = [];
+        for (let i = startIndex; i <= endIndex; i++) {
+            const wallet: Wallet = this.deriveWallet(i);
+            walletList.push(wallet);
+        }
+        return walletList;
     }
 }
 
