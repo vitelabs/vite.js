@@ -13,14 +13,14 @@ export function createAddressByPrivateKey(priv?: Hex | Buffer, isContract?: bool
     // checkSum = isContract ? reverse(Blake2b(address[0:20])(len:5)) : Blake2b(address[0:20])(len:5)
     const checkSum = getAddrCheckSum(realAddr, isContract);
 
-    // hexAddr = 'vite_' + Hex(realAddr[0:20] + checkSum)
-    const hexAddr = getHexAddr(realAddr, checkSum);
+    // address = 'vite_' + Hex(realAddr[0:20] + checkSum)
+    const address = getHexAddr(realAddr, checkSum);
 
     return {
-        addr: realAddr.toString('hex'),
-        pubKey: getPublicKey(privKey),
-        privKey: privKey.toString('hex'),
-        hexAddr
+        realAddress: realAddr.toString('hex'),
+        publicKey: getPublicKey(privKey),
+        privateKey: privKey.toString('hex'),
+        address
     };
 }
 

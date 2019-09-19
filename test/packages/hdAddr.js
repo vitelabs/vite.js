@@ -148,7 +148,7 @@ describe('function', function () {
         const as = getAddrsFromMnemonic('horn equal mystery success pride regret renew great witness hire man moon');
         const arr = [];
         as.forEach(item => {
-            arr.push(item.hexAddr);
+            arr.push(item.address);
         });
 
         assert.deepEqual(arr, [

@@ -12,37 +12,37 @@ const addrPrivContract = createAddressByPrivateKey(privKey, true);
 
 describe('createAddressByPrivateKey', function () {
     it('with privateKey, isContract = false', function () {
-        assert.equal(addrPriv.privKey, privKey);
+        assert.equal(addrPriv.privateKey, privKey);
     });
 
     it('with privateKey, isContract = true', function () {
-        assert.equal(addrPrivContract.privKey, privKey);
+        assert.equal(addrPrivContract.privateKey, privKey);
     });
 
     it('without privateKey, isContract = false', function () {
-        assert.equal(typeof addr.privKey, 'string');
+        assert.equal(typeof addr.privateKey, 'string');
     });
 
     it('without privateKey, isContract = true', function () {
-        assert.equal(typeof addrContract.privKey, 'string');
+        assert.equal(typeof addrContract.privateKey, 'string');
     });
 });
 
 describe('isAddress', function () {
     it('createAddressByPrivateKey addr', function () {
-        assert.equal(isAddress(addr.hexAddr), 1);
+        assert.equal(isAddress(addr.address), 1);
     });
 
     it('createAddressByPrivateKey addrContract', function () {
-        assert.equal(isAddress(addrContract.hexAddr), 2);
+        assert.equal(isAddress(addrContract.address), 2);
     });
 
     it('createAddressByPrivateKey addrPriv', function () {
-        assert.equal(isAddress(addrPriv.hexAddr), 1);
+        assert.equal(isAddress(addrPriv.address), 1);
     });
 
     it('createAddressByPrivateKey addrPrivContract', function () {
-        assert.equal(isAddress(addrPrivContract.hexAddr), 2);
+        assert.equal(isAddress(addrPrivContract.address), 2);
     });
 
     it('Old user address: case 1', function () {
@@ -64,7 +64,7 @@ describe('isAddress', function () {
 
 describe('getRealAddressFromAddress', function () {
     it('createAddressByPrivateKey', function () {
-        assert.equal(getRealAddressFromAddress(addr.hexAddr), addr.addr);
+        assert.equal(getRealAddressFromAddress(addr.address), addr.realAddress);
     });
 
     it('user address 1', function () {
@@ -86,7 +86,7 @@ describe('getRealAddressFromAddress', function () {
 
 describe('getAddressFromRealAddress', function () {
     it('createAddressByPrivateKey', function () {
-        assert.equal(getAddressFromRealAddress(addr.addr), addr.hexAddr);
+        assert.equal(getAddressFromRealAddress(addr.realAddress), addr.address);
     });
 
     it('case 1', function () {
@@ -97,6 +97,6 @@ describe('getAddressFromRealAddress', function () {
 
 describe('createAddressByPublicKey', function () {
     it('createAddressByPrivateKey', function () {
-        assert.equal(createAddressByPublicKey(addr.pubKey), addr.hexAddr);
+        assert.equal(createAddressByPublicKey(addr.publicKey), addr.address);
     });
 });

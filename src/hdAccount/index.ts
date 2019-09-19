@@ -138,7 +138,7 @@ class HdAccountClass {
         let i;
         for (i = 0; i < this.activeAccountList.length; i++) {
             const account = this.activeAccountList[i];
-            if (account.address === addrObj.hexAddr) {
+            if (account.address === addrObj.address) {
                 break;
             }
         }
@@ -148,7 +148,7 @@ class HdAccountClass {
         }
 
         return new Account({
-            privateKey: addrObj.privKey,
+            privateKey: addrObj.privateKey,
             client: this._client
         }, { autoPow, usePledgeQuota });
     }
@@ -186,7 +186,7 @@ class HdAccountClass {
 
         let i;
         for (i = 0; i < this.addrList.length; i++) {
-            if (this.addrList[i].hexAddr === address) {
+            if (this.addrList[i].address === address) {
                 break;
             }
         }

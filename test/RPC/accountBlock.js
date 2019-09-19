@@ -55,7 +55,7 @@ it('SBPreg', function(done) {
 it('updateReg', function(done) {
     myAccount.getBlock.updateReg({
         nodeName: 'CS_TEST_NODE',
-        toAddress: myHdAccount.addrList[1].hexAddr,
+        toAddress: myHdAccount.addrList[1].address,
         height, prevHash
     }).then((block) => {
         done(assert.equal(getTxType(block), 'UpdateReg'));
@@ -78,7 +78,7 @@ it('revokeReg', function(done) {
 it('retrieveReward', function(done) {
     myAccount.getBlock.retrieveReward({
         nodeName: 'CS_TEST_NODE',
-        toAddress: myHdAccount.addrList[1].hexAddr,
+        toAddress: myHdAccount.addrList[1].address,
         height, prevHash
     }).then((block) => {
         done(assert.equal(getTxType(block), 'RetrieveReward'));

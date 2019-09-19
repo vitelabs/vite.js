@@ -170,7 +170,7 @@ async function revokeReg() {
 async function updateReg() {
     const result = await myAccount.updateReg({
         nodeName: 'CS_TEST_NODE',
-        toAddress: myHdAccount.addrList[1].hexAddr
+        toAddress: myHdAccount.addrList[1].address
     });
 
     console.log('[LOG] updateReg', result, '\n');

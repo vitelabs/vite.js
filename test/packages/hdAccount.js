@@ -24,8 +24,8 @@ describe('New HdAccount with mnemonic', function () {
     it('property addrList.length === 1', function () {
         assert.equal(myHdAccount.addrList.length, 1);
     });
-    it('property addrList[0].hexAddr', function () {
-        assert.equal(myHdAccount.addrList[0].hexAddr, addrObj.addr.hexAddr);
+    it('property addrList[0].address', function () {
+        assert.equal(myHdAccount.addrList[0].address, addrObj.addr.address);
     });
     it('property id', function () {
         assert.equal(myHdAccount.id, getId(addrObj.mnemonic));

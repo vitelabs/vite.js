@@ -9,17 +9,17 @@ const addrObj = createAddressByPrivateKey();
 const myHTTPClient = new Client(new HTTP_RPC());
 
 const myAddrAccount = new AddrAccount({
-    address: addrObj.hexAddr,
+    address: addrObj.address,
     client: myHTTPClient
 });
 
 describe('New AddrAccount: property', function () {
     it('address', function () {
-        assert(myAddrAccount.address, addrObj.hexAddr);
+        assert(myAddrAccount.address, addrObj.address);
     });
 
     it('realAddress', function () {
-        assert(myAddrAccount.realAddress, addrObj.addr);
+        assert(myAddrAccount.realAddress, addrObj.realAddress);
     });
 
     it('_client', function () {

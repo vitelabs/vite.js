@@ -253,10 +253,10 @@ export declare type changeTransferOwnerBlock = {
 }
 
 export declare type AddrObj = {
-    addr: string;
-    pubKey: Hex;
-    privKey: Hex;
-    hexAddr: Address;
+    realAddress: string;
+    publicKey: Hex;
+    privateKey: Hex;
+    address: Address;
 }
 
 export enum BlockType {

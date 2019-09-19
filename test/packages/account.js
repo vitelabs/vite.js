@@ -12,7 +12,7 @@ const myHTTPClient = new Client(new HTTP_RPC());
 describe('New Account with privateKey', function () {
     const addrObj = createAddressByPrivateKey();
     const myAccount = new Account({
-        privateKey: addrObj.privKey,
+        privateKey: addrObj.privateKey,
         client: myHTTPClient
     });
 
@@ -20,13 +20,13 @@ describe('New Account with privateKey', function () {
         assert(myAccount instanceof AddrAccount, true);
     });
     it('property realAddress', function () {
-        assert(myAccount.realAddress, addrObj.addr);
+        assert(myAccount.realAddress, addrObj.realAddress);
     });
     it('property privateKey', function () {
-        assert(myAccount.privateKey, addrObj.privKey);
+        assert(myAccount.privateKey, addrObj.privateKey);
     });
     it('property getPublicKey', function () {
-        assert(myAccount.getPublicKey(), addrObj.pubKey);
+        assert(myAccount.getPublicKey(), addrObj.publicKey);
     });
     it('property _client', function () {
         assert.deepEqual(myAccount._client, myHTTPClient);
@@ -44,10 +44,10 @@ describe('New Account without privateKey', function () {
 
     const addrObj = createAddressByPrivateKey(myAccount.privateKey);
     it('property realAddress', function () {
-        assert(myAccount.realAddress, addrObj.addr);
+        assert(myAccount.realAddress, addrObj.realAddress);
     });
     it('property getPublicKey', function () {
-        assert(myAccount.getPublicKey(), addrObj.pubKey);
+        assert(myAccount.getPublicKey(), addrObj.publicKey);
     });
 
     testFunctions(myAccount);

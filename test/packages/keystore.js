@@ -100,7 +100,7 @@ if (process.env.NODE_ENV !== 'testWatch') {
         it('only decrypt', function (done) {
             decrypt(oldks, OLD_PWD).then(privKey => {
                 const k = createAddressByPrivateKey(privKey);
-                done(assert.equal(k.hexAddr, oldKeyJSON.hexaddress));
+                done(assert.equal(k.address, oldKeyJSON.hexaddress));
             }).catch(err => {
                 done(err);
             });
