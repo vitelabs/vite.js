@@ -24,11 +24,11 @@ describe('HdAccount Test: src/hdAccount', function () {
     require('./packages/hdAccount');
 });
 
-describe('NetProcessor Test: src/netProcessor', function () {
-    require('./packages/netProcessor');
+describe('Subscription Test: src/subscription', function () {
+    require('./packages/subscription');
 });
 
-// netProcessor
+// subscription
 // http
 // ipc
 // ws

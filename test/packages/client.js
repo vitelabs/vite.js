@@ -2,7 +2,7 @@ const assert = require('assert');
 
 import { encodeFunctionSignature, encodeFunctionCall } from '../../src/abi/index';
 import Client from '../../src/client/index';
-import netProcessor from '../../src/netProcessor/index';
+import subscription from '../../src/subscription/index';
 import { methods } from '../../src/constant/index';
 import HTTP_RPC from '../../src/HTTP/index';
 import { getTxType } from '../../src/accountblock/index';
@@ -25,8 +25,8 @@ describe('IPC Client', function () {
 
 
 function testFunc(notIncluded, client) {
-    it('extends of netProcessor', function () {
-        assert.equal(client instanceof netProcessor, true);
+    it('extends of subscription', function () {
+        assert.equal(client instanceof subscription, true);
     });
 
     for (const space in methods) {

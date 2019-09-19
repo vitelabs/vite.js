@@ -1,8 +1,8 @@
 import { methods as _methods, Contracts } from '~@vite/vitejs-constant';
-import netProcessor from '~@vite/vitejs-netprocessor';
+import subscription from '~@vite/vitejs-subscription';
 
 import { checkParams } from '~@vite/vitejs-utils';
-import { isValidHexAddr } from '~@vite/vitejs-privtoaddr';
+import { isAddress } from '~@vite/vitejs-privtoaddr';
 import { getTxType, signAccountBlock, decodeBlockByContract } from '~@vite/vitejs-accountblock';
 import { isAccountBlock, getAbi, getContractTxType } from '~@vite/vitejs-accountblock/builtin';
 import { encodeFunctionCall, decodeParameters } from '~@vite/vitejs-abi';
@@ -14,7 +14,7 @@ const { onroad } = _methods;
 const _ledger = _methods.ledger;
 
 
-class ClientClass extends netProcessor {
+class ClientClass extends subscription {
     builtinTxBlock: TxBlock
     customTxType: Object
     isDecodeTx: boolean
@@ -77,7 +77,7 @@ class ClientClass extends netProcessor {
     async getBalance(addr: Address) {
         const err = checkParams({ addr }, ['addr'], [{
             name: 'addr',
-            func: isValidHexAddr
+            func: isAddress
         }]);
         if (err) {
             return Promise.reject(err);
@@ -106,7 +106,7 @@ class ClientClass extends netProcessor {
     }) {
         const err = checkParams({ addr, index }, [ 'addr', 'index' ], [{
             name: 'addr',
-            func: isValidHexAddr
+            func: isAddress
         }]);
         if (err) {
             throw err;

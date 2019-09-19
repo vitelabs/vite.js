@@ -539,14 +539,3 @@ export declare interface RPCerror {
     code: number;
     message: string;
 }
-
-export enum LangList {
-    'english' = 'english',
-    'japanese' = 'japanese',
-    'chineseSimplified' = 'chinese_simplified',
-    'chineseTraditional' = 'chinese_traditional',
-    'french' = 'french',
-    'italian' = 'italian',
-    'korean' = 'korean',
-    'spanish' = 'spanish'
-}

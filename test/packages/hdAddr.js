@@ -1,15 +1,14 @@
 const bip39 = require('bip39');
 const assert = require('assert');
 
-import { newAddr, getId, getEntropyFromMnemonic, getMnemonicFromEntropy, getAddrsFromMnemonic, getAddrFromMnemonic } from '../../src/hdAddr';
-import { LangList } from '../../src/type';
+import { createAddress, getId, getEntropyFromMnemonic, getMnemonicFromEntropy, getAddrsFromMnemonic, getAddrFromMnemonic } from '../../src/hdAddr/index.ts';
 
 describe('language test', function () {
     const entropy = 'e27b674dd7cc3b4ce67ad38d18bae592871dc7e4a7384cdcc07e1a3f9d3dcfca';
 
     describe('english', function () {
         const mnemonic = bip39.entropyToMnemonic(entropy);
-        const seed = bip39.mnemonicToSeed(mnemonic);
+        const seed = bip39.mnemonicToSeedSync(mnemonic);
 
         it('mnemonic', function () {
             const m = 'tiny swamp square question senior please okay foil minimum shift ride celery impact token myth train error toward buzz crucial what page dish empower';
@@ -23,8 +22,8 @@ describe('language test', function () {
     });
 
     describe('japanese', function () {
-        const mnemonic = getMnemonicFromEntropy(entropy, LangList.japanese);
-        const seed = bip39.mnemonicToSeed(mnemonic);
+        const mnemonic = getMnemonicFromEntropy(entropy, bip39.wordlists.JA);
+        const seed = bip39.mnemonicToSeedSync(mnemonic);
 
         it('mnemonic', function () {
             const m = 'まわす　ほあん　ふさい　にあう　はっきり　とおる　つつじ　さくひん　だむる　はめつ　ねまき　おばさん　ずほう　みかん　ちいき　むいか　こうつう　みほん　おうふく　きどう　りりく　でこぼこ　くれる　けんすう';
@@ -38,8 +37,8 @@ describe('language test', function () {
     });
 
     describe('korean', function () {
-        const mnemonic = getMnemonicFromEntropy(entropy, LangList.korean);
-        const seed = bip39.mnemonicToSeed(mnemonic);
+        const mnemonic = getMnemonicFromEntropy(entropy, bip39.wordlists.korean);
+        const seed = bip39.mnemonicToSeedSync(mnemonic);
 
         it('mnemonic', function () {
             const m = '토마토 취향 천천히 자동 종업원 이발소 왜냐하면 비둘기 여든 주장 전문 날짜 수박 통화 영양 팩스 백성 판결 기능 독일 홍차 원숭이 몸속 발생';
@@ -53,8 +52,8 @@ describe('language test', function () {
     });
 
     describe('italian', function () {
-        const mnemonic = getMnemonicFromEntropy(entropy, LangList.italian);
-        const seed = bip39.mnemonicToSeed(mnemonic);
+        const mnemonic = getMnemonicFromEntropy(entropy, bip39.wordlists.italian);
+        const seed = bip39.mnemonicToSeedSync(mnemonic);
 
         it('mnemonic', function () {
             const m = 'tara stacco sobbalzo rastrello scala possesso parola gallina oblio scivolo risvolto cane levigato tecnico organico tiro evoluto tettoia bozzolo crisi vigilia petalo dogma esanime';
@@ -68,8 +67,8 @@ describe('language test', function () {
     });
 
     describe('chinese_simplified', function () {
-        const mnemonic = getMnemonicFromEntropy(entropy, LangList.chineseSimplified);
-        const seed = bip39.mnemonicToSeed(mnemonic);
+        const mnemonic = getMnemonicFromEntropy(entropy, bip39.wordlists.chinese_simplified);
+        const seed = bip39.mnemonicToSeedSync(mnemonic);
 
         it('mnemonic', function () {
             const m = '症 佛 眉 伍 砖 徒 恢 频 尚 详 兼 认 亮 杰 谷 焰 够 冶 先 般 戈 坡 失 充';
@@ -83,8 +82,8 @@ describe('language test', function () {
     });
 
     describe('chinese_traditional', function () {
-        const mnemonic = getMnemonicFromEntropy(entropy, LangList.chineseTraditional);
-        const seed = bip39.mnemonicToSeed(mnemonic);
+        const mnemonic = getMnemonicFromEntropy(entropy, bip39.wordlists.chinese_traditional);
+        const seed = bip39.mnemonicToSeedSync(mnemonic);
 
         it('mnemonic', function () {
             const m = '症 佛 眉 伍 磚 徒 恢 頻 尚 詳 兼 認 亮 傑 谷 焰 夠 冶 先 般 戈 坡 失 充';
@@ -98,8 +97,8 @@ describe('language test', function () {
     });
 
     describe('spanish', function () {
-        const mnemonic = getMnemonicFromEntropy(entropy, LangList.spanish);
-        const seed = bip39.mnemonicToSeed(mnemonic);
+        const mnemonic = getMnemonicFromEntropy(entropy, bip39.wordlists.spanish);
+        const seed = bip39.mnemonicToSeedSync(mnemonic);
 
         it('mnemonic', function () {
             const m = 'tatuaje sopa satán pena recreo oruga neutro finito mercado reja poste burro imperio teléfono monja tierra enero testigo bocina cocción vida obtener dardo edad';
@@ -123,7 +122,7 @@ describe('password test', function () {
         });
 
         const passphrase = '123456';
-        const seedHex = bip39.mnemonicToSeedHex(mnemonic, passphrase);
+        const seedHex = bip39.mnemonicToSeedSync(mnemonic, passphrase).toString('hex');
         it('seed_hex', function () {
             assert.equal(seedHex, '21a107743295dfec434254374fdbb43ee4701fa699acce6d1810ddae7d356aeeb10bedc09358e5cf8860fc16d225c422f0a44a708267bf0d2bbbbcd3bd299a49');
         });
@@ -137,7 +136,7 @@ describe('password test', function () {
         });
 
         const passphrase = '123456';
-        const seedHex = bip39.mnemonicToSeedHex(mnemonic, passphrase);
+        const seedHex = bip39.mnemonicToSeedSync(mnemonic, passphrase).toString('hex');
         it('seed_hex', function () {
             assert.equal(seedHex, '4e0f10e63407ba168ce6c504631b1d405b121406746b50c7d4831b150985641b867a6edccefaf77554221c44f89bbc0e47038114f50de9f1ffaefbd50c3d6b29');
         });
@@ -166,22 +165,22 @@ describe('function', function () {
         ]);
     });
 
-    const addrObj = newAddr();
+    const addrObj = createAddress();
 
-    it('newAddr test mnemonic', () => {
+    it('createAddress test mnemonic', () => {
         assert(addrObj.mnemonic.split(' ').length, 24);
     });
 
-    it('newAddr test entropy', () => {
+    it('createAddress test entropy', () => {
         assert(addrObj.entropy.length, 512);
     });
 
-    it('newAddr test addr 0', () => {
+    it('createAddress test addr 0', () => {
         const addr0 = getAddrFromMnemonic(addrObj.mnemonic);
         assert(addrObj.addr, addr0);
     });
 
-    it('newAddr getId', () => {
+    it('createAddress getId', () => {
         assert(getId(addrObj.mnemonic), addrObj.id);
     });
 });

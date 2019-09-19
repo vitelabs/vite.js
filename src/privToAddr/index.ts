@@ -2,11 +2,11 @@ import { checkParams, ed25519, blake2b } from '~@vite/vitejs-utils';
 import { addressIllegal } from '~@vite/vitejs-error';
 
 import { ADDR_PRE, ADDR_SIZE, ADDR_CHECK_SUM_SIZE, ADDR_LEN, ADDR_TYPE } from './vars';
-import { Hex, AddrObj } from './type';
+import { Hex, AddrObj, Address } from './type';
 
 const { keyPair, getPublicKey } = ed25519;
 
-export function newHexAddr(priv?: Hex | Buffer, isContract?: boolean): AddrObj {
+export function createAddressByPrivateKey(priv?: Hex | Buffer, isContract?: boolean): AddrObj {
     // realAddr = Blake2b(PubKey)(len:20) + (isContract ? 1 : 0)(len:1)
     const { realAddr, privKey } = newAddr(priv, isContract);
 
@@ -24,7 +24,7 @@ export function newHexAddr(priv?: Hex | Buffer, isContract?: boolean): AddrObj {
     };
 }
 
-export function newHexAddrFromPub(pubkey: Hex | Buffer, isContract?: boolean): string {
+export function createAddressByPublicKey(pubkey: Hex | Buffer, isContract?: boolean): Address {
     const err = checkParams({ pubkey }, ['pubkey']);
     if (err) {
         throw new Error(err.message);
@@ -36,16 +36,8 @@ export function newHexAddrFromPub(pubkey: Hex | Buffer, isContract?: boolean): s
     return getHexAddr(realAddr, checkSum);
 }
 
-export function getAddrFromHexAddr(hexAddr: Hex): Hex {
-    const err = checkParams({ hexAddr }, ['hexAddr'], [{
-        name: 'hexAddr',
-        func: isValidHex
-    }]);
-    if (err) {
-        throw new Error(err.message);
-    }
-
-    const addrType = isValidCheckSum(hexAddr);
+export function getRealAddressFromAddress(hexAddr: Hex): Hex {
+    const addrType = isAddress(hexAddr);
     if (addrType === ADDR_TYPE.Illegal) {
         throw addressIllegal;
     }
@@ -53,7 +45,7 @@ export function getAddrFromHexAddr(hexAddr: Hex): Hex {
     return getRealAddr(hexAddr, addrType);
 }
 
-export function getHexAddrFromAddr(realAddr: Hex): string {
+export function getAddressFromRealAddress(realAddr: Hex, isContract? : boolean): Hex {
     const err = checkParams({ realAddr }, ['realAddr'], [{
         name: 'realAddr',
         func: _realAddr => typeof _realAddr === 'string' && /^[0-9a-fA-F]+$/.test(_realAddr) && (_realAddr.length === ADDR_SIZE * 2 || _realAddr.length === (ADDR_SIZE + 1) * 2)
@@ -63,11 +55,11 @@ export function getHexAddrFromAddr(realAddr: Hex): string {
     }
 
     const realAddrBuf = Buffer.from(realAddr, 'hex');
-    const checkSum = getAddrCheckSum(realAddrBuf);
+    const checkSum = getAddrCheckSum(realAddrBuf, isContract);
     return getHexAddr(realAddrBuf, checkSum);
 }
 
-export function isValidHexAddr(hexAddr: Hex): ADDR_TYPE {
+export function isAddress(hexAddr: Hex): ADDR_TYPE {
     if (!isValidHex(hexAddr)) {
         return ADDR_TYPE.Illegal;
     }

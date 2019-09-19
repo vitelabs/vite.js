@@ -37,10 +37,7 @@ const required = [
     'methods'
 ];
 
-const enumType = {
-    'BlockType': 7 * 2,
-    'LangList': 8
-};
+const enumType = {'BlockType': 7 * 2};
 
 describe('constant enumType and property', function () {
     for (const key in property) {

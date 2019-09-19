@@ -2,7 +2,7 @@ const BigNumber = require('bn.js');
 
 import { paramsMissing, paramsConflict, integerIllegal, unsafeInteger } from '~@vite/vitejs-error';
 import { Vite_TokenId, Default_Hash, Delegate_Gid, BlockType } from '~@vite/vitejs-constant';
-import { isValidHexAddr } from '~@vite/vitejs-privtoaddr';
+import { isAddress } from '~@vite/vitejs-privtoaddr';
 import { checkParams, isSafeInteger, isArray, isObject, isNonNegativeInteger } from '~@vite/vitejs-utils';
 import { encodeParameters, encodeFunctionSignature } from '~@vite/vitejs-abi';
 
@@ -51,10 +51,10 @@ export function formatAccountBlock(accountBlock: formatBlock) {
 export function isAccountBlock({ blockType, fromBlockHash, accountAddress, message, data, toAddress, amount }: formatBlock) {
     const err = checkParams({ blockType, accountAddress, toAddress, amount }, [ 'accountAddress', 'blockType' ], [ {
         name: 'accountAddress',
-        func: isValidHexAddr
+        func: isAddress
     }, {
         name: 'toAddress',
-        func: isValidHexAddr
+        func: isAddress
     }, {
         name: 'blockType',
         func: _b => BlockType[_b],
@@ -150,7 +150,7 @@ export function getContractTxType(_contracts: Object) {
 
         const err = checkParams(_c, [ 'contractAddr', 'abi' ], [{
             name: 'contractAddr',
-            func: isValidHexAddr
+            func: isAddress
         }]);
         if (err) {
             throw err;

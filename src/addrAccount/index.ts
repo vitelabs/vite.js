@@ -13,12 +13,12 @@ class AddrAccountClass {
     constructor({ address, client }: {
         address: Address; client: client;
     } = { address: null, client: null }) {
-        if (!privToAddr.isValidHexAddr(address)) {
+        if (!privToAddr.isAddress(address)) {
             throw new Error(`Illegal address ${ address }.`);
         }
 
         this.address = address;
-        this.realAddress = privToAddr.getAddrFromHexAddr(this.address);
+        this.realAddress = privToAddr.getRealAddressFromAddress(this.address);
 
         this._client = client;
         this.getBlock = {};

@@ -1,7 +1,7 @@
 const UUID = require('pure-uuid');
 
 import { checkParams, ed25519, hexToBytes, bytesToHex } from '~@vite/vitejs-utils';
-import { newHexAddr } from '~@vite/vitejs-privtoaddr';
+import { createAddressByPrivateKey } from '~@vite/vitejs-privtoaddr';
 import { paramsFormat } from '~@vite/vitejs-error';
 
 import isValid from './validated';
@@ -79,7 +79,7 @@ export function encryptOldKeystore(privKey, pwd, selfScryptsy) {
         throw new Error(err.message);
     }
 
-    const key = newHexAddr(privKey);
+    const key = createAddressByPrivateKey(privKey);
 
     const scryptParams = {
         n,

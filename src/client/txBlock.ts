@@ -6,13 +6,13 @@ import {
     Mint_Abi, Issue_Abi, Burn_Abi, ChangeTokenType_Abi, TransferOwner_Abi,
     DexFundUserDeposit_Abi, DexFundUserWithdraw_Abi, DexTradeCancelOrder_Abi, DexFundNewOrder_Abi, DexFundNewMarket_Abi,
     DexFundPledgeForVx_Abi, DexFundPledgeForVip_Abi, DexFundBindInviteCode_Abi, DexFundNewInviter_Abi,
-    DexFundTransferTokenOwner_Abi, DexFundMarketOwnerConfig_Abi,DexFundConfigMarketsAgent_Abi,DexFundPledgeForSuperVip_Abi
+    DexFundTransferTokenOwner_Abi, DexFundMarketOwnerConfig_Abi, DexFundConfigMarketsAgent_Abi, DexFundPledgeForSuperVip_Abi
 } from '~@vite/vitejs-constant';
 import { checkParams, validNodeName, blake2bHex } from '~@vite/vitejs-utils';
 import { getAccountBlock, getSendTxBlock, getReceiveTxBlock } from '~@vite/vitejs-accountblock';
 import { formatAccountBlock, isAccountBlock, getCreateContractData } from '~@vite/vitejs-accountblock/builtin';
 import { encodeFunctionCall } from '~@vite/vitejs-abi';
-import { getAddrFromHexAddr } from  '~@vite/vitejs-privtoaddr';
+import { getRealAddressFromAddress } from  '~@vite/vitejs-privtoaddr';
 
 import {
     SBPregBlock, block8, block7, revokeVotingBlock, quotaBlock,
@@ -59,7 +59,7 @@ export default class Tx {
     }
 
     async pow(accountBlock: formatBlock, difficulty) {
-        const realAddr = getAddrFromHexAddr(accountBlock.accountAddress);
+        const realAddr = getRealAddressFromAddress(accountBlock.accountAddress);
         const rawHashBytes = Buffer.from(realAddr + accountBlock.prevHash, 'hex');
         const hash = blake2bHex(rawHashBytes, null, 32);
 
@@ -562,8 +562,9 @@ export default class Tx {
             tokenId: quoteToken
         }, requestType);
     }
-    async dexFundPledgeForSuperVip({ accountAddress,actionType }, requestType = 'async') {
-        const err = checkParams({ accountAddress,actionType }, [ 'accountAddress','actionType']);
+
+    async dexFundPledgeForSuperVip({ accountAddress, actionType }, requestType = 'async') {
+        const err = checkParams({ accountAddress, actionType }, [ 'accountAddress', 'actionType' ]);
         if (err) {
             return Promise.reject(err);
         }
@@ -572,11 +573,12 @@ export default class Tx {
             accountAddress,
             toAddress: DexFund_Addr,
             abi: DexFundPledgeForSuperVip_Abi,
-            params: [ actionType ]
+            params: [actionType]
         }, requestType);
     }
-    async dexFundConfigMarketsAgent({ accountAddress, actionType, agent,tradeTokens,quoteTokens }, requestType = 'async') {
-        const err = checkParams({ accountAddress,actionType, agent,tradeTokens,quoteTokens }, [ 'accountAddress', 'actionType', 'agent','tradeTokens','quoteTokens' ]);
+
+    async dexFundConfigMarketsAgent({ accountAddress, actionType, agent, tradeTokens, quoteTokens }, requestType = 'async') {
+        const err = checkParams({ accountAddress, actionType, agent, tradeTokens, quoteTokens }, [ 'accountAddress', 'actionType', 'agent', 'tradeTokens', 'quoteTokens' ]);
         if (err) {
             return Promise.reject(err);
         }
@@ -585,7 +587,7 @@ export default class Tx {
             accountAddress,
             toAddress: DexFund_Addr,
             abi: DexFundConfigMarketsAgent_Abi,
-            params: [actionType, agent,tradeTokens,quoteTokens]
+            params: [ actionType, agent, tradeTokens, quoteTokens ]
         }, requestType);
     }
 }

@@ -53,8 +53,8 @@ export const DexFundBindInviteCode_Abi = { 'type': 'function', 'name': 'DexFundB
 export const DexFundNewInviter_Abi = { 'type': 'function', 'name': 'DexFundNewInviter', 'inputs': [] };
 export const DexFundTransferTokenOwner_Abi = { 'type': 'function', 'name': 'DexFundTransferTokenOwner', 'inputs': [ { 'name': 'token', 'type': 'tokenId' }, { 'name': 'owner', 'type': 'address' } ] };
 export const DexFundMarketOwnerConfig_Abi = { 'type': 'function', 'name': 'DexFundMarketOwnerConfig', 'inputs': [ { 'name': 'operationCode', 'type': 'uint8' }, { 'name': 'tradeToken', 'type': 'tokenId' }, { 'name': 'quoteToken', 'type': 'tokenId' }, { 'name': 'owner', 'type': 'address' }, { 'name': 'takerFeeRate', 'type': 'int32' }, { 'name': 'makerFeeRate', 'type': 'int32' }, { 'name': 'stopMarket', 'type': 'bool' } ] };
-export const DexFundPledgeForSuperVip_Abi={"type": "function","name": "DexFundPledgeForSuperVip","inputs": [{"name": "actionType","type": "uint8"}]}
-export const DexFundConfigMarketsAgent_Abi={    "type": "function",    "name": "DexFundConfigMarketsAgent",    "inputs": [      {        "name": "actionType",        "type": "uint8"      },      {        "name": "agent",        "type": "address"      },      {        "name": "tradeTokens",        "type": "tokenId[]"      },      {        "name": "quoteTokens",        "type": "tokenId[]"      }    ]  }
+export const DexFundPledgeForSuperVip_Abi = { 'type': 'function', 'name': 'DexFundPledgeForSuperVip', 'inputs': [{ 'name': 'actionType', 'type': 'uint8' }] };
+export const DexFundConfigMarketsAgent_Abi = { 'type': 'function', 'name': 'DexFundConfigMarketsAgent', 'inputs': [ { 'name': 'actionType', 'type': 'uint8' }, { 'name': 'agent', 'type': 'address' }, { 'name': 'tradeTokens', 'type': 'tokenId[]' }, { 'name': 'quoteTokens', 'type': 'tokenId[]' } ] };
 
 export enum BlockType {
     'CreateContractReq' = 1,
@@ -64,17 +64,6 @@ export enum BlockType {
     'TxResFail',
     'SendRefund',
     'GenesisReceive'
-}
-
-export enum LangList {
-    'english' = 'english',
-    'japanese' = 'japanese',
-    'chineseSimplified' = 'chinese_simplified',
-    'chineseTraditional' = 'chinese_traditional',
-    'french' = 'french',
-    'italian' = 'italian',
-    'korean' = 'korean',
-    'spanish' = 'spanish'
 }
 
 export const Contracts = {
@@ -174,11 +163,11 @@ export const Contracts = {
         contractAddr: DexFund_Addr,
         abi: DexFundMarketOwnerConfig_Abi
     },
-    DexFundPledgeForSuperVip:{
+    DexFundPledgeForSuperVip: {
         contractAddr: DexFund_Addr,
         abi: DexFundPledgeForSuperVip_Abi
     },
-    DexFundConfigMarketsAgent:{
+    DexFundConfigMarketsAgent: {
         contractAddr: DexFund_Addr,
         abi: DexFundConfigMarketsAgent_Abi
     }

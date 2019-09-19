@@ -3,13 +3,13 @@ const assert = require('assert');
 import HTTP_RPC from '../../src/HTTP';
 import Client from '../../src/client/index';
 import HdAccount from '../../src/hdAccount/index';
-import { newAddr, getId, getAddrFromMnemonic, getEntropyFromMnemonic } from '../../src/hdAddr/index';
+import { createAddress, getId, getAddrFromMnemonic, getEntropyFromMnemonic } from '../../src/hdAddr/index';
 import Account from '../../src/account/index';
 
 const myHTTPClient = new Client(new HTTP_RPC());
 
 describe('New HdAccount with mnemonic', function () {
-    const addrObj = newAddr();
+    const addrObj = createAddress();
     const myHdAccount = new HdAccount({
         mnemonic: addrObj.mnemonic,
         client: myHTTPClient

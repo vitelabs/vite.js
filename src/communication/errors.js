@@ -1,5 +1,5 @@
 export default {
-    CONNECT(host: string) {
+    CONNECT(host) {
         return new Error(`CONNECTION ERROR: Couldn\'t connect to node ${ host }.`);
     },
     ABORT() {
@@ -8,16 +8,16 @@ export default {
     PARAMS() {
         return new Error('PARAMS ERROR.');
     },
-    TIMEOUT(timeout: number) {
+    TIMEOUT(timeout) {
         return new Error(`CONNECTION TIMEOUT: timeout of ${ timeout } ms achived`);
     },
-    INVAILID_RESPONSE(res: any) {
+    INVAILID_RESPONSE(res) {
         return new Error(`Invalid JSON RPC response: ${ JSON.stringify(res) }`);
     },
-    IPC_ON(type: any) {
+    IPC_ON(type) {
         return new Error(`Invalid IPC event on: ${ JSON.stringify(type) }`);
     },
-    IPC_ON_CB(type: any) {
+    IPC_ON_CB(type) {
         return new Error(`The IPC on event ${ JSON.stringify(type) }, cb is necessary`);
     }
 };

@@ -1,7 +1,7 @@
 const assert = require('assert');
 
 import { isValid, decrypt, encrypt, encryptV1ToV3, encryptOldKeystore } from '../../src/keystore/index';
-import { newHexAddr } from '../../src/privToAddr/index';
+import { createAddressByPrivateKey } from '../../src/privToAddr/index';
 
 const OLD_PWD = '1';
 const oldKeyJSON = {
@@ -99,7 +99,7 @@ if (process.env.NODE_ENV !== 'testWatch') {
 
         it('only decrypt', function (done) {
             decrypt(oldks, OLD_PWD).then(privKey => {
-                const k = newHexAddr(privKey);
+                const k = createAddressByPrivateKey(privKey);
                 done(assert.equal(k.hexAddr, oldKeyJSON.hexaddress));
             }).catch(err => {
                 done(err);

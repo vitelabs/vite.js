@@ -3,7 +3,7 @@
 const BigNumber = require('bn.js');
 
 import { unsafeInteger, integerIllegal } from '~@vite/vitejs-error';
-import { getHexAddrFromAddr, getAddrFromHexAddr } from '~@vite/vitejs-privtoaddr';
+import { getAddressFromRealAddress, getRealAddressFromAddress } from '~@vite/vitejs-privtoaddr';
 import { getRawTokenId, getTokenIdFromRaw, isSafeInteger } from '~@vite/vitejs-utils';
 
 
@@ -68,7 +68,7 @@ export function decode(typeObj, params) {
 function getRawData({ type, typeStr, actualByteLen }, params, _params) {
     switch (type) {
     case 'address':
-        return showAddr(params);
+        return getAddressFromRealAddress(params);
     case 'bool':
         return showNumber(params ? '1' : '0', 'uint');
     case 'number':
@@ -96,10 +96,7 @@ function getBytesData({ type, typeStr, actualByteLen }, params) {
 }
 
 function formatAddr(address) {
-    const addr = getAddrFromHexAddr(address);
-    if (!addr) {
-        throw new Error(`[Error] Illegal address. ${ address }`);
-    }
+    const addr = getRealAddressFromAddress(address);
     return Buffer.from(addr, 'hex');
 }
 
@@ -141,14 +138,6 @@ function fomatTokenId(tokenId) {
         throw new Error(`[Error] Illegal tokenId. ${ tokenId }`);
     }
     return Buffer.from(rawTokenId, 'hex');
-}
-
-function showAddr(address) {
-    const addr = getHexAddrFromAddr(address);
-    if (!addr) {
-        throw new Error(`[Error] Illegal address. ${ address }`);
-    }
-    return addr;
 }
 
 function showNumber(str, typeStr, actualByteLen?, _params?) {

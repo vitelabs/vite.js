@@ -35,7 +35,7 @@ class AccountClass extends addrAccount {
             this.privateKey = null;
             this.publicKey = null;
         } else {
-            const { pubKey, privKey, hexAddr } = privToAddr.newHexAddr(privateKey);
+            const { pubKey, privKey, hexAddr } = privToAddr.createAddressByPrivateKey(privateKey);
 
             if (privateKey && address && hexAddr !== address) {
                 throw new Error(`Private key does not match address ${ address }`);
@@ -66,7 +66,7 @@ class AccountClass extends addrAccount {
             return;
         }
 
-        const { pubKey, privKey, hexAddr } = privToAddr.newHexAddr(privateKey);
+        const { pubKey, privKey, hexAddr } = privToAddr.createAddressByPrivateKey(privateKey);
         if (hexAddr !== this.address) {
             throw new Error(`Private key does not match address ${ this.address }`);
         }

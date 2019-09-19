@@ -1,10 +1,12 @@
-import { newAddr, getId, validateMnemonic, getEntropyFromMnemonic, getAddrsFromMnemonic, isValidHexAddr, getAddrFromMnemonic } from '~@vite/vitejs-hdaddr';
+const bip39 = require('bip39');
+
+import { createAddress, getId, validateMnemonic, getEntropyFromMnemonic, getAddrsFromMnemonic, isAddress, getAddrFromMnemonic } from '~@vite/vitejs-hdaddr';
 import Account from '~@vite/vitejs-account';
 import client from '~@vite/vitejs-client';
 import { paramsMissing, addressIllegal, addressMissing } from '~@vite/vitejs-error';
 import { checkParams } from '~@vite/vitejs-utils';
 
-import { Address, AddrObj, Hex, LangList } from './type';
+import { Address, AddrObj, Hex } from './type';
 
 // [TODO]  AddrList {0, 1, address1, address2}
 // [TODO]  Add Wallet: Save and Load, browser only || node
@@ -12,7 +14,7 @@ import { Address, AddrObj, Hex, LangList } from './type';
 
 class HdAccountClass {
     addrList: Array<AddrObj>
-    lang: LangList
+    wordList: Array<String>
     pwd: string
     mnemonic: string
     addrNum: number
@@ -23,7 +25,7 @@ class HdAccountClass {
     activeAccountList: Array<Account>
     _client: client
 
-    constructor({ client, mnemonic, bits = 256, addrNum = 1, lang = LangList.english, pwd = '' }, {
+    constructor({ client, mnemonic, bits = 256, addrNum = 1, wordList, pwd = '' }, {
         maxAddrNum = 10,
         addrStartInx = 0
     } = {
@@ -32,7 +34,7 @@ class HdAccountClass {
     }) {
         const err = checkParams({ mnemonic, client }, ['client'], [{
             name: 'mnemonic',
-            func: _mnemonic => validateMnemonic(_mnemonic, lang)
+            func: _mnemonic => validateMnemonic(_mnemonic, wordList)
         }]);
         if (err) {
             throw new Error(err.message);
@@ -45,20 +47,20 @@ class HdAccountClass {
         _addrNum = _addrNum > maxAddrNum ? maxAddrNum : _addrNum;
         this.addrNum = _addrNum;
 
-        this.lang = lang || LangList.english;
+        this.wordList = wordList || bip39.wordlists.EN;
         this.pwd = pwd;
         if (mnemonic) {
             this.mnemonic = mnemonic;
-            this.entropy = getEntropyFromMnemonic(mnemonic, this.lang);
+            this.entropy = getEntropyFromMnemonic(mnemonic, this.wordList);
         } else {
-            const { entropy, mnemonic } = newAddr(bits, this.lang, this.pwd);
+            const { entropy, mnemonic } = createAddress(bits, this.wordList, this.pwd);
             this.mnemonic = mnemonic;
             this.entropy = entropy;
         }
 
         this.addrStartInx = addrStartInx;
-        this.addrList = getAddrsFromMnemonic(this.mnemonic, addrStartInx, this.addrNum, this.lang, this.pwd);
-        this.id = getId(this.mnemonic, this.lang, this.pwd);
+        this.addrList = getAddrsFromMnemonic(this.mnemonic, addrStartInx, this.addrNum, this.wordList, this.pwd);
+        this.id = getId(this.mnemonic, this.wordList, this.pwd);
 
         this.activeAccountList = [];
     }
@@ -157,7 +159,7 @@ class HdAccountClass {
             return null;
         }
 
-        const addrObj = getAddrFromMnemonic(this.mnemonic, index, this.lang, this.pwd);
+        const addrObj = getAddrFromMnemonic(this.mnemonic, index, this.wordList, this.pwd);
         if (!addrObj) {
             return null;
         }
@@ -170,7 +172,7 @@ class HdAccountClass {
             throw new Error(`${ paramsMissing.message } Address or index.`);
         }
 
-        if (address && !isValidHexAddr(address)) {
+        if (address && !isAddress(address)) {
             throw new Error(`${ addressIllegal.message }`);
         }
 

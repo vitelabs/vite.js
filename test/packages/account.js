@@ -4,13 +4,13 @@ import HTTP_RPC from '../../src/HTTP';
 import Client from '../../src/client/index';
 import Account from '../../src/account/index';
 import AddrAccount from '../../src/addrAccount/index';
-import { newHexAddr } from '../../src/privToAddr/index';
+import { createAddressByPrivateKey } from '../../src/privToAddr/index';
 
 
 const myHTTPClient = new Client(new HTTP_RPC());
 
 describe('New Account with privateKey', function () {
-    const addrObj = newHexAddr();
+    const addrObj = createAddressByPrivateKey();
     const myAccount = new Account({
         privateKey: addrObj.privKey,
         client: myHTTPClient
@@ -42,7 +42,7 @@ describe('New Account without privateKey', function () {
         assert(!!myAccount.privateKey, true);
     });
 
-    const addrObj = newHexAddr(myAccount.privateKey);
+    const addrObj = createAddressByPrivateKey(myAccount.privateKey);
     it('property realAddress', function () {
         assert(myAccount.realAddress, addrObj.addr);
     });

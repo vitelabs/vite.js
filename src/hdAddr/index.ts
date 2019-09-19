@@ -1,39 +1,42 @@
 const bip39 = require('bip39');
 const hd = require('@sisi/ed25519-blake2b-hd-key');
-import { newHexAddr, isValidHexAddr as _isValidHexAddr, getAddrFromHexAddr as _getAddrFromHexAddr } from '~@vite/vitejs-privtoaddr';
+import { createAddressByPrivateKey, isAddress as _isAddress, getRealAddressFromAddress as _getRealAddressFromAddress } from '~@vite/vitejs-privtoaddr';
 import { paramsFormat } from '~@vite/vitejs-error';
 import { checkParams, bytesToHex, blake2b } from '~@vite/vitejs-utils';
 
-import { AddrObj, Hex, LangList } from './type';
+import { AddrObj, Hex } from './type';
 
 const ROOT_PATH = 'm/44\'/666666\'';
 
-export function validateMnemonic(mnemonic: string, lang: LangList = LangList.english) {
-    return mnemonic && bip39.validateMnemonic(mnemonic, getWordList(lang));
+export function validateMnemonic(mnemonic: string, wordlist: Array<String>) {
+    wordlist = wordlist || bip39.wordlists.EN;
+    return mnemonic && bip39.validateMnemonic(mnemonic, wordlist);
 }
 
-export function getEntropyFromMnemonic(mnemonic: string, lang: LangList = LangList.english): string {
+export function getEntropyFromMnemonic(mnemonic: string, wordlist: Array<String>): string {
+    wordlist = wordlist || bip39.wordlists.EN;
     const err = checkParams({ mnemonic }, ['mnemonic'], [{
         name: 'mnemonic',
-        func: _m => validateMnemonic(_m, lang)
+        func: _m => validateMnemonic(_m, wordlist)
     }]);
     if (err) {
         throw new Error(err.message);
     }
 
-    return bip39.mnemonicToEntropy(mnemonic, getWordList(lang));
+    return bip39.mnemonicToEntropy(mnemonic, wordlist);
 }
 
-export function getMnemonicFromEntropy(entropy: string, lang: LangList = LangList.english): string {
+export function getMnemonicFromEntropy(entropy: string, wordlist: Array<String>): string {
     const err = checkParams({ entropy }, ['entropy']);
     if (err) {
         throw new Error(err.message);
     }
 
-    return bip39.entropyToMnemonic(entropy, getWordList(lang));
+    wordlist = wordlist || bip39.wordlists.EN;
+    return bip39.entropyToMnemonic(entropy, wordlist);
 }
 
-export function newAddr(bits: number = 256, lang: LangList = LangList.english, pwd: string = '', isContract?: boolean): {
+export function createAddress(bits: number = 256, wordlist: Array<String>, pwd: string = '', isContract?: boolean): {
     addr: AddrObj; entropy: string; mnemonic: string; id: Hex;
 } {
     const err = checkParams({ bits }, ['bits']);
@@ -41,21 +44,22 @@ export function newAddr(bits: number = 256, lang: LangList = LangList.english, p
         throw new Error(err.message);
     }
 
-    const wordList = getWordList(lang);
-    const mnemonic = bip39.generateMnemonic(bits, null, wordList);
-    const entropy = bip39.mnemonicToEntropy(mnemonic, wordList);
-    const seed = bip39.mnemonicToSeedHex(mnemonic, pwd);
+    wordlist = wordlist || bip39.wordlists.EN;
+    const mnemonic = bip39.generateMnemonic(bits, null, wordlist);
+    const entropy = bip39.mnemonicToEntropy(mnemonic, wordlist);
+    const seed = bip39.mnemonicToSeedSync(mnemonic, pwd).toString('hex');
     const path = getPath(0);
     const addr = getAddrFromPath(path, seed, isContract);
-    const id = getId(mnemonic, lang);
+    const id = getId(mnemonic, wordlist);
 
     return { addr, entropy, mnemonic, id };
 }
 
-export function getAddrFromMnemonic(mnemonic, index = 0, lang: LangList = LangList.english, pwd: string = '', isContract?: boolean): AddrObj {
+export function getAddrFromMnemonic(mnemonic, index = 0, wordlist: Array<String>, pwd: string = '', isContract?: boolean): AddrObj {
+    wordlist = wordlist || bip39.wordlists.EN;
     const err = checkParams({ mnemonic }, ['mnemonic'], [{
         name: 'mnemonic',
-        func: _m => validateMnemonic(_m, lang)
+        func: _m => validateMnemonic(_m, wordlist)
     }]);
     if (err) {
         throw new Error(err.message);
@@ -67,14 +71,15 @@ export function getAddrFromMnemonic(mnemonic, index = 0, lang: LangList = LangLi
     }
 
     const path = getPath(index);
-    const seed = bip39.mnemonicToSeedHex(mnemonic, pwd);
+    const seed = bip39.mnemonicToSeedSync(mnemonic, pwd).toString('hex');
     return getAddrFromPath(path, seed, isContract);
 }
 
-export function getAddrsFromMnemonic(mnemonic, start = 0, num = 10, lang: LangList = LangList.english, pwd: string = '', isContract?: boolean): AddrObj[] {
+export function getAddrsFromMnemonic(mnemonic, start = 0, num = 10, wordlist: Array<String>, pwd: string = '', isContract?: boolean): AddrObj[] {
+    wordlist = wordlist || bip39.wordlists.EN;
     const err = checkParams({ mnemonic }, ['mnemonic'], [{
         name: 'mnemonic',
-        func: _m => validateMnemonic(_m, lang)
+        func: _m => validateMnemonic(_m, wordlist)
     }]);
     if (err) {
         throw new Error(err.message);
@@ -90,7 +95,7 @@ export function getAddrsFromMnemonic(mnemonic, start = 0, num = 10, lang: LangLi
     }
 
     const addrs = [];
-    const seed = bip39.mnemonicToSeedHex(mnemonic, pwd);
+    const seed = bip39.mnemonicToSeedSync(mnemonic, pwd).toString('hex');
 
     for (let i = start; i < start + num; i++) {
         const currentPath = getPath(i);
@@ -103,38 +108,34 @@ export function getAddrsFromMnemonic(mnemonic, start = 0, num = 10, lang: LangLi
 
 export const getId = _getId;
 
-export const getAddrFromHexAddr = _getAddrFromHexAddr;
+export const getRealAddressFromAddress = _getRealAddressFromAddress;
 
-export const isValidHexAddr = _isValidHexAddr;
+export const isAddress = _isAddress;
 
 
 function getAddrFromPath(path: string, seed: string, isContract?: boolean): AddrObj {
     const { key } = hd.derivePath(path, seed);
     const { privateKey } = hd.getPublicKey(key);
     const priv = bytesToHex(privateKey);
-    return newHexAddr(priv, isContract);
+    return createAddressByPrivateKey(priv, isContract);
 }
 
 function getPath(index: number): string {
     return `${ ROOT_PATH }/${ index }\'`;
 }
 
-function getWordList(lang: LangList = LangList.english) {
-    lang = lang && bip39.wordlists[lang] ? lang : LangList.english;
-    return bip39.wordlists[lang];
-}
-
-function _getId(mnemonic: string, lang: LangList = LangList.english, pwd: string = '', isContract?: boolean): Hex {
+function _getId(mnemonic: string, wordlist: Array<String>, pwd: string = '', isContract?: boolean): Hex {
+    wordlist = wordlist || bip39.wordlists.EN;
     const err = checkParams({ mnemonic }, ['mnemonic'], [{
         name: 'mnemonic',
-        func: _m => validateMnemonic(_m, lang)
+        func: _m => validateMnemonic(_m, wordlist)
     }]);
     if (err) {
         console.error(new Error(err.message));
         return null;
     }
 
-    const addrObj = getAddrFromMnemonic(mnemonic, 0, lang, pwd, isContract);
+    const addrObj = getAddrFromMnemonic(mnemonic, 0, wordlist, pwd, isContract);
     const keyBuffer = Buffer.from(addrObj.hexAddr);
     const idByte = blake2b(keyBuffer, null, 32);
     return Buffer.from(idByte).toString('hex');

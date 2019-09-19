@@ -6,7 +6,8 @@ const target = process.env.build_target;
 const Buffer_Path = path.join(__dirname, './node_modules/buffer/index.js');
 
 const plugins = [
-    new webpack.DefinePlugin({ 'processSilence': process.env.NODE_ENV && process.env.NODE_ENV.indexOf('test') === 0 ? 0 : 1 })
+    new webpack.DefinePlugin({ 'processSilence': process.env.NODE_ENV && process.env.NODE_ENV.indexOf('test') === 0 ? 0 : 1 }),
+    new webpack.IgnorePlugin(/^\.\/wordlists\/(?!english)/, /bip39\/src/)
 ];
 if (target === 'web') {
     plugins.push(new webpack.NormalModuleReplacementPlugin(/\/buffer\//, function (resource) {
@@ -30,7 +31,7 @@ module.exports = {
         hdAccount: path.join(baseDir, '/hdAccount/index.ts'),
         hdAddr: path.join(baseDir, '/hdAddr/index.ts'),
         keystore: path.join(baseDir, '/keystore/index.ts'),
-        netProcessor: path.join(baseDir, '/netProcessor/index.ts'),
+        subscription: path.join(baseDir, '/subscription/index.ts'),
         privToAddr: path.join(baseDir, '/privToAddr/index.ts'),
         utils: path.join(baseDir, '/utils/index.ts'),
         vitejs: path.join(baseDir, '/vitejs/index.ts'),
@@ -87,7 +88,7 @@ module.exports = {
             '~@vite/vitejs-hdaccount': path.join(__dirname, '/src/hdAccount/'),
             '~@vite/vitejs-hdaddr': path.join(__dirname, '/src/hdAddr/'),
             '~@vite/vitejs-keystore': path.join(__dirname, '/src/keystore/'),
-            '~@vite/vitejs-netprocessor': path.join(__dirname, '/src/netProcessor/'),
+            '~@vite/vitejs-subscription': path.join(__dirname, '/src/subscription/'),
             '~@vite/vitejs-privtoaddr': path.join(__dirname, '/src/privToAddr/'),
             '~@vite/vitejs-utils': path.join(__dirname, '/src/utils/'),
             '~@vite/vitejs': path.join(__dirname, '/src/vitejs/')

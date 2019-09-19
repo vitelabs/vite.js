@@ -23,7 +23,7 @@
             "~@vite/vitejs-hdaccount": ["hdAccount/index.ts"],
             "~@vite/vitejs-hdaddr": ["hdAddr/index.ts"],
             "~@vite/vitejs-keystore": ["keystore/index.ts"],
-            "~@vite/vitejs-netprocessor": ["netProcessor/index.ts"],
+            "~@vite/vitejs-subscription": ["subscription/index.ts"],
             "~@vite/vitejs-privtoaddr": ["privToAddr/index.ts"],
             "~@vite/vitejs-utils": ["utils/index.ts"],
             "~@vite/vitejs-ws": ["WS/index.js"],

@@ -1,17 +1,17 @@
-import netProcessor from './index';
+import subscription from './index';
 import { subscribe } from './type';
 
 class EventEmitter {
     id: string
     callback: Function
-    netProcessor: netProcessor
+    subscription: subscription
     timeLoop: any
     isSubscribe: boolean
 
-    constructor(subscription, netProcessor, isSubscribe) {
-        this.id = subscription;
+    constructor(id, subscription, isSubscribe) {
+        this.id = id;
         this.callback = null;
-        this.netProcessor = netProcessor;
+        this.subscription = subscription;
         this.isSubscribe = isSubscribe;
 
         this.timeLoop = null;
@@ -23,7 +23,7 @@ class EventEmitter {
 
     off() {
         this.stopLoop();
-        this.netProcessor.unSubscribe(this);
+        this.subscription.unSubscribe(this);
     }
 
     emit(result) {
@@ -33,7 +33,7 @@ class EventEmitter {
     startLoop(cb, time = 2000) {
         const loop = () => {
             this.timeLoop = setTimeout(() => {
-                this.netProcessor.request(subscribe.getFilterChanges, this.id).then(data => {
+                this.subscription.request(subscribe.getFilterChanges, this.id).then(data => {
                     cb && cb(data);
                     loop();
                 }).catch(() => {
@@ -50,7 +50,7 @@ class EventEmitter {
         }
         clearTimeout(this.timeLoop);
         this.timeLoop = null;
-        this.netProcessor.request(subscribe.uninstallFilter, this.id);
+        this.subscription.request(subscribe.uninstallFilter, this.id);
     }
 }
 

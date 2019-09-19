@@ -66,6 +66,17 @@ export function checkParams(params, requiredP: Array<string> = [], validFunc: Ar
     return null;
 }
 
+export function isTokenId(tokenId: string) {
+    if (tokenId.indexOf('tti_') !== 0 || tokenId.length !== 28) {
+        return false;
+    }
+
+    const rawTokenId = tokenId.slice(4, tokenId.length - 4);
+    const checkSum = getTokenIdCheckSum(rawTokenId);
+
+    return tokenId.slice(tokenId.length - 4) === checkSum;
+}
+
 export function getRawTokenId(tokenId: string) {
     const err = checkParams({ tokenId }, ['tokenId'], [{
         name: 'tokenId',
@@ -88,8 +99,11 @@ export function getTokenIdFromRaw(rawTokenId: string) {
         throw new Error(err.message);
     }
 
-    const checkSum = blake.blake2bHex(Buffer.from(rawTokenId, 'hex'), null, 2);
-    return `tti_${ rawTokenId }${ checkSum }`;
+    return `tti_${ rawTokenId }${ getTokenIdCheckSum(rawTokenId) }`;
+}
+
+function getTokenIdCheckSum(rawTokenId) {
+    return blake.blake2bHex(Buffer.from(rawTokenId, 'hex'), null, 2);
 }
 
 export function validNodeName(nodeName) {

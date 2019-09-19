@@ -3,9 +3,9 @@ const assert = require('assert');
 import HTTP_RPC from '../../src/HTTP';
 import Client from '../../src/client/index';
 import AddrAccount from '../../src/addrAccount/index';
-import { newHexAddr } from '../../src/privToAddr/index';
+import { createAddressByPrivateKey } from '../../src/privToAddr/index';
 
-const addrObj = newHexAddr();
+const addrObj = createAddressByPrivateKey();
 const myHTTPClient = new Client(new HTTP_RPC());
 
 const myAddrAccount = new AddrAccount({

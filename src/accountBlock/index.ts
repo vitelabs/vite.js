@@ -1,7 +1,7 @@
 const BigNumber = require('bn.js');
 
 import { ed25519, bytesToHex, blake2b, blake2bHex, checkParams, getRawTokenId } from '~@vite/vitejs-utils';
-import { getAddrFromHexAddr, isValidHexAddr } from '~@vite/vitejs-privtoaddr';
+import { getRealAddressFromAddress, isAddress } from '~@vite/vitejs-privtoaddr';
 import { paramsFormat } from '~@vite/vitejs-error';
 import { Default_Hash, Contracts } from '~@vite/vitejs-constant';
 import { encodeFunctionSignature, decodeLog } from '~@vite/vitejs-abi';
@@ -71,7 +71,7 @@ export function getTxType({ toAddress, data, blockType }, contractTxType?): {
 } {
     const err = checkParams({ blockType, toAddress }, [ 'blockType', 'toAddress' ], [ {
         name: 'toAddress',
-        func: isValidHexAddr
+        func: isAddress
     }, {
         name: 'blockType',
         func: _b => BlockType[_b],
@@ -113,10 +113,10 @@ export function getBlockHash(accountBlock: SignBlock) {
     source += blockType;
     source += accountBlock.prevHash || Default_Hash;
     source += accountBlock.height ? bytesToHex(new BigNumber(accountBlock.height).toArray('big', 8)) : '';
-    source += accountBlock.accountAddress ? getAddrFromHexAddr(accountBlock.accountAddress) : '';
+    source += accountBlock.accountAddress ? getRealAddressFromAddress(accountBlock.accountAddress) : '';
 
     if (accountBlock.toAddress) {
-        source += getAddrFromHexAddr(accountBlock.toAddress);
+        source += getRealAddressFromAddress(accountBlock.toAddress);
         source += getNumberHex(accountBlock.amount);
         source += accountBlock.tokenId ? getRawTokenId(accountBlock.tokenId) || '' : '';
     } else {
@@ -170,7 +170,7 @@ export function decodeBlockByContract({ accountBlock, contractAddr, abi, topics 
 }) {
     const err = checkParams({ accountBlock, contractAddr, abi }, [ 'accountBlock', 'contractAddr', 'abi' ], [{
         name: 'contractAddr',
-        func: isValidHexAddr
+        func: isAddress
     }]);
     if (err) {
         throw err;
