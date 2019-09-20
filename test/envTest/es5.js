@@ -7,7 +7,7 @@ const { WS_RPC } = require('../../src/WS/index');
 const { HTTP_RPC } = require('../../src/HTTP/index');
 const { IPC_RPC } = require('../../src/IPC/index');
 // const { hdAccount } = require('../../src/hdAccount/index');
-const { subscription } = require('../../src/subscription/index');
+const { viteAPI } = require('../../src/viteAPI/index');
 
 it('client', function () {
     assert(typeof client, 'function');
@@ -30,6 +30,6 @@ it('account', function () {
 // it('hdAccount', function () {
 //     assert(typeof hdAccount, 'function');
 // });
-it('subscription', function () {
-    assert(typeof subscription, 'function');
+it('viteAPI', function () {
+    assert(typeof viteAPI, 'function');
 });

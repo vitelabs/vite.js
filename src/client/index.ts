@@ -1,5 +1,5 @@
 import { methods as _methods, Contracts } from '~@vite/vitejs-constant';
-import subscription from '~@vite/vitejs-subscription';
+import subscription from '~@vite/vitejs-viteapi';
 
 import { checkParams } from '~@vite/vitejs-utils';
 import { isAddress } from '~@vite/vitejs-hdwallet/address';

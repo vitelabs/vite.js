@@ -7,44 +7,9 @@ import { Hex, Address, AddrObj } from './type';
 
 class TransactionClass {
     accountBlock: Object;
-    readonly publicKey: Buffer;
-    readonly realAddress: Hex;
-    readonly address: Address;
-    private privateKey: Buffer
 
-    constructor({ privateKey }: {
-        privateKey: Buffer | Hex;
-    }) {
-        if (privateKey) {
-            const addrobj = createAddressByPrivateKey(privateKey);
-            this.privateKey = addrobj.privateKey;
-            this.publicKey = addrobj.publicKey;
-            this.realAddress = addrobj.realAddress;
-            this.address = addrobj.address;
-        }
-
+    constructor() {
         this.accountBlock = null;
-    }
-
-    setPrivateKey(privateKey: Buffer | Hex) {
-        const err = checkParams({ privateKey }, ['privateKey']);
-        if (err) {
-            throw new Error(err.message);
-        }
-
-        const addrobj = createAddressByPrivateKey(privateKey);
-        this.privateKey = addrobj.privateKey;
-        this.publicKey = addrobj.publicKey;
-        this.realAddress = addrobj.realAddress;
-        this.address = addrobj.address;
-    }
-
-    sign() {
-
-    }
-
-    hash() {
-
     }
 
     receive({ fromBlockHash }) {

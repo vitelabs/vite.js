@@ -82,7 +82,7 @@ module.exports = {
             '~@vite/vitejs-error': path.join(__dirname, '/src/error/'),
             '~@vite/vitejs-constant': path.join(__dirname, '/src/constant/'),
             '~@vite/vitejs-keystore': path.join(__dirname, '/src/keystore/'),
-            '~@vite/vitejs-subscription': path.join(__dirname, '/src/subscription/'),
+            '~@vite/vitejs-viteapi': path.join(__dirname, '/src/viteAPI/'),
 
             '~@vite/vitejs-hdwallet': path.join(__dirname, '/src/hdWallet/'),
 

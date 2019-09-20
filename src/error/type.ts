@@ -417,7 +417,7 @@ export enum subscribe {
 
 export const _methods = { testapi, pow, dexfund, wallet, onroad, tx, ledger, contract, pledge, register, vote, mintage, net, subscribe };
 
-export declare type Methods = testapi | pow | dexfund | wallet | onroad | tx | ledger | contract | pledge | register | vote | mintage | net | subscribe;
+export declare type Methods = String | testapi | pow | dexfund | wallet | onroad | tx | ledger | contract | pledge | register | vote | mintage | net | subscribe;
 
 export type walletFunc = {
     listEntropyFilesInStandardDir: Function;
