@@ -57,13 +57,13 @@ export const DexFundPledgeForSuperVip_Abi = { 'type': 'function', 'name': 'DexFu
 export const DexFundConfigMarketsAgent_Abi = { 'type': 'function', 'name': 'DexFundConfigMarketsAgent', 'inputs': [ { 'name': 'actionType', 'type': 'uint8' }, { 'name': 'agent', 'type': 'address' }, { 'name': 'tradeTokens', 'type': 'tokenId[]' }, { 'name': 'quoteTokens', 'type': 'tokenId[]' } ] };
 
 export enum BlockType {
-    'CreateContractReq' = 1,
-    'TxReq',
-    'RewardReq',
-    'TxRes',
-    'TxResFail',
-    'SendRefund',
-    'GenesisReceive'
+    'CreateContractRequest' = 1,
+    'TransferRequest',
+    'ClaimSBPRewardsRequest',
+    'Response',
+    'ResponseFail',
+    'RefundByContractRequest',
+    'GenesisResponse'
 }
 
 export const Contracts = {

@@ -1,10 +1,11 @@
-const blake = require('blakejs/blake2b');
+const bn = require('bn.js');
 import { stringify } from 'qs';
+const blake = require('blakejs/blake2b');
 
 import { paramsMissing, paramsFormat } from '~@vite/vitejs-error';
+
 import * as _e from './ed25519';
-import { Hex } from './type';
-const bn = require('bn.js');
+import { Hex, TokenId } from './type';
 
 declare const enum Charset {
     'utf16' = 'utf16',
@@ -30,7 +31,10 @@ export function uriStringify(o: {
     return str;
 }
 
-export function checkParams(params, requiredP: Array<string> = [], validFunc: Array<{ name; func; msg? }> = []) {
+export function checkParams(params: Object, requiredP: Array<string> = [], validFunc: Array<{ name; func; msg? }> = []): {
+    code: string;
+    message: string;
+} {
     if (!params) {
         return null;
     }
@@ -66,7 +70,7 @@ export function checkParams(params, requiredP: Array<string> = [], validFunc: Ar
     return null;
 }
 
-export function isTokenId(tokenId: string) {
+export function isTokenId(tokenId: string): Boolean {
     if (tokenId.indexOf('tti_') !== 0 || tokenId.length !== 28) {
         return false;
     }
@@ -77,7 +81,7 @@ export function isTokenId(tokenId: string) {
     return tokenId.slice(tokenId.length - 4) === checkSum;
 }
 
-export function getRawTokenId(tokenId: string) {
+export function getRawTokenId(tokenId: string): Hex {
     const err = checkParams({ tokenId }, ['tokenId'], [{
         name: 'tokenId',
         func: _t => _t.indexOf('tti_') === 0 && _t.length === 28
@@ -90,7 +94,7 @@ export function getRawTokenId(tokenId: string) {
     return tokenId.slice(4, tokenId.length - 4);
 }
 
-export function getTokenIdFromRaw(rawTokenId: string) {
+export function getTokenIdFromRaw(rawTokenId: string): TokenId {
     const err = checkParams({ rawTokenId }, ['rawTokenId'], [{
         name: 'rawTokenId',
         func: _t => /^[0-9a-fA-F]+$/.test(_t) && _t.length === 20
@@ -102,27 +106,27 @@ export function getTokenIdFromRaw(rawTokenId: string) {
     return `tti_${ rawTokenId }${ getTokenIdCheckSum(rawTokenId) }`;
 }
 
-function getTokenIdCheckSum(rawTokenId) {
+function getTokenIdCheckSum(rawTokenId: Hex): Hex {
     return blake.blake2bHex(Buffer.from(rawTokenId, 'hex'), null, 2);
 }
 
-export function validNodeName(nodeName) {
+export function validNodeName(nodeName: string): Boolean {
     return /^[a-zA-Z0-9_\.]+(\s{1}[a-zA-Z0-9_\.]+)*$/g.test(nodeName) && nodeName.length <= 40;
 }
 
-export function isNonNegativeInteger(num) {
+export function isNonNegativeInteger(num: string): Boolean {
     return num && (/(^[1-9]\d*$)/g.test(num) || num === '0');
 }
 
-export function isInteger(num) {
+export function isInteger(num: string): Boolean {
     return num && (/^[\-]{0,1}[1-9]\d*$/g.test(num) || num === '0');
 }
 
-export const isArray = Array.isArray || function (obj) {
+export const isArray = Array.isArray || function (obj): Boolean {
     return Object.prototype.toString.call(obj) === '[object Array]';
 };
 
-export function isObject(obj) {
+export function isObject(obj): Boolean {
     const type = typeof obj;
     return type === 'function' || type === 'object' && !!obj;
 }
@@ -151,7 +155,7 @@ export function hexToBytes(hex: Hex) {
     return typedArray;
 }
 
-export function getBytesSize(str: String, charset: Charset = Charset.utf8) {
+export function getBytesSize(str: String, charset: Charset = Charset.utf8): number {
     const err = checkParams({ str }, ['str']);
     if (err) {
         throw new Error(err.message);
@@ -185,7 +189,7 @@ export function getBytesSize(str: String, charset: Charset = Charset.utf8) {
     return total;
 }
 
-export function utf8ToBytes(str = '') {
+export function utf8ToBytes(str = ''): Uint8Array {
     const err = checkParams({ str }, ['str']);
     if (err) {
         throw new Error(err.message);
@@ -215,7 +219,7 @@ export function utf8ToBytes(str = '') {
     return new Uint8Array(back);
 }
 
-export function isSafeInteger(num) {
+export function isSafeInteger(num): -1 | 0 | 1 {
     if (typeof num === 'string') {
         return isInteger(num) ? 1 : -1;
     }
@@ -226,6 +230,10 @@ export function isSafeInteger(num) {
         return 0;
     }
     return 1;
+}
+
+export function isHexString(str: string): Boolean {
+    return /^[0-9a-fA-F]+$/.test(str);
 }
 
 export const blake2b = blake.blake2b;

@@ -35,13 +35,13 @@ export enum TxType {
     'DexFundNewInviter',
     'DexFundTransferTokenOwner',
     'DexFundMarketOwnerConfig',
-    'CreateContractReq',
-    'TxReq',
-    'RewardReq',
-    'TxRes',
-    'TxResFail',
-    'SendRefund',
-    'GenesisReceive'
+    'CreateContractRequest',
+    'TransferRequest',
+    'ClaimSBPRewardsRequest',
+    'Response',
+    'ResponseFail',
+    'RefundByContractRequest',
+    'GenesisResponse'
 }
 
 export declare type SignBlock = {
@@ -260,13 +260,31 @@ export declare type AddrObj = {
 }
 
 export enum BlockType {
-    'CreateContractReq' = 1,
-    'TxReq',
-    'RewardReq',
-    'TxRes',
-    'TxResFail',
-    'SendRefund',
-    'GenesisReceive'
+    'CreateContractRequest' = 1,
+    'TransferRequest',
+    'ClaimSBPRewardsRequest',
+    'Response',
+    'ResponseFail',
+    'RefundByContractRequest',
+    'GenesisResponse'
+}
+
+export declare type requiredAccountBlock = {
+    blockType: BlockType;
+    height?: Uint64;
+    hash?: Hex;
+    previousHash?: Hex;
+    address?: Address;
+    publicKey?: Base64;
+    toAddress?: Address;
+    sendBlockHash?: Hex;
+    tokenId?: TokenId;
+    amount?: BigInt;
+    fee?: BigInt;
+    data?: Base64;
+    difficulty?: BigInt;
+    nonce?: Base64;
+    signature?: Base64;
 }
 
 export enum wallet {

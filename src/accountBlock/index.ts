@@ -85,7 +85,7 @@ export function getTxType({ toAddress, data, blockType }, contractTxType?): {
     blockType = Number(blockType);
     const defaultType = { txType: BlockType[blockType] };
 
-    if (blockType !== BlockType.TxReq) {
+    if (blockType !== BlockType.TransferRequest) {
         return defaultType;
     }
 
@@ -177,8 +177,8 @@ export function decodeBlockByContract({ accountBlock, contractAddr, abi, topics 
 
     checkBlock(accountBlock);
 
-    if (accountBlock.blockType !== BlockType.TxReq) {
-        throw new Error(`AccountBlock's blockType isn't ${ BlockType.TxReq }`);
+    if (accountBlock.blockType !== BlockType.TransferRequest) {
+        throw new Error(`AccountBlock's blockType isn't ${ BlockType.TransferRequest }`);
     }
 
     if (accountBlock.toAddress !== contractAddr || !accountBlock.data) {

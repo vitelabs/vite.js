@@ -447,7 +447,7 @@ const BLOCK_LIST = {
         toAddress: 'vite_0000000000000000000000000000000000000006e82b8ba657',
         tokenId: 'tti_5649544520544f4b454e6e40'
     },
-    CreateContractReq: {
+    CreateContractRequest: {
         accountAddress: 'vite_553462bca137bac29f440e9af4ab2e2c1bb82493e41d2bc8b2',
         amount: '0',
         blockType: 1,
@@ -475,7 +475,7 @@ const BLOCK_LIST = {
         toAddress: 'vite_b671995ad63fd0426eb93000bb266a7be748f6502f437ea817',
         tokenId: 'tti_5649544520544f4b454e6e40'
     },
-    TxReq: {
+    TransferRequest: {
         accountAddress: 'vite_553462bca137bac29f440e9af4ab2e2c1bb82493e41d2bc8b2',
         amount: '1000000000000000000',
         blockType: 2,
@@ -503,13 +503,13 @@ const BLOCK_LIST = {
         toAddress: 'vite_553462bca137bac29f440e9af4ab2e2c1bb82493e41d2bc8b2',
         tokenId: 'tti_5649544520544f4b454e6e40'
     },
-    RewardReq: {
+    ClaimSBPRewardsRequest: {
         accountAddress: 'vite_155e4e83fb0499dcc3047e0458bbfae77f2ac1270e38c176f8',
         blockType: 3,
         data: '',
         toAddress: 'vite_0000000000000000000000000000000000000001c9e9f25417'
     },
-    TxRes: {
+    Response: {
         accountAddress: 'vite_553462bca137bac29f440e9af4ab2e2c1bb82493e41d2bc8b2',
         amount: '4000000000000000000',
         blockType: 4,
@@ -537,13 +537,13 @@ const BLOCK_LIST = {
         tokenId: 'tti_5649544520544f4b454e6e40',
         data: 'MjEyMw=='
     },
-    TxResFail: {
+    ResponseFail: {
         accountAddress: 'vite_155e4e83fb0499dcc3047e0458bbfae77f2ac1270e38c176f8',
         blockType: 5,
         data: '',
         toAddress: 'vite_0000000000000000000000000000000000000001c9e9f25417'
     },
-    GenesisReceive: {
+    GenesisResponse: {
         accountAddress: 'vite_5c27a294374ee43adf400cc1c0820af965225e4770a306431e',
         amount: null,
         blockType: 7,

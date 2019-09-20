@@ -340,7 +340,7 @@ function testAccBlockCase(reqAccBlock, func, validFunc) {
             !reqBlock.prevHash && assert.equal(resBlock.prevHash, Default_Hash);
         });
 
-        resBlock.blockType === BlockType.TxRes
+        resBlock.blockType === BlockType.Response
         && it('receiveBlock don\'t have tokenInfo', function () {
             assert.equal(resBlock.fromBlockHash, reqBlock.fromBlockHash);
             assert.equal(typeof resBlock.tokenId, 'undefined');
@@ -348,7 +348,7 @@ function testAccBlockCase(reqAccBlock, func, validFunc) {
             assert.equal(typeof resBlock.toAddress, 'undefined');
         });
 
-        resBlock.blockType === BlockType.TxReq
+        resBlock.blockType === BlockType.TransferRequest
         && it('sendBlock need have tokenInfo', function () {
             reqBlock.tokenId && assert.equal(resBlock.tokenId, reqBlock.tokenId);
             reqBlock.amount && assert.equal(resBlock.amount, reqBlock.amount);
