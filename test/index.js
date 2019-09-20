@@ -20,9 +20,9 @@ describe('Communication Test: src/communication', function () {
     require('./packages/communication');
 });
 
-describe('HdAccount Test: src/hdAccount', function () {
-    require('./packages/hdAccount');
-});
+// describe('HdAccount Test: src/hdAccount', function () {
+//     require('./packages/hdAccount');
+// });
 
 describe('Subscription Test: src/subscription', function () {
     require('./packages/subscription');

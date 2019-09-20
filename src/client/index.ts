@@ -2,7 +2,7 @@ import { methods as _methods, Contracts } from '~@vite/vitejs-constant';
 import subscription from '~@vite/vitejs-subscription';
 
 import { checkParams } from '~@vite/vitejs-utils';
-import { isAddress } from '~@vite/vitejs-address';
+import { isAddress } from '~@vite/vitejs-hdwallet/address';
 import { getTxType, signAccountBlock, decodeBlockByContract } from '~@vite/vitejs-accountblock';
 import { isAccountBlock, getAbi, getContractTxType } from '~@vite/vitejs-accountblock/builtin';
 import { encodeFunctionCall, decodeParameters } from '~@vite/vitejs-abi';

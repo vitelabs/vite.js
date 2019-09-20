@@ -1,6 +1,6 @@
 const UUID = require('pure-uuid');
 import { hexToBytes, checkParams } from '~@vite/vitejs-utils';
-import { isAddress } from '~@vite/vitejs-address';
+import { isAddress } from '~@vite/vitejs-hdwallet/address';
 
 import { currentVersion, algorithm, scryptName } from './vars';
 

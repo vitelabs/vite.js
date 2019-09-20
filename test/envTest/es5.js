@@ -6,7 +6,7 @@ const { client } = require('../../src/vitejs/index');
 const { WS_RPC } = require('../../src/WS/index');
 const { HTTP_RPC } = require('../../src/HTTP/index');
 const { IPC_RPC } = require('../../src/IPC/index');
-const { hdAccount } = require('../../src/hdAccount/index');
+// const { hdAccount } = require('../../src/hdAccount/index');
 const { subscription } = require('../../src/subscription/index');
 
 it('client', function () {
@@ -27,9 +27,9 @@ it('addrAccount', function () {
 it('account', function () {
     assert(typeof account, 'function');
 });
-it('hdAccount', function () {
-    assert(typeof hdAccount, 'function');
-});
+// it('hdAccount', function () {
+//     assert(typeof hdAccount, 'function');
+// });
 it('subscription', function () {
     assert(typeof subscription, 'function');
 });

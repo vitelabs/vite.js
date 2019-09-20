@@ -1,4 +1,4 @@
-// import { isAddress } from '~@vite/vitejs-address';
+// import { isAddress } from '~@vite/vitejs-hdwallet/address';
 // import { checkParams, isNonNegativeInteger } from '~@vite/vitejs-utils';
 // import { BlockType } from '~@vite/vitejs-constant';
 // import { paramsMissing } from '~@vite/vitejs-error';

@@ -1,4 +1,4 @@
-import * as viteAddress from '~@vite/vitejs-address';
+import * as viteAddress from '~@vite/vitejs-hdwallet/address';
 import { paramsMissing } from '~@vite/vitejs-error';
 import { checkParams, ed25519 } from '~@vite/vitejs-utils';
 import client from '~@vite/vitejs-client';

@@ -22,7 +22,7 @@ describe('Keystore Test: src/keystore', function () {
     require('./packages/keystore');
 });
 
-describe('Address Test: src/address', function () {
+describe('Address Test: src/hdWallet/address', function () {
     require('./packages/address');
 });
 

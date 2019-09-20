@@ -1,4 +1,4 @@
-import * as viteAddress from '~@vite/vitejs-address';
+import * as viteAddress from '~@vite/vitejs-hdwallet/address';
 import client from '~@vite/vitejs-client';
 import { Snapshot_Gid } from '~@vite/vitejs-constant';
 

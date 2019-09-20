@@ -2,7 +2,7 @@ const BigNumber = require('bn.js');
 
 import { paramsMissing, paramsConflict, integerIllegal, unsafeInteger } from '~@vite/vitejs-error';
 import { Vite_TokenId, Default_Hash, Delegate_Gid, BlockType } from '~@vite/vitejs-constant';
-import { isAddress } from '~@vite/vitejs-address';
+import { isAddress } from '~@vite/vitejs-hdwallet/address';
 import { checkParams, isSafeInteger, isArray, isObject, isNonNegativeInteger } from '~@vite/vitejs-utils';
 import { encodeParameters, encodeFunctionSignature } from '~@vite/vitejs-abi';
 

@@ -4,7 +4,7 @@ import HTTP_RPC from '../../src/HTTP';
 import Client from '../../src/client/index';
 import Account from '../../src/account/index';
 import AddrAccount from '../../src/addrAccount/index';
-import { createAddressByPrivateKey } from '../../src/address/index';
+import { createAddressByPrivateKey } from '../../src/hdWallet/address';
 
 
 const myHTTPClient = new Client(new HTTP_RPC());

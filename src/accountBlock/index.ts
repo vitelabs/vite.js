@@ -1,7 +1,7 @@
 const BigNumber = require('bn.js');
 
 import { ed25519, bytesToHex, blake2b, blake2bHex, checkParams, getRawTokenId } from '~@vite/vitejs-utils';
-import { getRealAddressFromAddress, isAddress } from '~@vite/vitejs-address';
+import { getRealAddressFromAddress, isAddress } from '~@vite/vitejs-hdwallet/address';
 import { paramsFormat } from '~@vite/vitejs-error';
 import { Default_Hash, Contracts } from '~@vite/vitejs-constant';
 import { encodeFunctionSignature, decodeLog } from '~@vite/vitejs-abi';

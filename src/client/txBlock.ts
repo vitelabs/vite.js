@@ -12,7 +12,7 @@ import { checkParams, validNodeName, blake2bHex } from '~@vite/vitejs-utils';
 import { getAccountBlock, getSendTxBlock, getReceiveTxBlock } from '~@vite/vitejs-accountblock';
 import { formatAccountBlock, isAccountBlock, getCreateContractData } from '~@vite/vitejs-accountblock/builtin';
 import { encodeFunctionCall } from '~@vite/vitejs-abi';
-import { getRealAddressFromAddress } from  '~@vite/vitejs-address';
+import { getRealAddressFromAddress } from  '~@vite/vitejs-hdwallet/address';
 
 import {
     SBPregBlock, block8, block7, revokeVotingBlock, quotaBlock,
