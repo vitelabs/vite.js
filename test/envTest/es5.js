@@ -2,16 +2,13 @@ const assert = require('assert');
 
 const { account } = require('../../src/account/index');
 const { addrAccount } = require('../../src/addrAccount/index');
-const { client } = require('../../src/vitejs/index');
 const { WS_RPC } = require('../../src/WS/index');
 const { HTTP_RPC } = require('../../src/HTTP/index');
 const { IPC_RPC } = require('../../src/IPC/index');
+const { ViteAPI } = require('../../src/viteAPI/index');
+// const { client } = require('../../src/vitejs/index');
 // const { hdAccount } = require('../../src/hdAccount/index');
-const { viteAPI } = require('../../src/viteAPI/index');
 
-it('client', function () {
-    assert(typeof client, 'function');
-});
 it('WS_RPC', function () {
     assert(typeof WS_RPC, 'function');
 });
@@ -27,9 +24,12 @@ it('addrAccount', function () {
 it('account', function () {
     assert(typeof account, 'function');
 });
+it('ViteAPI', function () {
+    assert(typeof ViteAPI, 'function');
+});
+// it('client', function () {
+//     assert(typeof client, 'function');
+// });
 // it('hdAccount', function () {
 //     assert(typeof hdAccount, 'function');
 // });
-it('viteAPI', function () {
-    assert(typeof viteAPI, 'function');
-});

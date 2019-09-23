@@ -4,10 +4,11 @@ export declare type Base64 = string;
 export declare type TokenId = string;
 export declare type Int64 = number;
 export declare type Uint8 = string;
+export declare type Uint16 = string;
 export declare type Uint64 = string;
 export declare type BigInt = string;
 
-export enum TxType {
+export enum TransactionType {
     'SBPreg' = 1,
     'UpdateReg',
     'RevokeReg',
@@ -60,23 +61,99 @@ export declare type SignBlock = {
     sendBlockList?: Array<any>;
 }
 
+export declare type TokenInfo = {
+    tokenName: String;
+    tokenSymbol: String;
+    totalSupply: BigInt;
+    decimals: Uint8;
+    owner: Address;
+    tokenId: TokenId;
+    isReIssuable: Boolean;
+    maxSupply: BigInt;
+    isOwnerBurnOnly: Boolean;
+    index: Uint16;
+}
+
 export declare type AccountBlock = {
-    accountAddress: Address;
     blockType: BlockType;
-    prevHash: Hex;
     height: Uint64;
     hash: Hex;
-    signature: Base64;
+    previousHash: Hex;
+    address: Address;
     publicKey: Base64;
-    fee?: BigInt;
-    fromBlockHash?: Hex;
+    producer: Address;
+    fromAddress: Address;
+    toAddress: Address;
+    sendBlockHash: Hex;
+    tokenId: TokenId;
+    amount: BigInt;
+    tokenInfo: TokenInfo;
+    fee: BigInt;
+    data: Base64;
+    difficulty: BigInt;
+    nonce: Base64;
+    signature: Base64;
+    quotaByStake: Uint64;
+    totalQuota: Uint64;
+    vmlogHash: Hex;
+    triggeredSendBlockList: Array<AccountBlock>;
+    confirmations: Uint64;
+    firstSnapshotHash: Hex;
+    timestamp: Uint64;
+    receiveBlockHeight: Uint64;
+    receiveBlockHash: Hex;
+}
+
+
+export declare type Transaction = {
+    blockType: BlockType;
+    height: Uint64;
+    hash: Hex;
+    previousHash: Hex;
+    address: Address;
+    publicKey: Base64;
+    producer?: Address;
+    fromAddress?: Address;
     toAddress?: Address;
+    sendBlockHash?: Hex;
     tokenId?: TokenId;
     amount?: BigInt;
+    tokenInfo?: TokenInfo;
+    fee?: BigInt;
     data?: Base64;
+    difficulty?: BigInt;
     nonce?: Base64;
-    logHash?: Hex;
+    signature?: Base64;
+    quotaByStake?: Uint64;
+    totalQuota?: Uint64;
+    vmlogHash?: Hex;
+    triggeredSendBlockList?: Array<AccountBlock>;
+    confirmations?: Uint64;
+    firstSnapshotHash?: Hex;
+    timestamp?: Uint64;
+    receiveBlockHeight?: Uint64;
+    receiveBlockHash?: Hex;
+    transationType?: String;
+    contractResult?: Object;
 }
+
+// export declare type AccountBlock = {
+//     accountAddress: Address;
+//     blockType: BlockType;
+//     prevHash: Hex;
+//     height: Uint64;
+//     hash: Hex;
+//     signature: Base64;
+//     publicKey: Base64;
+//     fee?: BigInt;
+//     fromBlockHash?: Hex;
+//     toAddress?: Address;
+//     tokenId?: TokenId;
+//     amount?: BigInt;
+//     data?: Base64;
+//     nonce?: Base64;
+//     logHash?: Hex;
+// }
 
 export declare type SBPregBlock = {
     accountAddress: Address;
@@ -287,258 +364,64 @@ export declare type requiredAccountBlock = {
     signature?: Base64;
 }
 
-export enum wallet {
-    'listEntropyFilesInStandardDir' = 'wallet_listEntropyFilesInStandardDir',
-    'listAllEntropyFiles' = 'wallet_listAllEntropyFiles',
-    'extractMnemonic' = 'wallet_extractMnemonic',
-    'unlock' = 'wallet_unlock',
-    'lock' = 'wallet_lock',
-    'listEntropyStoreAddresses' = 'wallet_listEntropyStoreAddresses',
-    'newMnemonicAndEntropyStore' = 'wallet_newMnemonicAndEntropyStore',
-    'deriveByIndex' = 'wallet_deriveByIndex',
-    'deriveByFullPath' = 'wallet_deriveByFullPath',
-    'recoverEntropyStoreFromMnemonic' = 'wallet_recoverEntropyStoreFromMnemonic',
-    'globalCheckAddrUnlocked' = 'wallet_globalCheckAddrUnlocked',
-    'isAddrUnlocked' = 'wallet_isAddrUnlocked',
-    'isUnlocked' = 'wallet_isUnlocked',
-    'findAddr' = 'wallet_findAddr',
-    'globalFindAddr' = 'wallet_globalFindAddr',
-    'createTxWithPassphrase' = 'wallet_createTxWithPassphrase',
-    'addEntropyStore' = 'wallet_addEntropyStore'
-}
-
-export enum onroad {
-    'getOnroadBlocksByAddress' = 'onroad_getOnroadBlocksByAddress',
-    'getOnroadInfoByAddress' = 'onroad_getOnroadInfoByAddress',
-    'getOnroadBlocksInBatch' = 'onroad_getOnroadBlocksInBatch',
-    'getOnroadInfoInBatch' = 'onroad_getOnroadInfoInBatch',
-    'getContractOnRoadTotalNum' = 'onroad_getContractOnRoadTotalNum',
-    'getContractOnRoadFrontBlocks' = 'onroad_getContractOnRoadFrontBlocks'
-}
-
-export enum tx {
-    'sendRawTx' = 'tx_sendRawTx',
-    'calcPoWDifficulty' = 'tx_calcPoWDifficulty'
-}
-
-export enum ledger {
-    'getBlocksByAccAddr' = 'ledger_getBlocksByAccAddr',
-    'getAccountByAccAddr' = 'ledger_getAccountByAccAddr',
-    'getLatestSnapshotChainHash' = 'ledger_getLatestSnapshotChainHash',
-    'getLatestBlock' = 'ledger_getLatestBlock',
-    'getBlockByHeight' = 'ledger_getBlockByHeight',
-    'getBlockByHash' = 'ledger_getBlockByHash',
-    'getBlocksByHash' = 'ledger_getBlocksByHash',
-    'getBlocksByHashInToken' = 'ledger_getBlocksByHashInToken',
-    'getSnapshotChainHeight' = 'ledger_getSnapshotChainHeight',
-    'getSnapshotBlockByHash' = 'ledger_getSnapshotBlockByHash',
-    'getSnapshotBlockByHeight' = 'ledger_getSnapshotBlockByHeight',
-    'getVmLogList' = 'ledger_getVmLogList',
-    'getFittestSnapshotHash' = 'ledger_getFittestSnapshotHash'
-}
-
-export enum contract {
-    'getCreateContractToAddress' = 'contract_getCreateContractToAddress',
-    'getCreateContractData' = 'contract_getCreateContractData',
-    'getCreateContractParams' = 'contract_getCreateContractParams',
-    'getCallContractData' = 'contract_getCallContractData',
-    'getContractInfo' = 'contract_getContractInfo',
-    'getCallOffChainData' = 'contract_getCallOffChainData',
-    'callOffChainMethod' = 'contract_callOffChainMethod'
-}
-
-export enum pledge {
-    'getPledgeData' = 'pledge_getPledgeData',
-    'getCancelPledgeData' = 'pledge_getCancelPledgeData',
-    'getPledgeQuota' = 'pledge_getPledgeQuota',
-    'getPledgeList' = 'pledge_getPledgeList',
-    'getAgentPledgeData' = 'pledge_getAgentPledgeData',
-    'getAgentCancelPledgeData' = 'pledge_getAgentCancelPledgeData'
-}
-
-export enum register {
-    'getRegisterData' = 'register_getRegisterData',
-    'getCancelRegisterData' = 'register_getCancelRegisterData',
-    'getRewardData' = 'register_getRewardData',
-    'getUpdateRegistrationData' = 'register_getUpdateRegistrationData',
-    'getRegistrationList' = 'register_getRegistrationList',
-    'getAvailableReward' = 'register_getAvailableReward',
-    'getRewardByDay' = 'register_getRewardByDay',
-    'getCandidateList' = 'register_getCandidateList'
-}
-
-export enum vote {
-    'getVoteData' = 'vote_getVoteData',
-    'getCancelVoteData' = 'vote_getCancelVoteData',
-    'getVoteInfo' = 'vote_getVoteInfo'
-}
-
-export enum mintage {
-    'getMintData' = 'mintage_getMintData',
-    'getIssueData' = 'mintage_getIssueData',
-    'getBurnData' = 'mintage_getBurnData',
-    'getTransferOwnerData' = 'mintage_getTransferOwnerData',
-    'getChangeTokenTypeData' = 'mintage_getChangeTokenTypeData',
-    'getTokenInfoList' = 'mintage_getTokenInfoList',
-    'getTokenInfoById' = 'mintage_getTokenInfoById',
-    'getTokenInfoListByOwner' = 'mintage_getTokenInfoListByOwner'
-}
-
-export enum dexfund {
-    'getAccountFundInfo' = 'dexfund_getAccountFundInfo',
-    'getAccountFundInfoByStatus' = 'dexfund_getAccountFundInfoByStatus',
-    'isPledgeVip' = 'dexfund_isPledgeVip',
-    'getMarketInfo' = 'dexfund_getMarketInfo',
-    'getCurrentDividendPools' = 'dexfund_getCurrentDividendPools'
-}
-
-export enum net {
-    'syncInfo' = 'net_syncInfo',
-    'peers' = 'net_peers',
-    'peersCount' = 'net_peersCount'
-}
-
-export enum testapi {
-    'getTestToken' = 'testapi_getTestToken'
-}
-
-export enum pow {
-    'getPowNonce' = 'pow_getPowNonce'
-}
-
-export enum subscribe {
-    'newSnapshotBlocksFilter' = 'subscribe_newSnapshotBlocksFilter',
-    'newAccountBlocksFilter' = 'subscribe_newAccountBlocksFilter',
-    'newLogsFilter' = 'subscribe_newLogsFilter',
-    'uninstallFilter' = 'subscribe_uninstallFilter',
-    'getFilterChanges' = 'subscribe_getFilterChanges',
-    'subscribe' = 'subscribe_subscribe'
-}
-
-export const _methods = { testapi, pow, dexfund, wallet, onroad, tx, ledger, contract, pledge, register, vote, mintage, net, subscribe };
-
-export declare type Methods = String | testapi | pow | dexfund | wallet | onroad | tx | ledger | contract | pledge | register | vote | mintage | net | subscribe;
-
-export type walletFunc = {
-    listEntropyFilesInStandardDir: Function;
-    extractMnemonic: Function;
-    listAllEntropyFiles: Function;
-    unlock: Function;
-    lock: Function;
-    listEntropyStoreAddresses: Function;
-    newMnemonicAndEntropyStore: Function;
-    deriveForIndexPath: Function;
-    recoverEntropyStoreFromMnemonic: Function;
-    globalCheckAddrUnlocked: Function;
-    isAddrUnlocked: Function;
-    isUnlocked: Function;
-    findAddr: Function;
-    globalFindAddr: Function;
-    createTxWithPassphrase: Function;
-    addEntropyStore: Function;
-}
-
-export type onroadFunc = {
-    getOnroadBlocksByAddress: Function;
-    getOnroadInfoByAddress: Function;
-    getOnroadBlocksInBatch: Function;
-    getOnroadInfoInBatch: Function;
-}
-
-export type txFunc = {
-    sendRawTx: Function;
-    calcPoWDifficulty: Function;
-}
-
-export type ledgerFunc = {
-    getBlocksByAccAddr: Function;
-    getAccountByAccAddr: Function;
-    getLatestSnapshotChainHash: Function;
-    getLatestBlock: Function;
-    getBlockByHeight: Function;
-    getBlockByHash: Function;
-    getBlocksByHashInToken: Function;
-    getBlocksByHash: Function;
-    getSnapshotChainHeight: Function;
-    getSnapshotBlockByHash: Function;
-    getSnapshotBlockByHeight: Function;
-    getVmLogList: Function;
-    getFittestSnapshotHash: Function;
-}
-
-export type contractFunc = {
-    getCreateContractToAddress: Function;
-    getCreateContractData: Function;
-    getCreateContractParams: Function;
-    getCallContractData: Function;
-    getContractInfo: Function;
-    getCallOffChainData: Function;
-    callOffChainMethod: Function;
-}
-
-export type pledgeFunc = {
-    getPledgeData: Function;
-    getCancelPledgeData: Function;
-    getPledgeQuota: Function;
-    getPledgeList: Function;
-}
-
-export type registerFunc = {
-    getRegistrationList: Function;
-    getRegisterData: Function;
-    getCancelRegisterData: Function;
-    getRewardData: Function;
-    getUpdateRegistrationData: Function;
-    getCandidateList: Function;
-}
-
-export type voteFunc = {
-    getVoteData: Function;
-    getCancelVoteData: Function;
-    getVoteInfo: Function;
-}
-
-export type mintageFunc = {
-    getMintData: Function;
-    getMintageCancelPledgeData: Function;
-    getIssueData: Function;
-    getBurnData: Function;
-    getTransferOwnerData: Function;
-    getChangeTokenTypeData: Function;
-    getTokenInfoList: Function;
-    getTokenInfoById: Function;
-    getTokenInfoListByOwner: Function;
-}
-
-export type dexfundFunc = {
-    getAccountFundInfo: Function;
-    getAccountFundInfoByStatus: Function;
-    isPledgeVip: Function;
-    getMarketInfo: Function;
-}
-
-export type netFunc = {
-    syncInfo: Function;
-    peers: Function;
-    peersCount: Function;
-}
-
-export type testapiFunc = {
-    getTestToken: Function;
-}
-
-export type powFunc = {
-    getPowNonce: Function;
-}
-
-export type subscribeFunc = {
-    newSnapshotBlocksFilter: Function;
-    newAccountBlocksFilter: Function;
-    newLogsFilter: Function;
-    uninstallFilter: Function;
-    getFilterChanges: Function;
-    subscribe: Function;
-}
+export declare type Methods = String |
+'wallet_getEntropyFilesInStandardDir' |
+'wallet_getAllEntropyFiles' |
+'wallet_exportMnemonics' |
+'wallet_unlock' |
+'wallet_lock' |
+'wallet_deriveAddressesByIndexRange' |
+'wallet_createEntropyFile' |
+'wallet_deriveAddressByIndex' |
+'wallet_deriveAddressByPath' |
+'wallet_recoverEntropyFile' |
+'wallet_isUnlocked' |
+'wallet_findAddr' |
+'wallet_globalFindAddr' |
+'wallet_createTxWithPassphrase' |
+'wallet_addEntropyStore' |
+'ledger_getUnreceivedBlocksByAddress' |
+'ledger_getUnreceivedBlocksInBatch' |
+'ledger_getUnreceivedTransactionSummaryByAddress' |
+'ledger_getUnreceivedTransactionSummaryInBatch' |
+'ledger_getVmlogsByFilter' |
+'ledger_getPoWDifficulty' |
+'contract_createContractAddress' |
+'contract_getContractInfo' |
+'contract_callOffChainMethod' |
+'contract_getContractStorage' |
+'contract_getQuotaByAccount' |
+'contract_getStakeList' |
+'contract_getRequiredStakeAmount' |
+'contract_getDelegatedStakeInfo' |
+'contract_getSBPList' |
+'contract_getSBPRewardPendingWithdrawal' |
+'contract_getSBPRewardByTimestamp' |
+'contract_getSBPRewardByCycle' |
+'contract_getSBP' |
+'contract_getSBPVoteList' |
+'contract_getVotedSBP' |
+'vote_getVoteDetails' |
+'contract_getTokenInfoList' |
+'contract_getTokenInfoById' |
+'contract_getTokenInfoListByOwner' |
+'net_syncInfo' |
+'net_syncDetail' |
+'net_nodeInfo' |
+'net_peers' |
+'util_getPoWNonce' |
+'subscribe_createSnapshotBlockFilter' |
+'subscribe_createAccountBlockFilter' |
+'subscribe_createAccountBlockFilterByAddress' |
+'subscribe_createUnreceivedBlockFilterByAddress' |
+'subscribe_createVmlogFilter' |
+'subscribe_uninstallFilter' |
+'subscribe_getChangesByFilterId' |
+'subscribe_createSnapshotBlockSubscription' |
+'subscribe_createAccountBlockSubscription' |
+'subscribe_createAccountBlockSubscriptionByAddress' |
+'subscribe_createUnreceivedBlockSubscriptionByAddress' |
+'subscribe_createVmlogSubscription';
 
 export declare interface RPCrequest {
     type?: string;
@@ -556,4 +439,38 @@ export declare interface RPCresponse {
 export declare interface RPCerror {
     code: number;
     message: string;
+}
+
+export declare class EventEmitter {
+    readonly id: string
+    readonly viteAPI: ViteAPI
+    readonly isSubscribe: boolean
+
+    constructor(id:string, subscription: ViteAPI, isSubscribe:Boolean);
+
+    on(callback: Function);
+    off();
+    emit(result:any);
+    startLoop(cb: Function, time: number)
+    stopLoop()
+}
+
+export declare class ViteAPI {
+    _provider: any;
+    isConnected: Boolean;
+
+    constructor(provider: any, firstConnect: Function)
+
+    addTransactionType(contractList: Object)
+    getBalanceAndUnreceived(address: Address)
+    getTransactionList({ address, pageIndex, pageCount }: {
+        address: Address; pageIndex: number; pageCount?: number;
+    }, decodeTxTypeList: 'all' | String[])
+    setProvider(provider, firstConnect, abort)
+    unSubscribe(event)
+    clearSubscriptions()
+    request(methods: Methods, ...args: any[])
+    notification(methods: Methods, ...args: any[])
+    batch(reqs: RPCrequest[])
+    subscribe(methodName, ...args) 
 }

@@ -1,5 +1,5 @@
 import {
-    methods, Vite_TokenId, Snapshot_Gid,
+    Vite_TokenId, Snapshot_Gid,
     Pledge_Addr, Vote_Addr, Register_Addr, Mintage_Addr, DexFund_Addr, DexTrade_Addr,
     Register_Abi, UpdateRegistration_Abi, CancelRegister_Abi,
     Reward_Abi, Vote_Abi, CancelVote_Abi, Pledge_Abi, CancelPledge_Abi,
@@ -10,22 +10,21 @@ import {
 } from '~@vite/vitejs-constant';
 import { checkParams, validNodeName, blake2bHex } from '~@vite/vitejs-utils';
 import { getAccountBlock, getSendTxBlock, getReceiveTxBlock } from '~@vite/vitejs-accountblock';
-import { formatAccountBlock, isAccountBlock, getCreateContractData } from '~@vite/vitejs-accountblock/builtin';
+// import { formatAccountBlock, isAccountBlock, getCreateContractData } from '~@vite/vitejs-accountblock/builtin';
+import { formatAccountBlock, isAccountBlock } from '~@vite/vitejs-accountblock/builtin';
 import { encodeFunctionCall } from '~@vite/vitejs-abi';
 import { getRealAddressFromAddress } from  '~@vite/vitejs-hdwallet/address';
 
 import {
+    ViteAPI,
     SBPregBlock, block8, block7, revokeVotingBlock, quotaBlock,
     sendTxBlock, receiveTxBlock, formatBlock,
     createContractBlock, callContractBlock,
     mintageBlock, mintageIssueBlock, mintageBurnBlock, changeTokenTypeBlock, changeTransferOwnerBlock
 } from './type';
-import client from './index';
-
-const ledger = methods.ledger;
 
 export default class Tx {
-    _client: client
+    _client: ViteAPI
 
     constructor(client) {
         this._client = client;
@@ -49,11 +48,11 @@ export default class Tx {
             throw err;
         }
 
-        if (!height || !prevHash) {
-            const latestBlock = await this._client.request(ledger.getLatestBlock, accountAddress);
-            height = latestBlock && latestBlock.height ? latestBlock.height : '';
-            prevHash = latestBlock && latestBlock.hash ? latestBlock.hash : '';
-        }
+        // if (!height || !prevHash) {
+        //     const latestBlock = await this._client.request(ledger.getLatestBlock, accountAddress);
+        //     height = latestBlock && latestBlock.height ? latestBlock.height : '';
+        //     prevHash = latestBlock && latestBlock.hash ? latestBlock.hash : '';
+        // }
 
         return formatAccountBlock({ blockType, fromBlockHash, accountAddress, message, data, height, prevHash, toAddress, tokenId, amount, fee });
     }
@@ -62,36 +61,36 @@ export default class Tx {
         const realAddr = getRealAddressFromAddress(accountBlock.accountAddress);
         const rawHashBytes = Buffer.from(realAddr + accountBlock.prevHash, 'hex');
         const hash = blake2bHex(rawHashBytes, null, 32);
+        return hash;
+        // const nonce = await this._client.pow.getPowNonce(difficulty, hash);
 
-        const nonce = await this._client.pow.getPowNonce(difficulty, hash);
-
-        const _accountBlock = Object.assign({}, accountBlock, { nonce, difficulty });
-        return _accountBlock;
+        // const _accountBlock = Object.assign({}, accountBlock, { nonce, difficulty });
+        // return _accountBlock;
     }
 
-    async autoPow(accountBlock: formatBlock, usePledgeQuota) {
-        const data = await this._client.tx.calcPoWDifficulty({
-            selfAddr: accountBlock.accountAddress,
-            prevHash: accountBlock.prevHash,
-            blockType: accountBlock.blockType,
-            toAddr: accountBlock.toAddress,
-            data: accountBlock.data,
-            usePledgeQuota
-        });
+    // async autoPow(accountBlock: formatBlock, usePledgeQuota) {
+    //     const data = await this._client.tx.calcPoWDifficulty({
+    //         selfAddr: accountBlock.accountAddress,
+    //         prevHash: accountBlock.prevHash,
+    //         blockType: accountBlock.blockType,
+    //         toAddr: accountBlock.toAddress,
+    //         data: accountBlock.data,
+    //         usePledgeQuota
+    //     });
 
-        if (!data.difficulty) {
-            return {
-                accountBlock,
-                ...data
-            };
-        }
+    //     if (!data.difficulty) {
+    //         return {
+    //             accountBlock,
+    //             ...data
+    //         };
+    //     }
 
-        const block = await this.pow(accountBlock, data.difficulty);
-        return {
-            accountBlock: block,
-            ...data
-        };
-    }
+    //     const block = await this.pow(accountBlock, data.difficulty);
+    //     return {
+    //         accountBlock: block,
+    //         ...data
+    //     };
+    // }
 
     asyncSendTx({ accountAddress, toAddress, tokenId, amount, message, data, height, prevHash }: sendTxBlock) {
         const err = checkParams({ toAddress, tokenId, amount }, [ 'toAddress', 'tokenId', 'amount' ]);
@@ -150,11 +149,11 @@ export default class Tx {
             ? await this.asyncAccountBlock({ blockType: 1, accountAddress, height, prevHash, tokenId, amount, fee })
             : getAccountBlock({ blockType: 1, accountAddress, height, prevHash, tokenId, amount, fee });
 
-        const toAddress = await this._client.contract.getCreateContractToAddress(accountAddress, block.height, block.prevHash);
-        const data = getCreateContractData({ abi, hexCode, params, confirmTime, quotaRatio, seedCount });
+        // const toAddress = await this._client.contract.getCreateContractToAddress(accountAddress, block.height, block.prevHash);
+        // const data = getCreateContractData({ abi, hexCode, params, confirmTime, quotaRatio, seedCount });
 
-        block.toAddress = toAddress;
-        block.data = data;
+        // block.toAddress = toAddress;
+        // block.data = data;
 
         return block;
     }

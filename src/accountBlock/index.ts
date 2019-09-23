@@ -1,17 +1,17 @@
 const BigNumber = require('bn.js');
 
-import { ed25519, bytesToHex, blake2b, blake2bHex, checkParams, getRawTokenId } from '~@vite/vitejs-utils';
-import { getRealAddressFromAddress, isAddress } from '~@vite/vitejs-hdwallet/address';
 import { paramsFormat } from '~@vite/vitejs-error';
 import { Default_Hash, Contracts } from '~@vite/vitejs-constant';
 import { encodeFunctionSignature, decodeLog } from '~@vite/vitejs-abi';
+import { getRealAddressFromAddress, isAddress } from '~@vite/vitejs-hdwallet/address';
+import { ed25519, bytesToHex, blake2b, blake2bHex, checkParams, getRawTokenId } from '~@vite/vitejs-utils';
 
-import { formatAccountBlock, getContractTxType, checkBlock } from './builtin';
+import { formatAccountBlock, getTransactionTypeByContractList, checkBlock } from './builtin';
 import { AccountBlock, Address, BlockType, SignBlock, sendTxBlock, receiveTxBlock, syncFormatBlock } from './type';
 
 const { getPublicKey, sign } = ed25519;
 
-export const DefaultContractTxType = getContractTxType(Contracts);
+export const DefaultContractTxType = getTransactionTypeByContractList(Contracts);
 
 export function getAccountBlock({ blockType, fromBlockHash, accountAddress, message, data, height, prevHash, toAddress, tokenId, amount, nonce, fee }: syncFormatBlock) {
     const reject = (error, errMsg = '') => {
@@ -64,9 +64,9 @@ export function getReceiveTxBlock({ accountAddress, fromBlockHash, height, prevH
     });
 }
 
-export function getTxType({ toAddress, data, blockType }, contractTxType?): {
-    txType: string;
-    contractAddr?: Address;
+export function getTransactionType({ toAddress, data, blockType }, contractTxType?): {
+    transactionType: string;
+    contractAddress?: Address;
     abi?: Object;
 } {
     const err = checkParams({ blockType, toAddress }, [ 'blockType', 'toAddress' ], [ {
@@ -83,7 +83,7 @@ export function getTxType({ toAddress, data, blockType }, contractTxType?): {
     }
 
     blockType = Number(blockType);
-    const defaultType = { txType: BlockType[blockType] };
+    const defaultType = { transactionType: BlockType[blockType] };
 
     if (blockType !== BlockType.TransferRequest) {
         return defaultType;
@@ -151,7 +151,7 @@ export function signAccountBlock(accountBlock: SignBlock, privKey: Buffer) {
     const pubKey = getPublicKey(privKey);
     const signature = sign(hashHex, privKey);
 
-    const _accountBlock: AccountBlock = Object.assign({}, accountBlock, {
+    const _accountBlock = Object.assign({}, accountBlock, {
         hash: hashHex,
         signature: Buffer.from(signature, 'hex').toString('base64'),
         publicKey: Buffer.from(pubKey).toString('base64')
@@ -160,15 +160,15 @@ export function signAccountBlock(accountBlock: SignBlock, privKey: Buffer) {
     return _accountBlock;
 }
 
-export function decodeBlockByContract({ accountBlock, contractAddr, abi, topics = [], mehtodName }: {
+export function decodeBlockByContract({ accountBlock, contractAddress, abi, topics = [], mehtodName }: {
     accountBlock: AccountBlock;
-    contractAddr: Address;
+    contractAddress: Address;
     abi: any;
     topics?: any;
     mehtodName?: string;
 }) {
-    const err = checkParams({ accountBlock, contractAddr, abi }, [ 'accountBlock', 'contractAddr', 'abi' ], [{
-        name: 'contractAddr',
+    const err = checkParams({ accountBlock, contractAddress, abi }, [ 'accountBlock', 'contractAddress', 'abi' ], [{
+        name: 'contractAddress',
         func: isAddress
     }]);
     if (err) {
@@ -181,7 +181,7 @@ export function decodeBlockByContract({ accountBlock, contractAddr, abi, topics 
         throw new Error(`AccountBlock's blockType isn't ${ BlockType.TransferRequest }`);
     }
 
-    if (accountBlock.toAddress !== contractAddr || !accountBlock.data) {
+    if (accountBlock.toAddress !== contractAddress || !accountBlock.data) {
         return null;
     }
 

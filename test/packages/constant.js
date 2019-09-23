@@ -33,11 +33,10 @@ const required = [
     'DexTradeCancelOrder_Abi',
     'DexFundNewOrder_Abi',
     'DexFundNewMarket_Abi',
-    'Contracts',
-    'methods'
+    'Contracts'
 ];
 
-const enumType = {'BlockType': 7 * 2};
+const enumType = { 'BlockType': 7 * 2 };
 
 describe('constant enumType and property', function () {
     for (const key in property) {

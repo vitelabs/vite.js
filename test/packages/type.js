@@ -7,16 +7,16 @@ it('type.BlockType be equal to constant.BlockType', function () {
     assert.deepEqual(type.BlockType, constant.BlockType);
 });
 
-describe('txType', function () {
+describe('TransactionType', function () {
     for (const contractTxType in constant.Contracts) {
         it(`contractTxType ${ contractTxType }`, function () {
-            assert.equal(!!type.TxType[contractTxType], true);
+            assert.equal(!!type.TransactionType[contractTxType], true);
         });
     }
 
     for (const blockT in constant.BlockType) {
         it(`blockType ${ blockT }`, function () {
-            assert.equal(!!type.TxType[blockT], true);
+            assert.equal(!!type.TransactionType[blockT], true);
         });
     }
 });

@@ -1,5 +1,3 @@
-import { _methods } from './type';
-
 export const Vite_TokenId = 'tti_5649544520544f4b454e6e40';
 export const Vite_Token_Info = {
     decimals: 18,
@@ -68,109 +66,107 @@ export enum BlockType {
 
 export const Contracts = {
     SBPreg: {
-        contractAddr: Register_Addr,
+        contractAddress: Register_Addr,
         abi: Register_Abi
     },
     UpdateReg: {
-        contractAddr: Register_Addr,
+        contractAddress: Register_Addr,
         abi: UpdateRegistration_Abi
     },
     RevokeReg: {
-        contractAddr: Register_Addr,
+        contractAddress: Register_Addr,
         abi: CancelRegister_Abi
     },
     RetrieveReward: {
-        contractAddr: Register_Addr,
+        contractAddress: Register_Addr,
         abi: Reward_Abi
     },
     Voting: {
-        contractAddr: Vote_Addr,
+        contractAddress: Vote_Addr,
         abi: Vote_Abi
     },
     RevokeVoting: {
-        contractAddr: Vote_Addr,
+        contractAddress: Vote_Addr,
         abi: CancelVote_Abi
     },
     GetQuota: {
-        contractAddr: Pledge_Addr,
+        contractAddress: Pledge_Addr,
         abi: Pledge_Abi
     },
     WithdrawalOfQuota: {
-        contractAddr: Pledge_Addr,
+        contractAddress: Pledge_Addr,
         abi: CancelPledge_Abi
     },
     Mintage: {
-        contractAddr: Mintage_Addr,
+        contractAddress: Mintage_Addr,
         abi: Mint_Abi
     },
     MintageIssue: {
-        contractAddr: Mintage_Addr,
+        contractAddress: Mintage_Addr,
         abi: Issue_Abi
     },
     MintageBurn: {
-        contractAddr: Mintage_Addr,
+        contractAddress: Mintage_Addr,
         abi: Burn_Abi
     },
     MintageTransferOwner: {
-        contractAddr: Mintage_Addr,
+        contractAddress: Mintage_Addr,
         abi: TransferOwner_Abi
     },
     MintageChangeTokenType: {
-        contractAddr: Mintage_Addr,
+        contractAddress: Mintage_Addr,
         abi: ChangeTokenType_Abi
     },
     DexFundUserDeposit: {
-        contractAddr: DexFund_Addr,
+        contractAddress: DexFund_Addr,
         abi: DexFundUserDeposit_Abi
     },
     DexFundUserWithdraw: {
-        contractAddr: DexFund_Addr,
+        contractAddress: DexFund_Addr,
         abi: DexFundUserWithdraw_Abi
     },
     DexFundNewOrder: {
-        contractAddr: DexFund_Addr,
+        contractAddress: DexFund_Addr,
         abi: DexFundNewOrder_Abi
     },
     DexTradeCancelOrder: {
-        contractAddr: DexTrade_Addr,
+        contractAddress: DexTrade_Addr,
         abi: DexTradeCancelOrder_Abi
     },
     DexFundNewMarket: {
-        contractAddr: DexFund_Addr,
+        contractAddress: DexFund_Addr,
         abi: DexFundNewMarket_Abi
     },
     DexFundPledgeForVx: {
-        contractAddr: DexFund_Addr,
+        contractAddress: DexFund_Addr,
         abi: DexFundPledgeForVx_Abi
     },
     DexFundPledgeForVip: {
-        contractAddr: DexFund_Addr,
+        contractAddress: DexFund_Addr,
         abi: DexFundPledgeForVip_Abi
     },
     DexFundBindInviteCode: {
-        contractAddr: DexFund_Addr,
+        contractAddress: DexFund_Addr,
         abi: DexFundBindInviteCode_Abi
     },
     DexFundNewInviter: {
-        contractAddr: DexFund_Addr,
+        contractAddress: DexFund_Addr,
         abi: DexFundNewInviter_Abi
     },
     DexFundTransferTokenOwner: {
-        contractAddr: DexFund_Addr,
+        contractAddress: DexFund_Addr,
         abi: DexFundTransferTokenOwner_Abi
     },
     DexFundMarketOwnerConfig: {
-        contractAddr: DexFund_Addr,
+        contractAddress: DexFund_Addr,
         abi: DexFundMarketOwnerConfig_Abi
     },
     DexFundPledgeForSuperVip: {
-        contractAddr: DexFund_Addr,
+        contractAddress: DexFund_Addr,
         abi: DexFundPledgeForSuperVip_Abi
     },
     DexFundConfigMarketsAgent: {
-        contractAddr: DexFund_Addr,
+        contractAddress: DexFund_Addr,
         abi: DexFundConfigMarketsAgent_Abi
     }
 };
-
-export const methods = _methods;

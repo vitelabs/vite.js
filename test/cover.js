@@ -14,10 +14,6 @@ describe('Constant Test: src/constant', function () {
     require('./packages/constant');
 });
 
-describe('HdAddr Test: src/hdAddr', function () {
-    require('./packages/hdAddr');
-});
-
 describe('Keystore Test: src/keystore', function () {
     require('./packages/keystore');
 });

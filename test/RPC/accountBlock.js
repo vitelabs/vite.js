@@ -1,7 +1,7 @@
 // const assert = require('assert');
 // const config = require('../../rpcConfig.js');
 
-// import { getTxType as _getTxType } from '../../src/accountBlock/index';
+// import { getTransactionType as _getTxType } from '../../src/accountBlock/index';
 // import HTTP_RPC from '../../src/HTTP/index';
 // import Client from '../../src/client/index';
 // import HdAccount from '../../src/hdAccount/index';

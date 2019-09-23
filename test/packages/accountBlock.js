@@ -1,8 +1,8 @@
 const assert = require('assert');
 
-import { getAccountBlock, getSendTxBlock, getReceiveTxBlock, getTxType, decodeBlockByContract, signAccountBlock, getBlockHash } from '../../src/accountBlock/index';
-import { getCreateContractData, getAbi, getContractTxType } from '../../src/accountBlock/builtin';
-import { BlockType } from '../../src/type';
+import { getAccountBlock, getSendTxBlock, getReceiveTxBlock, getTransactionType, decodeBlockByContract, signAccountBlock, getBlockHash } from '../../src/accountBlock/index';
+import { getCreateContractData, getAbi, getTransactionTypeByContractList } from '../../src/accountBlock/builtin.ts';
+import { BlockType } from '../../src/type.ts';
 import { Default_Hash, Contracts } from '../../src/constant/index';
 
 import config from '../config';
@@ -96,10 +96,10 @@ describe('getReceiveTxBlock', function () {
     });
 });
 
-describe('getTxType', function () {
-    for (const txType in config.blockList) {
-        it(txType, function () {
-            assert.equal(getTxType(config.blockList[txType]).txType, txType);
+describe('getTransactionType', function () {
+    for (const transactionType in config.blockList) {
+        it(transactionType, function () {
+            assert.equal(getTransactionType(config.blockList[transactionType]).transactionType, transactionType);
         });
     }
 });
@@ -114,7 +114,7 @@ describe('decodeBlockByContract', function () {
             const abi = Contracts[txType].abi;
             const decodeRes = decodeBlockByContract({
                 accountBlock: config.blockList[txType],
-                contractAddr: Contracts[txType].contractAddr,
+                contractAddress: Contracts[txType].contractAddress,
                 abi
             });
 
@@ -301,20 +301,20 @@ describe('accountBlock builtin function', function () {
         assert.equal(_data.type, type);
     });
 
-    describe('getContractTxType', function () {
-        const res = getContractTxType(Contracts);
+    describe('getTransactionTypeByContractList', function () {
+        const res = getTransactionTypeByContractList(Contracts);
         for (const key in res) {
             const _res = res[key];
-            it(`Contracts have type ${ _res.txType }`, function () {
-                assert(!!Contracts[_res.txType], true);
+            it(`Contracts have type ${ _res.transactionType }`, function () {
+                assert(!!Contracts[_res.transactionType], true);
             });
-            it(`key have contractAddr ${ _res.contractAddr }`, function () {
-                assert(key.indexOf(Contracts[_res.txType].contractAddr) === 9, true);
+            it(`key have contractAddress ${ _res.contractAddress }`, function () {
+                assert(key.indexOf(Contracts[_res.transactionType].contractAddress) === 9, true);
             });
-            it(`${ _res.txType } have abi`, function () {
+            it(`${ _res.transactionType } have abi`, function () {
                 assert(!!_res.abi, true);
             });
-            it(`${ _res.txType } have contractAddr`, function () {
+            it(`${ _res.transactionType } have contractAddress`, function () {
                 assert(!!_res.abi, true);
             });
         }

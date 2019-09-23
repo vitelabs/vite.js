@@ -1,12 +1,12 @@
 const BigNumber = require('bn.js');
 
-import { paramsMissing, paramsConflict, integerIllegal, unsafeInteger } from '~@vite/vitejs-error';
-import { Vite_TokenId, Default_Hash, Delegate_Gid, BlockType } from '~@vite/vitejs-constant';
 import { isAddress } from '~@vite/vitejs-hdwallet/address';
-import { checkParams, isSafeInteger, isArray, isObject, isNonNegativeInteger } from '~@vite/vitejs-utils';
 import { encodeParameters, encodeFunctionSignature } from '~@vite/vitejs-abi';
+import { Vite_TokenId, Default_Hash, Delegate_Gid, BlockType } from '~@vite/vitejs-constant';
+import { paramsMissing, paramsConflict, integerIllegal, unsafeInteger } from '~@vite/vitejs-error';
+import { checkParams, isSafeInteger, isArray, isObject, isNonNegativeInteger } from '~@vite/vitejs-utils';
 
-import { SignBlock, formatBlock } from './type';
+import { SignBlock, formatBlock, Address } from './type';
 
 
 export function formatAccountBlock(accountBlock: formatBlock) {
@@ -134,9 +134,9 @@ export function getAbi(jsonInterfaces, type = 'constructor') {
     return null;
 }
 
-export function getContractTxType(_contracts: Object) {
-    const err = checkParams({ _contracts }, ['_contracts'], [{
-        name: '_contracts',
+export function getTransactionTypeByContractList(contractList: Object): Object {
+    const err = checkParams({ contractList }, ['contractList'], [{
+        name: 'contractList',
         func: isObject
     }]);
     if (err) {
@@ -145,22 +145,28 @@ export function getContractTxType(_contracts: Object) {
 
     const txType = {};
 
-    for (const type in _contracts) {
-        const _c = _contracts[type];
+    for (const transactionType in contractList) {
+        const { contractAddress, abi } = contractList[transactionType];
 
-        const err = checkParams(_c, [ 'contractAddr', 'abi' ], [{
-            name: 'contractAddr',
+        const err = checkParams({ contractAddress, abi }, [ 'contractAddress', 'abi' ], [{
+            name: 'contractAddress',
             func: isAddress
         }]);
         if (err) {
             throw err;
         }
 
-        const funcSign = encodeFunctionSignature(_c.abi);
-        txType[`${ funcSign }_${ _c.contractAddr }`] = {
-            txType: type,
-            ..._c
+        const funcSign = encodeFunctionSignature(abi);
+        const _contract: {
+            transactionType: String;
+            contractAddress: Address;
+            abi: Object;
+        } = {
+            transactionType,
+            contractAddress,
+            abi
         };
+        txType[`${ funcSign }_${ contractAddress }`] = _contract;
     }
 
     return txType;

@@ -1,35 +1,35 @@
-class Transaction {
-    private accountBlock
+// class Transaction {
+//     private accountBlock
 
-    constructor(accountBlock: req) {
+//     constructor(accountBlock: req) {
 
-    }
+//     }
 
-    // previousHash height
-    complement() {
+//     // previousHash height
+//     complement() {
 
-    }
+//     }
 
-    // blockHash
-    hash() {
+//     // blockHash
+//     hash() {
 
-    }
+//     }
 
-    // signature
-    sign(privateKey: Buffer | Hex) {
-        const err = checkParams({ privateKey }, ['privateKey']);
-        if (err) {
-            throw new Error(err.message);
-        }
-        const addrobj = createAddressByPrivateKey(privateKey);
-        this.privateKey = addrobj.privateKey;
-        this.publicKey = addrobj.publicKey;
-        this.realAddress = addrobj.realAddress;
-        this.address = addrobj.address;
-    }
+//     // signature
+//     sign(privateKey: Buffer | Hex) {
+//         const err = checkParams({ privateKey }, ['privateKey']);
+//         if (err) {
+//             throw new Error(err.message);
+//         }
+//         const addrobj = createAddressByPrivateKey(privateKey);
+//         this.privateKey = addrobj.privateKey;
+//         this.publicKey = addrobj.publicKey;
+//         this.realAddress = addrobj.realAddress;
+//         this.address = addrobj.address;
+//     }
 
-    // send
-    send() {
+//     // send
+//     send() {
 
-    }
-}
+//     }
+// }

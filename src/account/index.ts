@@ -1,11 +1,10 @@
 import * as viteAddress from '~@vite/vitejs-hdwallet/address';
 import { paramsMissing } from '~@vite/vitejs-error';
 import { checkParams, ed25519 } from '~@vite/vitejs-utils';
-import client from '~@vite/vitejs-client';
 import addrAccount from '~@vite/vitejs-addraccount';
 import { signAccountBlock } from '~@vite/vitejs-accountblock';
 
-import { Hex, Address } from './type';
+import { Hex, Address, ViteAPI } from './type';
 
 const { sign, getPublicKey } = ed25519;
 
@@ -21,7 +20,7 @@ class AccountClass extends addrAccount {
     private _autoReceive: Boolean
 
     constructor({ privateKey, client, address }: {
-        client: client; privateKey?: Hex | Buffer; address?: Address;
+        client: ViteAPI; privateKey?: Hex | Buffer; address?: Address;
     }, { autoPow = false, usePledgeQuota = true }: {
         autoPow?: boolean;
         usePledgeQuota? : boolean;
@@ -132,21 +131,21 @@ class AccountClass extends addrAccount {
                 }, intervals);
             };
 
-            this.getBalance().then(balance => {
-                this.balance = balance;
+            // this.getBalance().then(balance => {
+            //     this.balance = balance;
 
-                const onroad = this.balance && this.balance.onroad ? this.balance.onroad : null;
-                const balanceInfos = onroad && onroad.tokenBalanceInfoMap ? onroad.tokenBalanceInfoMap : null;
-                _t();
+            //     const onroad = this.balance && this.balance.onroad ? this.balance.onroad : null;
+            //     const balanceInfos = onroad && onroad.tokenBalanceInfoMap ? onroad.tokenBalanceInfoMap : null;
+            //     _t();
 
-                if (balanceInfos) {
-                    this.autoReceiveTx(intervals, autoPow, usePledgeQuota);
-                    return;
-                }
-                this.stopAutoReceiveTx();
-            }).catch(() => {
-                _t();
-            });
+            //     if (balanceInfos) {
+            //         this.autoReceiveTx(intervals, autoPow, usePledgeQuota);
+            //         return;
+            //     }
+            //     this.stopAutoReceiveTx();
+            // }).catch(() => {
+            //     _t();
+            // });
         };
 
         loop();
@@ -167,20 +166,20 @@ class AccountClass extends addrAccount {
 
         this._autoReceive = true;
 
-        const _receive = async () => {
-            const result = await this.getOnroadBlocks({
-                index: 0,
-                pageCount: 1
-            });
+        // const _receive = async () => {
+        //     const result = await this.getOnroadBlocks({
+        //         index: 0,
+        //         pageCount: 1
+        //     });
 
-            if (!result || !result.length) {
-                return null;
-            }
+        //     if (!result || !result.length) {
+        //         return null;
+        //     }
 
-            const fromBlockHash = result[0].hash;
+        //     const fromBlockHash = result[0].hash;
 
-            return this['receiveTx']({ fromBlockHash }, autoPow, usePledgeQuota);
-        };
+        //     return this['receiveTx']({ fromBlockHash }, autoPow, usePledgeQuota);
+        // };
 
         const loop = () => {
             if (!this._autoReceive) {
@@ -195,11 +194,11 @@ class AccountClass extends addrAccount {
                 }, intervals);
             };
 
-            _receive().then(() => {
-                _t();
-            }).catch(() => {
-                _t();
-            });
+            // _receive().then(() => {
+            //     _t();
+            // }).catch(() => {
+            //     _t();
+            // });
         };
 
         loop();
@@ -214,7 +213,7 @@ class AccountClass extends addrAccount {
             throw new Error('Please set privateKey before calling this method');
         }
 
-        return this._client.sendTx(accountBlock, this.privateKey);
+        // return this._client.sendTx(accountBlock, this.privateKey);
     }
 
     sendAutoPowRawTx(accountBlock, usePledgeQuota?) {
@@ -222,13 +221,13 @@ class AccountClass extends addrAccount {
             throw new Error('Please set privateKey before calling this method');
         }
 
-        const _usePledgeQuota = usePledgeQuota === true || usePledgeQuota === false ? usePledgeQuota : !!this.usePledgeQuota;
+        // const _usePledgeQuota = usePledgeQuota === true || usePledgeQuota === false ? usePledgeQuota : !!this.usePledgeQuota;
 
-        return this._client.sendAutoPowTx({
-            accountBlock,
-            privateKey: this.privateKey,
-            usePledgeQuota: _usePledgeQuota
-        });
+        // return this._client.sendAutoPowTx({
+        //     accountBlock,
+        //     privateKey: this.privateKey,
+        //     usePledgeQuota: _usePledgeQuota
+        // });
     }
 
     async sendPowTx({
@@ -251,14 +250,14 @@ class AccountClass extends addrAccount {
 
         // Step 1: check PoW
         const checkFunc = async (usePledgeQuota = true) => {
-            checkPowResult = await this._client.tx.calcPoWDifficulty({
-                selfAddr: accountBlock.accountAddress,
-                prevHash: accountBlock.prevHash,
-                blockType: accountBlock.blockType,
-                toAddr: accountBlock.toAddress,
-                data: accountBlock.data,
-                usePledgeQuota
-            });
+            // checkPowResult = await this._client.tx.calcPoWDifficulty({
+            //     selfAddr: accountBlock.accountAddress,
+            //     prevHash: accountBlock.prevHash,
+            //     blockType: accountBlock.blockType,
+            //     toAddr: accountBlock.toAddress,
+            //     data: accountBlock.data,
+            //     usePledgeQuota
+            // });
 
             lifeCycle = 'checkPowDone';
 
@@ -285,7 +284,7 @@ class AccountClass extends addrAccount {
                 return { lifeCycle, checkPowResult, accountBlock };
             }
 
-            accountBlock = await this._client.builtinTxBlock.pow(accountBlock, checkPowResult.difficulty);
+            // accountBlock = await this._client.builtinTxBlock.pow(accountBlock, checkPowResult.difficulty);
             lifeCycle = 'powDone';
 
             return _beforeSignTx();
@@ -359,26 +358,26 @@ class AccountClass extends addrAccount {
     }
 
     private _setTxMethod() {
-        for (const key in this._client.builtinTxBlock) {
-            if (key === '_client' || key.endsWith('Block')) {
-                continue;
-            }
+        // for (const key in this._client.builtinTxBlock) {
+        //     if (key === '_client' || key.endsWith('Block')) {
+        //         continue;
+        //     }
 
-            let _key = key;
-            if (_key.startsWith('async')) {
-                _key = _key.replace('async', '');
-                _key = _key[0].toLocaleLowerCase() + _key.slice(1);
-            }
+        //     let _key = key;
+        //     if (_key.startsWith('async')) {
+        //         _key = _key.replace('async', '');
+        //         _key = _key[0].toLocaleLowerCase() + _key.slice(1);
+        //     }
 
-            this[_key] = async (block, autoPow?, usePledgeQuota?) => {
-                if (!this.privateKey) {
-                    throw new Error('Please set privateKey before calling this method');
-                }
+        //     this[_key] = async (block, autoPow?, usePledgeQuota?) => {
+        //         if (!this.privateKey) {
+        //             throw new Error('Please set privateKey before calling this method');
+        //         }
 
-                const accountBlock = await this.getBlock[key](block);
-                return this._sendRawTx(accountBlock, autoPow, usePledgeQuota);
-            };
-        }
+        //         const accountBlock = await this.getBlock[key](block);
+        //         return this._sendRawTx(accountBlock, autoPow, usePledgeQuota);
+        //     };
+        // }
     }
 }
 
