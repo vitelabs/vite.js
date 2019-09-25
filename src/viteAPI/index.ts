@@ -5,7 +5,7 @@ import { Contracts } from '~@vite/vitejs-constant';
 import { getTransactionTypeByContractList } from '~@vite/vitejs-accountblock/builtin';
 import { getTransactionType, decodeBlockByContract } from '~@vite/vitejs-accountblock';
 
-import { RPCrequest, RPCresponse, Methods, Address, AccountBlockType, Transaction } from './type';
+import { RPCrequest, RPCresponse, Methods, Address, AccountBlockType, Transaction, AccountBlockBlock } from './type';
 import EventEmitter from './eventEmitter';
 
 
@@ -119,7 +119,8 @@ class ViteAPIClass {
         return list;
     }
 
-    async sendAccountBlock(accountBlock) {
+    async sendAccountBlock(accountBlock: AccountBlockBlock) {
+        // const data = await this.request('ledger_getBlocksByAccAddr', address, pageIndex, pageCount);
 
     }
 

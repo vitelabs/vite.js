@@ -1,10 +1,14 @@
 const BigNumber = require('bn.js');
 const blake = require('blakejs/blake2b');
 
-import { checkParams, bytesToHex, getRawTokenId, isHexString, ed25519 } from '~@vite/vitejs-utils';
+import { checkParams, isHexString, ed25519 } from '~@vite/vitejs-utils';
 import { getRealAddressFromAddress, createAddressByPrivateKey, getAddressFromPublicKey } from  '~@vite/vitejs-hdwallet/address';
 
-import { isRequestBlock, isResponseBlock, checkAccountBlock, Default_Hash } from './utils';
+import {
+    isRequestBlock, isResponseBlock, checkAccountBlock, Default_Hash, getAccountBlockHash,
+    getBlockTypeHex, getHeightHex, getAddressHex, getToAddressHex, getDataHex,
+    getAmountHex, getFeeHex, getNonceHex, getPreviousHashHex, getTokenIdHex, getSendBlockHashHex
+} from './utils';
 import { Address, Hex, Base64, BigInt, Uint64, BlockType, ViteAPI, TokenId, AccountBlockBlock } from './type';
 
 class AccountBlockClass {
@@ -58,15 +62,11 @@ class AccountBlockClass {
             toAddress: this.toAddress,
             tokenId: this.tokenId,
             amount: this.amount,
-
             height: this.height,
             previousHash: this.previousHash,
-
             difficulty: this.difficulty,
             nonce: this.nonce,
-
             hash: this.hash,
-
             publicKey: this.publicKey,
             signature: this.signature
         };
@@ -77,48 +77,47 @@ class AccountBlockClass {
     }
 
     get blockTypeHex(): Hex {
-        return Buffer.from([this.blockType]).toString('hex');
+        return getBlockTypeHex(this.blockType);
     }
 
     get previousHashHex(): Hex {
-        return this.previousHash;
+        return getPreviousHashHex(this.previousHash);
     }
 
     get heightHex(): Hex {
-        return Number(this.height) ? bytesToHex(new BigNumber(this.height).toArray('big', 8)) : '';
+        return getHeightHex(this.height);
     }
 
     get addressHex(): Hex {
-        return this.realAddress;
+        return getAddressHex(this.address);
     }
 
     get toAddressHex(): Hex {
-        return getRealAddressFromAddress(this.toAddress);
+        return getToAddressHex(this.toAddress);
     }
 
     get amountHex(): Hex {
-        return getNumberHex(this.amount);
+        return getAmountHex(this.amount);
     }
 
     get tokenIdHex(): Hex {
-        return this.tokenId ? getRawTokenId(this.tokenId) || '' : '';
+        return getTokenIdHex(this.tokenId);
     }
 
     get sendBlockHashHex(): Hex {
-        return this.sendBlockHash || Default_Hash;
+        return getSendBlockHashHex(this.sendBlockHash);
     }
 
     get dataHex(): Hex {
-        return blake.blake2bHex(Buffer.from(this.data, 'base64'), null, 32);
+        return getDataHex(this.data);
     }
 
     get feeHex(): Hex {
-        return getNumberHex(this.fee);
+        return getFeeHex(this.fee);
     }
 
     get nonceHex(): Hex {
-        const nonceBuffer = this.nonce ? Buffer.from(this.nonce, 'base64') : '';
-        return leftPadBytes(nonceBuffer, 8);
+        return getNonceHex(this.nonce);
     }
 
     get isRequestBlock(): Boolean {
@@ -129,24 +128,8 @@ class AccountBlockClass {
         return isResponseBlock(this.blockType);
     }
 
-    // 1.sendBlock
-    // hash = HashFunction(BlockType + PrevHash  + Height + AccountAddress + ToAddress + Amount + TokenId + Data + Fee + LogHash + Nonce + sendBlockHashList）
-
-    // 2.receiveBlock
-    // hash = HashFunction(BlockType + PrevHash  + Height + AccountAddress + FromBlockHash + Data + Fee + LogHash + Nonce + sendBlockHashList）
-
     get hash(): Hex {
-        let source = this.blockTypeHex + this.previousHashHex + this.heightHex + this.addressHex;
-        if (this.isRequestBlock) {
-            source += this.toAddressHex + this.amountHex + this.tokenIdHex;
-        } else {
-            source += this.sendBlockHashHex;
-        }
-        source += this.dataHex + this.feeHex + this.nonceHex;
-
-        const sourceHex = Buffer.from(source, 'hex');
-        const hashBuffer = blake.blake2b(sourceHex, null, 32);
-        return Buffer.from(hashBuffer).toString('hex');
+        return getAccountBlockHash(this.accountBlock);
     }
 
     async getHeight(viteAPI: ViteAPI): Promise<{height: Uint64; previousHash: Hex }> {
@@ -282,23 +265,3 @@ class AccountBlockClass {
 
 export const AccountBlock = AccountBlockClass;
 export default AccountBlockClass;
-
-
-
-function leftPadBytes(bytesData, len) {
-    if (bytesData && len - bytesData.length < 0) {
-        return bytesData.toString('hex');
-    }
-
-    const result = new Uint8Array(len);
-    if (bytesData) {
-        result.set(bytesData, len - bytesData.length);
-    }
-    return Buffer.from(result).toString('hex');
-}
-
-function getNumberHex(amount) {
-    const bigAmount = new BigNumber(amount);
-    const amountBytes = amount && !bigAmount.isZero() ? bigAmount.toArray('big') : '';
-    return leftPadBytes(amountBytes, 32);
-}

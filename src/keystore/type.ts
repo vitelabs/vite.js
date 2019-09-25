@@ -558,6 +558,7 @@ export declare type AccountBlockBlock = {
     nonce?: Base64;
     signature?: Base64;
     publicKey?: Base64;
+    hash?: Hex
 }
 export declare class AccountBlockClassType {
     blockType: BlockType;
