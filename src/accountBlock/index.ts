@@ -1,13 +1,13 @@
 const BigNumber = require('bn.js');
 
-import { paramsFormat } from '~@vite/vitejs-error';
+import { paramsFormat, paramsMissing } from '~@vite/vitejs-error';
 import { Default_Hash, Contracts } from '~@vite/vitejs-constant';
 import { encodeFunctionSignature, decodeLog } from '~@vite/vitejs-abi';
 import { getRealAddressFromAddress, isAddress } from '~@vite/vitejs-hdwallet/address';
 import { ed25519, bytesToHex, blake2b, blake2bHex, checkParams, getRawTokenId } from '~@vite/vitejs-utils';
 
 import { formatAccountBlock, getTransactionTypeByContractList, checkBlock } from './builtin';
-import { AccountBlock, Address, BlockType, SignBlock, sendTxBlock, receiveTxBlock, syncFormatBlock } from './type';
+import { AccountBlockType, Address, BlockType, SignBlock, sendTxBlock, receiveTxBlock, syncFormatBlock, Base64 } from './type';
 
 const { getPublicKey, sign } = ed25519;
 
@@ -64,12 +64,16 @@ export function getReceiveTxBlock({ accountAddress, fromBlockHash, height, prevH
     });
 }
 
-export function getTransactionType({ toAddress, data, blockType }, contractTxType?): {
+export function getTransactionType({ toAddress, data, blockType }: {
+    toAddress?: Address;
+    data?: Base64;
+    blockType: BlockType;
+}, contractTxType?): {
     transactionType: string;
     contractAddress?: Address;
     abi?: Object;
 } {
-    const err = checkParams({ blockType, toAddress }, [ 'blockType', 'toAddress' ], [ {
+    const err = checkParams({ blockType, toAddress }, ['blockType'], [ {
         name: 'toAddress',
         func: isAddress
     }, {
@@ -87,6 +91,10 @@ export function getTransactionType({ toAddress, data, blockType }, contractTxTyp
 
     if (blockType !== BlockType.TransferRequest) {
         return defaultType;
+    }
+
+    if (!toAddress) {
+        throw new Error(`${ paramsMissing.message } ToAddress`);
     }
 
     const allContractTxType = Object.assign({}, contractTxType || {}, DefaultContractTxType);
@@ -120,6 +128,7 @@ export function getBlockHash(accountBlock: SignBlock) {
         source += getNumberHex(accountBlock.amount);
         source += accountBlock.tokenId ? getRawTokenId(accountBlock.tokenId) || '' : '';
     } else {
+        // sendBlockHash
         source += accountBlock.fromBlockHash || Default_Hash;
     }
 
@@ -129,13 +138,13 @@ export function getBlockHash(accountBlock: SignBlock) {
     }
 
     source += getNumberHex(accountBlock.fee);
-    source += accountBlock.logHash || '';
+    // source += accountBlock.logHash || '';
     source += getNonceHex(accountBlock.nonce);
 
-    const sendBlockList = accountBlock.sendBlockList || [];
-    sendBlockList.forEach(block => {
-        source += block.hash;
-    });
+    // const sendBlockList = accountBlock.sendBlockList || [];
+    // sendBlockList.forEach(block => {
+    //     source += block.hash;
+    // });
 
     const sourceHex = Buffer.from(source, 'hex');
     const hash = blake2b(sourceHex, null, 32);
@@ -161,7 +170,7 @@ export function signAccountBlock(accountBlock: SignBlock, privKey: Buffer) {
 }
 
 export function decodeBlockByContract({ accountBlock, contractAddress, abi, topics = [], mehtodName }: {
-    accountBlock: AccountBlock;
+    accountBlock: AccountBlockType;
     contractAddress: Address;
     abi: any;
     topics?: any;

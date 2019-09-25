@@ -5,7 +5,7 @@ import { Contracts } from '~@vite/vitejs-constant';
 import { getTransactionTypeByContractList } from '~@vite/vitejs-accountblock/builtin';
 import { getTransactionType, decodeBlockByContract } from '~@vite/vitejs-accountblock';
 
-import { RPCrequest, RPCresponse, Methods, Address, AccountBlock, Transaction } from './type';
+import { RPCrequest, RPCresponse, Methods, Address, AccountBlockType, Transaction } from './type';
 import EventEmitter from './eventEmitter';
 
 
@@ -93,7 +93,7 @@ class ViteAPIClass {
         const rawList = data || [];
 
         const list: Transaction[] = [];
-        rawList.forEach((accountBlock: AccountBlock) => {
+        rawList.forEach((accountBlock: AccountBlockType) => {
             const transaction: Transaction = accountBlock;
             const { abi, transactionType, contractAddress } = getTransactionType(accountBlock, this.customTransactionType);
 
@@ -117,6 +117,10 @@ class ViteAPIClass {
         });
 
         return list;
+    }
+
+    async sendAccountBlock(accountBlock) {
+
     }
 
     setProvider(provider, firstConnect, abort) {

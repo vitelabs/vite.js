@@ -57,8 +57,6 @@ export declare type SignBlock = {
     amount?: BigInt;
     data?: Base64;
     nonce?: Base64;
-    logHash?: Hex;
-    sendBlockList?: Array<any>;
 }
 
 export declare type TokenInfo = {
@@ -74,36 +72,35 @@ export declare type TokenInfo = {
     index: Uint16;
 }
 
-export declare type AccountBlock = {
+export declare type AccountBlockType = {
     blockType: BlockType;
     height: Uint64;
     hash: Hex;
     previousHash: Hex;
     address: Address;
     publicKey: Base64;
-    producer: Address;
-    fromAddress: Address;
+    producer?: Address;
+    fromAddress?: Address;
     toAddress: Address;
-    sendBlockHash: Hex;
-    tokenId: TokenId;
-    amount: BigInt;
-    tokenInfo: TokenInfo;
-    fee: BigInt;
-    data: Base64;
-    difficulty: BigInt;
-    nonce: Base64;
+    sendBlockHash?: Hex;
+    tokenId?: TokenId;
+    amount?: BigInt;
+    tokenInfo?: TokenInfo;
+    fee?: BigInt;
+    data?: Base64;
+    difficulty?: BigInt;
+    nonce?: Base64;
     signature: Base64;
-    quotaByStake: Uint64;
-    totalQuota: Uint64;
-    vmlogHash: Hex;
-    triggeredSendBlockList: Array<AccountBlock>;
-    confirmations: Uint64;
-    firstSnapshotHash: Hex;
-    timestamp: Uint64;
-    receiveBlockHeight: Uint64;
-    receiveBlockHash: Hex;
+    quotaByStake?: Uint64;
+    totalQuota?: Uint64;
+    vmlogHash?: Hex;
+    triggeredSendBlockList?: AccountBlockType[]
+    confirmations?: Uint64;
+    firstSnapshotHash?: Hex;
+    timestamp?: Uint64;
+    receiveBlockHeight?: Uint64;
+    receiveBlockHash?: Hex;
 }
-
 
 export declare type Transaction = {
     blockType: BlockType;
@@ -126,8 +123,6 @@ export declare type Transaction = {
     signature?: Base64;
     quotaByStake?: Uint64;
     totalQuota?: Uint64;
-    vmlogHash?: Hex;
-    triggeredSendBlockList?: Array<AccountBlock>;
     confirmations?: Uint64;
     firstSnapshotHash?: Hex;
     timestamp?: Uint64;
@@ -152,7 +147,6 @@ export declare type Transaction = {
 //     amount?: BigInt;
 //     data?: Base64;
 //     nonce?: Base64;
-//     logHash?: Hex;
 // }
 
 export declare type SBPregBlock = {
@@ -348,20 +342,93 @@ export enum BlockType {
 
 export declare type requiredAccountBlock = {
     blockType: BlockType;
-    height?: Uint64;
-    hash?: Hex;
-    previousHash?: Hex;
-    address?: Address;
-    publicKey?: Base64;
-    toAddress?: Address;
-    sendBlockHash?: Hex;
-    tokenId?: TokenId;
-    amount?: BigInt;
+    address: Address;
     fee?: BigInt;
     data?: Base64;
+    sendBlockHash?: Hex;
+    toAddress?: Address;
+    tokenId?: TokenId;
+    amount?: BigInt;
+}
+
+export declare type afterHeightAccountBlock = {
+    blockType: BlockType;
+    address: Address;
+    height: Uint64;
+    previousHash: Hex;
+    fee?: BigInt;
+    data?: Base64;
+    sendBlockHash?: Hex;
+    toAddress?: Address;
+    tokenId?: TokenId;
+    amount?: BigInt;
+}
+
+export declare type afterPOWAccountBlock = {
+    blockType: BlockType;
+    address: Address;
+    height: Uint64;
+    previousHash: Hex;
+    fee?: BigInt;
+    data?: Base64;
+    sendBlockHash?: Hex;
+    toAddress?: Address;
+    tokenId?: TokenId;
+    amount?: BigInt;
     difficulty?: BigInt;
     nonce?: Base64;
+}
+
+export declare type afterHashAccountBlock = {
+    blockType: BlockType;
+    address: Address;
+    height: Uint64;
+    previousHash: Hex;
+    hash: Hex;
+    fee?: BigInt;
+    data?: Base64;
+    sendBlockHash?: Hex;
+    toAddress?: Address;
+    tokenId?: TokenId;
+    amount?: BigInt;
+    difficulty?: BigInt;
+    nonce?: Base64;
+}
+
+export declare type afterSignAccountBlock = {
+    blockType: BlockType;
+    address: Address;
+    height: Uint64;
+    previousHash: Hex;
+    hash: Hex;
+    publicKey: Base64;
+    signature: Base64;
+    fee?: BigInt;
+    data?: Base64;
+    sendBlockHash?: Hex;
+    toAddress?: Address;
+    tokenId?: TokenId;
+    amount?: BigInt;
+    difficulty?: BigInt;
+    nonce?: Base64;
+}
+
+export declare type AllAccountBlock = {
+    blockType: BlockType;
+    address: Address;
+    height?: Uint64;
+    previousHash?: Hex;
+    hash?: Hex;
+    publicKey?: Base64;
     signature?: Base64;
+    fee?: BigInt;
+    data?: Base64;
+    sendBlockHash?: Hex;
+    toAddress?: Address;
+    tokenId?: TokenId;
+    amount?: BigInt;
+    difficulty?: BigInt;
+    nonce?: Base64;
 }
 
 export declare type Methods = String |
@@ -473,4 +540,87 @@ export declare class ViteAPI {
     notification(methods: Methods, ...args: any[])
     batch(reqs: RPCrequest[])
     subscribe(methodName, ...args) 
+}
+
+
+export declare type AccountBlockBlock = {
+    blockType: BlockType;
+    address: Address;
+    fee?: BigInt;
+    data?: Base64;
+    sendBlockHash?: Hex;
+    toAddress?: Address;
+    tokenId?: TokenId;
+    amount?: BigInt;
+    height?: Uint64;
+    previousHash?: Hex;
+    difficulty?: BigInt;
+    nonce?: Base64;
+    signature?: Base64;
+    publicKey?: Base64;
+}
+export declare class AccountBlockClassType {
+    blockType: BlockType;
+    address: Address;
+    fee?: BigInt;
+    data?: Base64;
+    sendBlockHash?: Hex;
+    toAddress?: Address;
+    tokenId?: TokenId;
+    amount?: BigInt;
+    height?: Uint64;
+    previousHash?: Hex;
+    difficulty?: BigInt;
+    nonce?: Base64;
+    signature?: Base64;
+    publicKey?: Base64;
+    
+    realAddress: Hex;
+    blockTypeHex: Hex;
+    previousHashHex: Hex;
+    heightHex: Hex;
+    addressHex: Hex;
+    toAddressHex: Hex;
+    amountHex: Hex;
+    tokenIdHex: Hex;
+    sendBlockHashHex: Hex;
+    dataHex: Hex;
+    feeHex: Hex;
+    nonceHex: Hex;
+    hash: Hex;
+
+    isRequestBlock: Boolean
+    isResponseBlock: Boolean
+
+    accountBlock: AccountBlockBlock
+
+    constructor({ blockType, address, fee, data, sendBlockHash, amount, toAddress, tokenId }: {
+        blockType: BlockType;
+        address: Address;
+        fee?: BigInt;
+        data?: Base64;
+        sendBlockHash?: Hex;
+        amount?: BigInt;
+        toAddress?: Address;
+        tokenId?: TokenId;
+    })
+
+    getHeight(viteAPI: ViteAPI): Promise<{height: Uint64, previousHash: Hex }>
+    setHeight({ height, previousHash }: {
+        height: Uint64;
+        previousHash: Hex;
+    })
+    getDifficulty(viteAPI: ViteAPI): Promise<{
+        requiredQuota: Uint64;
+        difficulty: BigInt;
+        qc: BigInt;
+        isCongestion: Boolean;
+    }>;
+    setDifficulty(difficulty: BigInt)
+    getNonce(viteAPI: ViteAPI): Promise<Base64>
+    setNonce(nonce: Base64)
+    autoSetNonce(viteAPI: ViteAPI): Promise<{difficulty: BigInt, nonce: Base64}>
+    setPublicKey(publicKey: Buffer | Hex)
+    setSignature(signature: Base64)
+    sign(privateKey: Buffer | Hex): AccountBlockBlock
 }
