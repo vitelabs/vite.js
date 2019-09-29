@@ -115,10 +115,12 @@ export function validNodeName(nodeName: string): Boolean {
 }
 
 export function isNonNegativeInteger(num: string): Boolean {
+    num = `${ num }`;
     return num && (/(^[1-9]\d*$)/g.test(num) || num === '0');
 }
 
 export function isInteger(num: string): Boolean {
+    num = `${ num }`;
     return num && (/^[\-]{0,1}[1-9]\d*$/g.test(num) || num === '0');
 }
 

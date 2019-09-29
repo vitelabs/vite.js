@@ -18,8 +18,10 @@ describe('Keystore Test: src/keystore', function () {
     require('./packages/keystore');
 });
 
-describe('Address Test: src/hdWallet/address', function () {
-    require('./packages/address');
+describe('Address Test: src/hdWallet', function () {
+    require('./packages/hdWallet/hdKey');
+    require('./packages/hdWallet/address');
+    require('./packages/hdWallet/index');
 });
 
 describe('Utils Test: src/utils', function () {

@@ -33,7 +33,7 @@ export function getEntropyFromMnemonic(mnemonic: String, wordlist: Array<String>
     return bip39.mnemonicToEntropy(mnemonic, wordlist);
 }
 
-export function getSeedFromMnemonic(mnemonic: String, wordlist: Array<String> = bip39.wordlists.EN, pwd: String = ''): {
+export function getSeedFromMnemonic(mnemonic: String, pwd: String = '', wordlist: Array<String> = bip39.wordlists.EN): {
     seed: Buffer;
     seedHex: Hex;
 } {
@@ -50,13 +50,13 @@ export function getSeedFromMnemonic(mnemonic: String, wordlist: Array<String> = 
     return { seed, seedHex };
 }
 
-export function createSeed(bits: number = 256, wordlist: Array<String> = bip39.wordlists.EN, pwd: String = ''): {
+export function createSeed(bits: number = 256, pwd: String = '', wordlist: Array<String> = bip39.wordlists.EN): {
     mnemonic: String;
     seed: Buffer;
     seedHex: Hex;
 } {
     const mnemonic = createMnemonic(bits, wordlist);
-    const { seed, seedHex } = getSeedFromMnemonic(mnemonic, wordlist, pwd);
+    const { seed, seedHex } = getSeedFromMnemonic(mnemonic, pwd, wordlist);
     return { mnemonic, seed, seedHex };
 }
 

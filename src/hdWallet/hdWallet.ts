@@ -1,7 +1,7 @@
 const bip39 = require('bip39');
 const blake = require('blakejs/blake2b');
 
-import { checkParams } from '~@vite/vitejs-utils';
+import { checkParams, isNonNegativeInteger } from '~@vite/vitejs-utils';
 
 import * as hdKey from './hdKey';
 import * as addressLib from './address';
@@ -18,6 +18,7 @@ interface Wallet {
 class HDWallet {
     readonly rootPath: String
     readonly mnemonic: String
+    readonly entropy: String
     readonly wordlist: Array<String>
     readonly pwd: String
     readonly seed: Buffer
@@ -34,10 +35,12 @@ class HDWallet {
         this.mnemonic = mnemonic;
         this.wordlist = wordlist;
         this.pwd = pwd;
+        this.entropy = hdKey.getEntropyFromMnemonic(mnemonic, wordlist);
 
-        const { seed, seedHex } = hdKey.getSeedFromMnemonic(mnemonic, wordlist, pwd);
+        const { seed, seedHex } = hdKey.getSeedFromMnemonic(mnemonic, pwd, wordlist);
         this.seed = seed;
         this.seedHex = seedHex;
+        this.walletList = {};
     }
 
     get id() {
@@ -59,6 +62,18 @@ class HDWallet {
     }
 
     deriveWallet(index: number) {
+        const err = checkParams({ index }, ['index'], [{
+            name: 'index',
+            func: isNonNegativeInteger
+        }]);
+        if (err) {
+            throw new Error(err.message);
+        }
+
+        if (this.walletList[index]) {
+            return this.walletList[index];
+        }
+
         const path = hdKey.getPath(index);
         const { privateKey, publicKey } = hdKey.deriveKeyPairByPath(this.seedHex, path);
         const address = addressLib.getAddressFromPublicKey(publicKey);
@@ -77,7 +92,13 @@ class HDWallet {
     }
 
     deriveWalletList(startIndex: number, endIndex: number) {
-        const err = checkParams({ startIndex, endIndex }, [ 'startIndex', 'endIndex' ]);
+        const err = checkParams({ startIndex, endIndex }, [ 'startIndex', 'endIndex' ], [ {
+            name: 'startIndex',
+            func: isNonNegativeInteger
+        }, {
+            name: 'endIndex',
+            func: isNonNegativeInteger
+        } ]);
         if (err) {
             throw new Error(err.message);
         }

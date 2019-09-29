@@ -2,7 +2,7 @@ const bip39 = require('bip39');
 
 import { checkParams } from '~@vite/vitejs-utils';
 
-import Wallet from './hdWallet';
+import HDWallet from './hdWallet';
 import * as hdKey from './hdKey';
 import * as addressLib from './address';
 import { AddrObj } from './type';
@@ -38,7 +38,7 @@ export default {
     },
     createHDWallet: function (bits: number = 256, wordlist: Array<String> = bip39.wordlists.EN, pwd: string = '') {
         const mnemonic = hdKey.createMnemonic(bits, wordlist);
-        return new Wallet(mnemonic, wordlist, pwd);
+        return new HDWallet(mnemonic, wordlist, pwd);
     },
     getHDWallet: function (mnemonic: string, wordlist: Array<String> = bip39.wordlists.EN, pwd: string = '') {
         const err = checkParams({ mnemonic, wordlist }, [ 'mnemonic', 'wordlist' ], [{
@@ -48,7 +48,7 @@ export default {
         if (err) {
             throw new Error(err.message);
         }
-        return new Wallet(mnemonic, wordlist, pwd);
+        return new HDWallet(mnemonic, wordlist, pwd);
     }
 };
 
@@ -60,7 +60,7 @@ function deriveAddress({ mnemonic, index = 0, wordlist, pwd = '', isContract }: 
     pwd: String;
     isContract?: boolean;
 }): AddrObj {
-    const { seedHex } = hdKey.getSeedFromMnemonic(mnemonic, wordlist, pwd);
+    const { seedHex } = hdKey.getSeedFromMnemonic(mnemonic, pwd, wordlist);
     const { privateKey } = hdKey.deriveKeyPair(seedHex, index);
     return addressLib.createAddressByPrivateKey(privateKey, isContract);
 }
