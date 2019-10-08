@@ -13,7 +13,7 @@ import { getAccountBlock, getSendTxBlock, getReceiveTxBlock } from '~@vite/vitej
 // import { formatAccountBlock, isAccountBlock, getCreateContractData } from '~@vite/vitejs-accountblock/builtin';
 import { formatAccountBlock, isAccountBlock } from '~@vite/vitejs-accountblock/builtin';
 import { encodeFunctionCall } from '~@vite/vitejs-abi';
-import { getRealAddressFromAddress } from  '~@vite/vitejs-hdwallet/address';
+import { getOriginalAddressFromAddress } from  '~@vite/vitejs-hdwallet/address';
 
 import {
     ViteAPI,
@@ -58,7 +58,7 @@ export default class Tx {
     }
 
     async pow(accountBlock: formatBlock, difficulty) {
-        const realAddr = getRealAddressFromAddress(accountBlock.accountAddress);
+        const realAddr = getOriginalAddressFromAddress(accountBlock.accountAddress);
         const rawHashBytes = Buffer.from(realAddr + accountBlock.prevHash, 'hex');
         const hash = blake2bHex(rawHashBytes, null, 32);
         return hash;

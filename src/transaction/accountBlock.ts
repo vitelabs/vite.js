@@ -2,7 +2,7 @@ const BigNumber = require('bn.js');
 const blake = require('blakejs/blake2b');
 
 import { checkParams, isHexString, ed25519 } from '~@vite/vitejs-utils';
-import { getRealAddressFromAddress, createAddressByPrivateKey, getAddressFromPublicKey } from  '~@vite/vitejs-hdwallet/address';
+import { getOriginalAddressFromAddress, createAddressByPrivateKey, getAddressFromPublicKey } from  '~@vite/vitejs-hdwallet/address';
 
 import {
     isRequestBlock, isResponseBlock, checkAccountBlock, Default_Hash, getAccountBlockHash,
@@ -72,8 +72,8 @@ class AccountBlockClass {
         };
     }
 
-    get realAddress(): Hex {
-        return getRealAddressFromAddress(this.address);
+    get originalAddress(): Hex {
+        return getOriginalAddressFromAddress(this.address);
     }
 
     get blockTypeHex(): Hex {
@@ -149,6 +149,41 @@ class AccountBlockClass {
         this.previousHash = previousHash;
     }
 
+    async autoSetHeight(viteAPI: ViteAPI) {
+        const { height, previousHash } = await this.getHeight(viteAPI);
+        this.setHeight({ height, previousHash });
+        return {
+            height: this.height,
+            previousHash: this.previousHash
+        };
+    }
+
+    async getToAddress(viteAPI: ViteAPI) {
+        const err = checkParams(this.accountBlock, ['previousHash'], [{
+            name: 'blockType',
+            func: _b => _b === BlockType.CreateContractRequest
+        }]);
+        if (err) {
+            throw err;
+        }
+
+        return viteAPI.request('contract_createContractAddress', this.address, this.height, this.previousHash);
+    }
+
+    setToAddress(address: Address) {
+        this.toAddress = address;
+    }
+
+    async autoSetToAddress(viteAPI: ViteAPI) {
+        if (this.blockType !== BlockType.CreateContractRequest) {
+            return this.toAddress;
+        }
+
+        const address = await this.getToAddress(viteAPI);
+        this.setToAddress(address);
+        return this.toAddress;
+    }
+
     async getDifficulty(viteAPI: ViteAPI): Promise<{
         requiredQuota: Uint64;
         difficulty: BigInt;
@@ -189,7 +224,7 @@ class AccountBlockClass {
             throw err;
         }
 
-        const getNonceHashBuffer = Buffer.from(this.realAddress + this.previousHash, 'hex');
+        const getNonceHashBuffer = Buffer.from(this.originalAddress + this.previousHash, 'hex');
         const getNonceHash = blake.blake2bHex(getNonceHashBuffer, null, 32);
         const nonce: Base64 = viteAPI.request('util_getPoWNonce', this.difficulty, getNonceHash);
 
@@ -243,9 +278,12 @@ class AccountBlockClass {
             func: _p => _p instanceof Buffer || isHexString(_p),
             msg: 'PrivateKey is Buffer or Hex-string'
         }]);
-
         if (err) {
             throw err;
+        }
+
+        if (this.blockType === BlockType.CreateContractRequest && !this.toAddress) {
+            throw new Error('Missing toAddress. CreateContract should set toAddress.');
         }
 
         const _privateKey: Buffer = privateKey instanceof Buffer ? privateKey : Buffer.from(privateKey, 'hex');
@@ -260,6 +298,42 @@ class AccountBlockClass {
         this.setPublicKey(publicKey);
         this.setSignature(ed25519.sign(this.hash, _privateKey));
         return this.accountBlock;
+    }
+
+    async send(viteAPI: ViteAPI) {
+        let err = checkParams({ signature: this.signature, publicKey: this.publicKey }, [ 'publicKey', 'signature' ]);
+        if (err) {
+            throw err;
+        }
+
+        err = checkAccountBlock(this.accountBlock);
+        if (!err) {
+            throw err;
+        }
+
+        try {
+            const res = viteAPI.request('ledger_sendRawTransaction', this.accountBlock);
+            return res;
+        } catch (err) {
+            const _err = err;
+            _err.accountBlock = this.accountBlock;
+            throw _err;
+        }
+    }
+
+    async autoPOWSend({ viteAPI, privateKey }: { viteAPI: ViteAPI; privateKey: Buffer | Hex }) {
+        await this.autoSetHeight(viteAPI);
+        await this.autoSetToAddress(viteAPI);
+        await this.autoSetNonce(viteAPI);
+        this.sign(privateKey);
+        return this.send(viteAPI);
+    }
+
+    async autoSend({ viteAPI, privateKey }: { viteAPI: ViteAPI; privateKey: Buffer | Hex }) {
+        await this.autoSetHeight(viteAPI);
+        await this.autoSetToAddress(viteAPI);
+        this.sign(privateKey);
+        return this.send(viteAPI);
     }
 }
 

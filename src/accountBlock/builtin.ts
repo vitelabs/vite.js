@@ -1,6 +1,6 @@
 const BigNumber = require('bn.js');
 
-import { isAddress } from '~@vite/vitejs-hdwallet/address';
+import { isValidAddress } from '~@vite/vitejs-hdwallet/address';
 import { encodeParameters, encodeFunctionSignature } from '~@vite/vitejs-abi';
 import { Vite_TokenId, Default_Hash, Delegate_Gid, BlockType } from '~@vite/vitejs-constant';
 import { paramsMissing, paramsConflict, integerIllegal, unsafeInteger } from '~@vite/vitejs-error';
@@ -51,10 +51,10 @@ export function formatAccountBlock(accountBlock: formatBlock) {
 export function isAccountBlock({ blockType, fromBlockHash, accountAddress, message, data, toAddress, amount }: formatBlock) {
     const err = checkParams({ blockType, accountAddress, toAddress, amount }, [ 'accountAddress', 'blockType' ], [ {
         name: 'accountAddress',
-        func: isAddress
+        func: isValidAddress
     }, {
         name: 'toAddress',
-        func: isAddress
+        func: isValidAddress
     }, {
         name: 'blockType',
         func: _b => BlockType[_b],
@@ -150,7 +150,7 @@ export function getTransactionTypeByContractList(contractList: Object): Object {
 
         const err = checkParams({ contractAddress, abi }, [ 'contractAddress', 'abi' ], [{
             name: 'contractAddress',
-            func: isAddress
+            func: isValidAddress
         }]);
         if (err) {
             throw err;

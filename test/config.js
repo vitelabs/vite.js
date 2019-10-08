@@ -503,7 +503,7 @@ const BLOCK_LIST = {
         toAddress: 'vite_553462bca137bac29f440e9af4ab2e2c1bb82493e41d2bc8b2',
         tokenId: 'tti_5649544520544f4b454e6e40'
     },
-    ClaimSBPRewardsRequest: {
+    ReIssueRequest: {
         accountAddress: 'vite_155e4e83fb0499dcc3047e0458bbfae77f2ac1270e38c176f8',
         blockType: 3,
         data: '',

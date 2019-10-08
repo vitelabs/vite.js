@@ -1,6 +1,6 @@
 // const bip39 = require('bip39');
 
-// // import { createAddress, getId, validateMnemonic, getEntropyFromMnemonic, getAddrsFromMnemonic, isAddress, getAddrFromMnemonic } from '~@vite/vitejs-hdwallet';
+// // import { createAddress, getId, validateMnemonic, getEntropyFromMnemonic, getAddrsFromMnemonic, isValidAddress, getAddrFromMnemonic } from '~@vite/vitejs-hdwallet';
 // import Account from '~@vite/vitejs-account';
 // import client from '~@vite/vitejs-client';
 // import { paramsMissing, addressIllegal, addressMissing } from '~@vite/vitejs-error';
@@ -172,7 +172,7 @@
 //             throw new Error(`${ paramsMissing.message } Address or index.`);
 //         }
 
-//         if (address && !isAddress(address)) {
+//         if (address && !isValidAddress(address)) {
 //             throw new Error(`${ addressIllegal.message }`);
 //         }
 

@@ -18,7 +18,7 @@ it('property http isConnected', function () {
     assert.deepEqual(true, myViteAPI.isConnected);
 });
 
-[ 'setProvider', 'unSubscribe', 'clearSubscriptions', 'request', 'notification', 'batch', 'subscribe' ].forEach(key => {
+[ 'setProvider', 'unsubscribe', 'unsubscribeAll', 'request', 'notification', 'batch', 'subscribe' ].forEach(key => {
     assert.equal(typeof myViteAPI[key], 'function');
 });
 

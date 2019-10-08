@@ -1,6 +1,6 @@
 const UUID = require('pure-uuid');
 import { hexToBytes, checkParams } from '~@vite/vitejs-utils';
-import { isAddress } from '~@vite/vitejs-hdwallet/address';
+import { isValidAddress } from '~@vite/vitejs-hdwallet/address';
 
 import { currentVersion, algorithm, scryptName } from './vars';
 
@@ -115,7 +115,7 @@ function isValidOldKeystore(keyJson) {
     if (!keyJson.id
         || !keyJson.crypto
         || !keyJson.hexaddress
-        || !isAddress(keyJson.hexaddress)) {
+        || !isValidAddress(keyJson.hexaddress)) {
         return false;
     }
 

@@ -2,7 +2,7 @@ const assert = require('assert');
 
 import hdWalletUtils from '../../../src/hdWallet/index.ts';
 
-const mnemonic = 'horn equal mystery success pride regret renew great witness hire man moon';
+const mnemonics = 'horn equal mystery success pride regret renew great witness hire man moon';
 const addrList = [
     'vite_0c27e431629b49fad8fcc87d33123dd70d6a73657c60cd8cb4',
     'vite_9e406fd75463a232f00f5c3bf51d0c49561d6c2ec119ce3f3c',
@@ -21,10 +21,10 @@ describe('deriveAddresses', function () {
         const index = 0;
 
         const addrObj = hdWalletUtils.deriveAddress({
-            mnemonic,
+            mnemonics,
             startIndex: index
         });
-        const { seedHex } = hdWalletUtils.getSeedFromMnemonic(mnemonic);
+        const { seedHex } = hdWalletUtils.getSeedFromMnemonics(mnemonics);
         const keypair = hdWalletUtils.deriveKeyPair(seedHex, index);
 
         assert.equal(addrObj.address, addrList[index]);
@@ -34,7 +34,7 @@ describe('deriveAddresses', function () {
 
     it('deriveAddressList', function () {
         const as = hdWalletUtils.deriveAddressList({
-            mnemonic,
+            mnemonics,
             startIndex: 0,
             endIndex: 9
         });
@@ -51,8 +51,8 @@ describe('deriveAddresses', function () {
 describe('hdWallet', function () {
     describe('createHDWallet', function () {
         const hdWallet = hdWalletUtils.createHDWallet();
-        it('test mnemonic', () => {
-            assert(hdWallet.mnemonic.split(' ').length, 24);
+        it('test mnemonics', () => {
+            assert(hdWallet.mnemonics.split(' ').length, 24);
         });
         it('test entropy', () => {
             assert(hdWallet.entropy.length, 512);
@@ -60,13 +60,13 @@ describe('hdWallet', function () {
         it('deriveWallet 0', () => {
             const wallet = hdWallet.deriveWallet(0);
             const addrObj = hdWalletUtils.deriveAddress({
-                mnemonic: hdWallet.mnemonic,
+                mnemonics: hdWallet.mnemonics,
                 index: 0
             });
             const path = hdWalletUtils.getPath(0);
 
             assert.equal(addrObj.address, wallet.address);
-            assert.equal(addrObj.realAddress, wallet.realAddress);
+            assert.equal(addrObj.originalAddress, wallet.originalAddress);
             assert.deepEqual(addrObj.privateKey, wallet.privateKey);
             assert.deepEqual(addrObj.publicKey, wallet.publicKey);
             assert.equal(path, wallet.path);
@@ -74,12 +74,12 @@ describe('hdWallet', function () {
     });
 
     describe('getHDWallet', function () {
-        const hdWallet = hdWalletUtils.getHDWallet(mnemonic);
-        const entropy = hdWalletUtils.getEntropyFromMnemonic(mnemonic);
+        const hdWallet = hdWalletUtils.getHDWallet(mnemonics);
+        const entropy = hdWalletUtils.getEntropyFromMnemonics(mnemonics);
         const walletList = hdWallet.deriveWalletList(0, 9);
 
-        it('test mnemonic', () => {
-            assert(hdWallet.mnemonic, mnemonic);
+        it('test mnemonics', () => {
+            assert(hdWallet.mnemonics, mnemonics);
         });
         it('test entropy', () => {
             assert(hdWallet.entropy, entropy);

@@ -2,10 +2,13 @@ const BigNumber = require('bn.js');
 const blake = require('blakejs/blake2b');
 
 import { paramsMissing } from '~@vite/vitejs-error';
-import { isAddress, getAddressFromPublicKey, getRealAddressFromAddress } from '~@vite/vitejs-hdwallet/address';
-import { checkParams, isNonNegativeInteger, isHexString, isTokenId, bytesToHex, getRawTokenId } from '~@vite/vitejs-utils';
+import { encodeParameters, encodeFunctionSignature } from '~@vite/vitejs-abi';
+import { isValidAddress, getAddressFromPublicKey, getOriginalAddressFromAddress } from '~@vite/vitejs-hdwallet/address';
+import { checkParams, isNonNegativeInteger, isHexString, isTokenId, bytesToHex, getRawTokenId, isArray, isObject } from '~@vite/vitejs-utils';
 
-import { BlockType, Address, Base64, Hex, TokenId, Uint64, BigInt, AccountBlockType } from './type';
+import { Delegate_Gid } from './constant';
+
+import { BlockType, Address, Base64, Hex, TokenId, Uint64, BigInt, AccountBlockType, Uint8 } from './type';
 
 export const Default_Hash = '0000000000000000000000000000000000000000000000000000000000000000'; // A total of 64 0
 
@@ -34,13 +37,13 @@ export function checkAccountBlock(accountBlock: {
         msg: `Don\'t have blockType ${ accountBlock.blockType }`
     }, {
         name: 'address',
-        func: isAddress
+        func: isValidAddress
     }, {
         name: 'sendBlockHash',
         func: isHexString
     }, {
         name: 'toAddress',
-        func: isAddress
+        func: isValidAddress
     }, {
         name: 'amount',
         func: isNonNegativeInteger,
@@ -101,7 +104,7 @@ export function isRequestBlock(blockType: BlockType): Boolean {
     return blockType === BlockType.CreateContractRequest
         || blockType === BlockType.TransferRequest
         || blockType === BlockType.RefundByContractRequest
-        || blockType === BlockType.ClaimSBPRewardsRequest;
+        || blockType === BlockType.ReIssueRequest;
 }
 
 export function isResponseBlock(blockType: BlockType): Boolean {
@@ -175,11 +178,11 @@ export function getHeightHex(height: Uint64): Hex {
 }
 
 export function getAddressHex(address: Address): Hex {
-    return address ? getRealAddressFromAddress(address) : '';
+    return address ? getOriginalAddressFromAddress(address) : '';
 }
 
 export function getToAddressHex(toAddress: Address): Hex {
-    return toAddress ? getRealAddressFromAddress(toAddress) : '';
+    return toAddress ? getOriginalAddressFromAddress(toAddress) : '';
 }
 
 export function getAmountHex(amount): Hex {
@@ -213,6 +216,73 @@ export function getTriggeredSendBlockListHex(triggeredSendBlockList: AccountBloc
         source += block.hash;
     });
     return source;
+}
+
+export function getCreateContractData({ abi, code, params, responseLatency = '0', quotaMultiplier = '10', randomDegree = '0' }: {
+    responseLatency?: Uint8;
+    quotaMultiplier?: Uint8;
+    randomDegree?: Uint8;
+    code?: Hex;
+    abi?: any;
+    params?: any;
+}): Base64 {
+    const err = checkParams({ responseLatency, quotaMultiplier, randomDegree, code }, [ 'responseLatency', 'quotaMultiplier', 'randomDegree' ], [ {
+        name: 'responseLatency',
+        func: _c => Number(_c) >= 0 && Number(_c) <= 75
+    }, {
+        name: 'quotaMultiplier',
+        func: _c => Number(_c) >= 10 && Number(_c) <= 100
+    }, {
+        name: 'randomDegree',
+        func: _c => Number(_c) >= 0 && Number(_c) <= 75
+    }, {
+        name: 'code',
+        func: isHexString
+    } ]);
+    if (err) {
+        throw err;
+    }
+
+    // gid + contractType + responseLatency + randomDegree + quotaMultiplier + bytecode
+    const jsonInterface = getAbi(abi, 'constructor');
+    const _responseLatency = new BigNumber(responseLatency).toArray();
+    const _randomDegree = new BigNumber(randomDegree).toArray();
+    const _quotaMultiplier = new BigNumber(quotaMultiplier).toArray();
+    let data = `${ Delegate_Gid }01${ Buffer.from(_responseLatency).toString('hex') }${ Buffer.from(_randomDegree).toString('hex') }${ Buffer.from(_quotaMultiplier).toString('hex') }${ code }`;
+
+    if (jsonInterface) {
+        data += encodeParameters(jsonInterface, params);
+    }
+    return Buffer.from(data, 'hex').toString('base64');
+}
+
+export function getAbi(jsonInterfaces, type) {
+    const err = checkParams({ jsonInterfaces, type }, [ 'jsonInterfaces', 'type' ], [{
+        name: 'jsonInterfaces',
+        func: {
+            name: 'jsonInterfaces',
+            func: _a => isArray(_a) || isObject(_a)
+        }
+    }]);
+    if (err) {
+        throw err;
+    }
+
+    // jsonInterfaces is an object
+    if (!isArray(jsonInterfaces) && isObject(jsonInterfaces)) {
+        if (jsonInterfaces.type === type) {
+            return jsonInterfaces;
+        }
+    }
+
+    // jsonInterfaces is an array
+    for (let i = 0; i < jsonInterfaces.length; i++) {
+        if (jsonInterfaces[i].type === type) {
+            return jsonInterfaces[i];
+        }
+    }
+
+    return null;
 }
 
 

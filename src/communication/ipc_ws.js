@@ -212,7 +212,7 @@ class IpcWs extends Communication {
         this.subscribeMethod = callback;
     }
 
-    unSubscribe() {
+    unsubscribe() {
         this.subscribeMethod = null;
     }
 }

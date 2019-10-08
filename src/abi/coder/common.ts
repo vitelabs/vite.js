@@ -3,7 +3,7 @@
 const BigNumber = require('bn.js');
 
 import { unsafeInteger, integerIllegal } from '~@vite/vitejs-error';
-import { getAddressFromRealAddress, getRealAddressFromAddress } from '~@vite/vitejs-hdwallet/address';
+import { getAddressFromOriginalAddress, getOriginalAddressFromAddress } from '~@vite/vitejs-hdwallet/address';
 import { getRawTokenId, getTokenIdFromRaw, isSafeInteger } from '~@vite/vitejs-utils';
 
 
@@ -68,7 +68,7 @@ export function decode(typeObj, params) {
 function getRawData({ type, typeStr, actualByteLen }, params, _params) {
     switch (type) {
     case 'address':
-        return getAddressFromRealAddress(params);
+        return getAddressFromOriginalAddress(params);
     case 'bool':
         return showNumber(params ? '1' : '0', 'uint');
     case 'number':
@@ -96,7 +96,7 @@ function getBytesData({ type, typeStr, actualByteLen }, params) {
 }
 
 function formatAddr(address) {
-    const addr = getRealAddressFromAddress(address);
+    const addr = getOriginalAddressFromAddress(address);
     return Buffer.from(addr, 'hex');
 }
 

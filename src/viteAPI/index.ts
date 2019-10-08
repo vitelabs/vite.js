@@ -1,11 +1,11 @@
 import { requestTimeout } from '~@vite/vitejs-error';
 import { checkParams, isArray } from '~@vite/vitejs-utils';
-import { isAddress } from '~@vite/vitejs-hdwallet/address';
+import { isValidAddress } from '~@vite/vitejs-hdwallet/address';
 import { Contracts } from '~@vite/vitejs-constant';
 import { getTransactionTypeByContractList } from '~@vite/vitejs-accountblock/builtin';
 import { getTransactionType, decodeBlockByContract } from '~@vite/vitejs-accountblock';
 
-import { RPCrequest, RPCresponse, Methods, Address, AccountBlockType, Transaction, AccountBlockBlock } from './type';
+import { RPCrequest, RPCresponse, Methods, Address, AccountBlockType, Transaction } from './type';
 import EventEmitter from './eventEmitter';
 
 
@@ -42,10 +42,10 @@ class ViteAPIClass {
         this.customTransactionType = Object.assign({}, this.customTransactionType, contract);
     }
 
-    async getBalanceAndUnreceived(address: Address) {
+    async getBalanceInfo(address: Address) {
         const err = checkParams({ address }, ['address'], [{
             name: 'address',
-            func: isAddress
+            func: isValidAddress
         }]);
         if (err) {
             return Promise.reject(err);
@@ -76,7 +76,7 @@ class ViteAPIClass {
     }, decodeTxTypeList: 'all' | String[] = 'all') {
         const err = checkParams({ address, pageIndex, decodeTxTypeList }, [ 'address', 'pageIndex' ], [ {
             name: 'address',
-            func: isAddress
+            func: isValidAddress
         }, {
             name: 'decodeTxTypeList',
             func: function (_d) {
@@ -119,21 +119,16 @@ class ViteAPIClass {
         return list;
     }
 
-    async sendAccountBlock(accountBlock: AccountBlockBlock) {
-        // const data = await this.request('ledger_getBlocksByAccAddr', address, pageIndex, pageCount);
-
-    }
-
     setProvider(provider, firstConnect, abort) {
         abort && this._provider.abort(abort);
-        this.clearSubscriptions();
+        this.unsubscribeAll();
         this._provider = provider;
 
         this.isConnected = false;
         this.connectedOnce(firstConnect);
     }
 
-    unSubscribe(event) {
+    unsubscribe(event) {
         let i;
 
         for (i = 0; i < this.subscriptionList.length; i++) {
@@ -150,16 +145,16 @@ class ViteAPIClass {
         this.subscriptionList.splice(i, 1);
 
         if (!this.subscriptionList || !this.subscriptionList.length) {
-            this._provider.unSubscribe && this._provider.unSubscribe();
+            this._provider.unsubscribe && this._provider.unsubscribe();
         }
     }
 
-    clearSubscriptions() {
+    unsubscribeAll() {
         this.subscriptionList.forEach(s => {
             s.stopLoop();
         });
         this.subscriptionList = [];
-        this._provider.unSubscribe && this._provider.unSubscribe();
+        this._provider.unsubscribe && this._provider.unsubscribe();
     }
 
     async request(methods: Methods, ...args: any[]) {

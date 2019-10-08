@@ -3,7 +3,7 @@ const BigNumber = require('bn.js');
 import { paramsFormat, paramsMissing } from '~@vite/vitejs-error';
 import { Default_Hash, Contracts } from '~@vite/vitejs-constant';
 import { encodeFunctionSignature, decodeLog } from '~@vite/vitejs-abi';
-import { getRealAddressFromAddress, isAddress } from '~@vite/vitejs-hdwallet/address';
+import { getOriginalAddressFromAddress, isValidAddress } from '~@vite/vitejs-hdwallet/address';
 import { ed25519, bytesToHex, blake2b, blake2bHex, checkParams, getRawTokenId } from '~@vite/vitejs-utils';
 
 import { formatAccountBlock, getTransactionTypeByContractList, checkBlock } from './builtin';
@@ -75,7 +75,7 @@ export function getTransactionType({ toAddress, data, blockType }: {
 } {
     const err = checkParams({ blockType, toAddress }, ['blockType'], [ {
         name: 'toAddress',
-        func: isAddress
+        func: isValidAddress
     }, {
         name: 'blockType',
         func: _b => BlockType[_b],
@@ -121,10 +121,10 @@ export function getBlockHash(accountBlock: SignBlock) {
     source += blockType;
     source += accountBlock.prevHash || Default_Hash;
     source += accountBlock.height ? bytesToHex(new BigNumber(accountBlock.height).toArray('big', 8)) : '';
-    source += accountBlock.accountAddress ? getRealAddressFromAddress(accountBlock.accountAddress) : '';
+    source += accountBlock.accountAddress ? getOriginalAddressFromAddress(accountBlock.accountAddress) : '';
 
     if (accountBlock.toAddress) {
-        source += getRealAddressFromAddress(accountBlock.toAddress);
+        source += getOriginalAddressFromAddress(accountBlock.toAddress);
         source += getNumberHex(accountBlock.amount);
         source += accountBlock.tokenId ? getRawTokenId(accountBlock.tokenId) || '' : '';
     } else {
@@ -178,7 +178,7 @@ export function decodeBlockByContract({ accountBlock, contractAddress, abi, topi
 }) {
     const err = checkParams({ accountBlock, contractAddress, abi }, [ 'accountBlock', 'contractAddress', 'abi' ], [{
         name: 'contractAddress',
-        func: isAddress
+        func: isValidAddress
     }]);
     if (err) {
         throw err;

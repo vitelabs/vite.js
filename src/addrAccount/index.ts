@@ -6,19 +6,19 @@ import { Address, ViteAPI } from './type';
 
 class AddrAccountClass {
     address: Address
-    realAddress: string
+    originalAddress: string
     _client: ViteAPI
     getBlock: Object
 
     constructor({ address, client }: {
         address: Address; client: ViteAPI;
     } = { address: null, client: null }) {
-        if (!viteAddress.isAddress(address)) {
+        if (!viteAddress.isValidAddress(address)) {
             throw new Error(`Illegal address ${ address }.`);
         }
 
         this.address = address;
-        this.realAddress = viteAddress.getRealAddressFromAddress(this.address);
+        this.originalAddress = viteAddress.getOriginalAddressFromAddress(this.address);
 
         this._client = client;
         this.getBlock = {};

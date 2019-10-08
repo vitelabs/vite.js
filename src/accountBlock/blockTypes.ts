@@ -10,7 +10,7 @@ export declare type BigInt = String;
 export enum BlockType {
     'CreateContractRequest' = 1,
     'TransferRequest',
-    'ClaimSBPRewardsRequest',
+    'ReIssueRequest',
     'Response',
     'ResponseFail',
     'RefundByContractRequest',

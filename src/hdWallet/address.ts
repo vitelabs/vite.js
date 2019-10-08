@@ -17,17 +17,17 @@ export enum ADDR_TYPE {
 
 
 export function createAddressByPrivateKey(priv?: Hex | Buffer, isContract?: boolean): AddrObj {
-    // realAddress = Blake2b(PubKey)(len:20) + (isContract ? 1 : 0)(len:1)
-    const { realAddr, privKey } = newAddr(priv, isContract);
+    // originalAddress = Blake2b(PubKey)(len:20) + (isContract ? 1 : 0)(len:1)
+    const { originalAddress, privKey } = newAddr(priv, isContract);
 
     // checkSum = isContract ? reverse(Blake2b(address[0:20])(len:5)) : Blake2b(address[0:20])(len:5)
-    const checkSum = getAddrCheckSum(realAddr, isContract);
+    const checkSum = getAddrCheckSum(originalAddress, isContract);
 
-    // address = 'vite_' + Hex(realAddr[0:20] + checkSum)
-    const address = getHexAddr(realAddr, checkSum);
+    // address = 'vite_' + Hex(originalAddress[0:20] + checkSum)
+    const address = getHexAddr(originalAddress, checkSum);
 
     return {
-        realAddress: realAddr.toString('hex'),
+        originalAddress: originalAddress.toString('hex'),
         publicKey: getPublicKey(privKey),
         privateKey: privKey,
         address
@@ -40,36 +40,36 @@ export function getAddressFromPublicKey(pubkey: Hex | Buffer, isContract?: boole
         throw new Error(err.message);
     }
 
-    const realAddr = newAddrFromPub(pubkey, isContract);
-    const checkSum = getAddrCheckSum(realAddr, isContract);
+    const originalAddress = newAddrFromPub(pubkey, isContract);
+    const checkSum = getAddrCheckSum(originalAddress, isContract);
 
-    return getHexAddr(realAddr, checkSum);
+    return getHexAddr(originalAddress, checkSum);
 }
 
-export function getRealAddressFromAddress(hexAddr: Hex): Hex {
-    const addrType = isAddress(hexAddr);
+export function getOriginalAddressFromAddress(hexAddr: Hex): Hex {
+    const addrType = isValidAddress(hexAddr);
     if (addrType === ADDR_TYPE.Illegal) {
         throw addressIllegal;
     }
 
-    return getRealAddr(hexAddr, addrType);
+    return getOriginalAddress(hexAddr, addrType);
 }
 
-export function getAddressFromRealAddress(realAddr: Hex, isContract? : boolean): Address {
-    const err = checkParams({ realAddr }, ['realAddr'], [{
-        name: 'realAddr',
-        func: _realAddr => typeof _realAddr === 'string' && /^[0-9a-fA-F]+$/.test(_realAddr) && (_realAddr.length === ADDR_SIZE * 2 || _realAddr.length === (ADDR_SIZE + 1) * 2)
+export function getAddressFromOriginalAddress(originalAddress: Hex, isContract? : boolean): Address {
+    const err = checkParams({ originalAddress }, ['originalAddress'], [{
+        name: 'originalAddress',
+        func: _originalAddress => typeof _originalAddress === 'string' && /^[0-9a-fA-F]+$/.test(_originalAddress) && (_originalAddress.length === ADDR_SIZE * 2 || _originalAddress.length === (ADDR_SIZE + 1) * 2)
     }]);
     if (err) {
         throw new Error(err.message);
     }
 
-    const realAddrBuf = Buffer.from(realAddr, 'hex');
-    const checkSum = getAddrCheckSum(realAddrBuf, isContract);
-    return getHexAddr(realAddrBuf, checkSum);
+    const originalAddressBuf = Buffer.from(originalAddress, 'hex');
+    const checkSum = getAddrCheckSum(originalAddressBuf, isContract);
+    return getHexAddr(originalAddressBuf, checkSum);
 }
 
-export function isAddress(hexAddr: Hex): ADDR_TYPE {
+export function isValidAddress(hexAddr: Hex): ADDR_TYPE {
     if (!isValidHex(hexAddr)) {
         return ADDR_TYPE.Illegal;
     }
@@ -78,7 +78,7 @@ export function isAddress(hexAddr: Hex): ADDR_TYPE {
 
 
 
-function getRealAddr(hexAddr: Hex, addrType: ADDR_TYPE): Hex {
+function getOriginalAddress(hexAddr: Hex, addrType: ADDR_TYPE): Hex {
     const addr = hexAddr.slice(ADDR_PRE.length, ADDR_PRE.length + ADDR_SIZE * 2);
     if (addrType === ADDR_TYPE.Account) {
         return `${ addr }00`;
@@ -86,7 +86,7 @@ function getRealAddr(hexAddr: Hex, addrType: ADDR_TYPE): Hex {
     return `${ addr }01`;
 }
 
-function newAddr(privKey?: Buffer | Hex, isContract?: boolean): { realAddr: Buffer; privKey: Buffer } {
+function newAddr(privKey?: Buffer | Hex, isContract?: boolean): { originalAddress: Buffer; privKey: Buffer } {
     // Init priveKey
     let _privKey;
     if (privKey) {
@@ -98,7 +98,7 @@ function newAddr(privKey?: Buffer | Hex, isContract?: boolean): { realAddr: Buff
 
     const addr = newAddrFromPriv(_privKey, isContract);
     return {
-        realAddr: addr,
+        originalAddress: addr,
         privKey: _privKey
     };
 }
@@ -137,8 +137,8 @@ function getAddrCheckSum(addr: Buffer, isContract? : boolean): Hex {
     return Buffer.from(newCheckSum).toString('hex');
 }
 
-function getHexAddr(realAddr: Buffer, checkSum: Hex): Address {
-    return ADDR_PRE + realAddr.slice(0, 20).toString('hex') + checkSum;
+function getHexAddr(originalAddress: Buffer, checkSum: Hex): Address {
+    return ADDR_PRE + originalAddress.slice(0, 20).toString('hex') + checkSum;
 }
 
 function isValidHex(hexAddr: Address): Boolean {

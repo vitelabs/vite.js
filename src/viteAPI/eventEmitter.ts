@@ -22,7 +22,7 @@ class EventEmitter {
 
     off() {
         this.stopLoop();
-        this.viteAPI.unSubscribe(this);
+        this.viteAPI.unsubscribe(this);
     }
 
     emit(result) {

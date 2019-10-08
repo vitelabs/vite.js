@@ -2,7 +2,7 @@ import { Contracts } from '~@vite/vitejs-constant';
 import ViteAPI from '~@vite/vitejs-viteapi';
 
 // import { checkParams } from '~@vite/vitejs-utils';
-// import { isAddress } from '~@vite/vitejs-hdwallet/address';
+// import { isValidAddress } from '~@vite/vitejs-hdwallet/address';
 // import { getTransactionType, signAccountBlock, decodeBlockByContract } from '~@vite/vitejs-accountblock';
 // import { isAccountBlock, getAbi, getTransactionTypeByContractList } from '~@vite/vitejs-accountblock/builtin';
 import { getTransactionTypeByContractList } from '~@vite/vitejs-accountblock/builtin';
@@ -48,7 +48,7 @@ class ClientClass extends ViteAPI {
     // async getBalance(addr: Address) {
     //     const err = checkParams({ addr }, ['addr'], [{
     //         name: 'addr',
-    //         func: isAddress
+    //         func: isValidAddress
     //     }]);
     //     if (err) {
     //         return Promise.reject(err);
@@ -77,7 +77,7 @@ class ClientClass extends ViteAPI {
     // }) {
     //     const err = checkParams({ addr, index }, [ 'addr', 'index' ], [{
     //         name: 'addr',
-    //         func: isAddress
+    //         func: isValidAddress
     //     }]);
     //     if (err) {
     //         throw err;
@@ -153,37 +153,6 @@ class ClientClass extends ViteAPI {
     //         return result;
     //     }
     //     return decodeParameters(jsonInterface.outputs, Buffer.from(result, 'base64').toString('hex'));
-    // }
-
-    // async sendTx(accountBlock, privateKey) {
-    //     const _accountBlock = signAccountBlock(accountBlock, privateKey);
-    //     return this.sendRawTx(_accountBlock);
-    // }
-
-    // async sendAutoPowTx({ accountBlock, privateKey, usePledgeQuota = true }) {
-    //     let err = checkParams({ accountBlock, privateKey }, [ 'accountBlock', 'privateKey' ]);
-    //     if (err) {
-    //         throw err;
-    //     }
-
-    //     err = isAccountBlock(accountBlock);
-    //     if (err) {
-    //         throw err;
-    //     }
-
-    //     const powTx = await this.builtinTxBlock.autoPow(accountBlock, usePledgeQuota);
-    //     return this.sendTx(powTx.accountBlock, privateKey);
-    // }
-
-    // async sendRawTx(accountBlock) {
-    //     try {
-    //         await this.tx.sendRawTx(accountBlock);
-    //         return accountBlock;
-    //     } catch (err) {
-    //         const _err = err;
-    //         _err.accountBlock = accountBlock;
-    //         throw _err;
-    //     }
     // }
 }
 

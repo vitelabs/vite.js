@@ -2,9 +2,9 @@ const bip39 = require('bip39');
 const assert = require('assert');
 
 import {
-    createMnemonic, validateMnemonic,
-    getMnemonicFromEntropy, getEntropyFromMnemonic,
-    getSeedFromMnemonic, createSeed,
+    createMnemonics, validateMnemonics,
+    getMnemonicsFromEntropy, getEntropyFromMnemonics,
+    getSeedFromMnemonics, createSeed,
     ROOT_PATH, getPath,
     deriveKeyPairByPath, deriveKeyPair
 } from '../../../src/hdWallet/hdKey.ts';
@@ -48,13 +48,13 @@ describe('language test', function () {
             const mnemonic = bip39.entropyToMnemonic(entropy, wordlist);
             const seed = bip39.mnemonicToSeedSync(mnemonic);
 
-            const myMnemonic = getMnemonicFromEntropy(entropy, wordlist);
-            const myEntropy = getEntropyFromMnemonic(mnemonic, wordlist);
-            const mySeed = getSeedFromMnemonic(mnemonic, '', wordlist);
-            const myValidateRes = validateMnemonic(myMnemonic, wordlist);
+            const myMnemonic = getMnemonicsFromEntropy(entropy, wordlist);
+            const myEntropy = getEntropyFromMnemonics(mnemonic, wordlist);
+            const mySeed = getSeedFromMnemonics(mnemonic, '', wordlist);
+            const myValidateRes = validateMnemonics(myMnemonic, wordlist);
 
-            it('createMnemonic', function () {
-                const tmpM = createMnemonic(256, wordlist);
+            it('createMnemonics', function () {
+                const tmpM = createMnemonics(256, wordlist);
                 assert.equal(true, bip39.validateMnemonic(tmpM, wordlist));
             });
             it('createSeed', function () {
@@ -68,19 +68,19 @@ describe('language test', function () {
             it('mnemonic real', function () {
                 assert.equal(mnemonic, m);
             });
-            it('getMnemonicFromEntropy', function () {
+            it('getMnemonicsFromEntropy', function () {
                 assert.equal(mnemonic, myMnemonic);
             });
-            it('validateMnemonic', function () {
+            it('validateMnemonics', function () {
                 assert.equal(myValidateRes, true);
             });
-            it('getEntropyFromMnemonic', function () {
+            it('getEntropyFromMnemonics', function () {
                 assert.equal(entropy, myEntropy);
             });
-            it('getSeedFromMnemonic seed', function () {
+            it('getSeedFromMnemonics seed', function () {
                 assert.deepEqual(seed, mySeed.seed);
             });
-            it('getSeedFromMnemonic seedHex', function () {
+            it('getSeedFromMnemonics seedHex', function () {
                 assert.equal(seed.toString('hex'), mySeed.seedHex);
             });
             it('seedHex real', function () {
@@ -97,7 +97,7 @@ describe('password test', function () {
 
         const seed = bip39.mnemonicToSeedSync(mnemonic, passphrase);
         const seedHex = seed.toString('hex');
-        const myS = getSeedFromMnemonic(mnemonic, passphrase);
+        const myS = getSeedFromMnemonics(mnemonic, passphrase);
         it('seed real', function () {
             assert.equal(seedHex, '21a107743295dfec434254374fdbb43ee4701fa699acce6d1810ddae7d356aeeb10bedc09358e5cf8860fc16d225c422f0a44a708267bf0d2bbbbcd3bd299a49');
         });
@@ -114,7 +114,7 @@ describe('password test', function () {
 
         const seed = bip39.mnemonicToSeedSync(mnemonic, passphrase);
         const seedHex = seed.toString('hex');
-        const myS = getSeedFromMnemonic(mnemonic, passphrase);
+        const myS = getSeedFromMnemonics(mnemonic, passphrase);
         it('seed real', function () {
             assert.equal(seedHex, '4e0f10e63407ba168ce6c504631b1d405b121406746b50c7d4831b150985641b867a6edccefaf77554221c44f89bbc0e47038114f50de9f1ffaefbd50c3d6b29');
         });

@@ -38,7 +38,7 @@ export enum TransactionType {
     'DexFundMarketOwnerConfig',
     'CreateContractRequest',
     'TransferRequest',
-    'ClaimSBPRewardsRequest',
+    'ReIssueRequest',
     'Response',
     'ResponseFail',
     'RefundByContractRequest',
@@ -324,7 +324,7 @@ export declare type changeTransferOwnerBlock = {
 }
 
 export declare type AddrObj = {
-    realAddress: Hex;
+    originalAddress: Hex;
     publicKey: Buffer;
     privateKey: Buffer;
     address: Address;
@@ -333,7 +333,7 @@ export declare type AddrObj = {
 export enum BlockType {
     'CreateContractRequest' = 1,
     'TransferRequest',
-    'ClaimSBPRewardsRequest',
+    'ReIssueRequest',
     'Response',
     'ResponseFail',
     'RefundByContractRequest',
@@ -529,13 +529,13 @@ export declare class ViteAPI {
     constructor(provider: any, firstConnect: Function)
 
     addTransactionType(contractList: Object)
-    getBalanceAndUnreceived(address: Address)
+    getBalanceInfo(address: Address)
     getTransactionList({ address, pageIndex, pageCount }: {
         address: Address; pageIndex: number; pageCount?: number;
     }, decodeTxTypeList: 'all' | String[])
     setProvider(provider, firstConnect, abort)
-    unSubscribe(event)
-    clearSubscriptions()
+    unsubscribe(event)
+    unsubscribeAll()
     request(methods: Methods, ...args: any[])
     notification(methods: Methods, ...args: any[])
     batch(reqs: RPCrequest[])
@@ -576,7 +576,7 @@ export declare class AccountBlockClassType {
     signature?: Base64;
     publicKey?: Base64;
     
-    realAddress: Hex;
+    originalAddress: Hex;
     blockTypeHex: Hex;
     previousHashHex: Hex;
     heightHex: Hex;

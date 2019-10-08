@@ -10,34 +10,34 @@ import { Hex, Address } from './type';
 interface Wallet {
     publicKey: Buffer;
     privateKey: Buffer;
-    realAddress: Hex;
+    originalAddress: Hex;
     address: Address;
     path: String;
 }
 
 class HDWallet {
     readonly rootPath: String
-    readonly mnemonic: String
+    readonly mnemonics: String
     readonly entropy: String
     readonly wordlist: Array<String>
-    readonly pwd: String
+    readonly password: String
     readonly seed: Buffer
     readonly seedHex: Hex
 
     private walletList: Object
 
-    constructor(mnemonic: String, wordlist: Array<String> = bip39.wordlists.EN, pwd: String = '') {
-        if (!hdKey.validateMnemonic(mnemonic, wordlist)) {
+    constructor(mnemonics: String, wordlist: Array<String> = bip39.wordlists.EN, password: String = '') {
+        if (!hdKey.validateMnemonics(mnemonics, wordlist)) {
             throw new Error('Illegal mnemonic');
         }
 
         this.rootPath = hdKey.ROOT_PATH;
-        this.mnemonic = mnemonic;
+        this.mnemonics = mnemonics;
         this.wordlist = wordlist;
-        this.pwd = pwd;
-        this.entropy = hdKey.getEntropyFromMnemonic(mnemonic, wordlist);
+        this.password = password;
+        this.entropy = hdKey.getEntropyFromMnemonics(mnemonics, wordlist);
 
-        const { seed, seedHex } = hdKey.getSeedFromMnemonic(mnemonic, pwd, wordlist);
+        const { seed, seedHex } = hdKey.getSeedFromMnemonics(mnemonics, password, wordlist);
         this.seed = seed;
         this.seedHex = seedHex;
         this.walletList = {};
@@ -77,13 +77,13 @@ class HDWallet {
         const path = hdKey.getPath(index);
         const { privateKey, publicKey } = hdKey.deriveKeyPairByPath(this.seedHex, path);
         const address = addressLib.getAddressFromPublicKey(publicKey);
-        const realAddress = addressLib.getRealAddressFromAddress(address);
+        const originalAddress = addressLib.getOriginalAddressFromAddress(address);
 
         const wallet: Wallet = {
             privateKey,
             publicKey,
             address,
-            realAddress,
+            originalAddress,
             path
         };
 

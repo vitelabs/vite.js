@@ -1,6 +1,6 @@
 import { checkParams, isNonNegativeInteger, isHexString, isTokenId } from '~@vite/vitejs-utils';
 import { paramsMissing } from '~@vite/vitejs-error';
-import { isAddress } from '~@vite/vitejs-hdwallet/address';
+import { isValidAddress } from '~@vite/vitejs-hdwallet/address';
 
 import { BlockType, requiredAccountBlock } from './blockTypes';
 
@@ -23,10 +23,10 @@ export function checkAccountBlockKeywords(accountBlock: requiredAccountBlock): {
         func: isHexString
     }, {
         name: 'address',
-        func: isAddress
+        func: isValidAddress
     }, {
         name: 'toAddress',
-        func: isAddress
+        func: isValidAddress
     }, {
         name: 'sendBlockHash',
         func: isHexString
@@ -64,7 +64,7 @@ export function isRequestBlock(blockType: BlockType): Boolean {
     return blockType === BlockType.CreateContractRequest
         || blockType === BlockType.TransferRequest
         || blockType === BlockType.RefundByContractRequest
-        || blockType === BlockType.ClaimSBPRewardsRequest;
+        || blockType === BlockType.ReIssueRequest;
 }
 
 export function isResponseBlock(blockType: BlockType): Boolean {
