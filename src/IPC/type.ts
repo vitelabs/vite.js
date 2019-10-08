@@ -522,17 +522,12 @@ export declare class EventEmitter {
     stopLoop()
 }
 
-export declare class ViteAPI {
+export declare class ClientClassType {
     _provider: any;
     isConnected: Boolean;
 
     constructor(provider: any, firstConnect: Function)
 
-    addTransactionType(contractList: Object)
-    getBalanceInfo(address: Address)
-    getTransactionList({ address, pageIndex, pageCount }: {
-        address: Address; pageIndex: number; pageCount?: number;
-    }, decodeTxTypeList: 'all' | String[])
     setProvider(provider, firstConnect, abort)
     unsubscribe(event)
     unsubscribeAll()
@@ -540,6 +535,16 @@ export declare class ViteAPI {
     notification(methods: Methods, ...args: any[])
     batch(reqs: RPCrequest[])
     subscribe(methodName, ...args) 
+}
+
+export declare class ViteAPI extends ClientClassType {
+    constructor(provider: any, firstConnect: Function)
+
+    addTransactionType(contractList: Object)
+    getBalanceInfo(address: Address)
+    getTransactionList({ address, pageIndex, pageCount }: {
+        address: Address; pageIndex: number; pageCount?: number;
+    }, decodeTxTypeList: 'all' | String[])
 }
 
 

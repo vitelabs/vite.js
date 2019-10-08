@@ -1,5 +1,5 @@
-const config = require('../../rpcConfig.js');
-const { WS_RPC } = require('@vite/vitejs-ws');
+// const config = require('../../rpcConfig.js');
+// const { WS_RPC } = require('@vite/vitejs-ws');
 // const { client } = require('@vite/vitejs');
 
 // const provider = new WS_RPC(config.ws);

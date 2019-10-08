@@ -21,15 +21,11 @@ module.exports = {
     mode: 'production',
     entry: {
         abi: path.join(baseDir, '/abi/index.ts'),
-        // addrAccount: path.join(baseDir, '/addrAccount/index.ts'),
-        // account: path.join(baseDir, '/account/index.ts'),
         accountBlock: path.join(baseDir, '/accountBlock/index.ts'),
-        // client: path.join(baseDir, '/client/index.ts'),
         communication: path.join(baseDir, '/communication/index.js'),
         constant: path.join(baseDir, '/constant/index.ts'),
         error: path.join(baseDir, '/error/index.ts'),
         viteAPI: path.join(baseDir, '/viteAPI/index.ts'),
-        // hdAccount: path.join(baseDir, '/hdAccount/index.ts'),
         keystore: path.join(baseDir, '/keystore/index.ts'),
         hdWallet: path.join(baseDir, '/hdWallet/index.ts'),
         utils: path.join(baseDir, '/utils/index.ts'),
@@ -90,8 +86,6 @@ module.exports = {
             '~@vite/vitejs-account': path.join(__dirname, '/src/account/'),
             '~@vite/vitejs-addraccount': path.join(__dirname, '/src/addrAccount/'),
             '~@vite/vitejs': path.join(__dirname, '/src/vitejs/')
-            // '~@vite/vitejs-client': path.join(__dirname, '/src/client/'),
-            // '~@vite/vitejs-hdaccount': path.join(__dirname, '/src/hdAccount/'),
         },
         extensions: [ '.js', '.json', '.ts' ]
     }
