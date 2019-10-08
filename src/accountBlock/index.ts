@@ -169,12 +169,12 @@ export function signAccountBlock(accountBlock: SignBlock, privKey: Buffer) {
     return _accountBlock;
 }
 
-export function decodeBlockByContract({ accountBlock, contractAddress, abi, topics = [], mehtodName }: {
+export function decodeBlockByContract({ accountBlock, contractAddress, abi, topics = [], methodName }: {
     accountBlock: AccountBlockType;
     contractAddress: Address;
     abi: any;
     topics?: any;
-    mehtodName?: string;
+    methodName?: string;
 }) {
     const err = checkParams({ accountBlock, contractAddress, abi }, [ 'accountBlock', 'contractAddress', 'abi' ], [{
         name: 'contractAddress',
@@ -196,12 +196,12 @@ export function decodeBlockByContract({ accountBlock, contractAddress, abi, topi
 
     const hexData = Buffer.from(accountBlock.data, 'base64').toString('hex');
 
-    const encodeFuncSign = encodeFunctionSignature(abi, mehtodName);
+    const encodeFuncSign = encodeFunctionSignature(abi, methodName);
     if (encodeFuncSign !== hexData.substring(0, 8)) {
         return null;
     }
 
-    return decodeLog(abi, hexData.substring(8), topics, mehtodName);
+    return decodeLog(abi, hexData.substring(8), topics, methodName);
 }
 
 

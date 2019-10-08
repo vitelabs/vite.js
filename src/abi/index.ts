@@ -5,11 +5,11 @@ import { encodeParameter as _encodeParameter, encodeParameters as _encodeParamet
 import { getTypes } from './inputsType';
 
 
-export function encodeLogSignature(jsonFunction, mehtodName?: string) {
-    return encodeFunction(jsonFunction, mehtodName);
+export function encodeLogSignature(jsonFunction, methodName?: string) {
+    return encodeFunction(jsonFunction, methodName);
 }
-export function encodeFunctionSignature(jsonFunction, mehtodName?: string) {
-    const result = encodeFunction(jsonFunction, mehtodName);
+export function encodeFunctionSignature(jsonFunction, methodName?: string) {
+    const result = encodeFunction(jsonFunction, methodName);
     return result.slice(0, 8);
 }
 export function encodeFunctionCall(jsonInterface, params, methodName?: string) {
@@ -21,34 +21,34 @@ export function encodeParameter(type, param) {
 }
 export const decodeParameter = _decodeParameter;
 
-export function encodeParameters(types, params, mehtodName?: string) {
+export function encodeParameters(types, params, methodName?: string) {
     try {
-        if (mehtodName || !isArray(types) && isObject(types)) {
-            const func = getFunction(types, mehtodName);
+        if (methodName || !isArray(types) && isObject(types)) {
+            const func = getFunction(types, methodName);
             types = getTypes(func);
         }
     } catch (err) {}
 
     return _encodeParameters(getTypes(types), params);
 }
-export function decodeParameters(types, params, mehtodName?: string) {
+export function decodeParameters(types, params, methodName?: string) {
     try {
-        if (mehtodName || !isArray(types) && isObject(types)) {
-            const func = getFunction(types, mehtodName);
+        if (methodName || !isArray(types) && isObject(types)) {
+            const func = getFunction(types, methodName);
             types = getTypes(func);
         }
     } catch (err) {}
     return _decodeParameters(getTypes(types), params);
 }
 
-export function decodeLog(inputs, data = '', topics, mehtodName?: string) {
+export function decodeLog(inputs, data = '', topics, methodName?: string) {
     let topicCount = 0;
     topics = isArray(topics) ? topics : [topics];
 
     const notIndexedInputsShow = [];
     const indexedParams = [];
 
-    inputs = getInputs(inputs, mehtodName);
+    inputs = getInputs(inputs, methodName);
     inputs.forEach((input, i) => {
         indexedParams[i] = input;
 
@@ -82,9 +82,9 @@ export function decodeLog(inputs, data = '', topics, mehtodName?: string) {
 }
 
 
-function getInputs(inputs, mehtodName?: string) {
+function getInputs(inputs, methodName?: string) {
     try {
-        const func = getFunction(inputs, mehtodName);
+        const func = getFunction(inputs, methodName);
         func && (inputs = func);
     } catch (err) {}
 

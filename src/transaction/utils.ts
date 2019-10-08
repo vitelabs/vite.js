@@ -2,7 +2,7 @@ const BigNumber = require('bn.js');
 const blake = require('blakejs/blake2b');
 
 import { paramsMissing } from '~@vite/vitejs-error';
-import { encodeParameters, encodeFunctionSignature } from '~@vite/vitejs-abi';
+import { encodeParameters, encodeFunctionCall, encodeFunctionSignature } from '~@vite/vitejs-abi';
 import { isValidAddress, getAddressFromPublicKey, getOriginalAddressFromAddress } from '~@vite/vitejs-hdwallet/address';
 import { checkParams, isNonNegativeInteger, isHexString, isTokenId, bytesToHex, getRawTokenId, isArray, isObject } from '~@vite/vitejs-utils';
 
@@ -223,8 +223,8 @@ export function getCreateContractData({ abi, code, params, responseLatency = '0'
     quotaMultiplier?: Uint8;
     randomDegree?: Uint8;
     code?: Hex;
-    abi?: any;
-    params?: any;
+    abi?: Object | Array<Object>;
+    params?: string | Array<string | boolean>;
 }): Base64 {
     const err = checkParams({ responseLatency, quotaMultiplier, randomDegree, code }, [ 'responseLatency', 'quotaMultiplier', 'randomDegree' ], [ {
         name: 'responseLatency',
@@ -253,6 +253,15 @@ export function getCreateContractData({ abi, code, params, responseLatency = '0'
     if (jsonInterface) {
         data += encodeParameters(jsonInterface, params);
     }
+    return Buffer.from(data, 'hex').toString('base64');
+}
+
+export function getCallContractData({ abi, params, methodName }: {
+    abi: Object | Array<Object>;
+    params?: string | Array<string | boolean>;
+    methodName?: string;
+}): Base64 {
+    const data = encodeFunctionCall(abi, params, methodName);
     return Buffer.from(data, 'hex').toString('base64');
 }
 

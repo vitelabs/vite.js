@@ -34,13 +34,13 @@ class ViteAPIClass extends Client {
         this.customTransactionType = Object.assign({}, this.customTransactionType, contract);
     }
 
-    async getBalanceInfo(address: Address) {
+    async getBalanceInfo(address: Address): Promise<{ balance: Object; unreceived: Object }> {
         const err = checkParams({ address }, ['address'], [{
             name: 'address',
             func: isValidAddress
         }]);
         if (err) {
-            return Promise.reject(err);
+            throw err;
         }
 
         const data = await this.batch([ {
@@ -65,7 +65,7 @@ class ViteAPIClass extends Client {
 
     async getTransactionList({ address, pageIndex, pageCount = 50 }: {
         address: Address; pageIndex: number; pageCount?: number;
-    }, decodeTxTypeList: 'all' | String[] = 'all') {
+    }, decodeTxTypeList: 'all' | String[] = 'all'): Promise<Transaction[]> {
         const err = checkParams({ address, pageIndex, decodeTxTypeList }, [ 'address', 'pageIndex' ], [ {
             name: 'address',
             func: isValidAddress

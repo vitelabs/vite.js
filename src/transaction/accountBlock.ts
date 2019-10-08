@@ -9,7 +9,7 @@ import {
     getBlockTypeHex, getHeightHex, getAddressHex, getToAddressHex, getDataHex,
     getAmountHex, getFeeHex, getNonceHex, getPreviousHashHex, getTokenIdHex, getSendBlockHashHex
 } from './utils';
-import { Address, Hex, Base64, BigInt, Uint64, BlockType, ViteAPI, TokenId, AccountBlockBlock } from './type';
+import { Address, Hex, Base64, BigInt, Uint64, BlockType, TokenId, AccountBlockBlock, ClientClassType } from './type';
 
 class AccountBlockClass {
     blockType: BlockType;
@@ -132,7 +132,7 @@ class AccountBlockClass {
         return getAccountBlockHash(this.accountBlock);
     }
 
-    async getHeight(viteAPI: ViteAPI): Promise<{height: Uint64; previousHash: Hex }> {
+    async getHeight(viteAPI: ClientClassType): Promise<{height: Uint64; previousHash: Hex }> {
         const previousAccountBlock = await viteAPI.request('ledger_getLatestAccountBlock', this.address);
 
         let height: Uint64 = previousAccountBlock && previousAccountBlock.height ? previousAccountBlock.height : '';
@@ -149,7 +149,7 @@ class AccountBlockClass {
         this.previousHash = previousHash;
     }
 
-    async autoSetHeight(viteAPI: ViteAPI) {
+    async autoSetHeight(viteAPI: ClientClassType) {
         const { height, previousHash } = await this.getHeight(viteAPI);
         this.setHeight({ height, previousHash });
         return {
@@ -158,7 +158,7 @@ class AccountBlockClass {
         };
     }
 
-    async getToAddress(viteAPI: ViteAPI) {
+    async getToAddress(viteAPI: ClientClassType) {
         const err = checkParams(this.accountBlock, ['previousHash'], [{
             name: 'blockType',
             func: _b => _b === BlockType.CreateContractRequest
@@ -174,7 +174,7 @@ class AccountBlockClass {
         this.toAddress = address;
     }
 
-    async autoSetToAddress(viteAPI: ViteAPI) {
+    async autoSetToAddress(viteAPI: ClientClassType) {
         if (this.blockType !== BlockType.CreateContractRequest) {
             return this.toAddress;
         }
@@ -184,7 +184,7 @@ class AccountBlockClass {
         return this.toAddress;
     }
 
-    async getDifficulty(viteAPI: ViteAPI): Promise<{
+    async getDifficulty(viteAPI: ClientClassType): Promise<{
         requiredQuota: Uint64;
         difficulty: BigInt;
         qc: BigInt;
@@ -215,7 +215,7 @@ class AccountBlockClass {
         this.difficulty = difficulty;
     }
 
-    async getNonce(viteAPI: ViteAPI): Promise<Base64> {
+    async getNonce(viteAPI: ClientClassType): Promise<Base64> {
         const err = checkParams({
             difficulty: this.difficulty,
             previousHash: this.previousHash
@@ -235,7 +235,7 @@ class AccountBlockClass {
         this.nonce = nonce;
     }
 
-    async autoSetNonce(viteAPI: ViteAPI): Promise<{difficulty: BigInt; nonce: Base64}> {
+    async autoSetNonce(viteAPI: ClientClassType): Promise<{difficulty: BigInt; nonce: Base64}> {
         const result = await this.getDifficulty(viteAPI);
         this.setDifficulty(result.difficulty);
 
@@ -300,7 +300,7 @@ class AccountBlockClass {
         return this.accountBlock;
     }
 
-    async send(viteAPI: ViteAPI) {
+    async send(viteAPI: ClientClassType) {
         let err = checkParams({ signature: this.signature, publicKey: this.publicKey }, [ 'publicKey', 'signature' ]);
         if (err) {
             throw err;
@@ -321,7 +321,7 @@ class AccountBlockClass {
         }
     }
 
-    async autoPOWSend({ viteAPI, privateKey }: { viteAPI: ViteAPI; privateKey: Buffer | Hex }) {
+    async autoPOWSend({ viteAPI, privateKey }: { viteAPI: ClientClassType; privateKey: Buffer | Hex }) {
         await this.autoSetHeight(viteAPI);
         await this.autoSetToAddress(viteAPI);
         await this.autoSetNonce(viteAPI);
@@ -329,7 +329,7 @@ class AccountBlockClass {
         return this.send(viteAPI);
     }
 
-    async autoSend({ viteAPI, privateKey }: { viteAPI: ViteAPI; privateKey: Buffer | Hex }) {
+    async autoSend({ viteAPI, privateKey }: { viteAPI: ClientClassType; privateKey: Buffer | Hex }) {
         await this.autoSetHeight(viteAPI);
         await this.autoSetToAddress(viteAPI);
         this.sign(privateKey);

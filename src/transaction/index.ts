@@ -1,9 +1,9 @@
-import { isValidAddress, createAddressByPrivateKey } from '~@vite/vitejs-hdwallet/address';
+import { isValidAddress, createAddressByPrivateKey, ADDR_TYPE } from '~@vite/vitejs-hdwallet/address';
 import { checkParams, isNonNegativeInteger, isHexString, isArray, isObject } from '~@vite/vitejs-utils';
 import { paramsMissing } from '~@vite/vitejs-error';
 
 import AccountBlock from './accountBlock';
-import { getCreateContractData } from './utils';
+import { getCreateContractData, getCallContractData } from './utils';
 import { BlockType, Vite_TokenId } from './constant';
 
 import { Hex, Address, TokenId, BigInt, AddrObj, Base64, Uint8 } from './type';
@@ -67,7 +67,7 @@ class TransactionClass {
         quotaMultiplier?: Uint8;
         randomDegree?: Uint8;
         abi?: Object | Array<Object>;
-        params?: any;
+        params?: string | Array<string | boolean>;
     }) {
         const err = checkParams({ code, abi, responseLatency, quotaMultiplier, randomDegree },
             [ 'code', 'fee', 'responseLatency', 'quotaMultiplier', 'randomDegree' ],
@@ -104,8 +104,31 @@ class TransactionClass {
         });
     }
 
-    callContract() {
+    callContract({ toAddress, tokenId = Vite_TokenId, amount = '0', abi, methodName, params = [] }: {
+        toAddress: Address;
+        abi: Object | Array<Object>;
+        methodName?: string;
+        params?: string | Array<string | boolean>;
+        tokenId?: TokenId;
+        amount?: BigInt;
+    }) {
+        const err = checkParams({ toAddress, abi }, [ 'toAddress', 'abi' ], [{
+            name: 'address',
+            func: _a => isValidAddress(_a) === ADDR_TYPE.Contract
+        }]);
+        if (err) {
+            throw err;
+        }
 
+        return new AccountBlock({
+            blockType: BlockType.TransferRequest,
+            address: this.address,
+            toAddress,
+            tokenId,
+            amount,
+            fee: '0',
+            data: getCallContractData({ abi, params, methodName })
+        });
     }
 }
 

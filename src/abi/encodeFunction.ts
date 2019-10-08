@@ -2,28 +2,28 @@ import { blake2bHex, isArray, isObject } from '~@vite/vitejs-utils';
 import { getTypes } from './inputsType';
 
 
-export function encodeFunction(jsonFunction, mehtodName?) {
+export function encodeFunction(jsonFunction, methodName?) {
     const isArr = isArray(jsonFunction);
-    const _jsonFunction = isArr ? getFunction(jsonFunction, mehtodName) : jsonFunction;
+    const _jsonFunction = isArr ? getFunction(jsonFunction, methodName) : jsonFunction;
     const result = jsonFunctionToString(_jsonFunction);
     return blake2bHex(result, null, 32);
 }
 
-export function getFunction(jsonFunction, mehtodName?) {
+export function getFunction(jsonFunction, methodName?) {
     if (!isArray(jsonFunction) && isObject(jsonFunction)) {
         return jsonFunction;
     }
 
-    if (jsonFunction.length !== 1 && !mehtodName) {
+    if (jsonFunction.length !== 1 && !methodName) {
         throw new Error('[Error] Param(s) missing, methodName.');
     }
 
-    if (!mehtodName && jsonFunction.length === 1) {
+    if (!methodName && jsonFunction.length === 1) {
         return jsonFunction[0];
     }
 
     for (let i = 0; i < jsonFunction.length; i++) {
-        if (jsonFunction[i].name === mehtodName) {
+        if (jsonFunction[i].name === methodName) {
             return jsonFunction[i];
         }
     }

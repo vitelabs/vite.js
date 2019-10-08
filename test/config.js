@@ -1,5 +1,5 @@
 const BLOCK_LIST = {
-    SBPreg: {
+    RegisterSBP: {
         accountAddress: 'vite_553462bca137bac29f440e9af4ab2e2c1bb82493e41d2bc8b2',
         amount: '500000000000000000000000',
         blockType: 2,
@@ -27,7 +27,7 @@ const BLOCK_LIST = {
         toAddress: 'vite_0000000000000000000000000000000000000004d28108e76b',
         tokenId: 'tti_5649544520544f4b454e6e40'
     },
-    UpdateReg: {
+    UpdateBlockProducingAddress: {
         accountAddress: 'vite_553462bca137bac29f440e9af4ab2e2c1bb82493e41d2bc8b2',
         amount: '0',
         blockType: 2,
@@ -55,7 +55,7 @@ const BLOCK_LIST = {
         toAddress: 'vite_0000000000000000000000000000000000000004d28108e76b',
         tokenId: 'tti_5649544520544f4b454e6e40'
     },
-    RevokeReg: {
+    RevokeSBP: {
         accountAddress: 'vite_553462bca137bac29f440e9af4ab2e2c1bb82493e41d2bc8b2',
         amount: '0',
         blockType: 2,
@@ -83,7 +83,7 @@ const BLOCK_LIST = {
         toAddress: 'vite_0000000000000000000000000000000000000004d28108e76b',
         tokenId: 'tti_5649544520544f4b454e6e40'
     },
-    Voting: {
+    VoteForSBP: {
         accountAddress: 'vite_553462bca137bac29f440e9af4ab2e2c1bb82493e41d2bc8b2',
         amount: '0',
         blockType: 2,
@@ -111,7 +111,7 @@ const BLOCK_LIST = {
         toAddress: 'vite_0000000000000000000000000000000000000004d28108e76b',
         tokenId: 'tti_5649544520544f4b454e6e40'
     },
-    RevokeVoting: {
+    CancelVote: {
         accountAddress: 'vite_553462bca137bac29f440e9af4ab2e2c1bb82493e41d2bc8b2',
         amount: '0',
         blockType: 2,
@@ -139,7 +139,7 @@ const BLOCK_LIST = {
         toAddress: 'vite_0000000000000000000000000000000000000004d28108e76b',
         tokenId: 'tti_5649544520544f4b454e6e40'
     },
-    GetQuota: {
+    StakeForQuota: {
         accountAddress: 'vite_553462bca137bac29f440e9af4ab2e2c1bb82493e41d2bc8b2',
         amount: '134000000000000000000',
         blockType: 2,
@@ -167,7 +167,7 @@ const BLOCK_LIST = {
         toAddress: 'vite_0000000000000000000000000000000000000003f6af7459b9',
         tokenId: 'tti_5649544520544f4b454e6e40'
     },
-    WithdrawalOfQuota: {
+    CancelStake: {
         accountAddress: 'vite_553462bca137bac29f440e9af4ab2e2c1bb82493e41d2bc8b2',
         amount: '0',
         blockType: 2,
@@ -195,7 +195,7 @@ const BLOCK_LIST = {
         toAddress: 'vite_0000000000000000000000000000000000000003f6af7459b9',
         tokenId: 'tti_5649544520544f4b454e6e40'
     },
-    DexFundNewOrder: {
+    DexCreateOrder: {
         accountAddress: 'vite_553462bca137bac29f440e9af4ab2e2c1bb82493e41d2bc8b2',
         amount: '0',
         blockType: 2,
@@ -223,7 +223,7 @@ const BLOCK_LIST = {
         toAddress: 'vite_0000000000000000000000000000000000000006e82b8ba657',
         tokenId: 'tti_f5bd02ba3086ce271aa58d14'
     },
-    DexTradeCancelOrder: {
+    DexCancelOrder: {
         accountAddress: 'vite_553462bca137bac29f440e9af4ab2e2c1bb82493e41d2bc8b2',
         amount: '0',
         blockType: 2,
@@ -251,7 +251,7 @@ const BLOCK_LIST = {
         toAddress: 'vite_00000000000000000000000000000000000000079710f19dc7',
         tokenId: 'tti_dcc60a01ed2ca7f27bbdde5d'
     },
-    DexFundUserWithdraw: {
+    DexWithdraw: {
         accountAddress: 'vite_553462bca137bac29f440e9af4ab2e2c1bb82493e41d2bc8b2',
         amount: '0',
         blockType: 2,
@@ -279,7 +279,7 @@ const BLOCK_LIST = {
         toAddress: 'vite_0000000000000000000000000000000000000006e82b8ba657',
         tokenId: 'tti_5649544520544f4b454e6e40'
     },
-    DexFundUserDeposit: {
+    DexDeposit: {
         accountAddress: 'vite_553462bca137bac29f440e9af4ab2e2c1bb82493e41d2bc8b2',
         amount: '33000000000000000000',
         blockType: 2,
@@ -307,7 +307,7 @@ const BLOCK_LIST = {
         toAddress: 'vite_0000000000000000000000000000000000000006e82b8ba657',
         tokenId: 'tti_5649544520544f4b454e6e40'
     },
-    DexFundNewMarket: {
+    DexOpenNewMarket: {
         accountAddress: 'vite_553462bca137bac29f440e9af4ab2e2c1bb82493e41d2bc8b2',
         amount: '10000000000000000000000',
         blockType: 2,
@@ -335,7 +335,7 @@ const BLOCK_LIST = {
         toAddress: 'vite_0000000000000000000000000000000000000006e82b8ba657',
         tokenId: 'tti_5649544520544f4b454e6e40'
     },
-    DexFundBindInviteCode: {
+    DexBindInviteCode: {
         accountAddress: 'vite_869a06b8963bd5d88a004723ad5d45f345a71c0884e2c80e88',
         amount: '0',
         blockType: 2,
@@ -363,7 +363,7 @@ const BLOCK_LIST = {
         toAddress: 'vite_0000000000000000000000000000000000000006e82b8ba657',
         tokenId: 'tti_5649544520544f4b454e6e40'
     },
-    DexFundNewInviter: {
+    DexCreateInviteCode: {
         accountAddress: 'vite_553462bca137bac29f440e9af4ab2e2c1bb82493e41d2bc8b2',
         amount: '0',
         blockType: 2,
@@ -391,7 +391,7 @@ const BLOCK_LIST = {
         toAddress: 'vite_0000000000000000000000000000000000000006e82b8ba657',
         tokenId: 'tti_5649544520544f4b454e6e40'
     },
-    DexFundTransferTokenOwner: {
+    DexTransferTokenOwnership: {
         accountAddress: 'vite_553462bca137bac29f440e9af4ab2e2c1bb82493e41d2bc8b2',
         amount: '0',
         blockType: 2,
@@ -419,7 +419,7 @@ const BLOCK_LIST = {
         toAddress: 'vite_0000000000000000000000000000000000000006e82b8ba657',
         tokenId: 'tti_d2938e2612aa7d34dc2df668'
     },
-    DexFundMarketOwnerConfig: {
+    DexMarketAdminConfig: {
         accountAddress: 'vite_553462bca137bac29f440e9af4ab2e2c1bb82493e41d2bc8b2',
         amount: '0',
         blockType: 2,
@@ -571,7 +571,7 @@ const BLOCK_LIST = {
         tokenId: 'tti_000000000000000000004cfd',
         tokenInfo: null
     },
-    Mintage: {
+    IssueToken: {
         accountAddress: 'vite_553462bca137bac29f440e9af4ab2e2c1bb82493e41d2bc8b2',
         amount: '0',
         blockType: 2,
@@ -599,7 +599,7 @@ const BLOCK_LIST = {
         toAddress: 'vite_000000000000000000000000000000000000000595292d996d',
         tokenId: 'tti_5649544520544f4b454e6e40'
     },
-    RetrieveReward: {
+    WithdrawSBPReward: {
         accountAddress: 'vite_553462bca137bac29f440e9af4ab2e2c1bb82493e41d2bc8b2',
         amount: '0',
         blockType: 2,
