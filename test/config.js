@@ -27,7 +27,7 @@ const BLOCK_LIST = {
         toAddress: 'vite_0000000000000000000000000000000000000004d28108e76b',
         tokenId: 'tti_5649544520544f4b454e6e40'
     },
-    UpdateBlockProducingAddress: {
+    UpdateReg: {
         accountAddress: 'vite_553462bca137bac29f440e9af4ab2e2c1bb82493e41d2bc8b2',
         amount: '0',
         blockType: 2,
@@ -55,7 +55,7 @@ const BLOCK_LIST = {
         toAddress: 'vite_0000000000000000000000000000000000000004d28108e76b',
         tokenId: 'tti_5649544520544f4b454e6e40'
     },
-    RevokeSBP: {
+    RevokeReg: {
         accountAddress: 'vite_553462bca137bac29f440e9af4ab2e2c1bb82493e41d2bc8b2',
         amount: '0',
         blockType: 2,
@@ -139,7 +139,7 @@ const BLOCK_LIST = {
         toAddress: 'vite_0000000000000000000000000000000000000004d28108e76b',
         tokenId: 'tti_5649544520544f4b454e6e40'
     },
-    StakeForQuota: {
+    GetQuota: {
         accountAddress: 'vite_553462bca137bac29f440e9af4ab2e2c1bb82493e41d2bc8b2',
         amount: '134000000000000000000',
         blockType: 2,
@@ -167,7 +167,7 @@ const BLOCK_LIST = {
         toAddress: 'vite_0000000000000000000000000000000000000003f6af7459b9',
         tokenId: 'tti_5649544520544f4b454e6e40'
     },
-    CancelStake: {
+    WithdrawalOfQuota: {
         accountAddress: 'vite_553462bca137bac29f440e9af4ab2e2c1bb82493e41d2bc8b2',
         amount: '0',
         blockType: 2,
@@ -195,7 +195,7 @@ const BLOCK_LIST = {
         toAddress: 'vite_0000000000000000000000000000000000000003f6af7459b9',
         tokenId: 'tti_5649544520544f4b454e6e40'
     },
-    DexCreateOrder: {
+    DexFundNewOrder: {
         accountAddress: 'vite_553462bca137bac29f440e9af4ab2e2c1bb82493e41d2bc8b2',
         amount: '0',
         blockType: 2,
@@ -223,7 +223,7 @@ const BLOCK_LIST = {
         toAddress: 'vite_0000000000000000000000000000000000000006e82b8ba657',
         tokenId: 'tti_f5bd02ba3086ce271aa58d14'
     },
-    DexCancelOrder: {
+    DexTradeCancelOrder: {
         accountAddress: 'vite_553462bca137bac29f440e9af4ab2e2c1bb82493e41d2bc8b2',
         amount: '0',
         blockType: 2,
@@ -251,7 +251,7 @@ const BLOCK_LIST = {
         toAddress: 'vite_00000000000000000000000000000000000000079710f19dc7',
         tokenId: 'tti_dcc60a01ed2ca7f27bbdde5d'
     },
-    DexWithdraw: {
+    DexFundUserWithdraw: {
         accountAddress: 'vite_553462bca137bac29f440e9af4ab2e2c1bb82493e41d2bc8b2',
         amount: '0',
         blockType: 2,
@@ -279,7 +279,7 @@ const BLOCK_LIST = {
         toAddress: 'vite_0000000000000000000000000000000000000006e82b8ba657',
         tokenId: 'tti_5649544520544f4b454e6e40'
     },
-    DexDeposit: {
+    DexFundUserDeposit: {
         accountAddress: 'vite_553462bca137bac29f440e9af4ab2e2c1bb82493e41d2bc8b2',
         amount: '33000000000000000000',
         blockType: 2,
@@ -307,7 +307,7 @@ const BLOCK_LIST = {
         toAddress: 'vite_0000000000000000000000000000000000000006e82b8ba657',
         tokenId: 'tti_5649544520544f4b454e6e40'
     },
-    DexOpenNewMarket: {
+    DexFundNewMarket: {
         accountAddress: 'vite_553462bca137bac29f440e9af4ab2e2c1bb82493e41d2bc8b2',
         amount: '10000000000000000000000',
         blockType: 2,
@@ -335,7 +335,7 @@ const BLOCK_LIST = {
         toAddress: 'vite_0000000000000000000000000000000000000006e82b8ba657',
         tokenId: 'tti_5649544520544f4b454e6e40'
     },
-    DexBindInviteCode: {
+    DexFundBindInviteCode: {
         accountAddress: 'vite_869a06b8963bd5d88a004723ad5d45f345a71c0884e2c80e88',
         amount: '0',
         blockType: 2,
@@ -363,7 +363,7 @@ const BLOCK_LIST = {
         toAddress: 'vite_0000000000000000000000000000000000000006e82b8ba657',
         tokenId: 'tti_5649544520544f4b454e6e40'
     },
-    DexCreateInviteCode: {
+    DexFundNewInviter: {
         accountAddress: 'vite_553462bca137bac29f440e9af4ab2e2c1bb82493e41d2bc8b2',
         amount: '0',
         blockType: 2,
@@ -391,7 +391,7 @@ const BLOCK_LIST = {
         toAddress: 'vite_0000000000000000000000000000000000000006e82b8ba657',
         tokenId: 'tti_5649544520544f4b454e6e40'
     },
-    DexTransferTokenOwnership: {
+    DexFundTransferTokenOwner: {
         accountAddress: 'vite_553462bca137bac29f440e9af4ab2e2c1bb82493e41d2bc8b2',
         amount: '0',
         blockType: 2,
@@ -419,7 +419,7 @@ const BLOCK_LIST = {
         toAddress: 'vite_0000000000000000000000000000000000000006e82b8ba657',
         tokenId: 'tti_d2938e2612aa7d34dc2df668'
     },
-    DexMarketAdminConfig: {
+    DexFundMarketOwnerConfig: {
         accountAddress: 'vite_553462bca137bac29f440e9af4ab2e2c1bb82493e41d2bc8b2',
         amount: '0',
         blockType: 2,
@@ -571,7 +571,7 @@ const BLOCK_LIST = {
         tokenId: 'tti_000000000000000000004cfd',
         tokenInfo: null
     },
-    IssueToken: {
+    Mintage: {
         accountAddress: 'vite_553462bca137bac29f440e9af4ab2e2c1bb82493e41d2bc8b2',
         amount: '0',
         blockType: 2,
@@ -599,7 +599,7 @@ const BLOCK_LIST = {
         toAddress: 'vite_000000000000000000000000000000000000000595292d996d',
         tokenId: 'tti_5649544520544f4b454e6e40'
     },
-    WithdrawSBPReward: {
+    RetrieveReward: {
         accountAddress: 'vite_553462bca137bac29f440e9af4ab2e2c1bb82493e41d2bc8b2',
         amount: '0',
         blockType: 2,

@@ -41,7 +41,29 @@ export enum TransactionType {
     'Response',
     'ResponseFail',
     'RefundByContractRequest',
-    'GenesisResponse'
+    'GenesisResponse',
+    'UpdateReg',
+    'RevokeReg',
+    'RetrieveReward',
+    'GetQuota',
+    'WithdrawalOfQuota',
+    'Mintage',
+    'MintageIssue',
+    'MintageTransferOwner',
+    'MintageChangeTokenType',
+    'DexFundUserDeposit',
+    'DexFundUserWithdraw',
+    'DexFundNewOrder',
+    'DexTradeCancelOrder',
+    'DexFundNewMarket',
+    'DexFundPledgeForVx',
+    'DexFundPledgeForVip',
+    'DexFundBindInviteCode',
+    'DexFundNewInviter',
+    'DexFundTransferTokenOwner',
+    'DexFundMarketOwnerConfig',
+    'DexFundPledgeForSuperVip',
+    'DexFundConfigMarketsAgent'
 }
 
 export declare type SignBlock = {
