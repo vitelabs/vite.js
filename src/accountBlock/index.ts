@@ -1,74 +1,458 @@
 const BigNumber = require('bn.js');
+const blake = require('blakejs/blake2b');
 
-import { paramsFormat, paramsMissing } from '~@vite/vitejs-error';
-import { Default_Hash, Contracts } from '~@vite/vitejs-constant';
-import { encodeFunctionSignature, decodeLog } from '~@vite/vitejs-abi';
-import { getOriginalAddressFromAddress, isValidAddress } from '~@vite/vitejs-hdwallet/address';
-import { ed25519, bytesToHex, blake2b, blake2bHex, checkParams, getRawTokenId } from '~@vite/vitejs-utils';
+import { paramsMissing, paramsFormat } from '~@vite/vitejs-error';
+import { Delegate_Gid, Contracts } from '~@vite/vitejs-constant';
+import { getAbiByType, encodeParameters, encodeFunctionCall, encodeFunctionSignature, decodeLog } from '~@vite/vitejs-abi';
+import { isValidAddress, getAddressFromPublicKey, createAddressByPrivateKey, getOriginalAddressFromAddress, ADDR_TYPE } from '~@vite/vitejs-hdwallet/address';
+import { checkParams, isNonNegativeInteger, isHexString, isTokenId, bytesToHex, getRawTokenId, isObject, ed25519, isBase64String } from '~@vite/vitejs-utils';
 
-import { formatAccountBlock, getTransactionTypeByContractList, checkBlock } from './builtin';
-import { AccountBlockType, Address, BlockType, SignBlock, sendTxBlock, receiveTxBlock, syncFormatBlock, Base64 } from './type';
+import { BlockType, Address, Base64, Hex, TokenId, Uint64, BigInt, AccountBlockType, Uint8 } from './type';
 
-const { getPublicKey, sign } = ed25519;
+export const Default_Hash = '0000000000000000000000000000000000000000000000000000000000000000'; // A total of 64 0
+export const Default_Contract_TransactionType = encodeContractList(Contracts);
 
-export const DefaultContractTxType = getTransactionTypeByContractList(Contracts);
 
-export function getAccountBlock({ blockType, fromBlockHash, accountAddress, message, data, height, prevHash, toAddress, tokenId, amount, nonce, fee }: syncFormatBlock) {
-    const reject = (error, errMsg = '') => {
-        const message = `${ error.message || '' } ${ errMsg }`;
-        throw new Error(message);
+// Check AccountBlock
+export function checkAccountBlock(accountBlock: {
+    blockType: BlockType;
+    address: Address;
+    fee?: BigInt;
+    data?: Base64;
+    sendBlockHash?: Hex;
+    toAddress?: Address;
+    tokenId?: TokenId;
+    amount?: BigInt;
+    height?: Uint64;
+    previousHash?: Hex;
+    difficulty?: BigInt;
+    nonce?: Base64;
+    hash?: Hex;
+    signature?: Base64;
+    publicKey?: Base64;
+}): {
+    code: string;
+    message: string;
+} {
+    const err = checkParams(accountBlock, [ 'blockType', 'address' ], [ {
+        name: 'blockType',
+        func: _b => BlockType[_b],
+        msg: `Don\'t have blockType ${ accountBlock.blockType }`
+    }, {
+        name: 'address',
+        func: isValidAddress
+    }, {
+        name: 'sendBlockHash',
+        func: isHexString
+    }, {
+        name: 'toAddress',
+        func: isValidAddress
+    }, {
+        name: 'amount',
+        func: isNonNegativeInteger,
+        msg: 'Amount must be an non-negative integer string.'
+    }, {
+        name: 'tokenId',
+        func: isTokenId
+    }, {
+        name: 'height',
+        func: isNonNegativeInteger
+    }, {
+        name: 'previousHash',
+        func: isHexString
+    }, {
+        name: 'hash',
+        func: isHexString
+    }, {
+        name: 'signature',
+        func: isBase64String
+    }, {
+        name: 'publicKey',
+        func: isBase64String
+    } ]);
+
+    if (err) {
+        return err;
+    }
+
+    if (Number(accountBlock.blockType) === BlockType.Response && !accountBlock.sendBlockHash) {
+        return {
+            code: paramsMissing.code,
+            message: `${ paramsMissing.message } SendBlockHash.`
+        };
+    }
+
+    // if (accountBlock.toAddress && !isRequestBlock(accountBlock.blockType)) {
+    //     return {
+    //         code: paramsFormat.code,
+    //         message: `${ paramsFormat.message } BlockType is wrong.`
+    //     };
+    // }
+
+    if (Number(accountBlock.amount) && !accountBlock.tokenId) {
+        return {
+            code: paramsMissing.code,
+            message: `${ paramsMissing.message } TokenId.`
+        };
+    }
+
+    if ((accountBlock.difficulty && !accountBlock.nonce) || (!accountBlock.difficulty && accountBlock.nonce)) {
+        return {
+            code: paramsMissing.code,
+            message: `${ paramsMissing.message } Difficulty and nonce is required at the same time.`
+        };
+    }
+
+    if (accountBlock.hash) {
+        const hash = getAccountBlockHash(accountBlock);
+        if (accountBlock.hash !== hash) {
+            return {
+                code: paramsFormat.code,
+                message: `${ paramsFormat.message } Hash is wrong.`
+            };
+        }
+    }
+
+    if (accountBlock.publicKey) {
+        const address = getAddressFromPublicKey(Buffer.from(accountBlock.publicKey, 'base64'));
+        if (accountBlock.address !== address) {
+            return {
+                code: paramsFormat.code,
+                message: 'PublicKey is wrong.'
+            };
+        }
+    }
+
+    if (accountBlock.signature) {
+        if (!accountBlock.hash) {
+            return {
+                code: paramsMissing.code,
+                message: `${ paramsMissing.message } Missing hash.`
+            };
+        }
+        if (!accountBlock.publicKey) {
+            return {
+                code: paramsMissing.code,
+                message: `${ paramsMissing.message } Missing publicKey.`
+            };
+        }
+    }
+
+    return null;
+}
+
+export function isRequestBlock(blockType: BlockType): Boolean {
+    return blockType === BlockType.CreateContractRequest
+        || blockType === BlockType.TransferRequest
+        || blockType === BlockType.RefundByContractRequest
+        || blockType === BlockType.ReIssueRequest;
+}
+
+export function isResponseBlock(blockType: BlockType): Boolean {
+    return blockType === BlockType.Response
+        || blockType === BlockType.ResponseFail
+        || blockType === BlockType.GenesisResponse;
+}
+
+
+// Get AccountBlock.hash
+
+// 1.sendBlock
+// hash = HashFunction(BlockType + PrevHash  + Height + AccountAddress + ToAddress + Amount + TokenId + Data + Fee + LogHash + Nonce + sendBlock + hashList）
+
+// 2.receiveBlock
+// hash = HashFunction(BlockType + PrevHash  + Height + AccountAddress + FromBlockHash + Data + Fee + LogHash + Nonce + sendBlock + hashList）
+
+export function getAccountBlockHash(accountBlock: {
+    blockType: BlockType;
+    address: Address;
+    hash?: Hex;
+    height?: Uint64;
+    previousHash?: Hex;
+    fromAddress?: Address;
+    toAddress?: Address;
+    sendBlockHash?: Hex;
+    tokenId?: TokenId;
+    amount?: BigInt;
+    fee?: BigInt;
+    data?: Base64;
+    difficulty?: BigInt;
+    nonce?: Base64;
+    vmlogHash?: Hex;
+    triggeredSendBlockList?: AccountBlockType[];
+}): Hex {
+    let source = '';
+
+    source += getBlockTypeHex(accountBlock.blockType);
+    source += getPreviousHashHex(accountBlock.previousHash);
+    source += getHeightHex(accountBlock.height);
+    source += getAddressHex(accountBlock.address);
+
+    if (accountBlock.toAddress) {
+        source += getAddressHex(accountBlock.toAddress);
+        source += getAmountHex(accountBlock.amount);
+        source += getTokenIdHex(accountBlock.tokenId);
+    } else {
+        source += getSendBlockHashHex(accountBlock.sendBlockHash);
+    }
+
+    source += getDataHex(accountBlock.data);
+    source += getFeeHex(accountBlock.fee);
+    source += accountBlock.vmlogHash || '';
+    source += getNonceHex(accountBlock.nonce);
+    source += getTriggeredSendBlockListHex(accountBlock.triggeredSendBlockList);
+
+    const sourceHex = Buffer.from(source, 'hex');
+    const hashBuffer = blake.blake2b(sourceHex, null, 32);
+    return Buffer.from(hashBuffer).toString('hex');
+}
+
+export function getBlockTypeHex(blockType: BlockType): Hex {
+    return Buffer.from([blockType]).toString('hex');
+}
+
+export function getPreviousHashHex(previousHash: Hex): Hex {
+    return previousHash || Default_Hash;
+}
+
+export function getHeightHex(height: Uint64): Hex {
+    return Number(height) ? bytesToHex(new BigNumber(height).toArray('big', 8)) : '';
+}
+
+export function getAddressHex(address: Address): Hex {
+    return address ? getOriginalAddressFromAddress(address) : '';
+}
+
+export function getToAddressHex(toAddress: Address): Hex {
+    return toAddress ? getOriginalAddressFromAddress(toAddress) : '';
+}
+
+export function getAmountHex(amount): Hex {
+    return getNumberHex(amount);
+}
+
+export function getTokenIdHex(tokenId: TokenId): Hex {
+    return tokenId ? getRawTokenId(tokenId) || '' : '';
+}
+
+export function getSendBlockHashHex(sendBlockHash: Hex): Hex {
+    return sendBlockHash || Default_Hash;
+}
+
+export function getDataHex(data: Base64): Hex {
+    return data ? blake.blake2bHex(Buffer.from(data, 'base64'), null, 32) : '';
+}
+
+export function getFeeHex(fee: BigInt): Hex {
+    return getNumberHex(fee);
+}
+
+export function getNonceHex(nonce: Base64) {
+    const nonceBytes = nonce ? Buffer.from(nonce, 'base64') : '';
+    return leftPadBytes(nonceBytes, 8);
+}
+
+export function getTriggeredSendBlockListHex(triggeredSendBlockList: AccountBlockType[] = []) {
+    if (!triggeredSendBlockList) {
+        return '';
+    }
+    let source = '';
+    triggeredSendBlockList.forEach(block => {
+        source += block.hash;
+    });
+    return source;
+}
+
+
+// Get AccountBlock.data
+export function getCreateContractData({ abi, code, params, responseLatency = '0', quotaMultiplier = '10', randomDegree = '0' }: {
+    responseLatency?: Uint8;
+    quotaMultiplier?: Uint8;
+    randomDegree?: Uint8;
+    code?: Hex;
+    abi?: Object | Array<Object>;
+    params?: string | Array<string | boolean>;
+}): Base64 {
+    const err = checkParams({ responseLatency, quotaMultiplier, randomDegree, code }, [ 'responseLatency', 'quotaMultiplier', 'randomDegree' ], [ {
+        name: 'responseLatency',
+        func: _c => Number(_c) >= 0 && Number(_c) <= 75
+    }, {
+        name: 'quotaMultiplier',
+        func: _c => Number(_c) >= 10 && Number(_c) <= 100
+    }, {
+        name: 'randomDegree',
+        func: _c => Number(_c) >= 0 && Number(_c) <= 75
+    }, {
+        name: 'code',
+        func: isHexString
+    } ]);
+    if (err) {
+        throw err;
+    }
+
+    // gid + contractType + responseLatency + randomDegree + quotaMultiplier + bytecode
+    const jsonInterface = getAbiByType(abi, 'constructor');
+    const _responseLatency = new BigNumber(responseLatency).toArray();
+    const _randomDegree = new BigNumber(randomDegree).toArray();
+    const _quotaMultiplier = new BigNumber(quotaMultiplier).toArray();
+    let data = `${ Delegate_Gid }01${ Buffer.from(_responseLatency).toString('hex') }${ Buffer.from(_randomDegree).toString('hex') }${ Buffer.from(_quotaMultiplier).toString('hex') }${ code }`;
+
+    if (jsonInterface) {
+        data += encodeParameters(jsonInterface, params);
+    }
+    return Buffer.from(data, 'hex').toString('base64');
+}
+
+export function getCallContractData({ abi, params, methodName }: {
+    abi: Object | Array<Object>;
+    params?: string | Array<string | boolean>;
+    methodName?: string;
+}): Base64 {
+    const data = encodeFunctionCall(abi, params, methodName);
+    return Buffer.from(data, 'hex').toString('base64');
+}
+
+
+// Sign
+export function signAccountBlock(accountBlock: {
+    blockType: BlockType;
+    address: Address;
+    hash?: Hex;
+    height?: Uint64;
+    fee?: BigInt;
+    data?: Base64;
+    sendBlockHash?: Hex;
+    toAddress?: Address;
+    tokenId?: TokenId;
+    amount?: BigInt;
+    previousHash?: Hex;
+    difficulty?: BigInt;
+    nonce?: Base64;
+}, privateKey: Buffer | Hex): {
+    signature: Base64; publicKey: Base64;
+} {
+    const hash = accountBlock.hash;
+
+    const err = checkParams({ privateKey, hash }, [ 'privateKey', 'hash' ], [{
+        name: 'privateKey',
+        func: _p => _p instanceof Buffer || isHexString(_p),
+        msg: 'PrivateKey is Buffer or Hex-string'
+    }]);
+    if (err) {
+        throw err;
+    }
+
+    if (isRequestBlock(accountBlock.blockType) && !accountBlock.toAddress) {
+        throw new Error(`${ paramsFormat.message } BlockType is wrong.`);
+    }
+
+    const checkError = checkAccountBlock(accountBlock);
+    if (checkError) {
+        throw checkError;
+    }
+
+    const _privateKey: Buffer = privateKey instanceof Buffer ? privateKey : Buffer.from(privateKey, 'hex');
+    const {
+        address,
+        publicKey
+    } = createAddressByPrivateKey(_privateKey);
+    if (accountBlock.address !== address) {
+        throw new Error('PrivateKey is wrong.');
+    }
+
+    const signature: Hex = ed25519.sign(hash, _privateKey);
+    return {
+        signature: Buffer.from(signature, 'hex').toString('base64'),
+        publicKey: Buffer.from(publicKey).toString('base64')
     };
-
-    if (!height && prevHash) {
-        return reject(paramsFormat, 'No height but prevHash.');
-    }
-
-    if (height && !prevHash) {
-        return reject(paramsFormat, 'No prevHash but height.');
-    }
-
-    return formatAccountBlock({ blockType, fromBlockHash, accountAddress, message, data, height, prevHash, toAddress, tokenId, amount, nonce, fee });
 }
 
-export function getSendTxBlock({ accountAddress, toAddress, tokenId, amount, message, data, height, prevHash }: sendTxBlock) {
-    const err = checkParams({ toAddress, tokenId, amount }, [ 'toAddress', 'tokenId', 'amount' ]);
+
+// About Transaction and Contracts
+export function decodeAccountBlockByContract({ accountBlock, contractAddress, abi, topics = [], methodName }: {
+    accountBlock: AccountBlockType;
+    contractAddress: Address;
+    abi: any;
+    topics?: any;
+    methodName?: string;
+}) {
+    const err = checkParams({ accountBlock, contractAddress, abi }, [ 'accountBlock', 'contractAddress', 'abi' ], [{
+        name: 'contractAddress',
+        func: _a => isValidAddress(_a) === ADDR_TYPE.Contract
+    }]);
     if (err) {
-        throw new Error(err.message);
+        throw err;
     }
 
-    return getAccountBlock({
-        blockType: 2,
-        accountAddress,
-        toAddress,
-        tokenId,
-        amount,
-        message,
-        data,
-        height,
-        prevHash
-    });
+    // [TODO]
+    const checkError = checkAccountBlock(accountBlock);
+    if (checkError) {
+        throw checkError;
+    }
+
+    if (accountBlock.blockType !== BlockType.TransferRequest) {
+        throw new Error(`AccountBlock's blockType !== ${ BlockType.TransferRequest }`);
+    }
+
+    if (accountBlock.toAddress !== contractAddress || !accountBlock.data) {
+        return null;
+    }
+
+    const hexData = Buffer.from(accountBlock.data, 'base64').toString('hex');
+
+    const encodeFuncSign = encodeFunctionSignature(abi, methodName);
+    if (encodeFuncSign !== hexData.substring(0, 8)) {
+        return null;
+    }
+
+    return decodeLog(abi, hexData.substring(8), topics, methodName);
 }
 
-export function getReceiveTxBlock({ accountAddress, fromBlockHash, height, prevHash }: receiveTxBlock) {
-    const err = checkParams({ fromBlockHash }, ['fromBlockHash']);
+// contractList = { 'transactionTypeName': { contractAddress, abi } }
+export function encodeContractList(contractList: Object): Object {
+    const err = checkParams({ contractList }, ['contractList'], [{
+        name: 'contractList',
+        func: isObject
+    }]);
     if (err) {
-        throw new Error(err.message);
+        throw err;
     }
 
-    return getAccountBlock({
-        blockType: 4,
-        fromBlockHash,
-        accountAddress,
-        height,
-        prevHash
-    });
+    const txType = {};
+
+    for (const transactionType in contractList) {
+        const { contractAddress, abi } = contractList[transactionType];
+
+        const err = checkParams({ contractAddress, abi }, [ 'contractAddress', 'abi' ], [{
+            name: 'contractAddress',
+            func: _a => isValidAddress(_a) === ADDR_TYPE.Contract
+        }]);
+        if (err) {
+            throw err;
+        }
+
+        const funcSign = encodeFunctionSignature(abi);
+        const _contract: {
+            transactionType: String;
+            contractAddress: Address;
+            abi: Object;
+        } = {
+            transactionType,
+            contractAddress,
+            abi
+        };
+        txType[`${ funcSign }_${ contractAddress }`] = _contract;
+    }
+
+    return txType;
 }
 
+// contractTransactionType = { [funcSign + contractAddress]: { contractAddress, abi, transactionType } }
 export function getTransactionType({ toAddress, data, blockType }: {
     toAddress?: Address;
     data?: Base64;
     blockType: BlockType;
-}, contractTxType?): {
+}, contractTransactionType?): {
     transactionType: string;
     contractAddress?: Address;
     abi?: Object;
@@ -97,111 +481,13 @@ export function getTransactionType({ toAddress, data, blockType }: {
         throw new Error(`${ paramsMissing.message } ToAddress`);
     }
 
-    const allContractTxType = Object.assign({}, contractTxType || {}, DefaultContractTxType);
+    const allContractTransactionType = Object.assign({}, contractTransactionType || {}, Default_Contract_TransactionType);
 
     const _data = Buffer.from(data || '', 'base64').toString('hex');
     const dataPrefix = _data.slice(0, 8);
     const key = `${ dataPrefix }_${ toAddress }`;
 
-    return allContractTxType[key] || defaultType;
-}
-
-// 1.sendBlock
-// hash = HashFunction(BlockType + PrevHash  + Height + AccountAddress + ToAddress + Amount + TokenId + Data + Fee + LogHash + Nonce + sendBlock + hashList）
-
-// 2.receiveBlock
-// hash = HashFunction(BlockType + PrevHash  + Height + AccountAddress + FromBlockHash + Data + Fee + LogHash + Nonce + sendBlock + hashList）
-
-export function getBlockHash(accountBlock: SignBlock) {
-    checkBlock(accountBlock);
-
-    let source = '';
-
-    const blockType = Buffer.from([accountBlock.blockType]).toString('hex');
-    source += blockType;
-    source += accountBlock.prevHash || Default_Hash;
-    source += accountBlock.height ? bytesToHex(new BigNumber(accountBlock.height).toArray('big', 8)) : '';
-    source += accountBlock.accountAddress ? getOriginalAddressFromAddress(accountBlock.accountAddress) : '';
-
-    if (accountBlock.toAddress) {
-        source += getOriginalAddressFromAddress(accountBlock.toAddress);
-        source += getNumberHex(accountBlock.amount);
-        source += accountBlock.tokenId ? getRawTokenId(accountBlock.tokenId) || '' : '';
-    } else {
-        // sendBlockHash
-        source += accountBlock.fromBlockHash || Default_Hash;
-    }
-
-    if (accountBlock.data) {
-        const hex = blake2bHex(Buffer.from(accountBlock.data, 'base64'), null, 32);
-        source += hex;
-    }
-
-    source += getNumberHex(accountBlock.fee);
-    // source += accountBlock.logHash || '';
-    source += getNonceHex(accountBlock.nonce);
-
-    // const sendBlockList = accountBlock.sendBlockList || [];
-    // sendBlockList.forEach(block => {
-    //     source += block.hash;
-    // });
-
-    const sourceHex = Buffer.from(source, 'hex');
-    const hash = blake2b(sourceHex, null, 32);
-    const hashHex = Buffer.from(hash).toString('hex');
-
-    return hashHex;
-}
-
-export function signAccountBlock(accountBlock: SignBlock, privKey: Buffer) {
-    checkBlock(accountBlock);
-
-    const hashHex = getBlockHash(accountBlock);
-    const pubKey = getPublicKey(privKey);
-    const signature = sign(hashHex, privKey);
-
-    const _accountBlock = Object.assign({}, accountBlock, {
-        hash: hashHex,
-        signature: Buffer.from(signature, 'hex').toString('base64'),
-        publicKey: Buffer.from(pubKey).toString('base64')
-    });
-
-    return _accountBlock;
-}
-
-export function decodeBlockByContract({ accountBlock, contractAddress, abi, topics = [], methodName }: {
-    accountBlock: AccountBlockType;
-    contractAddress: Address;
-    abi: any;
-    topics?: any;
-    methodName?: string;
-}) {
-    const err = checkParams({ accountBlock, contractAddress, abi }, [ 'accountBlock', 'contractAddress', 'abi' ], [{
-        name: 'contractAddress',
-        func: isValidAddress
-    }]);
-    if (err) {
-        throw err;
-    }
-
-    checkBlock(accountBlock);
-
-    if (accountBlock.blockType !== BlockType.TransferRequest) {
-        throw new Error(`AccountBlock's blockType isn't ${ BlockType.TransferRequest }`);
-    }
-
-    if (accountBlock.toAddress !== contractAddress || !accountBlock.data) {
-        return null;
-    }
-
-    const hexData = Buffer.from(accountBlock.data, 'base64').toString('hex');
-
-    const encodeFuncSign = encodeFunctionSignature(abi, methodName);
-    if (encodeFuncSign !== hexData.substring(0, 8)) {
-        return null;
-    }
-
-    return decodeLog(abi, hexData.substring(8), topics, methodName);
+    return allContractTransactionType[key] || defaultType;
 }
 
 
@@ -224,7 +510,3 @@ function getNumberHex(amount) {
     return leftPadBytes(amountBytes, 32);
 }
 
-function getNonceHex(nonce) {
-    const nonceBytes = nonce ? Buffer.from(nonce, 'base64') : '';
-    return leftPadBytes(nonceBytes, 8);
-}

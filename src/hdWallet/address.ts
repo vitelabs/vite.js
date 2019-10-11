@@ -28,7 +28,7 @@ export function createAddressByPrivateKey(priv?: Hex | Buffer, isContract?: bool
 
     return {
         originalAddress: originalAddress.toString('hex'),
-        publicKey: getPublicKey(privKey),
+        publicKey: Buffer.from(getPublicKey(privKey)),
         privateKey: privKey,
         address
     };
@@ -104,7 +104,7 @@ function newAddr(privKey?: Buffer | Hex, isContract?: boolean): { originalAddres
 }
 
 function newAddrFromPub(pubKey: Hex | Buffer, isContract?: boolean): Buffer {
-    const _pubKey = pubKey instanceof Buffer ? pubKey : Buffer.from(pubKey, 'hex');
+    const _pubKey = pubKey instanceof Buffer ? Buffer.from(pubKey) : Buffer.from(pubKey, 'hex');
     const _pre = blake2b(_pubKey, null, ADDR_SIZE);
     const isContractByte = isContract ? 1 : 0;
 

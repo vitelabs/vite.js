@@ -1,12 +1,13 @@
+import { paramsMissing } from '~@vite/vitejs-error';
+import { BlockType, Vite_TokenId } from '~@vite/vitejs-constant';
+import { getCreateContractData, getCallContractData } from '~@vite/vitejs-accountblock';
 import { isValidAddress, createAddressByPrivateKey, ADDR_TYPE } from '~@vite/vitejs-hdwallet/address';
 import { checkParams, isNonNegativeInteger, isHexString, isArray, isObject } from '~@vite/vitejs-utils';
-import { paramsMissing } from '~@vite/vitejs-error';
 
 import AccountBlock from './accountBlock';
-import { getCreateContractData, getCallContractData } from './utils';
-import { BlockType, Vite_TokenId } from './constant';
 
-import { Hex, Address, TokenId, BigInt, AddrObj, Base64, Uint8 } from './type';
+import { Hex, Address, TokenId, BigInt, Base64, Uint8 } from './type';
+
 
 class TransactionClass {
     readonly address: Address
@@ -21,6 +22,32 @@ class TransactionClass {
         }
 
         this.address = address;
+    }
+
+    sendTransaction({ toAddress, tokenId = Vite_TokenId, amount = '0', message }: {
+        toAddress: Address;
+        tokenId: TokenId;
+        amount: BigInt;
+        message: string;
+    }) {
+        const err = checkParams({ toAddress }, ['toAddress']);
+        if (err) {
+            throw err;
+        }
+
+        const messageHex = Buffer.from(message).toString('hex');
+        const data = Buffer.from(messageHex, 'hex').toString('base64');
+
+        const accountBlock: AccountBlock = new AccountBlock({
+            blockType: BlockType.TransferRequest,
+            address: this.address,
+            toAddress,
+            tokenId,
+            amount,
+            data
+        });
+
+        return accountBlock;
     }
 
     receive({ sendBlockHash }: { sendBlockHash: Hex }) {

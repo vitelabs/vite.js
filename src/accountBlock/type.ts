@@ -115,6 +115,7 @@ export declare type AccountBlockType = {
     quotaByStake?: Uint64;
     totalQuota?: Uint64;
     vmlogHash?: Hex;
+    
     triggeredSendBlockList?: AccountBlockType[]
     confirmations?: Uint64;
     firstSnapshotHash?: Hex;

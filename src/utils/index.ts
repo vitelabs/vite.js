@@ -238,6 +238,14 @@ export function isHexString(str: string): Boolean {
     return /^[0-9a-fA-F]+$/.test(str);
 }
 
+export function isBase64String(str): Boolean {
+    if (typeof str !== 'string') {
+        return false;
+    }
+    const base64Pattern = /^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{4}|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)$/;
+    return str && base64Pattern.test(str);
+}
+
 export const blake2b = blake.blake2b;
 
 export const blake2bHex = blake.blake2bHex;

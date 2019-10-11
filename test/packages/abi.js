@@ -1011,6 +1011,27 @@ describe('encode2decode', function () {
     });
 });
 
+describe('getAbiByType', function () {
+    it('offchain', function () {
+        const type = 'offchain';
+        const _data = abi.getAbiByType([
+            { 'type': 'offchain', 'inputs': [{ 'type': 'address' }] },
+            { 'type': 'constructor', 'inputs': [{ 'type': 'address' }] }
+        ], type);
+
+        assert.equal(_data.type, type);
+    });
+    it('constructor', function () {
+        const type = 'constructor';
+        const _data = abi.getAbiByType([
+            { 'type': 'offchain', 'inputs': [{ 'type': 'address' }] },
+            { 'type': 'constructor', 'inputs': [{ 'type': 'address' }] }
+        ], type);
+
+        assert.equal(_data.type, type);
+    });
+});
+
 // describe('en', function () {
 //     it('uint', function () {
 //         const _r1 = abi.encodeParameter('uint', '-2');

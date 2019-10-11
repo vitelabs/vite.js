@@ -1,4 +1,4 @@
-import { isArray, isObject } from '~@vite/vitejs-utils';
+import { isArray, isObject, checkParams } from '~@vite/vitejs-utils';
 
 import { encodeFunction, getFunction } from './encodeFunction';
 import { encodeParameter as _encodeParameter, encodeParameters as _encodeParameters, decodeParameter as _decodeParameter, decodeParameters as _decodeParameters } from './coder';
@@ -79,6 +79,32 @@ export function decodeLog(inputs, data = '', topics, methodName?: string) {
     });
 
     return returnValues;
+}
+
+export function getAbiByType(jsonInterfaces, type) {
+    if (!jsonInterfaces || !type) {
+        return null;
+    }
+
+    if (!(isArray(jsonInterfaces) || isObject(jsonInterfaces))) {
+        throw new Error('jsonInterfaces need array or object ');
+    }
+
+    // jsonInterfaces is an object
+    if (!isArray(jsonInterfaces) && isObject(jsonInterfaces)) {
+        if (jsonInterfaces.type === type) {
+            return jsonInterfaces;
+        }
+    }
+
+    // jsonInterfaces is an array
+    for (let i = 0; i < jsonInterfaces.length; i++) {
+        if (jsonInterfaces[i].type === type) {
+            return jsonInterfaces[i];
+        }
+    }
+
+    return null;
 }
 
 

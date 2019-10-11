@@ -1,15 +1,17 @@
 const BigNumber = require('bn.js');
 const blake = require('blakejs/blake2b');
 
-import { checkParams, isHexString, ed25519 } from '~@vite/vitejs-utils';
-import { getOriginalAddressFromAddress, createAddressByPrivateKey, getAddressFromPublicKey } from  '~@vite/vitejs-hdwallet/address';
+import { checkParams, isHexString, isBase64String } from '~@vite/vitejs-utils';
+import { getOriginalAddressFromAddress, getAddressFromPublicKey } from  '~@vite/vitejs-hdwallet/address';
 
 import {
-    isRequestBlock, isResponseBlock, checkAccountBlock, Default_Hash, getAccountBlockHash,
+    isRequestBlock, isResponseBlock, checkAccountBlock, Default_Hash,
     getBlockTypeHex, getHeightHex, getAddressHex, getToAddressHex, getDataHex,
-    getAmountHex, getFeeHex, getNonceHex, getPreviousHashHex, getTokenIdHex, getSendBlockHashHex
-} from './utils';
+    getAmountHex, getFeeHex, getNonceHex, getPreviousHashHex, getTokenIdHex, getSendBlockHashHex,
+    getAccountBlockHash, signAccountBlock
+} from '~@vite/vitejs-accountblock';
 import { Address, Hex, Base64, BigInt, Uint64, BlockType, TokenId, AccountBlockBlock, ClientClassType } from './type';
+
 
 class AccountBlockClass {
     blockType: BlockType;
@@ -38,7 +40,7 @@ class AccountBlockClass {
         tokenId?: TokenId;
     }) {
         const err = checkAccountBlock({ blockType, address, fee, data, sendBlockHash, amount, toAddress, tokenId });
-        if (!err) {
+        if (err) {
             throw err;
         }
 
@@ -248,15 +250,19 @@ class AccountBlockClass {
         };
     }
 
-    setPublicKey(publicKey: Buffer | Hex) {
+    setPublicKey(publicKey: Buffer | Hex | Base64) {
         const err = checkParams({ publicKey }, ['publicKey'], [{
             name: 'publicKey',
-            func: _p => _p instanceof Buffer || isHexString(_p),
-            msg: 'PublicKey is Buffer or Hex-string'
+            func: _p => _p instanceof Buffer || isHexString(_p) || isBase64String(_p),
+            msg: 'PublicKey is Buffer or Hex-string or Base64-string'
         }]);
 
         if (err) {
             throw err;
+        }
+
+        if (isBase64String(publicKey)) {
+            publicKey = Buffer.from(`${ publicKey }`, 'base64');
         }
 
         const address = getAddressFromPublicKey(publicKey);
@@ -268,35 +274,29 @@ class AccountBlockClass {
         this.publicKey = _publicKey.toString('base64');
     }
 
-    setSignature(signature: Base64) {
-        this.signature = signature;
-    }
-
-    sign(privateKey: Buffer | Hex): AccountBlockBlock {
-        const err = checkParams({ privateKey }, ['privateKey'], [{
-            name: 'privateKey',
-            func: _p => _p instanceof Buffer || isHexString(_p),
-            msg: 'PrivateKey is Buffer or Hex-string'
+    setSignature(signature: Hex | Base64) {
+        const err = checkParams({ signature }, ['signature'], [{
+            name: 'signature',
+            func: _s => isHexString(_s) || isBase64String(_s),
+            msg: 'Signature is Hex-string or Base64-string'
         }]);
         if (err) {
             throw err;
         }
 
-        if (this.blockType === BlockType.CreateContractRequest && !this.toAddress) {
-            throw new Error('Missing toAddress. CreateContract should set toAddress.');
+        if (isBase64String(signature)) {
+            this.signature = signature;
+            return;
         }
 
-        const _privateKey: Buffer = privateKey instanceof Buffer ? privateKey : Buffer.from(privateKey, 'hex');
-        const {
-            address,
-            publicKey
-        } = createAddressByPrivateKey(_privateKey);
-        if (this.address !== address) {
-            throw new Error('PrivateKey is wrong.');
-        }
+        const _signature = Buffer.from(signature, 'hex');
+        this.signature = _signature.toString('base64');
+    }
 
+    sign(privateKey: Buffer | Hex): AccountBlockBlock {
+        const { signature, publicKey } = signAccountBlock(this.accountBlock, privateKey);
         this.setPublicKey(publicKey);
-        this.setSignature(ed25519.sign(this.hash, _privateKey));
+        this.setSignature(signature);
         return this.accountBlock;
     }
 
@@ -307,7 +307,7 @@ class AccountBlockClass {
         }
 
         err = checkAccountBlock(this.accountBlock);
-        if (!err) {
+        if (err) {
             throw err;
         }
 

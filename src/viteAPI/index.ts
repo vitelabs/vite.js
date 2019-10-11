@@ -1,8 +1,8 @@
-import { checkParams, isArray } from '~@vite/vitejs-utils';
-import { isValidAddress } from '~@vite/vitejs-hdwallet/address';
 import { Contracts } from '~@vite/vitejs-constant';
-import { getTransactionTypeByContractList } from '~@vite/vitejs-accountblock/builtin';
-import { getTransactionType, decodeBlockByContract } from '~@vite/vitejs-accountblock';
+import { checkParams, isArray } from '~@vite/vitejs-utils';
+import { isValidAddress, ADDR_TYPE } from '~@vite/vitejs-hdwallet/address';
+import { decodeParameters, encodeFunctionCall, getAbiByType } from '~@vite/vitejs-abi';
+import { encodeContractList, getTransactionType, decodeAccountBlockByContract } from '~@vite/vitejs-accountblock';
 
 import { Address, AccountBlockType, Transaction } from './type';
 
@@ -19,7 +19,7 @@ class ViteAPIClass extends Client {
         this.customTransactionType = null;
     }
 
-    // { [txType]String: { contractAddress:Address, abi:String } }
+    // contractList = { 'transactionTypeName': { contractAddress, abi } }
     addTransactionType(contractList: Object = {}) {
         for (const transactionType in contractList) {
             if (Contracts[transactionType]) {
@@ -30,8 +30,8 @@ class ViteAPIClass extends Client {
             }
         }
 
-        const contract = getTransactionTypeByContractList(contractList);
-        this.customTransactionType = Object.assign({}, this.customTransactionType, contract);
+        const transactionTypeAfterEncode = encodeContractList(contractList);
+        this.customTransactionType = Object.assign({}, this.customTransactionType, transactionTypeAfterEncode);
     }
 
     async getBalanceInfo(address: Address): Promise<{ balance: Object; unreceived: Object }> {
@@ -101,7 +101,7 @@ class ViteAPIClass extends Client {
 
             if (isDecodeTx) {
                 transaction.contractResult = contractAddress && abi
-                    ? decodeBlockByContract({ accountBlock, contractAddress, abi })
+                    ? decodeAccountBlockByContract({ accountBlock, contractAddress, abi })
                     : null;
             }
 
@@ -109,6 +109,35 @@ class ViteAPIClass extends Client {
         });
 
         return list;
+    }
+
+    async callOffChainContract({ address, abi, code, params }) {
+        const err = checkParams({ address, abi }, [ 'address', 'abi' ], [{
+            name: 'address',
+            func: _a => isValidAddress(_a) === ADDR_TYPE.Contract
+        }]);
+        if (err) {
+            throw err;
+        }
+
+        const offchainAbi = getAbiByType(abi, 'offchain');
+        if (!offchainAbi) {
+            throw new Error('Can\'t find abi that type is offchain');
+        }
+
+        const data = encodeFunctionCall(offchainAbi, params || []);
+        const result = await this.request('contract_callOffChainMethod', {
+            address,
+            code,
+            data: Buffer.from(data, 'hex').toString('base64')
+        });
+
+        if (!result) {
+            return null;
+        }
+
+        const hexResult = Buffer.from(result, 'base64').toString('hex');
+        return decodeParameters(offchainAbi.outputs, hexResult);
     }
 }
 
