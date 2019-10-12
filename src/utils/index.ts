@@ -70,7 +70,7 @@ export function checkParams(params: Object, requiredP: Array<string> = [], valid
     return null;
 }
 
-export function isTokenId(tokenId: string): Boolean {
+export function isValidTokenId(tokenId: string): Boolean {
     if (tokenId.indexOf('tti_') !== 0 || tokenId.length !== 28) {
         return false;
     }
@@ -110,8 +110,8 @@ function getTokenIdCheckSum(rawTokenId: Hex): Hex {
     return blake.blake2bHex(Buffer.from(rawTokenId, 'hex'), null, 2);
 }
 
-export function validNodeName(nodeName: string): Boolean {
-    return /^[a-zA-Z0-9_\.]+(\s{1}[a-zA-Z0-9_\.]+)*$/g.test(nodeName) && nodeName.length <= 40;
+export function isValidSBPName(sbpName: string): Boolean {
+    return /^[a-zA-Z0-9_\.]+(\s{1}[a-zA-Z0-9_\.]+)*$/g.test(sbpName) && sbpName.length <= 40;
 }
 
 export function isNonNegativeInteger(num: string): Boolean {

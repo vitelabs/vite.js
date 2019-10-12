@@ -5,7 +5,7 @@ import { paramsMissing, paramsFormat } from '~@vite/vitejs-error';
 import { Delegate_Gid, Contracts } from '~@vite/vitejs-constant';
 import { getAbiByType, encodeParameters, encodeFunctionCall, encodeFunctionSignature, decodeLog } from '~@vite/vitejs-abi';
 import { isValidAddress, getAddressFromPublicKey, createAddressByPrivateKey, getOriginalAddressFromAddress, ADDR_TYPE } from '~@vite/vitejs-hdwallet/address';
-import { checkParams, isNonNegativeInteger, isHexString, isTokenId, bytesToHex, getRawTokenId, isObject, ed25519, isBase64String } from '~@vite/vitejs-utils';
+import { checkParams, isNonNegativeInteger, isHexString, isValidTokenId, bytesToHex, getRawTokenId, isObject, ed25519, isBase64String } from '~@vite/vitejs-utils';
 
 import { BlockType, Address, Base64, Hex, TokenId, Uint64, BigInt, AccountBlockType, Uint8 } from './type';
 
@@ -53,7 +53,7 @@ export function checkAccountBlock(accountBlock: {
         msg: 'Amount must be an non-negative integer string.'
     }, {
         name: 'tokenId',
-        func: isTokenId
+        func: isValidTokenId
     }, {
         name: 'height',
         func: isNonNegativeInteger
@@ -305,7 +305,7 @@ export function getCreateContractData({ abi, code, params, responseLatency = '0'
 
 export function getCallContractData({ abi, params, methodName }: {
     abi: Object | Array<Object>;
-    params?: string | Array<string | boolean>;
+    params?: any;
     methodName?: string;
 }): Base64 {
     const data = encodeFunctionCall(abi, params, methodName);

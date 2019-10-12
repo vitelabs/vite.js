@@ -2,10 +2,13 @@ export declare type Hex = string;
 export declare type Address = string;
 export declare type Base64 = string;
 export declare type TokenId = string;
-export declare type Int64 = number;
+export declare type Int32 = string;
+export declare type Int64 = string;
 export declare type Uint8 = string;
 export declare type Uint16 = string;
+export declare type Uint32 = string;
 export declare type Uint64 = string;
+export declare type Uint256 = string;
 export declare type BigInt = string;
 
 export enum TransactionType {

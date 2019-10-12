@@ -2,7 +2,7 @@ const assert = require('assert');
 
 import {
     hexToBytes, utf8ToBytes, bytesToHex, getBytesSize,
-    getRawTokenId, validNodeName, isNonNegativeInteger,
+    getRawTokenId, isValidSBPName, isNonNegativeInteger,
     isInteger, getTokenIdFromRaw, uriStringify, ed25519,
     isSafeInteger
 } from '../../src/utils/index';
@@ -59,12 +59,12 @@ describe('tools', function () {
     it('getTokenIdFromRaw', function () {
         assert.equal('tti_5649544520544f4b454e6e40', getTokenIdFromRaw('5649544520544f4b454e'));
     });
-    it('validNodeName', function () {
-        assert.equal(true, validNodeName('2323_sdsd'));
-        assert.equal(true, validNodeName('2323_sd sd'));
-        assert.equal(false, validNodeName(' 2323_sdsd '));
-        assert.equal(false, validNodeName('2323_sd  sd'));
-        assert.equal(false, validNodeName('232涉及到法律是否啊3_sd  sd'));
+    it('isValidSBPName', function () {
+        assert.equal(true, isValidSBPName('2323_sdsd'));
+        assert.equal(true, isValidSBPName('2323_sd sd'));
+        assert.equal(false, isValidSBPName(' 2323_sdsd '));
+        assert.equal(false, isValidSBPName('2323_sd  sd'));
+        assert.equal(false, isValidSBPName('232涉及到法律是否啊3_sd  sd'));
     });
     it('isNonNegativeInteger', function () {
         assert.equal(false, isNonNegativeInteger('232   2323'));
