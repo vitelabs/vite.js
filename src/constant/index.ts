@@ -6,8 +6,6 @@ export const Vite_Token_Info = {
     tokenSymbol: 'VITE'
 };
 
-export const Default_Hash = '0000000000000000000000000000000000000000000000000000000000000000'; // A total of 64 0
-
 export const Snapshot_Gid = '00000000000000000001';
 export const Delegate_Gid = '00000000000000000002';
 

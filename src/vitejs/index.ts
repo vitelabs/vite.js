@@ -1,21 +1,28 @@
 import '@babel/polyfill';
 require('es6-promise').polyfill();
 
-import * as _constant from '~@vite/vitejs-constant';
-import * as _error from '~@vite/vitejs-error';
-import * as _utils from '~@vite/vitejs-utils';
-import * as _accountBlock from '~@vite/vitejs-accountblock';
 import * as _abi from '~@vite/vitejs-abi';
+import * as _error from '~@vite/vitejs-error';
 import * as _keystore from '~@vite/vitejs-keystore';
-import * as _hdWallet from '~@vite/vitejs-hdwallet';
+import * as _utils from '~@vite/vitejs-utils';
+import * as _constant from '~@vite/vitejs-constant';
+import * as _accountBlock from '~@vite/vitejs-accountblock';
 import _viteapi from '~@vite/vitejs-viteapi';
+import _hdWallet from '~@vite/vitejs-hdwallet';
 
 
-export const constant = _constant;
-export const error = _error;
-export const utils = _utils;
-export const accountBlock = _accountBlock;
-export const keystore = _keystore;
-export const hdWallet = _hdWallet;
-export const viteAPI = _viteapi;
+// Not Change
 export const abi = _abi;
+export const error = _error;
+export const keystore = _keystore;
+
+// Add functions
+export const utils = _utils;
+export const constant = _constant;
+
+// Change
+export const accountBlock = _accountBlock;
+
+// Add
+export const viteAPI = _viteapi;
+export const hdWallet = _hdWallet;

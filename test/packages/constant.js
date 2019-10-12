@@ -1,10 +1,7 @@
 const assert = require('assert');
 import * as constant from '../../src/constant/index';
 
-const property = {
-    'Vite_TokenId': 'tti_5649544520544f4b454e6e40',
-    'Default_Hash': '0000000000000000000000000000000000000000000000000000000000000000'
-};
+const property = { 'Vite_TokenId': 'tti_5649544520544f4b454e6e40' };
 
 const required = [
     'Snapshot_Gid',

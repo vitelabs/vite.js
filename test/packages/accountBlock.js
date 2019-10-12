@@ -1,11 +1,15 @@
 const assert = require('assert');
 
 import { BlockType } from '../../src/type.ts';
-import { Default_Hash, Contracts } from '../../src/constant/index';
-import { getTransactionType, getCreateContractData, encodeContractList, decodeAccountBlockByContract, getAccountBlockHash, signAccountBlock } from '../../src/accountBlock/index';
+import { Contracts } from '../../src/constant/index';
+import { Default_Hash, getTransactionType, getCreateContractData, encodeContractList, decodeAccountBlockByContract, getAccountBlockHash, signAccountBlock } from '../../src/accountBlock/index';
 
 import config from '../config';
 
+
+it('Default_Hash', function () {
+    assert.equal(Default_Hash, '0000000000000000000000000000000000000000000000000000000000000000');
+});
 
 describe('getTransactionType', function () {
     for (const transactionType in config.blockList) {
