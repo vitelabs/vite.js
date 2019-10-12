@@ -2,7 +2,7 @@ import { Contracts } from '~@vite/vitejs-constant';
 import { checkParams, isArray } from '~@vite/vitejs-utils';
 import { isValidAddress, ADDR_TYPE } from '~@vite/vitejs-hdwallet/address';
 import { decodeParameters, encodeFunctionCall, getAbiByType } from '~@vite/vitejs-abi';
-import { encodeContractList, getTransactionType, decodeAccountBlockByContract } from '~@vite/vitejs-accountblock';
+import { Default_Contract_TransactionType, encodeContractList, getTransactionType, decodeAccountBlockByContract } from '~@vite/vitejs-accountblock';
 
 import { Address, AccountBlockType, Transaction } from './type';
 
@@ -16,7 +16,11 @@ class ViteAPIClass extends Client {
         super(provider, firstConnect);
 
         // { [funcSign + contractAddress]: { contractAddress, abi, transactionType } }
-        this.customTransactionType = null;
+        this.customTransactionType = {};
+    }
+
+    get transactionType() {
+        return Object.assign({}, this.customTransactionType, Default_Contract_TransactionType);
     }
 
     // contractList = { 'transactionTypeName': { contractAddress, abi } }

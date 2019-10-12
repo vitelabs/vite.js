@@ -9,7 +9,8 @@ describe('Communication Test: src/communication', function () {
 });
 
 describe('ViteAPI Test: src/viteAPI', function () {
-    require('./packages/viteAPI');
+    require('./packages/viteAPI/client');
+    require('./packages/viteAPI/index');
 });
 
 // viteAPI

@@ -563,6 +563,8 @@ export declare class ClientClassType {
 }
 
 export declare class ViteAPI extends ClientClassType {
+    transactionType: Object
+    
     constructor(provider: any, firstConnect: Function)
 
     addTransactionType(contractList: Object)

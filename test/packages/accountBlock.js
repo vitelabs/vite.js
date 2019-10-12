@@ -2,6 +2,7 @@ const assert = require('assert');
 
 import { BlockType } from '../../src/type.ts';
 import { Contracts } from '../../src/constant/index';
+import { encodeFunctionSignature, encodeFunctionCall } from '../../src/abi/index';
 import { Default_Hash, getTransactionType, getCreateContractData, encodeContractList, decodeAccountBlockByContract, getAccountBlockHash, signAccountBlock } from '../../src/accountBlock/index';
 
 import config from '../config';
@@ -17,6 +18,27 @@ describe('getTransactionType', function () {
             assert.equal(getTransactionType(config.blockList[transactionType]).transactionType, transactionType);
         });
     }
+    it('getTransactionType custom', function () {
+        const abi = { methodName: 'hello', inputs: [] };
+        const contractAddress = 'vite_0000000000000000000000000000000000000003f6af7459b9';
+
+        const signFunc = encodeFunctionSignature(abi);
+        const key = `${ signFunc }_${ contractAddress }`;
+
+        const customTxType = {};
+        customTxType[key] = {
+            transactionType: 'helloWorld',
+            abi,
+            contractAddress
+        };
+
+        const txtypeObj = getTransactionType({
+            blockType: 2,
+            data: Buffer.from(encodeFunctionCall(abi), 'hex').toString('base64'),
+            toAddress: contractAddress
+        }, customTxType);
+        assert.deepEqual(txtypeObj, customTxType[key]);
+    });
 });
 
 describe('decodeAccountBlockByContract', function () {
