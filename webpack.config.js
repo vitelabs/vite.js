@@ -30,6 +30,7 @@ module.exports = {
         hdWallet: path.join(baseDir, '/hdWallet/index.ts'),
         utils: path.join(baseDir, '/utils/index.ts'),
         vitejs: path.join(baseDir, '/vitejs/index.ts'),
+        transaction: path.join(baseDir, '/transaction/index.ts'),
         WS: path.join(baseDir, 'WS/index.js'),
         HTTP: path.join(baseDir, 'HTTP/index.js'),
         IPC: path.join(baseDir, 'IPC/index.js')

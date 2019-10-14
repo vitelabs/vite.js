@@ -24,6 +24,8 @@
             "~@vite/vitejs-viteapi": ["viteAPI/index.ts"],
             "~@vite/vitejs-hdwallet": ["hdWallet/index.ts"],
             "~@vite/vitejs-hdwallet/*": ["hdWallet/*"],
+            "~@vite/vitejs-transaction": ["transaction/index.ts"],
+            "~@vite/vitejs-transaction/*": ["transaction/*"],
             "~@vite/vitejs-utils": ["utils/index.ts"],
             "~@vite/vitejs-ws": ["WS/index.js"],
             "~@vite/vitejs-http": ["HTTP/index.js"],
