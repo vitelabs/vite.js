@@ -2,7 +2,7 @@ const BigNumber = require('bn.js');
 const blake = require('blakejs/blake2b');
 
 import { checkParams, isHexString, isBase64String } from '~@vite/vitejs-utils';
-import { getOriginalAddressFromAddress, getAddressFromPublicKey } from  '~@vite/vitejs-hdwallet/address';
+import { getOriginalAddressFromAddress, getAddressFromPublicKey, isValidAddress } from  '~@vite/vitejs-hdwallet/address';
 
 import {
     isRequestBlock, isResponseBlock, checkAccountBlock, Default_Hash,
@@ -39,7 +39,14 @@ class AccountBlockClass {
         toAddress?: Address;
         tokenId?: TokenId;
     }) {
-        const err = checkAccountBlock({ blockType, address, fee, data, sendBlockHash, amount, toAddress, tokenId });
+        const err = checkParams({ blockType, address }, [ 'blockType', 'address' ], [ {
+            name: 'blockType',
+            func: _b => BlockType[_b],
+            msg: `Don\'t have blockType ${ blockType }`
+        }, {
+            name: 'address',
+            func: isValidAddress
+        } ]);
         if (err) {
             throw err;
         }
@@ -301,24 +308,11 @@ class AccountBlockClass {
     }
 
     async send(viteAPI: ClientClassType) {
-        let err = checkParams({ signature: this.signature, publicKey: this.publicKey }, [ 'publicKey', 'signature' ]);
+        const err = checkAccountBlock(this.accountBlock);
         if (err) {
             throw err;
         }
-
-        err = checkAccountBlock(this.accountBlock);
-        if (err) {
-            throw err;
-        }
-
-        try {
-            const res = viteAPI.request('ledger_sendRawTransaction', this.accountBlock);
-            return res;
-        } catch (err) {
-            const _err = err;
-            _err.accountBlock = this.accountBlock;
-            throw _err;
-        }
+        return viteAPI.request('ledger_sendRawTransaction', this.accountBlock);
     }
 
     async autoPOWSend({ viteAPI, privateKey }: { viteAPI: ClientClassType; privateKey: Buffer | Hex }) {

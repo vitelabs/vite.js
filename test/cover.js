@@ -6,24 +6,28 @@ describe('Abi Test: src/abi', function () {
     require('./packages/abi');
 });
 
-describe('AccountBlock Test: src/accountBlock', function () {
-    require('./packages/accountBlock');
+describe('Keystore Test: src/keystore', function () {
+    require('./packages/keystore');
+});
+
+describe('Utils Test: src/utils', function () {
+    require('./packages/utils');
 });
 
 describe('Constant Test: src/constant', function () {
     require('./packages/constant');
 });
 
-describe('Keystore Test: src/keystore', function () {
-    require('./packages/keystore');
+describe('AccountBlock Test: src/accountBlock', function () {
+    require('./packages/accountBlock');
 });
 
-describe('Address Test: src/hdWallet', function () {
+describe('HdWallet Test: src/hdWallet', function () {
     require('./packages/hdWallet/hdKey');
     require('./packages/hdWallet/address');
     require('./packages/hdWallet/index');
 });
 
-describe('Utils Test: src/utils', function () {
-    require('./packages/utils');
+describe('Transaction Test: src/transaction', function () {
+    require('./packages/transaction/index');
 });

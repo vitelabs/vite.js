@@ -11,7 +11,11 @@ import { BlockType, Address, Base64, Hex, TokenId, Uint64, BigInt, AccountBlockT
 
 export const Default_Hash = '0000000000000000000000000000000000000000000000000000000000000000'; // A total of 64 0
 export const Default_Contract_TransactionType = encodeContractList(Contracts);
-
+export enum AccountBlockStatus {
+    'Before_Hash' = 1,
+    'Before_Signature',
+    'Complete'
+}
 
 // Check AccountBlock
 export function checkAccountBlock(accountBlock: {
@@ -30,46 +34,55 @@ export function checkAccountBlock(accountBlock: {
     hash?: Hex;
     signature?: Base64;
     publicKey?: Base64;
-}): {
+}, status: AccountBlockStatus = AccountBlockStatus.Before_Hash): {
     code: string;
     message: string;
 } {
-    const err = checkParams(accountBlock, [ 'blockType', 'address' ], [ {
-        name: 'blockType',
-        func: _b => BlockType[_b],
-        msg: `Don\'t have blockType ${ accountBlock.blockType }`
-    }, {
-        name: 'address',
-        func: isValidAddress
-    }, {
-        name: 'sendBlockHash',
-        func: isHexString
-    }, {
-        name: 'toAddress',
-        func: isValidAddress
-    }, {
-        name: 'amount',
-        func: isNonNegativeInteger,
-        msg: 'Amount must be an non-negative integer string.'
-    }, {
-        name: 'tokenId',
-        func: isValidTokenId
-    }, {
-        name: 'height',
-        func: isNonNegativeInteger
-    }, {
-        name: 'previousHash',
-        func: isHexString
-    }, {
-        name: 'hash',
-        func: isHexString
-    }, {
-        name: 'signature',
-        func: isBase64String
-    }, {
-        name: 'publicKey',
-        func: isBase64String
-    } ]);
+    const err = checkParams(accountBlock,
+        [ 'blockType', 'address', 'height', 'previousHash' ],
+        [ {
+            name: 'blockType',
+            func: _b => BlockType[_b],
+            msg: `Don\'t have blockType ${ accountBlock.blockType }`
+        }, {
+            name: 'address',
+            func: isValidAddress
+        }, {
+            name: 'height',
+            func: isNonNegativeInteger
+        }, {
+            name: 'previousHash',
+            func: isHexString
+        }, {
+            name: 'sendBlockHash',
+            func: isHexString
+        }, {
+            name: 'toAddress',
+            func: isValidAddress
+        }, {
+            name: 'amount',
+            func: isNonNegativeInteger,
+            msg: 'Amount must be an non-negative integer string.'
+        }, {
+            name: 'fee',
+            func: isNonNegativeInteger,
+            msg: 'Fee must be an non-negative integer string.'
+        }, {
+            name: 'tokenId',
+            func: isValidTokenId
+        }, {
+            name: 'data',
+            func: isBase64String
+        }, {
+            name: 'hash',
+            func: isHexString
+        }, {
+            name: 'signature',
+            func: isBase64String
+        }, {
+            name: 'publicKey',
+            func: isBase64String
+        } ]);
 
     if (err) {
         return err;
@@ -82,12 +95,12 @@ export function checkAccountBlock(accountBlock: {
         };
     }
 
-    // if (accountBlock.toAddress && !isRequestBlock(accountBlock.blockType)) {
-    //     return {
-    //         code: paramsFormat.code,
-    //         message: `${ paramsFormat.message } BlockType is wrong.`
-    //     };
-    // }
+    if (isRequestBlock(accountBlock.blockType) && !accountBlock.toAddress) {
+        return {
+            code: paramsMissing.code,
+            message: `${ paramsMissing.message } ToAddress.`
+        };
+    }
 
     if (Number(accountBlock.amount) && !accountBlock.tokenId) {
         return {
@@ -103,42 +116,104 @@ export function checkAccountBlock(accountBlock: {
         };
     }
 
-    if (accountBlock.hash) {
-        const hash = getAccountBlockHash(accountBlock);
-        if (accountBlock.hash !== hash) {
-            return {
-                code: paramsFormat.code,
-                message: `${ paramsFormat.message } Hash is wrong.`
-            };
-        }
+    if (status === AccountBlockStatus.Before_Hash) {
+        return null;
     }
 
-    if (accountBlock.publicKey) {
-        const address = getAddressFromPublicKey(Buffer.from(accountBlock.publicKey, 'base64'));
-        if (accountBlock.address !== address) {
-            return {
-                code: paramsFormat.code,
-                message: 'PublicKey is wrong.'
-            };
-        }
+    if (!accountBlock.hash) {
+        return {
+            code: paramsMissing.code,
+            message: `${ paramsMissing.message } Hash.`
+        };
     }
 
-    if (accountBlock.signature) {
-        if (!accountBlock.hash) {
-            return {
-                code: paramsMissing.code,
-                message: `${ paramsMissing.message } Missing hash.`
-            };
-        }
-        if (!accountBlock.publicKey) {
-            return {
-                code: paramsMissing.code,
-                message: `${ paramsMissing.message } Missing publicKey.`
-            };
-        }
+    const hash = getAccountBlockHash(accountBlock);
+    if (accountBlock.hash !== hash) {
+        return {
+            code: paramsFormat.code,
+            message: `${ paramsFormat.message } Hash is wrong.`
+        };
+    }
+
+    if (status === AccountBlockStatus.Before_Signature) {
+        return null;
+    }
+
+    if (!accountBlock.publicKey) {
+        return {
+            code: paramsMissing.code,
+            message: `${ paramsMissing.message } PublicKey.`
+        };
+    }
+
+    const address = getAddressFromPublicKey(Buffer.from(accountBlock.publicKey, 'base64'));
+    if (accountBlock.address !== address) {
+        return {
+            code: paramsFormat.code,
+            message: 'PublicKey is wrong.'
+        };
+    }
+
+    if (!accountBlock.signature) {
+        return {
+            code: paramsMissing.code,
+            message: `${ paramsMissing.message } Signature.`
+        };
+    }
+
+    const publicKey = Buffer.from(accountBlock.publicKey, 'base64');
+    const signature = Buffer.from(accountBlock.signature, 'base64').toString('hex');
+    const result = ed25519.verify(hash, signature, publicKey);
+    if (!result) {
+        return {
+            code: paramsFormat.code,
+            message: 'Signature is wrong.'
+        };
     }
 
     return null;
+}
+
+export function isValidAccountBlockBeforeHash(accountBlock: {
+    blockType: BlockType;
+    address: Address;
+    height: Uint64;
+    previousHash: Hex;
+    fee?: BigInt;
+    amount?: BigInt;
+    toAddress?: Address;
+    tokenId?: TokenId;
+    data?: Base64;
+    sendBlockHash?: Hex;
+    difficulty?: BigInt;
+    nonce?: Base64;
+}) {
+    const err = checkAccountBlock(accountBlock, AccountBlockStatus.Before_Hash);
+    return !err;
+}
+
+export function isValidAccountBlockBeforeSignature(accountBlock: {
+    blockType: BlockType;
+    address: Address;
+    height: Uint64;
+    previousHash: Hex;
+    hash: Hex;
+    fee?: BigInt;
+    data?: Base64;
+    sendBlockHash?: Hex;
+    toAddress?: Address;
+    tokenId?: TokenId;
+    amount?: BigInt;
+    difficulty?: BigInt;
+    nonce?: Base64;
+}) {
+    const err = checkAccountBlock(accountBlock, AccountBlockStatus.Before_Signature);
+    return !err;
+}
+
+export function isValidAccountBlock(accountBlock) {
+    const err = checkAccountBlock(accountBlock, AccountBlockStatus.Complete);
+    return !err;
 }
 
 export function isRequestBlock(blockType: BlockType): Boolean {
@@ -331,9 +406,7 @@ export function signAccountBlock(accountBlock: {
 }, privateKey: Buffer | Hex): {
     signature: Base64; publicKey: Base64;
 } {
-    const hash = accountBlock.hash;
-
-    const err = checkParams({ privateKey, hash }, [ 'privateKey', 'hash' ], [{
+    const err = checkParams({ privateKey, accountBlock }, [ 'privateKey', 'accountBlock' ], [{
         name: 'privateKey',
         func: _p => _p instanceof Buffer || isHexString(_p),
         msg: 'PrivateKey is Buffer or Hex-string'
@@ -342,11 +415,7 @@ export function signAccountBlock(accountBlock: {
         throw err;
     }
 
-    if (isRequestBlock(accountBlock.blockType) && !accountBlock.toAddress) {
-        throw new Error(`${ paramsFormat.message } BlockType is wrong.`);
-    }
-
-    const checkError = checkAccountBlock(accountBlock);
+    const checkError = checkAccountBlock(accountBlock, AccountBlockStatus.Before_Signature);
     if (checkError) {
         throw checkError;
     }
@@ -360,7 +429,7 @@ export function signAccountBlock(accountBlock: {
         throw new Error('PrivateKey is wrong.');
     }
 
-    const signature: Hex = ed25519.sign(hash, _privateKey);
+    const signature: Hex = ed25519.sign(accountBlock.hash, _privateKey);
     return {
         signature: Buffer.from(signature, 'hex').toString('base64'),
         publicKey: Buffer.from(publicKey).toString('base64')
@@ -369,6 +438,7 @@ export function signAccountBlock(accountBlock: {
 
 
 // About Transaction and Contracts
+
 export function decodeAccountBlockByContract({ accountBlock, contractAddress, abi, topics = [], methodName }: {
     accountBlock: AccountBlockType;
     contractAddress: Address;
@@ -384,21 +454,34 @@ export function decodeAccountBlockByContract({ accountBlock, contractAddress, ab
         throw err;
     }
 
-    // [TODO]
-    const checkError = checkAccountBlock(accountBlock);
-    if (checkError) {
-        throw checkError;
-    }
-
-    if (accountBlock.blockType !== BlockType.TransferRequest) {
-        throw new Error(`AccountBlock's blockType !== ${ BlockType.TransferRequest }`);
-    }
-
-    if (accountBlock.toAddress !== contractAddress || !accountBlock.data) {
+    if (accountBlock.blockType !== BlockType.TransferRequest
+        || accountBlock.toAddress !== contractAddress) {
         return null;
     }
 
-    const hexData = Buffer.from(accountBlock.data, 'base64').toString('hex');
+    return decodeAccountBlockDataByContract({
+        data: accountBlock.data,
+        abi,
+        topics,
+        methodName
+    });
+}
+
+export function decodeAccountBlockDataByContract({ data, abi, topics = [], methodName }: {
+    data: Base64;
+    abi: any;
+    topics?: any;
+    methodName?: string;
+}) {
+    const err = checkParams({ data, abi }, [ 'data', 'abi' ], [{
+        name: 'data',
+        func: isBase64String
+    }]);
+    if (err) {
+        throw err;
+    }
+
+    const hexData = Buffer.from(data, 'base64').toString('hex');
 
     const encodeFuncSign = encodeFunctionSignature(abi, methodName);
     if (encodeFuncSign !== hexData.substring(0, 8)) {
@@ -509,4 +592,3 @@ function getNumberHex(amount) {
     const amountBytes = amount && !bigAmount.isZero() ? bigAmount.toArray('big') : '';
     return leftPadBytes(amountBytes, 32);
 }
-

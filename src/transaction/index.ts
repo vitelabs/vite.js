@@ -708,5 +708,5 @@ class TransactionClass {
     }
 }
 
-export const transaction = TransactionClass;
+export const Transaction = TransactionClass;
 export default TransactionClass;
