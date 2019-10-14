@@ -4,9 +4,9 @@ import { RPCrequest, RPCresponse, Methods } from './type';
 import EventEmitter from './eventEmitter';
 
 
-class ClientClass {
-    _provider: any
+class ProviderClass {
     isConnected: Boolean
+    private _provider: any
     private subscriptionList: Array<EventEmitter>
     private requestList: Array<any>
 
@@ -202,5 +202,5 @@ class ClientClass {
     }
 }
 
-export const Client = ClientClass;
-export default Client;
+export const Provider = ProviderClass;
+export default Provider;

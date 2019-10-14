@@ -5,13 +5,14 @@ import { checkParams, isNonNegativeInteger, isHexString, isArray, isObject, isVa
 
 import AccountBlock from './accountBlock';
 
-import { Hex, Address, TokenId, BigInt, Base64, Int32, Uint8, Uint32, Uint256 } from './type';
+import { Hex, Address, TokenId, BigInt, Base64, Int32, Uint8, Uint32, Uint256, ProviderType } from './type';
 
 
 class TransactionClass {
     readonly address: Address
+    private viteProvider: ProviderType
 
-    constructor(address: Address) {
+    constructor(address: Address, viteProvider?: ProviderType) {
         const err = checkParams({ address }, ['address'], [{
             name: 'address',
             func: isValidAddress
@@ -21,7 +22,18 @@ class TransactionClass {
         }
 
         this.address = address;
+        viteProvider && this.setViteProvider(viteProvider);
     }
+
+    setViteProvider(viteProvider: ProviderType) {
+        this.viteProvider = viteProvider;
+    }
+
+    updateViteProvider(viteProvider: ProviderType) {
+        this.viteProvider = viteProvider;
+    }
+
+    // setPrivateKey
 
     sendTransaction({ toAddress, tokenId = Vite_TokenId, amount = '0', message }: {
         toAddress: Address;
@@ -34,8 +46,11 @@ class TransactionClass {
             throw err;
         }
 
-        const messageHex = Buffer.from(message).toString('hex');
-        const data = Buffer.from(messageHex, 'hex').toString('base64');
+        let data = '';
+        if (message) {
+            const messageHex = Buffer.from(message).toString('hex');
+            data = Buffer.from(messageHex, 'hex').toString('base64');
+        }
 
         const accountBlock: AccountBlock = new AccountBlock({
             blockType: BlockType.TransferRequest,
@@ -44,7 +59,7 @@ class TransactionClass {
             tokenId,
             amount,
             data
-        });
+        }, this.viteProvider);
 
         return accountBlock;
     }
@@ -59,7 +74,7 @@ class TransactionClass {
             blockType: BlockType.Response,
             address: this.address,
             sendBlockHash
-        });
+        }, this.viteProvider);
 
         return accountBlock;
     }
@@ -82,7 +97,7 @@ class TransactionClass {
             tokenId,
             amount,
             data
-        });
+        }, this.viteProvider);
 
         return accountBlock;
     }
@@ -95,21 +110,12 @@ class TransactionClass {
         abi?: Object | Array<Object>;
         params?: string | Array<string | boolean>;
     }): AccountBlock {
-        const err = checkParams({ code, abi, responseLatency, quotaMultiplier, randomDegree },
-            [ 'code', 'fee', 'responseLatency', 'quotaMultiplier', 'randomDegree' ],
-            [ {
-                name: 'responseLatency',
-                func: _c => Number(_c) >= 0 && Number(_c) <= 75
-            }, {
-                name: 'quotaMultiplier',
-                func: _c => Number(_c) >= 10 && Number(_c) <= 100
-            }, {
-                name: 'randomDegree',
-                func: _c => Number(_c) >= 0 && Number(_c) <= 75
-            }, {
+        const err = checkParams({ abi, responseLatency, quotaMultiplier, randomDegree },
+            [ 'responseLatency', 'quotaMultiplier', 'randomDegree' ],
+            [{
                 name: 'abi',
                 func: _a => isArray(_a) || isObject(_a)
-            } ]);
+            }]);
         if (err) {
             throw err;
         }
@@ -126,8 +132,9 @@ class TransactionClass {
             blockType: BlockType.CreateContractRequest,
             address: this.address,
             data,
-            fee: '10000000000000000000'
-        });
+            fee: '10000000000000000000',
+            tokenId: Vite_TokenId
+        }, this.viteProvider);
     }
 
     callContract({ toAddress, tokenId = Vite_TokenId, amount = '0', fee = '0', abi, methodName, params = [] }: {
@@ -155,7 +162,7 @@ class TransactionClass {
             amount,
             fee,
             data: getCallContractData({ abi, params, methodName })
-        });
+        }, this.viteProvider);
     }
 
     registerSBP({ sbpName, blockProducingAddress, amount = '1000000000000000000000000' }: {
@@ -271,13 +278,12 @@ class TransactionClass {
         });
     }
 
-    stakeForQuota({ beneficiary, amount }: {
-        beneficiary: Address;
-        tokenId: TokenId;
+    stakeForQuota({ beneficiaryAddress, amount }: {
+        beneficiaryAddress: Address;
         amount: BigInt;
     }): AccountBlock {
-        const err = checkParams({ beneficiary, amount }, [ 'beneficiary', 'amount' ], [{
-            name: 'beneficiary',
+        const err = checkParams({ beneficiaryAddress, amount }, [ 'beneficiaryAddress', 'amount' ], [{
+            name: 'beneficiaryAddress',
             func: isValidAddress
         }]);
         if (err) {
@@ -287,30 +293,30 @@ class TransactionClass {
         return this.callContract({
             abi: Contracts.StakeForQuota.abi,
             toAddress: Contracts.StakeForQuota.contractAddress,
-            params: [beneficiary],
+            params: [beneficiaryAddress],
             tokenId: Vite_TokenId,
             amount
         });
     }
 
-    cancelStake({ beneficiary, amount }: {
-        beneficiary: Address;
+    cancelStake({ beneficiaryAddress, amount }: {
+        beneficiaryAddress: Address;
         amount: Uint256;
     }): AccountBlock {
-        const err = checkParams({ beneficiary, amount }, [ 'beneficiary', 'amount' ], [{
-            name: 'beneficiary',
+        const err = checkParams({ beneficiaryAddress, amount }, [ 'beneficiaryAddress', 'amount' ], [{
+            name: 'beneficiaryAddress',
             func: isValidAddress
         }]);
         if (err) {
             throw err;
         }
 
+        console.log([ beneficiaryAddress, amount ]);
+
         return this.callContract({
             abi: Contracts.CancelStake.abi,
             toAddress: Contracts.CancelStake.contractAddress,
-            params: [ beneficiary, amount ],
-            tokenId: Vite_TokenId,
-            amount
+            params: [ beneficiaryAddress, amount ]
         });
     }
 

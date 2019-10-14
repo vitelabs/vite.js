@@ -263,7 +263,7 @@ export function getAccountBlockHash(accountBlock: {
     source += getHeightHex(accountBlock.height);
     source += getAddressHex(accountBlock.address);
 
-    if (accountBlock.toAddress) {
+    if (isRequestBlock(accountBlock.blockType)) {
         source += getAddressHex(accountBlock.toAddress);
         source += getAmountHex(accountBlock.amount);
         source += getTokenIdHex(accountBlock.tokenId);
@@ -291,7 +291,7 @@ export function getPreviousHashHex(previousHash: Hex): Hex {
 }
 
 export function getHeightHex(height: Uint64): Hex {
-    return Number(height) ? bytesToHex(new BigNumber(height).toArray('big', 8)) : '';
+    return height ? bytesToHex(new BigNumber(height).toArray('big', 8)) : '';
 }
 
 export function getAddressHex(address: Address): Hex {

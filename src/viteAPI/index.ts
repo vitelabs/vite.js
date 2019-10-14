@@ -6,10 +6,10 @@ import { Default_Contract_TransactionType, encodeContractList, getTransactionTyp
 
 import { Address, AccountBlockType, Transaction } from './type';
 
-import Client from './client';
+import Provider from './provider';
 
 
-class ViteAPIClass extends Client {
+class ViteAPIClass extends Provider {
     private customTransactionType: Object
 
     constructor(provider: any, firstConnect: Function) {
@@ -48,17 +48,25 @@ class ViteAPIClass extends Client {
         }
 
         const data = await this.batch([ {
-            // ledger.getAccountByAccAddr
             methodName: 'ledger_getAccountByAccAddr',
             params: [address]
         }, {
-            // onroad.getOnroadInfoByAddress
-            methodName: 'ledger_getUnreceivedBlocksByAddress',
+            methodName: 'ledger_getUnreceivedTransactionSummaryByAddress',
             params: [address]
         } ]);
 
         if (!data || (data instanceof Array && data.length < 2)) {
-            return null;
+            return {
+                balance: null,
+                unreceived: null
+            };
+        }
+
+        if (data[0].error) {
+            throw data[0].error;
+        }
+        if (data[1].error) {
+            throw data[1].error;
         }
 
         return {
@@ -104,7 +112,7 @@ class ViteAPIClass extends Client {
                 );
 
             if (isDecodeTx) {
-                transaction.contractResult = contractAddress && abi
+                transaction.contractParams = contractAddress && abi
                     ? decodeAccountBlockByContract({ accountBlock, contractAddress, abi })
                     : null;
             }

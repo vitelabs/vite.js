@@ -69,20 +69,6 @@ export enum TransactionType {
     'DexFundConfigMarketsAgent'
 }
 
-export declare type SignBlock = {
-    accountAddress: Address;
-    blockType: BlockType;
-    prevHash: Hex;
-    height: Uint64;
-    fee?: BigInt;
-    fromBlockHash?: Hex;
-    toAddress?: Address;
-    tokenId?: TokenId;
-    amount?: BigInt;
-    data?: Base64;
-    nonce?: Base64;
-}
-
 export declare type TokenInfo = {
     tokenName: String;
     tokenSymbol: String;
@@ -154,198 +140,7 @@ export declare type Transaction = {
     receiveBlockHeight?: Uint64;
     receiveBlockHash?: Hex;
     transationType?: String;
-    contractResult?: Object;
-}
-
-// export declare type AccountBlock = {
-//     accountAddress: Address;
-//     blockType: BlockType;
-//     prevHash: Hex;
-//     height: Uint64;
-//     hash: Hex;
-//     signature: Base64;
-//     publicKey: Base64;
-//     fee?: BigInt;
-//     fromBlockHash?: Hex;
-//     toAddress?: Address;
-//     tokenId?: TokenId;
-//     amount?: BigInt;
-//     data?: Base64;
-//     nonce?: Base64;
-// }
-
-export declare type SBPregBlock = {
-    accountAddress: Address;
-    nodeName: string;
-    toAddress: Address;
-    tokenId: TokenId;
-    amount: BigInt;
-
-    Gid?: string;
-    prevHash?: Hex;
-    height?: Uint64;
-};
-
-export declare type block8 = {
-    accountAddress: Address;
-    nodeName: string;
-    toAddress: Address;
-    tokenId: TokenId;
-
-    Gid?: string;
-    prevHash?: Hex;
-    height?: Uint64;
-}
-
-export declare type block7 = {
-    accountAddress: Address;
-    nodeName: string;
-    tokenId: TokenId;
-
-    Gid?: string;
-    prevHash?: Hex;
-    height?: Uint64;
-}
-
-export declare type revokeVotingBlock = {
-    accountAddress: Address;
-    tokenId: TokenId;
-
-    Gid?: string;
-    prevHash?: Hex;
-    height?: Uint64;
-}
-
-export declare type quotaBlock = {
-    accountAddress: Address;
-    toAddress: Address;
-    tokenId: TokenId;
-    amount: BigInt;
-
-    prevHash?: Hex;
-    height?: Uint64;
-}
-
-export declare type sendTxBlock = {
-    accountAddress: Address;
-    toAddress: Address;
-    tokenId: TokenId;
-    amount: BigInt;
-
-    data?: Base64;
-    message?: string;
-    prevHash?: Hex;
-    height?: Uint64;
-}
-
-export declare type receiveTxBlock = {
-    accountAddress: Address;
-    fromBlockHash: Hex;
-
-    prevHash?: Hex;
-    height?: Uint64;
-}
-
-export declare type syncFormatBlock = {
-    blockType: BlockType;
-    accountAddress: Address;
-    prevHash?: Hex;
-    height?: Uint64;
-    fromBlockHash?: Hex;
-    data?: Base64;
-    message?: string;
-    toAddress?: Address;
-    tokenId?: TokenId;
-    amount?: BigInt;
-    fee?: BigInt;
-    nonce?: Base64;
-}
-
-export declare type formatBlock = {
-    blockType: BlockType;
-    accountAddress: Address;
-    fromBlockHash?: Hex;
-    data?: Base64;
-    message?: string;
-    toAddress?: Address;
-    tokenId?: TokenId;
-    amount?: BigInt;
-    fee?: BigInt;
-    prevHash?: Hex;
-    height?: Uint64;
-    nonce?: Base64;
-}
-export declare type createContractBlock = {
-    accountAddress: Address;
-    hexCode: Hex;
-    abi: string;
-    amount: BigInt;
-    fee: BigInt;
-    confirmTime: Uint8;
-    quotaRatio: Uint8;
-    seedCount: Uint8;
-    tokenId?: TokenId;
-    params?: string;
-    prevHash?: Hex;
-    height?: Uint64;
-}
-
-export declare type callContractBlock = {
-    accountAddress: Address;
-    toAddress: Address;
-    abi: object;
-    methodName?: string;
-    fee?: BigInt;
-    tokenId?: TokenId;
-    amount?: BigInt;
-    params?: Array<string | boolean>;
-    prevHash?: Hex;
-    height?: Uint64;
-}
-
-export declare type mintageBlock = {
-    accountAddress: Address;
-    tokenName: string;
-    isReIssuable: boolean;
-    maxSupply: string;
-    ownerBurnOnly: string;
-    totalSupply: BigInt;
-    decimals: string;
-    tokenSymbol: string;
-    prevHash?: Hex;
-    height?: Uint64;
-}
-
-export declare type mintageIssueBlock = {
-    accountAddress: Address;
-    tokenId: TokenId;
-    amount: BigInt;
-    beneficial: Address;
-    prevHash?: Hex;
-    height?: Uint64;
-}
-
-export declare type mintageBurnBlock = {
-    accountAddress: Address;
-    amount: BigInt;
-    tokenId: TokenId;
-    prevHash?: Hex;
-    height?: Uint64;
-}
-
-export declare type changeTokenTypeBlock = {
-    accountAddress: Address;
-    tokenId: TokenId;
-    prevHash?: Hex;
-    height?: Uint64;
-}
-
-export declare type changeTransferOwnerBlock = {
-    accountAddress: Address;
-    tokenId: TokenId;
-    newOwner: Address;
-    prevHash?: Hex;
-    height?: Uint64;
+    contractParams?: Object;
 }
 
 export declare type AddrObj = {
@@ -363,97 +158,6 @@ export enum BlockType {
     'ResponseFail',
     'RefundByContractRequest',
     'GenesisResponse'
-}
-
-export declare type requiredAccountBlock = {
-    blockType: BlockType;
-    address: Address;
-    fee?: BigInt;
-    data?: Base64;
-    sendBlockHash?: Hex;
-    toAddress?: Address;
-    tokenId?: TokenId;
-    amount?: BigInt;
-}
-
-export declare type afterHeightAccountBlock = {
-    blockType: BlockType;
-    address: Address;
-    height: Uint64;
-    previousHash: Hex;
-    fee?: BigInt;
-    data?: Base64;
-    sendBlockHash?: Hex;
-    toAddress?: Address;
-    tokenId?: TokenId;
-    amount?: BigInt;
-}
-
-export declare type afterPOWAccountBlock = {
-    blockType: BlockType;
-    address: Address;
-    height: Uint64;
-    previousHash: Hex;
-    fee?: BigInt;
-    data?: Base64;
-    sendBlockHash?: Hex;
-    toAddress?: Address;
-    tokenId?: TokenId;
-    amount?: BigInt;
-    difficulty?: BigInt;
-    nonce?: Base64;
-}
-
-export declare type afterHashAccountBlock = {
-    blockType: BlockType;
-    address: Address;
-    height: Uint64;
-    previousHash: Hex;
-    hash: Hex;
-    fee?: BigInt;
-    data?: Base64;
-    sendBlockHash?: Hex;
-    toAddress?: Address;
-    tokenId?: TokenId;
-    amount?: BigInt;
-    difficulty?: BigInt;
-    nonce?: Base64;
-}
-
-export declare type afterSignAccountBlock = {
-    blockType: BlockType;
-    address: Address;
-    height: Uint64;
-    previousHash: Hex;
-    hash: Hex;
-    publicKey: Base64;
-    signature: Base64;
-    fee?: BigInt;
-    data?: Base64;
-    sendBlockHash?: Hex;
-    toAddress?: Address;
-    tokenId?: TokenId;
-    amount?: BigInt;
-    difficulty?: BigInt;
-    nonce?: Base64;
-}
-
-export declare type AllAccountBlock = {
-    blockType: BlockType;
-    address: Address;
-    height?: Uint64;
-    previousHash?: Hex;
-    hash?: Hex;
-    publicKey?: Base64;
-    signature?: Base64;
-    fee?: BigInt;
-    data?: Base64;
-    sendBlockHash?: Hex;
-    toAddress?: Address;
-    tokenId?: TokenId;
-    amount?: BigInt;
-    difficulty?: BigInt;
-    nonce?: Base64;
 }
 
 export declare type Methods = String |
@@ -547,8 +251,7 @@ export declare class EventEmitter {
     stopLoop()
 }
 
-export declare class ClientClassType {
-    _provider: any;
+export declare class ProviderType {
     isConnected: Boolean;
 
     constructor(provider: any, firstConnect: Function)
@@ -562,7 +265,7 @@ export declare class ClientClassType {
     subscribe(methodName, ...args) 
 }
 
-export declare class ViteAPI extends ClientClassType {
+export declare class ViteAPI extends ProviderType {
     transactionType: Object
     
     constructor(provider: any, firstConnect: Function)
@@ -592,6 +295,7 @@ export declare type AccountBlockBlock = {
     publicKey?: Base64;
     hash?: Hex
 }
+
 export declare class AccountBlockClassType {
     blockType: BlockType;
     address: Address;
@@ -636,8 +340,10 @@ export declare class AccountBlockClassType {
         amount?: BigInt;
         toAddress?: Address;
         tokenId?: TokenId;
-    })
+    }, viteProvider?: ProviderType)
 
+    setViteProvider(viteProvider: ProviderType)
+    updateViteProvider(viteProvider: ProviderType)
     getHeight(viteAPI: ViteAPI): Promise<{height: Uint64, previousHash: Hex }>
     setHeight({ height, previousHash }: {
         height: Uint64;

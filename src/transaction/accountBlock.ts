@@ -10,7 +10,7 @@ import {
     getAmountHex, getFeeHex, getNonceHex, getPreviousHashHex, getTokenIdHex, getSendBlockHashHex,
     getAccountBlockHash, signAccountBlock
 } from '~@vite/vitejs-accountblock';
-import { Address, Hex, Base64, BigInt, Uint64, BlockType, TokenId, AccountBlockBlock, ClientClassType } from './type';
+import { Address, Hex, Base64, BigInt, Uint64, BlockType, TokenId, AccountBlockBlock, ProviderType } from './type';
 
 
 class AccountBlockClass {
@@ -29,6 +29,8 @@ class AccountBlockClass {
     signature?: Base64;
     publicKey?: Base64;
 
+    private viteProvider: ProviderType
+
     constructor({ blockType, address, fee, data, sendBlockHash, amount, toAddress, tokenId }: {
         blockType: BlockType;
         address: Address;
@@ -38,7 +40,7 @@ class AccountBlockClass {
         amount?: BigInt;
         toAddress?: Address;
         tokenId?: TokenId;
-    }) {
+    }, viteProvider?: ProviderType) {
         const err = checkParams({ blockType, address }, [ 'blockType', 'address' ], [ {
             name: 'blockType',
             func: _b => BlockType[_b],
@@ -59,6 +61,8 @@ class AccountBlockClass {
         this.amount = amount;
         this.toAddress = toAddress;
         this.tokenId = tokenId;
+
+        viteProvider && this.setViteProvider(viteProvider);
     }
 
     get accountBlock(): AccountBlockBlock {
@@ -138,12 +142,32 @@ class AccountBlockClass {
     }
 
     get hash(): Hex {
-        return getAccountBlockHash(this.accountBlock);
+        return getAccountBlockHash({
+            blockType: this.blockType,
+            address: this.address,
+            fee: this.fee,
+            data: this.data,
+            sendBlockHash: this.sendBlockHash,
+            toAddress: this.toAddress,
+            tokenId: this.tokenId,
+            amount: this.amount,
+            height: this.height,
+            previousHash: this.previousHash,
+            difficulty: this.difficulty,
+            nonce: this.nonce
+        });
     }
 
-    async getHeight(viteAPI: ClientClassType): Promise<{height: Uint64; previousHash: Hex }> {
-        const previousAccountBlock = await viteAPI.request('ledger_getLatestAccountBlock', this.address);
+    setViteProvider(viteProvider: ProviderType) {
+        this.viteProvider = viteProvider;
+    }
 
+    updateViteProvider(viteProvider: ProviderType) {
+        this.viteProvider = viteProvider;
+    }
+
+    async getHeight(): Promise<{height: Uint64; previousHash: Hex }> {
+        const previousAccountBlock = await this.viteProvider.request('ledger_getLatestAccountBlock', this.address);
         let height: Uint64 = previousAccountBlock && previousAccountBlock.height ? previousAccountBlock.height : '';
         height = height ? new BigNumber(height).add(new BigNumber(1)).toString() : '1';
         const previousHash: Hex = previousAccountBlock && previousAccountBlock.hash ? previousAccountBlock.hash : Default_Hash;
@@ -158,8 +182,8 @@ class AccountBlockClass {
         this.previousHash = previousHash;
     }
 
-    async autoSetHeight(viteAPI: ClientClassType) {
-        const { height, previousHash } = await this.getHeight(viteAPI);
+    async autoSetHeight() {
+        const { height, previousHash } = await this.getHeight();
         this.setHeight({ height, previousHash });
         return {
             height: this.height,
@@ -167,7 +191,7 @@ class AccountBlockClass {
         };
     }
 
-    async getToAddress(viteAPI: ClientClassType) {
+    async getToAddress() {
         const err = checkParams(this.accountBlock, ['previousHash'], [{
             name: 'blockType',
             func: _b => _b === BlockType.CreateContractRequest
@@ -176,24 +200,24 @@ class AccountBlockClass {
             throw err;
         }
 
-        return viteAPI.request('contract_createContractAddress', this.address, this.height, this.previousHash);
+        return this.viteProvider.request('contract_createContractAddress', this.address, this.height, this.previousHash);
     }
 
     setToAddress(address: Address) {
         this.toAddress = address;
     }
 
-    async autoSetToAddress(viteAPI: ClientClassType) {
+    async autoSetToAddress() {
         if (this.blockType !== BlockType.CreateContractRequest) {
             return this.toAddress;
         }
 
-        const address = await this.getToAddress(viteAPI);
+        const address = await this.getToAddress();
         this.setToAddress(address);
         return this.toAddress;
     }
 
-    async getDifficulty(viteAPI: ClientClassType): Promise<{
+    async getDifficulty(): Promise<{
         requiredQuota: Uint64;
         difficulty: BigInt;
         qc: BigInt;
@@ -209,7 +233,7 @@ class AccountBlockClass {
             difficulty: BigInt;
             qc: BigInt;
             isCongestion: Boolean;
-        } = await viteAPI.request('ledger_getPoWDifficulty', {
+        } = await this.viteProvider.request('ledger_getPoWDifficulty', {
             address: this.address,
             previousHash: this.previousHash,
             blockType: this.blockType,
@@ -224,7 +248,7 @@ class AccountBlockClass {
         this.difficulty = difficulty;
     }
 
-    async getNonce(viteAPI: ClientClassType): Promise<Base64> {
+    async getNonce(): Promise<Base64> {
         const err = checkParams({
             difficulty: this.difficulty,
             previousHash: this.previousHash
@@ -235,8 +259,8 @@ class AccountBlockClass {
 
         const getNonceHashBuffer = Buffer.from(this.originalAddress + this.previousHash, 'hex');
         const getNonceHash = blake.blake2bHex(getNonceHashBuffer, null, 32);
-        const nonce: Base64 = viteAPI.request('util_getPoWNonce', this.difficulty, getNonceHash);
 
+        const nonce: Base64 = this.viteProvider.request('util_getPoWNonce', this.difficulty, getNonceHash);
         return nonce;
     }
 
@@ -244,11 +268,11 @@ class AccountBlockClass {
         this.nonce = nonce;
     }
 
-    async autoSetNonce(viteAPI: ClientClassType): Promise<{difficulty: BigInt; nonce: Base64}> {
-        const result = await this.getDifficulty(viteAPI);
+    async autoSetNonce(): Promise<{difficulty: BigInt; nonce: Base64}> {
+        const result = await this.getDifficulty();
         this.setDifficulty(result.difficulty);
 
-        const nonce: Base64 = this.difficulty ? await this.getNonce(viteAPI) : null;
+        const nonce: Base64 = this.difficulty ? await this.getNonce() : null;
         this.setNonce(nonce);
 
         return {
@@ -257,28 +281,30 @@ class AccountBlockClass {
         };
     }
 
-    setPublicKey(publicKey: Buffer | Hex | Base64) {
+    setPublicKey(publicKey: Hex | Base64) {
         const err = checkParams({ publicKey }, ['publicKey'], [{
             name: 'publicKey',
-            func: _p => _p instanceof Buffer || isHexString(_p) || isBase64String(_p),
-            msg: 'PublicKey is Buffer or Hex-string or Base64-string'
+            func: _p => isHexString(_p) || isBase64String(_p),
+            msg: 'PublicKey is Hex-string or Base64-string'
         }]);
 
         if (err) {
             throw err;
         }
 
-        if (isBase64String(publicKey)) {
-            publicKey = Buffer.from(`${ publicKey }`, 'base64');
-        }
+        const publicKeyBase64 = isBase64String(publicKey)
+            ? publicKey
+            : Buffer.from(`${ publicKey }`, 'hex').toString('base64');
+        const publicKeyHex = isBase64String(publicKey)
+            ? Buffer.from(`${ publicKey }`, 'base64').toString('hex')
+            : publicKey;
 
-        const address = getAddressFromPublicKey(publicKey);
+        const address = getAddressFromPublicKey(publicKeyHex);
         if (this.address !== address) {
             throw new Error('PublicKey is wrong.');
         }
 
-        const _publicKey = publicKey instanceof Buffer ? publicKey : Buffer.from(publicKey, 'hex');
-        this.publicKey = _publicKey.toString('base64');
+        this.publicKey = publicKeyBase64;
     }
 
     setSignature(signature: Hex | Base64) {
@@ -295,39 +321,44 @@ class AccountBlockClass {
             this.signature = signature;
             return;
         }
-
-        const _signature = Buffer.from(signature, 'hex');
-        this.signature = _signature.toString('base64');
+        this.signature = Buffer.from(signature, 'hex').toString('base64');
     }
 
-    sign(privateKey: Buffer | Hex): AccountBlockBlock {
+    sign(privateKey: Hex): AccountBlockBlock {
         const { signature, publicKey } = signAccountBlock(this.accountBlock, privateKey);
         this.setPublicKey(publicKey);
         this.setSignature(signature);
         return this.accountBlock;
     }
 
-    async send(viteAPI: ClientClassType) {
+    async send() {
         const err = checkAccountBlock(this.accountBlock);
         if (err) {
             throw err;
         }
-        return viteAPI.request('ledger_sendRawTransaction', this.accountBlock);
+
+        try {
+            const res = await this.viteProvider.request('ledger_sendRawTransaction', this.accountBlock);
+            return res || this.accountBlock;
+        } catch (err) {
+            err.acccountBlock = this.accountBlock;
+            throw err;
+        }
     }
 
-    async autoPOWSend({ viteAPI, privateKey }: { viteAPI: ClientClassType; privateKey: Buffer | Hex }) {
-        await this.autoSetHeight(viteAPI);
-        await this.autoSetToAddress(viteAPI);
-        await this.autoSetNonce(viteAPI);
+    async autoPoWSend(privateKey: Hex) {
+        await this.autoSetHeight();
+        await this.autoSetToAddress();
+        await this.autoSetNonce();
         this.sign(privateKey);
-        return this.send(viteAPI);
+        return this.send();
     }
 
-    async autoSend({ viteAPI, privateKey }: { viteAPI: ClientClassType; privateKey: Buffer | Hex }) {
-        await this.autoSetHeight(viteAPI);
-        await this.autoSetToAddress(viteAPI);
+    async autoSend(privateKey: Hex) {
+        await this.autoSetHeight();
+        await this.autoSetToAddress();
         this.sign(privateKey);
-        return this.send(viteAPI);
+        return this.send();
     }
 }
 

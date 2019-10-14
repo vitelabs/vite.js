@@ -1,19 +1,19 @@
 const assert = require('assert');
 
 import ViteAPI from '../../../src/viteAPI/index';
-import Client from '../../../src/viteAPI/client';
+import Provider from '../../../src/viteAPI/provider';
 import HTTP_RPC from '../../../src/HTTP';
 import { encodeFunctionSignature } from '../../../src/abi/index';
 
-const provider = new HTTP_RPC();
-const myViteAPI = new ViteAPI(provider, () => {
+const httpServer = new HTTP_RPC();
+const myViteAPI = new ViteAPI(httpServer, () => {
     it('connected callback', function () {
         assert.equal(true, true);
     });
 });
 
-it('extends of ViteAPI/client', function () {
-    assert.equal(myViteAPI instanceof Client, true);
+it('extends of ViteAPI/Provider', function () {
+    assert.equal(myViteAPI instanceof Provider, true);
 });
 
 describe('ViteAPI addTxType', function () {

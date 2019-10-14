@@ -1,16 +1,16 @@
-import { ClientClassType } from './type';
+import { ProviderType } from './type';
 
 class EventEmitter {
     readonly id: string
-    readonly client: ClientClassType
     readonly isSubscribe: boolean
+    private viteProvider: ProviderType
     private timeLoop: any
     private callback: Function
 
-    constructor(id: string, client: ClientClassType, isSubscribe: boolean) {
+    constructor(id: string, viteProvider: ProviderType, isSubscribe: boolean) {
         this.id = id;
         this.callback = null;
-        this.client = client;
+        this.viteProvider = viteProvider;
         this.isSubscribe = isSubscribe;
 
         this.timeLoop = null;
@@ -22,7 +22,7 @@ class EventEmitter {
 
     off() {
         this.stopLoop();
-        this.client.unsubscribe(this);
+        this.viteProvider.unsubscribe(this);
     }
 
     emit(result) {
@@ -32,7 +32,7 @@ class EventEmitter {
     startLoop(cb: Function, time: number = 2000) {
         const loop = () => {
             this.timeLoop = setTimeout(() => {
-                this.client.request('subscribe_getChangesByFilterId', this.id).then(data => {
+                this.viteProvider.request('subscribe_getChangesByFilterId', this.id).then(data => {
                     cb && cb(data);
                     loop();
                 }).catch(() => {
@@ -49,7 +49,7 @@ class EventEmitter {
         }
         clearTimeout(this.timeLoop);
         this.timeLoop = null;
-        this.client.request('subscribe_uninstallFilter', this.id);
+        this.viteProvider.request('subscribe_uninstallFilter', this.id);
     }
 }
 
