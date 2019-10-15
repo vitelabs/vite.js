@@ -145,8 +145,8 @@ export declare type Transaction = {
 
 export declare type AddrObj = {
     originalAddress: Hex;
-    publicKey: Buffer;
-    privateKey: Buffer;
+    publicKey: Hex;
+    privateKey: Hex;
     address: Address;
 }
 
@@ -340,7 +340,7 @@ export declare class AccountBlockClassType {
         amount?: BigInt;
         toAddress?: Address;
         tokenId?: TokenId;
-    }, provider?: ProviderType)
+    }, provider?: ProviderType, privateKey?: Hex)
 
     setProvider(provider: ProviderType)
     updateProvider(provider: ProviderType)
@@ -360,7 +360,7 @@ export declare class AccountBlockClassType {
     getNonce(viteAPI: ViteAPI): Promise<Base64>
     setNonce(nonce: Base64)
     autoSetNonce(viteAPI: ViteAPI): Promise<{difficulty: BigInt, nonce: Base64}>
-    setPublicKey(publicKey: Buffer | Hex)
+    setPublicKey(publicKey: Hex)
     setSignature(signature: Base64)
-    sign(privateKey: Buffer | Hex): AccountBlockBlock
+    sign(privateKey: Hex): AccountBlockBlock
 }

@@ -72,12 +72,16 @@ export function getPath(index: number): String {
     return `${ ROOT_PATH }/${ index }\'`;
 }
 
-export function deriveKeyPairByPath(seed: Hex, path: String): { privateKey: Buffer; publicKey: Buffer; } {
+export function deriveKeyPairByPath(seed: Hex, path: String): { privateKey: Hex; publicKey: Hex; } {
     const { key } = hd.derivePath(path, seed);
-    return hd.getPublicKey(key);
+    const { privateKey, publicKey } = hd.getPublicKey(key);
+    return {
+        privateKey: Buffer.from(privateKey).toString('hex'),
+        publicKey: Buffer.from(publicKey).toString('hex')
+    };
 }
 
-export function deriveKeyPair(seed: Hex, index: number): { privateKey: Buffer; publicKey: Buffer; } {
+export function deriveKeyPair(seed: Hex, index: number): { privateKey: Hex; publicKey: Hex; } {
     const path = getPath(index);
     return deriveKeyPairByPath(seed, path);
 }

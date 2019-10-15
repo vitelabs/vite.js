@@ -28,8 +28,8 @@ describe('deriveAddresses', function () {
         const keypair = hdWalletUtils.deriveKeyPair(seedHex, index);
 
         assert.equal(addrObj.address, addrList[index]);
-        assert.deepEqual(addrObj.privateKey, keypair.privateKey);
-        assert.deepEqual(addrObj.publicKey, keypair.publicKey);
+        assert.equal(addrObj.privateKey, keypair.privateKey);
+        assert.equal(addrObj.publicKey, keypair.publicKey);
     });
 
     it('deriveAddressList', function () {
@@ -67,8 +67,8 @@ describe('hdWallet', function () {
 
             assert.equal(addrObj.address, wallet.address);
             assert.equal(addrObj.originalAddress, wallet.originalAddress);
-            assert.deepEqual(addrObj.privateKey, wallet.privateKey);
-            assert.deepEqual(addrObj.publicKey, wallet.publicKey);
+            assert.equal(addrObj.privateKey, wallet.privateKey);
+            assert.equal(addrObj.publicKey, wallet.publicKey);
             assert.equal(path, wallet.path);
         });
     });

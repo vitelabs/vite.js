@@ -28,6 +28,6 @@ describe('HdWallet Test: src/hdWallet', function () {
     require('./packages/hdWallet/index');
 });
 
-describe('Transaction Test: src/transaction', function () {
-    require('./packages/transaction/index');
-});
+// describe('Transaction Test: src/transaction', function () {
+//     require('./packages/transaction/index');
+// });

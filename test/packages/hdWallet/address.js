@@ -12,19 +12,19 @@ const addrPrivContract = createAddressByPrivateKey(privKey, true);
 
 describe('createAddressByPrivateKey', function () {
     it('with privateKey, isContract = false', function () {
-        assert.equal(addrPriv.privateKey.toString('hex'), privKey);
+        assert.equal(addrPriv.privateKey, privKey);
     });
 
     it('with privateKey, isContract = true', function () {
-        assert.equal(addrPrivContract.privateKey.toString('hex'), privKey);
+        assert.equal(addrPrivContract.privateKey, privKey);
     });
 
     it('without privateKey, isContract = false', function () {
-        assert.equal(addr.privateKey instanceof Buffer, true);
+        assert.equal(typeof addr.privateKey, 'string');
     });
 
     it('without privateKey, isContract = true', function () {
-        assert.equal(addr.privateKey instanceof Buffer, true);
+        assert.equal(typeof addrContract.privateKey, 'string');
     });
 });
 

@@ -8,8 +8,8 @@ import * as addressLib from './address';
 import { Hex, Address } from './type';
 
 interface Wallet {
-    publicKey: Buffer;
-    privateKey: Buffer;
+    publicKey: Hex;
+    privateKey: Hex;
     originalAddress: Hex;
     address: Address;
     path: String;

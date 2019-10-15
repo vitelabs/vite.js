@@ -146,7 +146,7 @@ export function checkAccountBlock(accountBlock: {
         };
     }
 
-    const address = getAddressFromPublicKey(Buffer.from(accountBlock.publicKey, 'base64'));
+    const address = getAddressFromPublicKey(Buffer.from(accountBlock.publicKey, 'base64').toString('hex'));
     if (accountBlock.address !== address) {
         return {
             code: paramsFormat.code,
@@ -403,13 +403,13 @@ export function signAccountBlock(accountBlock: {
     previousHash?: Hex;
     difficulty?: BigInt;
     nonce?: Base64;
-}, privateKey: Buffer | Hex): {
+}, privateKey: Hex): {
     signature: Base64; publicKey: Base64;
 } {
     const err = checkParams({ privateKey, accountBlock }, [ 'privateKey', 'accountBlock' ], [{
         name: 'privateKey',
-        func: _p => _p instanceof Buffer || isHexString(_p),
-        msg: 'PrivateKey is Buffer or Hex-string'
+        func: isHexString,
+        msg: 'PrivateKey is Hex-string'
     }]);
     if (err) {
         throw err;
@@ -420,19 +420,19 @@ export function signAccountBlock(accountBlock: {
         throw checkError;
     }
 
-    const _privateKey: Buffer = privateKey instanceof Buffer ? privateKey : Buffer.from(privateKey, 'hex');
     const {
         address,
         publicKey
-    } = createAddressByPrivateKey(_privateKey);
+    } = createAddressByPrivateKey(privateKey);
     if (accountBlock.address !== address) {
         throw new Error('PrivateKey is wrong.');
     }
 
-    const signature: Hex = ed25519.sign(accountBlock.hash, _privateKey);
+    const privateKeyBuffer = Buffer.from(privateKey, 'hex');
+    const signature: Hex = ed25519.sign(accountBlock.hash, privateKeyBuffer);
     return {
         signature: Buffer.from(signature, 'hex').toString('base64'),
-        publicKey: Buffer.from(publicKey).toString('base64')
+        publicKey: Buffer.from(publicKey, 'hex').toString('base64')
     };
 }
 
