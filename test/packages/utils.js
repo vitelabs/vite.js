@@ -124,13 +124,13 @@ const testData = [ {
 
 testData.forEach((testCase, index) => {
     const priv = Buffer.from(testCase.priv, 'hex');
-    const pub = getPublicKey(priv);
+    const pub = Buffer.from(getPublicKey(priv)).toString('hex');
 
-    const signature = sign(testCase.message, priv);
+    const signature = sign(testCase.message, testCase.priv);
 
     describe(`test_${ index }`, function () {
         it('publicKey', function () {
-            assert.equal(testCase.pub, Buffer.from(pub).toString('hex'));
+            assert.equal(testCase.pub, pub);
         });
 
         it('signData', function () {

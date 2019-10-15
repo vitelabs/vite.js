@@ -1,6 +1,6 @@
 const nacl = require('@sisi/tweetnacl-blake2b');
 import { Hex } from './type';
-import { checkParams } from './index';
+import { checkParams, isHexString } from './index';
 
 export function keyPair(): { privateKey: Buffer; publicKey: Buffer; } {
     const keys = nacl.sign.keyPair();
@@ -20,28 +20,47 @@ export function getPublicKey(privKey: Buffer) {
     return key.publicKey;
 }
 
-export function sign(hexStr: Hex, privKey: Buffer) {
-    const err = checkParams({ hexStr, privKey }, [ 'hexStr', 'privKey' ]);
+export function sign(hexStr: Hex, privKey: Hex) {
+    const err = checkParams({ hexStr, privKey }, [ 'hexStr', 'privKey' ], [ {
+        name: 'hexStr',
+        func: isHexString
+    }, {
+        name: 'privKey',
+        func: isHexString
+    } ]);
     if (err) {
         throw new Error(err.message);
     }
 
+    const privateKeyBuffer = Buffer.from(privKey, 'hex');
     const hash = Buffer.from(hexStr, 'hex');
-    const pubKey = getPublicKey(privKey);
-    const signature = nacl.sign.detached(hash, privKey, pubKey);
+    const pubKey = getPublicKey(privateKeyBuffer);
+
+    const signature = nacl.sign.detached(hash, privateKeyBuffer, pubKey);
     const signatureHex = Buffer.from(signature).toString('hex');
     return signatureHex;
 }
 
-export function verify(message: Hex, signature: Hex, publicKey: Buffer) {
-    const err = checkParams({ message, signature, publicKey }, [ 'message', 'signature', 'publicKey' ]);
+export function verify(message: Hex, signature: Hex, publicKey: Hex) {
+    const err = checkParams({ message, signature, publicKey }, [ 'message', 'signature', 'publicKey' ], [ {
+        name: 'message',
+        func: isHexString
+    }, {
+        name: 'signature',
+        func: isHexString
+    }, {
+        name: 'publicKey',
+        func: isHexString
+    } ]);
     if (err) {
         throw new Error(err.message);
     }
 
+    const _publicKey = Buffer.from(publicKey, 'hex');
     const _msg = Buffer.from(message, 'hex');
     const _signature = Buffer.from(signature, 'hex');
-    return nacl.sign.detached.verify(_msg, _signature, publicKey);
+
+    return nacl.sign.detached.verify(_msg, _signature, _publicKey);
 }
 
 export function random(bytesLen: number = 32) {

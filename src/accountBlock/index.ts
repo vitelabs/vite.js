@@ -161,7 +161,7 @@ export function checkAccountBlock(accountBlock: {
         };
     }
 
-    const publicKey = Buffer.from(accountBlock.publicKey, 'base64');
+    const publicKey = Buffer.from(accountBlock.publicKey, 'base64').toString('hex');
     const signature = Buffer.from(accountBlock.signature, 'base64').toString('hex');
     const result = ed25519.verify(hash, signature, publicKey);
     if (!result) {
@@ -428,8 +428,7 @@ export function signAccountBlock(accountBlock: {
         throw new Error('PrivateKey is wrong.');
     }
 
-    const privateKeyBuffer = Buffer.from(privateKey, 'hex');
-    const signature: Hex = ed25519.sign(accountBlock.hash, privateKeyBuffer);
+    const signature: Hex = ed25519.sign(accountBlock.hash, privateKey);
     return {
         signature: Buffer.from(signature, 'hex').toString('base64'),
         publicKey: Buffer.from(publicKey, 'hex').toString('base64')
