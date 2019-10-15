@@ -29,7 +29,8 @@ class AccountBlockClass {
     signature?: Base64;
     publicKey?: Base64;
 
-    private viteProvider: ProviderType
+    private privateKey: Hex
+    private provider: ProviderType
 
     constructor({ blockType, address, fee, data, sendBlockHash, amount, toAddress, tokenId }: {
         blockType: BlockType;
@@ -40,7 +41,7 @@ class AccountBlockClass {
         amount?: BigInt;
         toAddress?: Address;
         tokenId?: TokenId;
-    }, viteProvider?: ProviderType) {
+    }, provider?: ProviderType, privateKey?: Hex) {
         const err = checkParams({ blockType, address }, [ 'blockType', 'address' ], [ {
             name: 'blockType',
             func: _b => BlockType[_b],
@@ -62,7 +63,8 @@ class AccountBlockClass {
         this.toAddress = toAddress;
         this.tokenId = tokenId;
 
-        viteProvider && this.setViteProvider(viteProvider);
+        provider && this.setProvider(provider);
+        privateKey && this.setPrivateKey(privateKey);
     }
 
     get accountBlock(): AccountBlockBlock {
@@ -158,16 +160,28 @@ class AccountBlockClass {
         });
     }
 
-    setViteProvider(viteProvider: ProviderType) {
-        this.viteProvider = viteProvider;
+    setProvider(provider: ProviderType) {
+        this.provider = provider;
     }
 
-    updateViteProvider(viteProvider: ProviderType) {
-        this.viteProvider = viteProvider;
+    updateProvider(provider: ProviderType) {
+        this.provider = provider;
+    }
+
+    setPrivateKey(privateKey: Hex) {
+        const err = checkParams({ privateKey }, ['privateKey'], [{
+            name: 'privateKey',
+            func: isHexString
+        }]);
+        if (err) {
+            throw err;
+        }
+
+        this.privateKey = privateKey;
     }
 
     async getHeight(): Promise<{height: Uint64; previousHash: Hex }> {
-        const previousAccountBlock = await this.viteProvider.request('ledger_getLatestAccountBlock', this.address);
+        const previousAccountBlock = await this.provider.request('ledger_getLatestAccountBlock', this.address);
         let height: Uint64 = previousAccountBlock && previousAccountBlock.height ? previousAccountBlock.height : '';
         height = height ? new BigNumber(height).add(new BigNumber(1)).toString() : '1';
         const previousHash: Hex = previousAccountBlock && previousAccountBlock.hash ? previousAccountBlock.hash : Default_Hash;
@@ -200,7 +214,7 @@ class AccountBlockClass {
             throw err;
         }
 
-        return this.viteProvider.request('contract_createContractAddress', this.address, this.height, this.previousHash);
+        return this.provider.request('contract_createContractAddress', this.address, this.height, this.previousHash);
     }
 
     setToAddress(address: Address) {
@@ -233,7 +247,7 @@ class AccountBlockClass {
             difficulty: BigInt;
             qc: BigInt;
             isCongestion: Boolean;
-        } = await this.viteProvider.request('ledger_getPoWDifficulty', {
+        } = await this.provider.request('ledger_getPoWDifficulty', {
             address: this.address,
             previousHash: this.previousHash,
             blockType: this.blockType,
@@ -260,7 +274,7 @@ class AccountBlockClass {
         const getNonceHashBuffer = Buffer.from(this.originalAddress + this.previousHash, 'hex');
         const getNonceHash = blake.blake2bHex(getNonceHashBuffer, null, 32);
 
-        const nonce: Base64 = this.viteProvider.request('util_getPoWNonce', this.difficulty, getNonceHash);
+        const nonce: Base64 = this.provider.request('util_getPoWNonce', this.difficulty, getNonceHash);
         return nonce;
     }
 
@@ -324,7 +338,7 @@ class AccountBlockClass {
         this.signature = Buffer.from(signature, 'hex').toString('base64');
     }
 
-    sign(privateKey: Hex): AccountBlockBlock {
+    sign(privateKey: Hex = this.privateKey): AccountBlockBlock {
         const { signature, publicKey } = signAccountBlock(this.accountBlock, privateKey);
         this.setPublicKey(publicKey);
         this.setSignature(signature);
@@ -338,7 +352,7 @@ class AccountBlockClass {
         }
 
         try {
-            const res = await this.viteProvider.request('ledger_sendRawTransaction', this.accountBlock);
+            const res = await this.provider.request('ledger_sendRawTransaction', this.accountBlock);
             return res || this.accountBlock;
         } catch (err) {
             err.acccountBlock = this.accountBlock;
@@ -346,7 +360,7 @@ class AccountBlockClass {
         }
     }
 
-    async autoPoWSend(privateKey: Hex) {
+    async autoPoWSend(privateKey: Hex = this.privateKey) {
         await this.autoSetHeight();
         await this.autoSetToAddress();
         await this.autoSetNonce();
@@ -354,7 +368,7 @@ class AccountBlockClass {
         return this.send();
     }
 
-    async autoSend(privateKey: Hex) {
+    async autoSend(privateKey: Hex = this.privateKey) {
         await this.autoSetHeight();
         await this.autoSetToAddress();
         this.sign(privateKey);

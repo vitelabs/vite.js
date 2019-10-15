@@ -340,10 +340,11 @@ export declare class AccountBlockClassType {
         amount?: BigInt;
         toAddress?: Address;
         tokenId?: TokenId;
-    }, viteProvider?: ProviderType)
+    }, provider?: ProviderType, privateKey?: Hex)
 
-    setViteProvider(viteProvider: ProviderType)
-    updateViteProvider(viteProvider: ProviderType)
+    setProvider(provider: ProviderType)
+    updateProvider(provider: ProviderType)
+    setPrivateKey(privateKey: Hex)
     getHeight(viteAPI: ViteAPI): Promise<{height: Uint64, previousHash: Hex }>
     setHeight({ height, previousHash }: {
         height: Uint64;

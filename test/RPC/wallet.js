@@ -6,16 +6,17 @@ import hdWallet from '../../src/hdWallet/index';
 import Transaction from '../../src/transaction/index';
 import { Vite_TokenId } from '../../src/constant/index';
 import GetViteFromWorld from './getViteFromWorld';
-import Provider from '../../src/viteAPI/provider';
 
-const viteProvider = new ViteAPI(new HTTP_RPC(config.http), () => {
+const provider = new ViteAPI(new HTTP_RPC(config.http), () => {
     console.log('Connetct');
 });
 
 const myHDWallet = hdWallet.getHDWallet(config.myMnemonic);
 const myWallet  = myHDWallet.deriveWallet(0);
-const tx = new Transaction(myWallet.address, viteProvider);
-const privateKey = Buffer.from(myWallet.privateKey).toString('hex')
+const tx = new Transaction(myWallet.address);
+const privateKey = Buffer.from(myWallet.privateKey).toString('hex');
+tx.setProvider(provider);
+tx.setPrivateKey(privateKey);
 
 
 TestFunc().then(() => {
@@ -32,8 +33,8 @@ async function TestFunc() {
     // console.log('Step 1 CheckMyBalance. \n');
     // await CheckMyBalance();
 
-    // console.log('Step 2 SendTxToMyself. \n');
-    // await SendTxToMyself();
+    console.log('Step 2 SendTxToMyself. \n');
+    await SendTxToMyself();
 
     // console.log('Step 3 ReceiveTx. \n');
     // await ReceiveTx();
@@ -71,8 +72,8 @@ async function TestFunc() {
     // console.log('Step 14 createContract. \n');
     // await createContract();
 
-    // console.log('Last One CheckMyTxList. \n');
-    // await CheckMyTxList();
+    console.log('Last One CheckMyTxList. \n');
+    await CheckMyTxList();
 
     return null;
 }
@@ -124,7 +125,7 @@ async function SendTxToMyself() {
         toAddress: myWallet.address, 
         tokenId: Vite_TokenId,
         amount: '10000000000000000000'
-    }).autoPoWSend(privateKey);
+    }).autoPoWSend();
 
     console.log('[LOG] SendTxToMyself', data, '\n');
     return data;

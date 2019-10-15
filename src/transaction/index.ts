@@ -1,6 +1,6 @@
 import { BlockType, Vite_TokenId, Contracts, Snapshot_Gid } from '~@vite/vitejs-constant';
 import { getCreateContractData, getCallContractData } from '~@vite/vitejs-accountblock';
-import { isValidAddress, ADDR_TYPE } from '~@vite/vitejs-hdwallet/address';
+import { isValidAddress, ADDR_TYPE, createAddressByPrivateKey  } from '~@vite/vitejs-hdwallet/address';
 import { checkParams, isNonNegativeInteger, isHexString, isArray, isObject, isValidSBPName, isValidTokenId, isBase64String } from '~@vite/vitejs-utils';
 
 import AccountBlock from './accountBlock';
@@ -10,9 +10,10 @@ import { Hex, Address, TokenId, BigInt, Base64, Int32, Uint8, Uint32, Uint256, P
 
 class TransactionClass {
     readonly address: Address
-    private viteProvider: ProviderType
+    private provider: ProviderType
+    private privateKey: Hex
 
-    constructor(address: Address, viteProvider?: ProviderType) {
+    constructor(address: Address) {
         const err = checkParams({ address }, ['address'], [{
             name: 'address',
             func: isValidAddress
@@ -22,18 +23,32 @@ class TransactionClass {
         }
 
         this.address = address;
-        viteProvider && this.setViteProvider(viteProvider);
     }
 
-    setViteProvider(viteProvider: ProviderType) {
-        this.viteProvider = viteProvider;
+    setProvider(provider: ProviderType) {
+        this.provider = provider;
     }
 
-    updateViteProvider(viteProvider: ProviderType) {
-        this.viteProvider = viteProvider;
+    updateProvider(provider: ProviderType) {
+        this.provider = provider;
     }
 
-    // setPrivateKey
+    setPrivateKey(privateKey: Hex) {
+        const err = checkParams({ privateKey }, ['privateKey'], [{
+            name: 'privateKey',
+            func: isHexString
+        }]);
+        if (err) {
+            throw err;
+        }
+
+        const { address } = createAddressByPrivateKey(privateKey);
+        if (address !== this.address) {
+            throw new Error('PrivateKey is wrong');
+        }
+
+        this.privateKey = privateKey;
+    }
 
     sendTransaction({ toAddress, tokenId = Vite_TokenId, amount = '0', message }: {
         toAddress: Address;
@@ -59,7 +74,7 @@ class TransactionClass {
             tokenId,
             amount,
             data
-        }, this.viteProvider);
+        }, this.provider, this.privateKey);
 
         return accountBlock;
     }
@@ -74,7 +89,7 @@ class TransactionClass {
             blockType: BlockType.Response,
             address: this.address,
             sendBlockHash
-        }, this.viteProvider);
+        }, this.provider, this.privateKey);
 
         return accountBlock;
     }
@@ -97,7 +112,7 @@ class TransactionClass {
             tokenId,
             amount,
             data
-        }, this.viteProvider);
+        }, this.provider, this.privateKey);
 
         return accountBlock;
     }
@@ -134,7 +149,7 @@ class TransactionClass {
             data,
             fee: '10000000000000000000',
             tokenId: Vite_TokenId
-        }, this.viteProvider);
+        }, this.provider, this.privateKey);
     }
 
     callContract({ toAddress, tokenId = Vite_TokenId, amount = '0', fee = '0', abi, methodName, params = [] }: {
@@ -162,7 +177,7 @@ class TransactionClass {
             amount,
             fee,
             data: getCallContractData({ abi, params, methodName })
-        }, this.viteProvider);
+        }, this.provider, this.privateKey);
     }
 
     registerSBP({ sbpName, blockProducingAddress, amount = '1000000000000000000000000' }: {
