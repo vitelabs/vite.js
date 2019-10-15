@@ -7,15 +7,17 @@ import Transaction from '../../src/transaction/index';
 import { Vite_TokenId } from '../../src/constant/index';
 import GetViteFromWorld from './getViteFromWorld';
 
-const provider = new ViteAPI(new HTTP_RPC(config.http), () => {
+const viteProvider = new ViteAPI(new HTTP_RPC(config.http), () => {
     console.log('Connetct');
 });
 
 const myHDWallet = hdWallet.getHDWallet(config.myMnemonic);
 const myWallet  = myHDWallet.deriveWallet(0);
+const privateKey = myWallet.privateKey;
+
 const tx = new Transaction(myWallet.address);
-const privateKey = Buffer.from(myWallet.privateKey).toString('hex');
-tx.setProvider(provider);
+
+tx.setProvider(viteProvider);
 tx.setPrivateKey(privateKey);
 
 
@@ -27,20 +29,20 @@ TestFunc().then(() => {
 
 
 async function TestFunc() {
-    // console.log('Step 0 CheckHeight. \n');
-    // await CheckHeight();
+    console.log('Step 0 CheckHeight. \n');
+    await CheckHeight();
 
-    // console.log('Step 1 CheckMyBalance. \n');
-    // await CheckMyBalance();
+    console.log('Step 1 CheckMyBalance. \n');
+    await CheckMyBalance();
 
-    console.log('Step 2 SendTxToMyself. \n');
-    await SendTxToMyself();
+    // console.log('Step 2 SendTxToMyself. \n');
+    // await SendTxToMyself();
 
     // console.log('Step 3 ReceiveTx. \n');
     // await ReceiveTx();
 
-    // console.log('Step 4 getQuota. \n');
-    // await checkQuota();
+    console.log('Step 4 getQuota. \n');
+    await checkQuota();
 
     // console.log('Step 5 SBPreg. \n');
     // await SBPreg();
@@ -72,8 +74,8 @@ async function TestFunc() {
     // console.log('Step 14 createContract. \n');
     // await createContract();
 
-    console.log('Last One CheckMyTxList. \n');
-    await CheckMyTxList();
+    // console.log('Last One CheckMyTxList. \n');
+    // await CheckMyTxList();
 
     return null;
 }

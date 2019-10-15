@@ -21,7 +21,7 @@ async function GetViteFromWorld(toAddress, amount = Default_Amount) {
         toAddress, 
         tokenId: Vite_TokenId,
         amount
-    }).autoSend(Buffer.from(worldWallet.privateKey).toString('hex'));
+    }).autoSend(worldWallet.privateKey);
 
     console.log('[LOG] getViteFromWorld', data, '\n');
     return data;
