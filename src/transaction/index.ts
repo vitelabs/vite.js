@@ -1,6 +1,6 @@
 import { BlockType, Vite_TokenId, Contracts, Snapshot_Gid } from '~@vite/vitejs-constant';
 import { getCreateContractData, getCallContractData } from '~@vite/vitejs-accountblock';
-import { isValidAddress, ADDR_TYPE, createAddressByPrivateKey  } from '~@vite/vitejs-hdwallet/address';
+import { isValidAddress, AddressType, createAddressByPrivateKey  } from '~@vite/vitejs-hdwallet/address';
 import { checkParams, isNonNegativeInteger, isHexString, isArray, isObject, isValidSBPName, isValidTokenId, isBase64String } from '~@vite/vitejs-utils';
 
 import AccountBlock from './accountBlock';
@@ -163,7 +163,7 @@ class TransactionClass {
     }): AccountBlock {
         const err = checkParams({ toAddress, abi }, [ 'toAddress', 'abi' ], [{
             name: 'address',
-            func: _a => isValidAddress(_a) === ADDR_TYPE.Contract
+            func: _a => isValidAddress(_a) === AddressType.Contract
         }]);
         if (err) {
             throw err;

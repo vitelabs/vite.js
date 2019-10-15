@@ -20,16 +20,16 @@ describe('deriveAddresses', function () {
     it('deriveAddress', function () {
         const index = 0;
 
-        const addrObj = hdWalletUtils.deriveAddress({
+        const AddressObj = hdWalletUtils.deriveAddress({
             mnemonics,
             startIndex: index
         });
         const { seedHex } = hdWalletUtils.getSeedFromMnemonics(mnemonics);
         const keypair = hdWalletUtils.deriveKeyPair(seedHex, index);
 
-        assert.equal(addrObj.address, addrList[index]);
-        assert.equal(addrObj.privateKey, keypair.privateKey);
-        assert.equal(addrObj.publicKey, keypair.publicKey);
+        assert.equal(AddressObj.address, addrList[index]);
+        assert.equal(AddressObj.privateKey, keypair.privateKey);
+        assert.equal(AddressObj.publicKey, keypair.publicKey);
     });
 
     it('deriveAddressList', function () {
@@ -59,16 +59,16 @@ describe('hdWallet', function () {
         });
         it('deriveWallet 0', () => {
             const wallet = hdWallet.deriveWallet(0);
-            const addrObj = hdWalletUtils.deriveAddress({
+            const AddressObj = hdWalletUtils.deriveAddress({
                 mnemonics: hdWallet.mnemonics,
                 index: 0
             });
             const path = hdWalletUtils.getPath(0);
 
-            assert.equal(addrObj.address, wallet.address);
-            assert.equal(addrObj.originalAddress, wallet.originalAddress);
-            assert.equal(addrObj.privateKey, wallet.privateKey);
-            assert.equal(addrObj.publicKey, wallet.publicKey);
+            assert.equal(AddressObj.address, wallet.address);
+            assert.equal(AddressObj.originalAddress, wallet.originalAddress);
+            assert.equal(AddressObj.privateKey, wallet.privateKey);
+            assert.equal(AddressObj.publicKey, wallet.publicKey);
             assert.equal(path, wallet.path);
         });
     });

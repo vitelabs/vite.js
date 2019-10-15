@@ -6,6 +6,8 @@ import * as _constant from './constant/index';
 import * as _accountBlock from './accountblock/index';
 import _viteAPI from './viteAPI/index';
 import _hdWallet from './hdWallet/index';
+import _transaction from './transaction/index';
+
 
 // Not Change
 export const abi = _abi;
@@ -20,5 +22,6 @@ export const constant = _constant;
 export const accountBlock = _accountBlock;
 
 // Add
-export const viteAPI = _viteAPI;
+export const Transaction = _transaction;
+export const ViteAPI = _viteAPI;
 export const hdWallet = _hdWallet;

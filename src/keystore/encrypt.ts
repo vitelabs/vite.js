@@ -79,7 +79,7 @@ export function encryptOldKeystore(privKey, pwd, selfScryptsy) {
         throw new Error(err.message);
     }
 
-    const addrObj = createAddressByPrivateKey(privKey);
+    const AddressObj = createAddressByPrivateKey(privKey);
 
     const scryptParams = {
         n,
@@ -92,7 +92,7 @@ export function encryptOldKeystore(privKey, pwd, selfScryptsy) {
     const getResult = (_encryptPwd, res) => {
         const nonce = random(12);
         const text = cipheriv({
-            rawText: addrObj.privateKey,
+            rawText: AddressObj.privateKey,
             pwd: _encryptPwd,
             nonce,
             algorithm
@@ -107,7 +107,7 @@ export function encryptOldKeystore(privKey, pwd, selfScryptsy) {
         };
 
         const encryptedKeyJSON = {
-            hexAddress: addrObj.address,
+            hexAddress: AddressObj.address,
             crypto: cryptoJSON,
             id: new UUID(1).format(),
             keystoreVersion: 1,

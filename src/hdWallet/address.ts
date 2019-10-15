@@ -1,7 +1,7 @@
 import { checkParams, ed25519, blake2b, isHexString } from '~@vite/vitejs-utils';
 import { addressIllegal } from '~@vite/vitejs-error';
 
-import { Hex, AddrObj, Address } from './type';
+import { Hex, AddressObj, Address } from './type';
 
 const { keyPair, getPublicKey } = ed25519;
 
@@ -9,14 +9,14 @@ export const ADDR_PRE = 'vite_';
 export const ADDR_SIZE = 20;
 export const ADDR_CHECK_SUM_SIZE = 5;
 export const ADDR_LEN = ADDR_PRE.length + ADDR_SIZE * 2 + ADDR_CHECK_SUM_SIZE * 2;
-export enum ADDR_TYPE {
+export enum AddressType {
     'Illegal' = 0,
     'Account',
     'Contract'
 }
 
 
-export function createAddressByPrivateKey(privateKey?: Hex, isContract?: boolean): AddrObj {
+export function createAddressByPrivateKey(privateKey?: Hex, isContract?: boolean): AddressObj {
     const err = checkParams({ privateKey }, [], [{
         name: 'privateKey',
         func: isHexString
@@ -63,7 +63,7 @@ export function getAddressFromPublicKey(publicKey: Hex, isContract?: boolean): A
 
 export function getOriginalAddressFromAddress(hexAddr: Hex): Hex {
     const addrType = isValidAddress(hexAddr);
-    if (addrType === ADDR_TYPE.Illegal) {
+    if (addrType === AddressType.Illegal) {
         throw addressIllegal;
     }
 
@@ -84,18 +84,18 @@ export function getAddressFromOriginalAddress(originalAddress: Hex, isContract? 
     return getHexAddr(originalAddressBuf, checkSum);
 }
 
-export function isValidAddress(hexAddr: Hex): ADDR_TYPE {
+export function isValidAddress(hexAddr: Hex): AddressType {
     if (!isValidHex(hexAddr)) {
-        return ADDR_TYPE.Illegal;
+        return AddressType.Illegal;
     }
     return isValidCheckSum(hexAddr);
 }
 
 
 
-function getOriginalAddress(hexAddr: Hex, addrType: ADDR_TYPE): Hex {
+function getOriginalAddress(hexAddr: Hex, addrType: AddressType): Hex {
     const addr = hexAddr.slice(ADDR_PRE.length, ADDR_PRE.length + ADDR_SIZE * 2);
-    if (addrType === ADDR_TYPE.Account) {
+    if (addrType === AddressType.Account) {
         return `${ addr }00`;
     }
     return `${ addr }01`;
@@ -161,20 +161,20 @@ function isValidHex(hexAddr: Address): Boolean {
     return hexAddr && hexAddr.length === ADDR_LEN && hexAddr.indexOf(ADDR_PRE) === 0;
 }
 
-function isValidCheckSum(hexAddr: Address): ADDR_TYPE {
+function isValidCheckSum(hexAddr: Address): AddressType {
     const currentChecksum = hexAddr.slice(ADDR_PRE.length + ADDR_SIZE * 2);
     const _addr = hexAddr.slice(ADDR_PRE.length, ADDR_PRE.length + ADDR_SIZE * 2);
     const addr = Buffer.from(_addr, 'hex');
 
     const contractCheckSum = getAddrCheckSum(addr, true);
     if (contractCheckSum === currentChecksum) {
-        return ADDR_TYPE.Contract;
+        return AddressType.Contract;
     }
 
     const checkSum = getAddrCheckSum(addr);
     if (currentChecksum === checkSum) {
-        return ADDR_TYPE.Account;
+        return AddressType.Account;
     }
 
-    return ADDR_TYPE.Illegal;
+    return AddressType.Illegal;
 }

@@ -143,7 +143,7 @@ export declare type Transaction = {
     contractParams?: Object;
 }
 
-export declare type AddrObj = {
+export declare type AddressObj = {
     originalAddress: Hex;
     publicKey: Hex;
     privateKey: Hex;
@@ -235,20 +235,6 @@ export declare interface RPCresponse {
 export declare interface RPCerror {
     code: number;
     message: string;
-}
-
-export declare class EventEmitter {
-    readonly id: string
-    readonly viteAPI: ViteAPI
-    readonly isSubscribe: boolean
-
-    constructor(id:string, subscription: ViteAPI, isSubscribe:Boolean);
-
-    on(callback: Function);
-    off();
-    emit(result:any);
-    startLoop(cb: Function, time: number)
-    stopLoop()
 }
 
 export declare class ProviderType {

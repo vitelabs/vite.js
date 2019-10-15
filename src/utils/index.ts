@@ -75,13 +75,13 @@ export function isValidTokenId(tokenId: string): Boolean {
         return false;
     }
 
-    const rawTokenId = tokenId.slice(4, tokenId.length - 4);
-    const checkSum = getTokenIdCheckSum(rawTokenId);
+    const originalTokenId = tokenId.slice(4, tokenId.length - 4);
+    const checkSum = getTokenIdCheckSum(originalTokenId);
 
     return tokenId.slice(tokenId.length - 4) === checkSum;
 }
 
-export function getRawTokenId(tokenId: string): Hex {
+export function getOriginalTokenId(tokenId: string): Hex {
     const err = checkParams({ tokenId }, ['tokenId'], [{
         name: 'tokenId',
         func: _t => _t.indexOf('tti_') === 0 && _t.length === 28
@@ -94,20 +94,20 @@ export function getRawTokenId(tokenId: string): Hex {
     return tokenId.slice(4, tokenId.length - 4);
 }
 
-export function getTokenIdFromRaw(rawTokenId: string): TokenId {
-    const err = checkParams({ rawTokenId }, ['rawTokenId'], [{
-        name: 'rawTokenId',
+export function getTokenIdFromRaw(originalTokenId: string): TokenId {
+    const err = checkParams({ originalTokenId }, ['originalTokenId'], [{
+        name: 'originalTokenId',
         func: _t => /^[0-9a-fA-F]+$/.test(_t) && _t.length === 20
     }]);
     if (err) {
         throw new Error(err.message);
     }
 
-    return `tti_${ rawTokenId }${ getTokenIdCheckSum(rawTokenId) }`;
+    return `tti_${ originalTokenId }${ getTokenIdCheckSum(originalTokenId) }`;
 }
 
-function getTokenIdCheckSum(rawTokenId: Hex): Hex {
-    return blake.blake2bHex(Buffer.from(rawTokenId, 'hex'), null, 2);
+function getTokenIdCheckSum(originalTokenId: Hex): Hex {
+    return blake.blake2bHex(Buffer.from(originalTokenId, 'hex'), null, 2);
 }
 
 export function isValidSBPName(sbpName: string): Boolean {

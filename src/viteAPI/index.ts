@@ -1,6 +1,6 @@
 import { Contracts } from '~@vite/vitejs-constant';
 import { checkParams, isArray } from '~@vite/vitejs-utils';
-import { isValidAddress, ADDR_TYPE } from '~@vite/vitejs-hdwallet/address';
+import { isValidAddress, AddressType } from '~@vite/vitejs-hdwallet/address';
 import { decodeParameters, encodeFunctionCall, getAbiByType } from '~@vite/vitejs-abi';
 import { Default_Contract_TransactionType, encodeContractList, getTransactionType, decodeAccountBlockByContract } from '~@vite/vitejs-accountblock';
 
@@ -126,7 +126,7 @@ class ViteAPIClass extends Provider {
     async callOffChainContract({ address, abi, code, params }) {
         const err = checkParams({ address, abi }, [ 'address', 'abi' ], [{
             name: 'address',
-            func: _a => isValidAddress(_a) === ADDR_TYPE.Contract
+            func: _a => isValidAddress(_a) === AddressType.Contract
         }]);
         if (err) {
             throw err;

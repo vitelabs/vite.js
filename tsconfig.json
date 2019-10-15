@@ -22,6 +22,7 @@
             "~@vite/vitejs-error": ["error/index.ts"],
             "~@vite/vitejs-keystore": ["keystore/index.ts"],
             "~@vite/vitejs-viteapi": ["viteAPI/index.ts"],
+            "~@vite/vitejs-viteapi/*": ["viteAPI/*"],
             "~@vite/vitejs-hdwallet": ["hdWallet/index.ts"],
             "~@vite/vitejs-hdwallet/*": ["hdWallet/*"],
             "~@vite/vitejs-transaction": ["transaction/index.ts"],

@@ -5,7 +5,7 @@ import { checkParams } from '~@vite/vitejs-utils';
 import HDWallet from './hdWallet';
 import * as hdKey from './hdKey';
 import * as addressLib from './address';
-import { AddrObj } from './type';
+import { AddressObj } from './type';
 
 
 export default {
@@ -19,7 +19,7 @@ export default {
         wordlist: Array<String>;
         password: String;
         isContract?: boolean;
-    }): Array<AddrObj> {
+    }): Array<AddressObj> {
         const err = checkParams({ startIndex, endIndex }, [ 'startIndex', 'endIndex' ]);
         if (err) {
             throw new Error(err.message);
@@ -29,9 +29,9 @@ export default {
             throw new Error('Illegal index');
         }
 
-        const addressList: Array<AddrObj> = [];
+        const addressList: Array<AddressObj> = [];
         for (let i = startIndex; i <= endIndex; i++) {
-            const addr: AddrObj = deriveAddress({ mnemonics, index: i, wordlist, password, isContract });
+            const addr: AddressObj = deriveAddress({ mnemonics, index: i, wordlist, password, isContract });
             addressList.push(addr);
         }
         return addressList;
@@ -59,7 +59,7 @@ function deriveAddress({ mnemonics, index = 0, wordlist, password = '', isContra
     wordlist: Array<String>;
     password: String;
     isContract?: boolean;
-}): AddrObj {
+}): AddressObj {
     const { seedHex } = hdKey.getSeedFromMnemonics(mnemonics, password, wordlist);
     const { privateKey } = hdKey.deriveKeyPair(seedHex, index);
     return addressLib.createAddressByPrivateKey(privateKey, isContract);

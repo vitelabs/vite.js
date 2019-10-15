@@ -80,12 +80,9 @@ module.exports = {
             '~@vite/vitejs-constant': path.join(__dirname, '/src/constant/'),
             '~@vite/vitejs-keystore': path.join(__dirname, '/src/keystore/'),
             '~@vite/vitejs-viteapi': path.join(__dirname, '/src/viteAPI/'),
-
             '~@vite/vitejs-hdwallet': path.join(__dirname, '/src/hdWallet/'),
-
+            '~@vite/vitejs-transaction': path.join(__dirname, '/src/transaction/'),
             '~@vite/vitejs-accountblock': path.join(__dirname, '/src/accountBlock/'),
-            '~@vite/vitejs-account': path.join(__dirname, '/src/account/'),
-            '~@vite/vitejs-addraccount': path.join(__dirname, '/src/addrAccount/'),
             '~@vite/vitejs': path.join(__dirname, '/src/vitejs/')
         },
         extensions: [ '.js', '.json', '.ts' ]

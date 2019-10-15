@@ -9,6 +9,7 @@ import * as _constant from '~@vite/vitejs-constant';
 import * as _accountBlock from '~@vite/vitejs-accountblock';
 import _viteapi from '~@vite/vitejs-viteapi';
 import _hdWallet from '~@vite/vitejs-hdwallet';
+import _transaction from '~@vite/vitejs-transaction';
 
 
 // Not Change
@@ -24,5 +25,6 @@ export const constant = _constant;
 export const accountBlock = _accountBlock;
 
 // Add
-export const viteAPI = _viteapi;
+export const Transaction = _transaction;
+export const ViteAPI = _viteapi;
 export const hdWallet = _hdWallet;

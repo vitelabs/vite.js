@@ -4,7 +4,7 @@ const BigNumber = require('bn.js');
 
 import { unsafeInteger, integerIllegal } from '~@vite/vitejs-error';
 import { getAddressFromOriginalAddress, getOriginalAddressFromAddress } from '~@vite/vitejs-hdwallet/address';
-import { getRawTokenId, getTokenIdFromRaw, isSafeInteger } from '~@vite/vitejs-utils';
+import { getOriginalTokenId, getTokenIdFromRaw, isSafeInteger } from '~@vite/vitejs-utils';
 
 
 export function encode(typeObj, params) {
@@ -133,11 +133,11 @@ function formatNumber(params, typeStr, actualByteLen?) {
 }
 
 function fomatTokenId(tokenId) {
-    const rawTokenId = getRawTokenId(tokenId);
-    if (!rawTokenId) {
+    const originalTokenId = getOriginalTokenId(tokenId);
+    if (!originalTokenId) {
         throw new Error(`[Error] Illegal tokenId. ${ tokenId }`);
     }
-    return Buffer.from(rawTokenId, 'hex');
+    return Buffer.from(originalTokenId, 'hex');
 }
 
 function showNumber(str, typeStr, actualByteLen?, _params?) {
@@ -157,10 +157,10 @@ function showNumber(str, typeStr, actualByteLen?, _params?) {
     return num.toString();
 }
 
-function showTokenId(rawTokenId) {
-    const tokenId = getTokenIdFromRaw(rawTokenId);
+function showTokenId(originalTokenId) {
+    const tokenId = getTokenIdFromRaw(originalTokenId);
     if (!tokenId) {
-        throw new Error(`[Error] Illegal tokenId. ${ rawTokenId }`);
+        throw new Error(`[Error] Illegal tokenId. ${ originalTokenId }`);
     }
     return tokenId;
 }

@@ -4,8 +4,8 @@ const blake = require('blakejs/blake2b');
 import { paramsMissing, paramsFormat } from '~@vite/vitejs-error';
 import { Delegate_Gid, Contracts } from '~@vite/vitejs-constant';
 import { getAbiByType, encodeParameters, encodeFunctionCall, encodeFunctionSignature, decodeLog } from '~@vite/vitejs-abi';
-import { isValidAddress, getAddressFromPublicKey, createAddressByPrivateKey, getOriginalAddressFromAddress, ADDR_TYPE } from '~@vite/vitejs-hdwallet/address';
-import { checkParams, isNonNegativeInteger, isHexString, isValidTokenId, bytesToHex, getRawTokenId, isObject, ed25519, isBase64String } from '~@vite/vitejs-utils';
+import { isValidAddress, getAddressFromPublicKey, createAddressByPrivateKey, getOriginalAddressFromAddress, AddressType } from '~@vite/vitejs-hdwallet/address';
+import { checkParams, isNonNegativeInteger, isHexString, isValidTokenId, bytesToHex, getOriginalTokenId, isObject, ed25519, isBase64String } from '~@vite/vitejs-utils';
 
 import { BlockType, Address, Base64, Hex, TokenId, Uint64, BigInt, AccountBlockType, Uint8 } from './type';
 
@@ -307,7 +307,7 @@ export function getAmountHex(amount): Hex {
 }
 
 export function getTokenIdHex(tokenId: TokenId): Hex {
-    return tokenId ? getRawTokenId(tokenId) || '' : '';
+    return tokenId ? getOriginalTokenId(tokenId) || '' : '';
 }
 
 export function getSendBlockHashHex(sendBlockHash: Hex): Hex {
@@ -447,7 +447,7 @@ export function decodeAccountBlockByContract({ accountBlock, contractAddress, ab
 }) {
     const err = checkParams({ accountBlock, contractAddress, abi }, [ 'accountBlock', 'contractAddress', 'abi' ], [{
         name: 'contractAddress',
-        func: _a => isValidAddress(_a) === ADDR_TYPE.Contract
+        func: _a => isValidAddress(_a) === AddressType.Contract
     }]);
     if (err) {
         throw err;
@@ -507,7 +507,7 @@ export function encodeContractList(contractList: Object): Object {
 
         const err = checkParams({ contractAddress, abi }, [ 'contractAddress', 'abi' ], [{
             name: 'contractAddress',
-            func: _a => isValidAddress(_a) === ADDR_TYPE.Contract
+            func: _a => isValidAddress(_a) === AddressType.Contract
         }]);
         if (err) {
             throw err;
