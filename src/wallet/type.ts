@@ -331,22 +331,39 @@ export declare class AccountBlockClassType {
     setProvider(provider: ProviderType)
     updateProvider(provider: ProviderType)
     setPrivateKey(privateKey: Hex)
-    getHeight(viteAPI: ViteAPI): Promise<{height: Uint64, previousHash: Hex }>
-    setHeight({ height, previousHash }: {
+
+    getPreviousAccountBlock(): Promise<AccountBlockType>
+    setHeight(height: Uint64): AccountBlockClassType
+    setPreviousHash(previousHash: Hex): AccountBlockClassType
+    setPreviousAccountBlock(previousAccountBlock: AccountBlockType): AccountBlockClassType
+    autoSetPreviousAccountBlock(): Promise<{
         height: Uint64;
         previousHash: Hex;
-    })
-    getDifficulty(viteAPI: ViteAPI): Promise<{
-        requiredQuota: Uint64;
-        difficulty: BigInt;
-        qc: BigInt;
-        isCongestion: Boolean;
-    }>;
-    setDifficulty(difficulty: BigInt)
-    getNonce(viteAPI: ViteAPI): Promise<Base64>
-    setNonce(nonce: Base64)
-    autoSetNonce(viteAPI: ViteAPI): Promise<{difficulty: BigInt, nonce: Base64}>
-    setPublicKey(publicKey: Hex)
-    setSignature(signature: Base64)
-    sign(privateKey: Hex): AccountBlockBlock
+    }>
+    getToAddress(): Promise<Address>
+    setToAddress(address: Address): AccountBlockClassType
+    autoSetToAddress(): Promise<Address>
+    autoSetProperty(): Promise<{
+        height: Uint64;
+        previousHash: Hex;
+        toAddress: Address;
+    }>
+
+    getDifficulty(): Promise<BigInt>
+    setDifficulty(difficulty: BigInt): AccountBlockClassType
+    autoSetDifficulty(): Promise<BigInt> 
+    getNonce(): Promise<Base64>
+    setNonce(nonce: Base64): AccountBlockClassType
+    autoSetNonce(): Promise<Base64>
+    PoW(difficulty?: BigInt): Promise<{difficulty: BigInt; nonce: Base64}>
+
+    setPublicKey(publicKey: Hex | Base64): AccountBlockClassType
+    setSignature(signature: Hex | Base64): AccountBlockClassType
+    sign(privateKey?: Hex): AccountBlockClassType
+
+    send(): Promise<AccountBlockBlock>
+    sendByPoW(privateKey?: Hex): Promise<AccountBlockBlock>
+    
+    autoSendByPoW(privateKey?: Hex): Promise<AccountBlockBlock>
+    autoSend(privateKey?: Hex): Promise<AccountBlockBlock>
 }
