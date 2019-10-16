@@ -1,8 +1,8 @@
 import { Contracts } from '~@vite/vitejs-constant';
 import { checkParams, isArray } from '~@vite/vitejs-utils';
-import { isValidAddress, AddressType } from '~@vite/vitejs-hdwallet/address';
+import { isValidAddress, AddressType } from '~@vite/vitejs-wallet/address';
 import { decodeParameters, encodeFunctionCall, getAbiByType } from '~@vite/vitejs-abi';
-import { Default_Contract_TransactionType, encodeContractList, getTransactionType, decodeAccountBlockByContract } from '~@vite/vitejs-accountblock';
+import { Default_Contract_TransactionType, encodeContractList, getTransactionType, decodeAccountBlockByContract } from '~@vite/vitejs-accountblock/utils';
 
 import { Address, AccountBlockType, Transaction } from './type';
 

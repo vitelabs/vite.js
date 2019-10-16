@@ -7,7 +7,7 @@ import * as hdKey from './hdKey';
 import * as addressLib from './address';
 import { Hex, Address } from './type';
 
-interface Wallet {
+interface AddressObj {
     publicKey: Hex;
     privateKey: Hex;
     originalAddress: Hex;
@@ -15,7 +15,7 @@ interface Wallet {
     path: String;
 }
 
-class HDWallet {
+class Wallet {
     readonly rootPath: String
     readonly mnemonics: String
     readonly entropy: String
@@ -24,7 +24,7 @@ class HDWallet {
     readonly seed: Buffer
     readonly seedHex: Hex
 
-    private walletList: Object
+    private addressList: Object
 
     constructor(mnemonics: String, wordlist: Array<String> = bip39.wordlists.EN, password: String = '') {
         if (!hdKey.validateMnemonics(mnemonics, wordlist)) {
@@ -40,16 +40,16 @@ class HDWallet {
         const { seed, seedHex } = hdKey.getSeedFromMnemonics(mnemonics, password, wordlist);
         this.seed = seed;
         this.seedHex = seedHex;
-        this.walletList = {};
+        this.addressList = {};
     }
 
-    get id() {
+    get id(): Hex {
         let address = '';
-        if (this.walletList[0]) {
-            address = this.walletList[0].address;
+        if (this.addressList[0]) {
+            address = this.addressList[0].address;
         } else {
-            const wallet = this.deriveWallet(0);
-            address = wallet.address;
+            const account = this.deriveAddress(0);
+            address = account.address;
         }
 
         const addressBuffer = Buffer.from(address);
@@ -57,11 +57,11 @@ class HDWallet {
         return Buffer.from(idBuffer).toString('hex');
     }
 
-    getWalletList() {
-        return this.walletList;
+    getAddressList() {
+        return this.addressList;
     }
 
-    deriveWallet(index: number) {
+    deriveAddress(index: number): AddressObj {
         const err = checkParams({ index }, ['index'], [{
             name: 'index',
             func: isNonNegativeInteger
@@ -70,8 +70,8 @@ class HDWallet {
             throw new Error(err.message);
         }
 
-        if (this.walletList[index]) {
-            return this.walletList[index];
+        if (this.addressList[index]) {
+            return this.addressList[index];
         }
 
         const path = hdKey.getPath(index);
@@ -79,7 +79,7 @@ class HDWallet {
         const address = addressLib.getAddressFromPublicKey(publicKey);
         const originalAddress = addressLib.getOriginalAddressFromAddress(address);
 
-        const wallet: Wallet = {
+        const account: AddressObj = {
             privateKey,
             publicKey,
             address,
@@ -87,11 +87,11 @@ class HDWallet {
             path
         };
 
-        this.walletList[index] = wallet;
-        return wallet;
+        this.addressList[index] = account;
+        return account;
     }
 
-    deriveWalletList(startIndex: number, endIndex: number) {
+    deriveAddressList(startIndex: number, endIndex: number): Array<AddressObj> {
         const err = checkParams({ startIndex, endIndex }, [ 'startIndex', 'endIndex' ], [ {
             name: 'startIndex',
             func: isNonNegativeInteger
@@ -107,13 +107,13 @@ class HDWallet {
             throw new Error('Illegal index');
         }
 
-        const walletList: Array<Wallet> = [];
+        const addressList: Array<AddressObj> = [];
         for (let i = startIndex; i <= endIndex; i++) {
-            const wallet: Wallet = this.deriveWallet(i);
-            walletList.push(wallet);
+            const account: AddressObj = this.deriveAddress(i);
+            addressList.push(account);
         }
-        return walletList;
+        return addressList;
     }
 }
 
-export default HDWallet;
+export default Wallet;

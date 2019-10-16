@@ -1,9 +1,9 @@
 import { BlockType, Vite_TokenId, Contracts, Snapshot_Gid } from '~@vite/vitejs-constant';
-import { getCreateContractData, getCallContractData } from '~@vite/vitejs-accountblock';
-import { isValidAddress, AddressType, createAddressByPrivateKey  } from '~@vite/vitejs-hdwallet/address';
+import { isValidAddress, AddressType, createAddressByPrivateKey  } from '~@vite/vitejs-wallet/address';
 import { checkParams, isNonNegativeInteger, isHexString, isArray, isObject, isValidSBPName, isValidTokenId, isBase64String } from '~@vite/vitejs-utils';
 
 import AccountBlock from './accountBlock';
+import { getCreateContractData, getCallContractData } from './utils';
 
 import { Hex, Address, TokenId, BigInt, Base64, Int32, Uint8, Uint32, Uint256, ProviderType } from './type';
 

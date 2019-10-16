@@ -19,15 +19,12 @@ describe('Constant Test: src/constant', function () {
 });
 
 describe('AccountBlock Test: src/accountBlock', function () {
-    require('./packages/accountBlock');
+    require('./packages/accountBlock/utils');
+    require('./packages/accountBlock/transaction');
 });
 
-describe('HdWallet Test: src/hdWallet', function () {
-    require('./packages/hdWallet/hdKey');
-    require('./packages/hdWallet/address');
-    require('./packages/hdWallet/index');
+describe('wallet Test: src/wallet', function () {
+    require('./packages/wallet/hdKey');
+    require('./packages/wallet/address');
+    require('./packages/wallet/index');
 });
-
-// describe('Transaction Test: src/transaction', function () {
-//     require('./packages/transaction/index');
-// });

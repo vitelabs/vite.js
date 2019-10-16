@@ -27,10 +27,9 @@ module.exports = {
         error: path.join(baseDir, '/error/index.ts'),
         viteAPI: path.join(baseDir, '/viteAPI/index.ts'),
         keystore: path.join(baseDir, '/keystore/index.ts'),
-        hdWallet: path.join(baseDir, '/hdWallet/index.ts'),
+        wallet: path.join(baseDir, '/wallet/index.ts'),
         utils: path.join(baseDir, '/utils/index.ts'),
         vitejs: path.join(baseDir, '/vitejs/index.ts'),
-        transaction: path.join(baseDir, '/transaction/index.ts'),
         WS: path.join(baseDir, 'WS/index.js'),
         HTTP: path.join(baseDir, 'HTTP/index.js'),
         IPC: path.join(baseDir, 'IPC/index.js')
@@ -80,8 +79,7 @@ module.exports = {
             '~@vite/vitejs-constant': path.join(__dirname, '/src/constant/'),
             '~@vite/vitejs-keystore': path.join(__dirname, '/src/keystore/'),
             '~@vite/vitejs-viteapi': path.join(__dirname, '/src/viteAPI/'),
-            '~@vite/vitejs-hdwallet': path.join(__dirname, '/src/hdWallet/'),
-            '~@vite/vitejs-transaction': path.join(__dirname, '/src/transaction/'),
+            '~@vite/vitejs-wallet': path.join(__dirname, '/src/wallet/'),
             '~@vite/vitejs-accountblock': path.join(__dirname, '/src/accountBlock/'),
             '~@vite/vitejs': path.join(__dirname, '/src/vitejs/')
         },

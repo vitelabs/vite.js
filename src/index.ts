@@ -5,8 +5,7 @@ import * as _utils from './utils/index';
 import * as _constant from './constant/index';
 import * as _accountBlock from './accountblock/index';
 import _viteAPI from './viteAPI/index';
-import _hdWallet from './hdWallet/index';
-import _transaction from './transaction/index';
+import _wallet from './wallet/index';
 
 
 // Not Change
@@ -18,10 +17,9 @@ export const keystore = _keystore;
 export const utils = _utils;
 export const constant = _constant;
 
-// Change
+// Change a lot
 export const accountBlock = _accountBlock;
 
 // Add
-export const Transaction = _transaction;
 export const ViteAPI = _viteAPI;
-export const hdWallet = _hdWallet;
+export const wallet = _wallet;

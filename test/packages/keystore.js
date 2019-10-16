@@ -1,7 +1,7 @@
 const assert = require('assert');
 
 import { isValid, decrypt, encrypt, encryptV1ToV3, encryptOldKeystore } from '../../src/keystore/index';
-import { createAddressByPrivateKey } from '../../src/hdWallet/address';
+import { createAddressByPrivateKey } from '../../src/wallet/address';
 
 const OLD_PWD = '1';
 const oldKeyJSON = {

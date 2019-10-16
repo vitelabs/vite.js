@@ -8,8 +8,7 @@ import * as _utils from '~@vite/vitejs-utils';
 import * as _constant from '~@vite/vitejs-constant';
 import * as _accountBlock from '~@vite/vitejs-accountblock';
 import _viteapi from '~@vite/vitejs-viteapi';
-import _hdWallet from '~@vite/vitejs-hdwallet';
-import _transaction from '~@vite/vitejs-transaction';
+import _wallet from '~@vite/vitejs-wallet';
 
 
 // Not Change
@@ -21,10 +20,9 @@ export const keystore = _keystore;
 export const utils = _utils;
 export const constant = _constant;
 
-// Change
+// Change a lot
 export const accountBlock = _accountBlock;
 
 // Add
-export const Transaction = _transaction;
 export const ViteAPI = _viteapi;
-export const hdWallet = _hdWallet;
+export const wallet = _wallet;

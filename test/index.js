@@ -17,4 +17,4 @@ describe('ViteAPI Test: src/viteAPI', function () {
 // http
 // ipc
 // ws
-// require('./RPC/index.js');
+require('./RPC/index.js');

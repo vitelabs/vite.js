@@ -7,7 +7,7 @@ import {
     getSeedFromMnemonics, createSeed,
     ROOT_PATH, getPath,
     deriveKeyPairByPath, deriveKeyPair
-} from '../../../src/hdWallet/hdKey.ts';
+} from '../../../src/wallet/hdKey.ts';
 
 describe('language test', function () {
     const entropy = 'e27b674dd7cc3b4ce67ad38d18bae592871dc7e4a7384cdcc07e1a3f9d3dcfca';

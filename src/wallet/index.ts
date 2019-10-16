@@ -2,7 +2,7 @@ const bip39 = require('bip39');
 
 import { checkParams } from '~@vite/vitejs-utils';
 
-import HDWallet from './hdWallet';
+import Wallet from './wallet';
 import * as hdKey from './hdKey';
 import * as addressLib from './address';
 import { AddressObj } from './type';
@@ -36,11 +36,11 @@ export default {
         }
         return addressList;
     },
-    createHDWallet: function (bits: number = 256, wordlist: Array<String> = bip39.wordlists.EN, password: string = '') {
+    createWallet: function (bits: number = 256, wordlist: Array<String> = bip39.wordlists.EN, password: string = '') {
         const mnemonic = hdKey.createMnemonics(bits, wordlist);
-        return new HDWallet(mnemonic, wordlist, password);
+        return new Wallet(mnemonic, wordlist, password);
     },
-    getHDWallet: function (mnemonics: string, wordlist: Array<String> = bip39.wordlists.EN, password: string = '') {
+    getWallet: function (mnemonics: string, wordlist: Array<String> = bip39.wordlists.EN, password: string = '') {
         const err = checkParams({ mnemonics, wordlist }, [ 'mnemonics', 'wordlist' ], [{
             name: 'mnemonics',
             func: _m => hdKey.validateMnemonics(_m, wordlist)
@@ -48,7 +48,7 @@ export default {
         if (err) {
             throw new Error(err.message);
         }
-        return new HDWallet(mnemonics, wordlist, password);
+        return new Wallet(mnemonics, wordlist, password);
     }
 };
 

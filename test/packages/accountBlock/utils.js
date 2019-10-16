@@ -1,10 +1,10 @@
 const assert = require('assert');
 
-import { Contracts } from '../../src/constant/index';
-import { encodeFunctionSignature, encodeFunctionCall } from '../../src/abi/index';
-import { Default_Hash, getTransactionType, getCreateContractData, encodeContractList, decodeAccountBlockByContract, getAccountBlockHash, signAccountBlock } from '../../src/accountBlock/index';
+import { Contracts } from '../../../src/constant/index';
+import { encodeFunctionSignature, encodeFunctionCall } from '../../../src/abi/index';
+import { Default_Hash, getTransactionType, getCreateContractData, encodeContractList, decodeAccountBlockByContract, getAccountBlockHash, signAccountBlock } from '../../../src/accountBlock/utils';
 
-import config from '../config';
+import config from '../../config';
 
 
 it('Default_Hash', function () {

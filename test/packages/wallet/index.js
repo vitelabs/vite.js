@@ -1,6 +1,6 @@
 const assert = require('assert');
 
-import hdWalletUtils from '../../../src/hdWallet/index.ts';
+import walletUtils from '../../../src/wallet/index.ts';
 
 const mnemonics = 'horn equal mystery success pride regret renew great witness hire man moon';
 const addrList = [
@@ -20,12 +20,12 @@ describe('deriveAddresses', function () {
     it('deriveAddress', function () {
         const index = 0;
 
-        const AddressObj = hdWalletUtils.deriveAddress({
+        const AddressObj = walletUtils.deriveAddress({
             mnemonics,
             startIndex: index
         });
-        const { seedHex } = hdWalletUtils.getSeedFromMnemonics(mnemonics);
-        const keypair = hdWalletUtils.deriveKeyPair(seedHex, index);
+        const { seedHex } = walletUtils.getSeedFromMnemonics(mnemonics);
+        const keypair = walletUtils.deriveKeyPair(seedHex, index);
 
         assert.equal(AddressObj.address, addrList[index]);
         assert.equal(AddressObj.privateKey, keypair.privateKey);
@@ -33,7 +33,7 @@ describe('deriveAddresses', function () {
     });
 
     it('deriveAddressList', function () {
-        const as = hdWalletUtils.deriveAddressList({
+        const as = walletUtils.deriveAddressList({
             mnemonics,
             startIndex: 0,
             endIndex: 9
@@ -48,53 +48,53 @@ describe('deriveAddresses', function () {
     });
 });
 
-describe('hdWallet', function () {
-    describe('createHDWallet', function () {
-        const hdWallet = hdWalletUtils.createHDWallet();
+describe('Wallet', function () {
+    describe('createWallet', function () {
+        const wallet = walletUtils.createWallet();
         it('test mnemonics', () => {
-            assert(hdWallet.mnemonics.split(' ').length, 24);
+            assert(wallet.mnemonics.split(' ').length, 24);
         });
         it('test entropy', () => {
-            assert(hdWallet.entropy.length, 512);
+            assert(wallet.entropy.length, 512);
         });
-        it('deriveWallet 0', () => {
-            const wallet = hdWallet.deriveWallet(0);
-            const AddressObj = hdWalletUtils.deriveAddress({
-                mnemonics: hdWallet.mnemonics,
+        it('deriveAddress 0', () => {
+            const account = wallet.deriveAddress(0);
+            const AddressObj = walletUtils.deriveAddress({
+                mnemonics: wallet.mnemonics,
                 index: 0
             });
-            const path = hdWalletUtils.getPath(0);
+            const path = walletUtils.getPath(0);
 
-            assert.equal(AddressObj.address, wallet.address);
-            assert.equal(AddressObj.originalAddress, wallet.originalAddress);
-            assert.equal(AddressObj.privateKey, wallet.privateKey);
-            assert.equal(AddressObj.publicKey, wallet.publicKey);
-            assert.equal(path, wallet.path);
+            assert.equal(AddressObj.address, account.address);
+            assert.equal(AddressObj.originalAddress, account.originalAddress);
+            assert.equal(AddressObj.privateKey, account.privateKey);
+            assert.equal(AddressObj.publicKey, account.publicKey);
+            assert.equal(path, account.path);
         });
     });
 
-    describe('getHDWallet', function () {
-        const hdWallet = hdWalletUtils.getHDWallet(mnemonics);
-        const entropy = hdWalletUtils.getEntropyFromMnemonics(mnemonics);
-        const walletList = hdWallet.deriveWalletList(0, 9);
+    describe('getWallet', function () {
+        const wallet = walletUtils.getWallet(mnemonics);
+        const entropy = walletUtils.getEntropyFromMnemonics(mnemonics);
+        const addressList = wallet.deriveAddressList(0, 9);
 
         it('test mnemonics', () => {
-            assert(hdWallet.mnemonics, mnemonics);
+            assert(wallet.mnemonics, mnemonics);
         });
         it('test entropy', () => {
-            assert(hdWallet.entropy, entropy);
+            assert(wallet.entropy, entropy);
         });
-        it('deriveWalletList', () => {
+        it('deriveAddressList', () => {
             const arr = [];
-            walletList.forEach(item => {
+            addressList.forEach(item => {
                 arr.push(item.address);
             });
 
             assert.deepEqual(addrList, arr);
         });
-        it('getWalletList', () => {
-            const _walletList = hdWallet.getWalletList();
-            assert.deepEqual(walletList, _walletList);
+        it('getAddressList', () => {
+            const _addressList = wallet.getAddressList();
+            assert.deepEqual(addressList, _addressList);
         });
     });
 });
