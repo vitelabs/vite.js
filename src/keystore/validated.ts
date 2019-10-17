@@ -1,5 +1,5 @@
 const UUID = require('pure-uuid');
-import { hexToBytes, checkParams } from '~@vite/vitejs-utils';
+import { checkParams } from '~@vite/vitejs-utils';
 import { isValidAddress } from '~@vite/vitejs-wallet/address';
 
 import { currentVersion, algorithm, scryptName } from './vars';
@@ -25,7 +25,7 @@ function isValidVersion1(keyJson) {
     }
 
     // Try to do it
-    hexToBytes(scryptParams.salt);
+    Buffer.from(scryptParams.salt, 'hex');
 
     return keyJson;
 }
@@ -64,9 +64,9 @@ function isValidVersion2(keyJson) {
     }
 
     // Try to do it
-    hexToBytes(keyJson.encryptentropy);
-    hexToBytes(crypto.nonce);
-    hexToBytes(crypto.salt);
+    Buffer.from(keyJson.encryptentropy, 'hex');
+    Buffer.from(crypto.nonce, 'hex');
+    Buffer.from(crypto.salt, 'hex');
 
     return keyJson;
 }
@@ -103,9 +103,9 @@ function isValidVersion3(keyJson) {
 
     // Try to do
     new UUID().parse(keyJson.uuid);
-    hexToBytes(crypto.ciphertext);
-    hexToBytes(crypto.nonce);
-    hexToBytes(scryptparams.salt);
+    Buffer.from(crypto.ciphertext, 'hex');
+    Buffer.from(crypto.nonce, 'hex');
+    Buffer.from(scryptparams.salt, 'hex');
 
     return keyJson;
 }
@@ -142,9 +142,9 @@ function isValidOldKeystore(keyJson) {
 
     // Try to do
     new UUID().parse(keyJson.id);
-    hexToBytes(crypto.ciphertext);
-    hexToBytes(crypto.nonce);
-    hexToBytes(scryptparams.salt);
+    Buffer.from(crypto.ciphertext, 'hex');
+    Buffer.from(crypto.nonce, 'hex');
+    Buffer.from(scryptparams.salt, 'hex');
 
     return keyJson;
 }

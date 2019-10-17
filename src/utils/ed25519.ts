@@ -20,7 +20,7 @@ export function getPublicKey(privKey: Buffer) {
     return key.publicKey;
 }
 
-export function sign(hexStr: Hex, privKey: Hex) {
+export function sign(hexStr: Hex, privKey: Hex): Hex {
     const err = checkParams({ hexStr, privKey }, [ 'hexStr', 'privKey' ], [ {
         name: 'hexStr',
         func: isHexString

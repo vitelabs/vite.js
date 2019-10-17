@@ -165,11 +165,6 @@ class AccountBlockClass {
         return this;
     }
 
-    updateProvider(provider: ProviderType): AccountBlockClass {
-        this.provider = provider;
-        return this;
-    }
-
     setPrivateKey(privateKey: Hex): AccountBlockClass {
         const err = checkParams({ privateKey }, ['privateKey'], [{
             name: 'privateKey',

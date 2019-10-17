@@ -81,7 +81,7 @@ export function isValidTokenId(tokenId: string): Boolean {
     return tokenId.slice(tokenId.length - 4) === checkSum;
 }
 
-export function getOriginalTokenId(tokenId: string): Hex {
+export function getOriginalTokenIdFromTokenId(tokenId: string): Hex {
     const err = checkParams({ tokenId }, ['tokenId'], [{
         name: 'tokenId',
         func: _t => _t.indexOf('tti_') === 0 && _t.length === 28
@@ -94,7 +94,7 @@ export function getOriginalTokenId(tokenId: string): Hex {
     return tokenId.slice(4, tokenId.length - 4);
 }
 
-export function getTokenIdFromRaw(originalTokenId: string): TokenId {
+export function getTokenIdFromOriginalTokenId(originalTokenId: string): TokenId {
     const err = checkParams({ originalTokenId }, ['originalTokenId'], [{
         name: 'originalTokenId',
         func: _t => /^[0-9a-fA-F]+$/.test(_t) && _t.length === 20
@@ -104,10 +104,6 @@ export function getTokenIdFromRaw(originalTokenId: string): TokenId {
     }
 
     return `tti_${ originalTokenId }${ getTokenIdCheckSum(originalTokenId) }`;
-}
-
-function getTokenIdCheckSum(originalTokenId: Hex): Hex {
-    return blake.blake2bHex(Buffer.from(originalTokenId, 'hex'), null, 2);
 }
 
 export function isValidSBPName(sbpName: string): Boolean {
@@ -131,30 +127,6 @@ export const isArray = Array.isArray || function (obj): Boolean {
 export function isObject(obj): Boolean {
     const type = typeof obj;
     return type === 'function' || type === 'object' && !!obj;
-}
-
-export function bytesToHex(arr: Buffer = Buffer.from([])): Hex {
-    const err = checkParams({ arr }, ['arr']);
-    if (err) {
-        throw new Error(err.message);
-    }
-
-    const hexArr = Array.prototype.map.call(arr, function (bit: Number) {
-        return (`00${ bit.toString(16) }`).slice(-2);
-    });
-    return hexArr.join('');
-}
-
-export function hexToBytes(hex: Hex) {
-    const err = checkParams({ hex }, ['hex']);
-    if (err) {
-        throw new Error(err.message);
-    }
-
-    const typedArray = new Uint8Array(hex.match(/[\da-f]{2}/gi).map(function (h) {
-        return parseInt(h, 16);
-    }));
-    return typedArray;
 }
 
 export function getBytesSize(str: String, charset: Charset = Charset.utf8): number {
@@ -191,36 +163,6 @@ export function getBytesSize(str: String, charset: Charset = Charset.utf8): numb
     return total;
 }
 
-export function utf8ToBytes(str = ''): Uint8Array {
-    const err = checkParams({ str }, ['str']);
-    if (err) {
-        throw new Error(err.message);
-    }
-
-    const back = [];
-    let i;
-    for (i = 0; i < str.length; i++) {
-        const code = str.charCodeAt(i);
-        if (0x00 <= code && code <= 0x7f) {
-            back.push(code);
-        } else if (0x80 <= code && code <= 0x7ff) {
-            back.push((192 | (31 & (code >> 6))));
-            back.push((128 | (63 & code)));
-        } else if ((0x800 <= code && code <= 0xd7ff)
-            || (0xe000 <= code && code <= 0xffff)) {
-            back.push((224 | (15 & (code >> 12))));
-            back.push((128 | (63 & (code >> 6))));
-            back.push((128 | (63 & code)));
-        }
-    }
-
-    for (i = 0; i < back.length; i++) {
-        back[i] &= 0xff;
-    }
-
-    return new Uint8Array(back);
-}
-
 export function isSafeInteger(num): -1 | 0 | 1 {
     if (typeof num === 'string') {
         return isInteger(num) ? 1 : -1;
@@ -253,3 +195,7 @@ export const blake2bHex = blake.blake2bHex;
 export const _Buffer = Buffer;
 
 export const _bn = bn;
+
+function getTokenIdCheckSum(originalTokenId: Hex): Hex {
+    return blake.blake2bHex(Buffer.from(originalTokenId, 'hex'), null, 2);
+}

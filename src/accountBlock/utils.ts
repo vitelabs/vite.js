@@ -5,7 +5,7 @@ import { paramsMissing, paramsFormat } from '~@vite/vitejs-error';
 import { Delegate_Gid, Contracts } from '~@vite/vitejs-constant';
 import { getAbiByType, encodeParameters, encodeFunctionCall, encodeFunctionSignature, decodeLog } from '~@vite/vitejs-abi';
 import { isValidAddress, getAddressFromPublicKey, createAddressByPrivateKey, getOriginalAddressFromAddress, AddressType } from '~@vite/vitejs-wallet/address';
-import { checkParams, isNonNegativeInteger, isHexString, isValidTokenId, bytesToHex, getOriginalTokenId, isObject, ed25519, isBase64String } from '~@vite/vitejs-utils';
+import { checkParams, isNonNegativeInteger, isHexString, isValidTokenId, getOriginalTokenIdFromTokenId, isObject, ed25519, isBase64String } from '~@vite/vitejs-utils';
 
 import { BlockType, Address, Base64, Hex, TokenId, Uint64, BigInt, AccountBlockType, Uint8 } from './type';
 
@@ -291,7 +291,7 @@ export function getPreviousHashHex(previousHash: Hex): Hex {
 }
 
 export function getHeightHex(height: Uint64): Hex {
-    return height ? bytesToHex(new BigNumber(height).toArray('big', 8)) : '';
+    return height ? Buffer.from(new BigNumber(height).toArray('big', 8)).toString('hex') : '';
 }
 
 export function getAddressHex(address: Address): Hex {
@@ -307,7 +307,7 @@ export function getAmountHex(amount): Hex {
 }
 
 export function getTokenIdHex(tokenId: TokenId): Hex {
-    return tokenId ? getOriginalTokenId(tokenId) || '' : '';
+    return tokenId ? getOriginalTokenIdFromTokenId(tokenId) || '' : '';
 }
 
 export function getSendBlockHashHex(sendBlockHash: Hex): Hex {

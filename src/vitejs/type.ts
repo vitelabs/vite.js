@@ -329,7 +329,6 @@ export declare class AccountBlockClassType {
     }, provider?: ProviderType, privateKey?: Hex)
 
     setProvider(provider: ProviderType)
-    updateProvider(provider: ProviderType)
     setPrivateKey(privateKey: Hex)
 
     getPreviousAccountBlock(): Promise<AccountBlockType>

@@ -2,7 +2,6 @@ const scryptsy = require('scryptsy');
 
 declare const window;
 const crypto = typeof window === 'undefined' ? require('crypto') : require('browserify-aes');
-import { hexToBytes } from '~@vite/vitejs-utils';
 
 const TAG_LEN = 32;
 
@@ -10,7 +9,7 @@ export function cipheriv({ rawText, pwd, nonce, algorithm }, additionData?: Buff
     const cipher = crypto.createCipheriv(algorithm, pwd, nonce);
     additionData && cipher.setAAD(additionData);
 
-    let ciphertext = cipher.update(hexToBytes(rawText), 'utf8', 'hex');
+    let ciphertext = cipher.update(Buffer.from(rawText, 'hex'), 'utf8', 'hex');
     ciphertext += cipher.final('hex');
     const tag = cipher.getAuthTag().toString('hex');
 
@@ -22,17 +21,17 @@ export function decipheriv({ algorithm, encryptPwd, nonce, encryptText }, additi
     const ciphertext = encryptText.slice(0, encryptText.length - TAG_LEN);
     const tag = encryptText.slice(encryptText.length - TAG_LEN);
 
-    const decipher = crypto.createDecipheriv(algorithm, encryptPwd, hexToBytes(nonce));
-    decipher.setAuthTag(hexToBytes(tag));
+    const decipher = crypto.createDecipheriv(algorithm, encryptPwd, Buffer.from(nonce, 'hex'));
+    decipher.setAuthTag(Buffer.from(tag, 'hex'));
     additionData && decipher.setAAD(additionData);
 
-    let rawText = decipher.update(hexToBytes(ciphertext), 'utf8', 'hex');
+    let rawText = decipher.update(Buffer.from(ciphertext, 'hex'), 'utf8', 'hex');
     rawText += decipher.final('hex');
     return rawText;
 }
 
 export function encryptPwd(pwd, scryptParams, selfScryptsy) {
-    const salt = hexToBytes(scryptParams.salt);
+    const salt = Buffer.from(scryptParams.salt, 'hex');
     if (!selfScryptsy) {
         return Promise.resolve(scryptsy(pwd, Buffer.from(salt), Number(scryptParams.n), Number(scryptParams.r), Number(scryptParams.p), Number(scryptParams.keylen)));
     }

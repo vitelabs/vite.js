@@ -29,10 +29,6 @@ class TransactionClass {
         this.provider = provider;
     }
 
-    updateProvider(provider: ProviderType) {
-        this.provider = provider;
-    }
-
     setPrivateKey(privateKey: Hex) {
         const err = checkParams({ privateKey }, ['privateKey'], [{
             name: 'privateKey',

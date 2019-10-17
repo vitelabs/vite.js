@@ -4,7 +4,7 @@ const BigNumber = require('bn.js');
 
 import { unsafeInteger, integerIllegal } from '~@vite/vitejs-error';
 import { getAddressFromOriginalAddress, getOriginalAddressFromAddress } from '~@vite/vitejs-wallet/address';
-import { getOriginalTokenId, getTokenIdFromRaw, isSafeInteger } from '~@vite/vitejs-utils';
+import { getOriginalTokenIdFromTokenId, getTokenIdFromOriginalTokenId, isSafeInteger } from '~@vite/vitejs-utils';
 
 
 export function encode(typeObj, params) {
@@ -133,7 +133,7 @@ function formatNumber(params, typeStr, actualByteLen?) {
 }
 
 function fomatTokenId(tokenId) {
-    const originalTokenId = getOriginalTokenId(tokenId);
+    const originalTokenId = getOriginalTokenIdFromTokenId(tokenId);
     if (!originalTokenId) {
         throw new Error(`[Error] Illegal tokenId. ${ tokenId }`);
     }
@@ -158,7 +158,7 @@ function showNumber(str, typeStr, actualByteLen?, _params?) {
 }
 
 function showTokenId(originalTokenId) {
-    const tokenId = getTokenIdFromRaw(originalTokenId);
+    const tokenId = getTokenIdFromOriginalTokenId(originalTokenId);
     if (!tokenId) {
         throw new Error(`[Error] Illegal tokenId. ${ originalTokenId }`);
     }

@@ -21,8 +21,12 @@ class ProviderClass {
     setProvider(provider, firstConnect, abort) {
         abort && this._provider.abort(abort);
         this.unsubscribeAll();
-        this._provider = provider;
 
+        if (!provider) {
+            return;
+        }
+
+        this._provider = provider;
         this.isConnected = false;
         this.connectedOnce(firstConnect);
     }

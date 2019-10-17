@@ -18,7 +18,7 @@ interface AddressObj {
 class Wallet {
     readonly rootPath: String
     readonly mnemonics: String
-    readonly entropy: String
+    readonly entropy: Hex
     readonly wordlist: Array<String>
     readonly password: String
     readonly seed: Buffer

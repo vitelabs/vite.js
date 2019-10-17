@@ -1,6 +1,6 @@
 const UUID = require('pure-uuid');
 
-import { checkParams, ed25519, hexToBytes, bytesToHex } from '~@vite/vitejs-utils';
+import { checkParams, ed25519 } from '~@vite/vitejs-utils';
 import { createAddressByPrivateKey } from '~@vite/vitejs-wallet/address';
 import { paramsFormat } from '~@vite/vitejs-error';
 
@@ -27,7 +27,7 @@ export function encrypt(key, pwd, _scryptParams, selfScryptsy) {
         r: _scryptParams && _scryptParams.r ? _scryptParams.r : r,
         p: _scryptParams && _scryptParams.p ? _scryptParams.p : p,
         keylen: _scryptParams && _scryptParams.keylen ? _scryptParams.keylen : keyLen,
-        salt: _scryptParams && _scryptParams.salt ? _scryptParams.salt : bytesToHex(random())
+        salt: _scryptParams && _scryptParams.salt ? _scryptParams.salt : Buffer.from(random()).toString('hex')
     };
 
     const getResult = (encryptPwd, res, rej) => {
@@ -63,7 +63,7 @@ export function encryptV1ToV3(key, keystore) {
     }
 
     const scryptParams = keyJson.scryptparams;
-    const _encryptPwd = hexToBytes(keyJson.encryptp);
+    const _encryptPwd = Buffer.from(keyJson.encryptp, 'hex');
 
     try {
         return getKeystore(key, _encryptPwd, scryptParams);
@@ -86,7 +86,7 @@ export function encryptOldKeystore(privKey, pwd, selfScryptsy) {
         r,
         p,
         keylen: keyLen,
-        salt: bytesToHex(random())
+        salt: Buffer.from(random()).toString('hex')
     };
 
     const getResult = (_encryptPwd, res) => {
@@ -103,7 +103,7 @@ export function encryptOldKeystore(privKey, pwd, selfScryptsy) {
             KDF: scryptName,
             ScryptParams: scryptParams,
             CipherText: text,
-            Nonce: bytesToHex(nonce)
+            Nonce: Buffer.from(nonce).toString('hex')
         };
 
         const encryptedKeyJSON = {
@@ -139,7 +139,7 @@ function getKeystore(rawText, pwd, scryptParams) {
     const cryptoJSON = {
         cipherName: algorithm,
         ciphertext,
-        Nonce: bytesToHex(nonce),
+        Nonce: Buffer.from(nonce).toString('hex'),
         KDF: scryptName,
         scryptParams
     };

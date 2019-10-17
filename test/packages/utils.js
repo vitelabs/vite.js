@@ -1,37 +1,12 @@
 const assert = require('assert');
 
 import {
-    hexToBytes, utf8ToBytes, bytesToHex, getBytesSize,
-    getOriginalTokenId, isValidSBPName, isNonNegativeInteger,
-    isInteger, getTokenIdFromRaw, uriStringify, ed25519,
+    getBytesSize, getOriginalTokenIdFromTokenId, isValidSBPName, isNonNegativeInteger,
+    isInteger, getTokenIdFromOriginalTokenId, uriStringify, ed25519,
     isSafeInteger
 } from '../../src/utils/index';
 
 const { keyPair, verify, getPublicKey, sign, random } = ed25519;
-
-describe('strToUtf8', function () {
-    it('case 1', function () {
-        const utf8Bytes = utf8ToBytes('为');
-        const hex = bytesToHex(utf8Bytes);
-
-        assert.equal('e4b8ba', hex);
-        assert.deepEqual(utf8Bytes, hexToBytes(hex));
-    });
-    it('case 2', function () {
-        const utf8Bytes = utf8ToBytes('sdsdsds。；。、lp.;,p[oo阿京东方]');
-        const hex = bytesToHex(utf8Bytes);
-
-        assert.equal('73647364736473e38082efbc9be38082e380816c702e3b2c705b6f6fe998bfe4baace4b89ce696b95d', hex);
-        assert.deepEqual(utf8Bytes, hexToBytes(hex));
-    });
-    it('case 3', function () {
-        const utf8Bytes = utf8ToBytes('[坏笑]😊🙂🙂😆😅😅');
-        const hex = bytesToHex(utf8Bytes);
-
-        assert.equal('5be59d8fe7ac915d', hex);
-        assert.deepEqual(utf8Bytes, hexToBytes(hex));
-    });
-});
 
 describe('getBytesSize', function () {
     it('case 1', function () {
@@ -49,15 +24,15 @@ describe('getBytesSize', function () {
 });
 
 describe('tools', function () {
-    it('getOriginalTokenId', function () {
-        assert.equal('5649544520544f4b454e', getOriginalTokenId('tti_5649544520544f4b454e6e40'));
+    it('getOriginalTokenIdFromTokenId', function () {
+        assert.equal('5649544520544f4b454e', getOriginalTokenIdFromTokenId('tti_5649544520544f4b454e6e40'));
     });
     it('uriStringify', function () {
         assert.equal('vite:vite_fa1d81d93bcc36f234f7bccf1403924a0834609f4b2e9856ad/echo?amount=1&data=MTIzYWJjZA', uriStringify({ target_address: 'vite_fa1d81d93bcc36f234f7bccf1403924a0834609f4b2e9856ad', params: { amount: 1, data: 'MTIzYWJjZA' }, function_name: 'echo' }));
         assert.equal('vite:vite_fa1d81d93bcc36f234f7bccf1403924a0834609f4b2e9856ad?tti=tti_5649544520544f4b454e6e40&amount=1&data=MTIzYWJjZA', uriStringify({ target_address: 'vite_fa1d81d93bcc36f234f7bccf1403924a0834609f4b2e9856ad', params: { tti: 'tti_5649544520544f4b454e6e40', amount: 1, data: 'MTIzYWJjZA' }}));
     });
-    it('getTokenIdFromRaw', function () {
-        assert.equal('tti_5649544520544f4b454e6e40', getTokenIdFromRaw('5649544520544f4b454e'));
+    it('getTokenIdFromOriginalTokenId', function () {
+        assert.equal('tti_5649544520544f4b454e6e40', getTokenIdFromOriginalTokenId('5649544520544f4b454e'));
     });
     it('isValidSBPName', function () {
         assert.equal(true, isValidSBPName('2323_sdsd'));
