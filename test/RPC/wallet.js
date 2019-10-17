@@ -37,42 +37,53 @@ async function TestFunc() {
     console.log('Step 1 CheckMyBalance. \n');
     accountBlock = await CheckMyBalance();
 
+    await sleep(2000);
     console.log('Step 2 SendTxToMyself. \n');
     accountBlock = await SendTxToMyself(accountBlock);
 
+    await sleep(2000);
     console.log('Step 3 ReceiveTx. \n');
     accountBlock = await ReceiveTx(accountBlock);
 
+    await sleep(2000);
     console.log('Step 4 getQuota. \n');
     accountBlock = await checkQuota(accountBlock);
 
+    await sleep(1000);
     console.log('Step 5 SBPreg. \n');
     accountBlock = await SBPreg(accountBlock);
 
+    await sleep(2000);
     console.log('Step 6 updateReg. \n');
     accountBlock = await updateReg(accountBlock);
 
+    await sleep(2000);
     console.log('Step 7 withdrawSBPReward. \n');
     accountBlock = await withdrawSBPReward(accountBlock);
 
+    await sleep(2000);
     console.log('Step 8 revokeSBP. \n');
     accountBlock = await revokeSBP(accountBlock);
 
     console.log('Step 9 getSBPList. \n');
     await getSBPList();
 
+    await sleep(2000);
     console.log('Step 10 voting. \n');
     accountBlock = await voting(accountBlock);
 
+    await sleep(2000);
     console.log('Step 11 revokeVoting. \n');
     accountBlock = await revokeVoting(accountBlock);
 
     console.log('Step 12 getVoteList. \n');
     await getVoteList();
 
+    await sleep(2000);
     console.log('Step 13 withdrawalOfQuota. \n');
     accountBlock = await withdrawalOfQuota(accountBlock);
 
+    await sleep(2000);
     console.log('Step 14 createContract. \n');
     await createContract(accountBlock);
 
@@ -314,4 +325,10 @@ function SendTXByPreviousAccountBlock(accountBlock, previousAccountBlock) {
         return accountBlock.setPreviousAccountBlock(previousAccountBlock).sendByPoW();
     }
     return accountBlock.autoSendByPoW(privateKey);
+}
+
+function sleep(ms) {
+    return new Promise((res, rej) => {
+        setTimeout(res, ms);
+    });
 }
