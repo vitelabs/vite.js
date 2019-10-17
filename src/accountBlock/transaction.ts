@@ -50,35 +50,6 @@ class TransactionClass {
         this.privateKey = privateKey;
     }
 
-    sendTransaction({ toAddress, tokenId = Vite_TokenId, amount = '0', message }: {
-        toAddress: Address;
-        tokenId: TokenId;
-        amount: BigInt;
-        message: string;
-    }): AccountBlock {
-        const err = checkParams({ toAddress }, ['toAddress']);
-        if (err) {
-            throw err;
-        }
-
-        let data = '';
-        if (message) {
-            const messageHex = Buffer.from(message).toString('hex');
-            data = Buffer.from(messageHex, 'hex').toString('base64');
-        }
-
-        const accountBlock: AccountBlock = new AccountBlock({
-            blockType: BlockType.TransferRequest,
-            address: this.address,
-            toAddress,
-            tokenId,
-            amount,
-            data
-        }, this.provider, this.privateKey);
-
-        return accountBlock;
-    }
-
     receive({ sendBlockHash }: { sendBlockHash: Hex }): AccountBlock {
         const err = checkParams({ sendBlockHash }, ['sendBlockHash']);
         if (err) {
@@ -103,6 +74,35 @@ class TransactionClass {
         const err = checkParams({ toAddress }, ['toAddress']);
         if (err) {
             throw err;
+        }
+
+        const accountBlock: AccountBlock = new AccountBlock({
+            blockType: BlockType.TransferRequest,
+            address: this.address,
+            toAddress,
+            tokenId,
+            amount,
+            data
+        }, this.provider, this.privateKey);
+
+        return accountBlock;
+    }
+
+    sendTransaction({ toAddress, tokenId = Vite_TokenId, amount = '0', message }: {
+        toAddress: Address;
+        tokenId: TokenId;
+        amount: BigInt;
+        message: string;
+    }): AccountBlock {
+        const err = checkParams({ toAddress }, ['toAddress']);
+        if (err) {
+            throw err;
+        }
+
+        let data = '';
+        if (message) {
+            const messageHex = Buffer.from(message).toString('hex');
+            data = Buffer.from(messageHex, 'hex').toString('base64');
         }
 
         const accountBlock: AccountBlock = new AccountBlock({
@@ -267,7 +267,7 @@ class TransactionClass {
         });
     }
 
-    VoteForSBP({ sbpName }: {
+    voteForSBP({ sbpName }: {
         sbpName: string;
     }): AccountBlock {
         const err = checkParams({ sbpName }, ['sbpName'], [{
@@ -416,12 +416,12 @@ class TransactionClass {
         });
     }
 
-    transferTokenOwnership({ newOwner, tokenId }: {
+    transferTokenOwnership({ newOwnerAddress, tokenId }: {
         tokenId: TokenId;
-        newOwner: Address;
+        newOwnerAddress: Address;
     }): AccountBlock {
-        const err = checkParams({ tokenId, newOwner }, [ 'tokenId', 'newOwner' ], [{
-            name: 'newOwner',
+        const err = checkParams({ tokenId, newOwnerAddress }, [ 'tokenId', 'newOwnerAddress' ], [{
+            name: 'newOwnerAddress',
             func: isValidAddress
         }]);
         if (err) {
@@ -431,7 +431,7 @@ class TransactionClass {
         return this.callContract({
             abi: Contracts.TransferTokenOwnership.abi,
             toAddress: Contracts.TransferTokenOwnership.contractAddress,
-            params: [ tokenId, newOwner ],
+            params: [ tokenId, newOwnerAddress ],
             tokenId
         });
     }

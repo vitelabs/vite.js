@@ -228,7 +228,7 @@ async function getSBPList() {
 }
 
 async function voting(previousAccountBlock) {
-    const accountBlock = tx.VoteForSBP({
+    const accountBlock = tx.voteForSBP({
         sbpName: 'CS_TEST_NODE'
     });
 
@@ -281,13 +281,13 @@ async function createContract(previousAccountBlock) {
         console.log('[LOG] createContract', result, '\n');
     }
 
-    const result2 = await viteProvider.callOffChainContract({
-        address: result.toAddress,
-        offChainCode: '608060405260043610600f57600f565b00fea165627a7a7230582023e9669dd6fec3b6b2a84a1fd7c9939f49197203d0e1db312278e633c219c2480029',
-        abi: [{"constant":false,"inputs":[{"name":"addr","type":"address"}],"name":"SayHello","outputs":[],"payable":true,"stateMutability":"payable","type":"offchain"},{"anonymous":false,"inputs":[{"indexed":true,"name":"addr","type":"address"},{"indexed":false,"name":"amount","type":"uint256"}],"name":"transfer","type":"event"}],
-        params: [address]
-    });
-    console.log('[LOG] callOffChainContract', result2, '\n');
+    // const result2 = await viteProvider.callOffChainContract({
+    //     address: result.toAddress,
+    //     code: '608060405260043610600f57600f565b00fea165627a7a7230582023e9669dd6fec3b6b2a84a1fd7c9939f49197203d0e1db312278e633c219c2480029',
+    //     abi: [{"constant":false,"inputs":[{"name":"addr","type":"address"}],"name":"SayHello","outputs":[],"payable":true,"stateMutability":"payable","type":"offchain"},{"anonymous":false,"inputs":[{"indexed":true,"name":"addr","type":"address"},{"indexed":false,"name":"amount","type":"uint256"}],"name":"transfer","type":"event"}],
+    //     params: [address]
+    // });
+    // console.log('[LOG] callOffChainContract', result2, '\n');
 
     return result;
 }
