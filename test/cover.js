@@ -1,3 +1,5 @@
+// require('./RPC/index.js');
+
 describe('Type Test: src/type', function () {
     require('./packages/type');
 });

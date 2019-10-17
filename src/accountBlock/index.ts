@@ -1,7 +1,7 @@
 import { checkParams, isObject } from '~@vite/vitejs-utils';
 
 import _AccountBlock from './accountBlock';
-import _Transaction from './Transaction';
+import _Transaction from './transaction';
 import * as _utils from './utils';
 
 export const AccountBlock = _AccountBlock;
