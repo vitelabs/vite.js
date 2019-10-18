@@ -111,7 +111,7 @@ function createAddress(privateKey?: Hex, isContract?: boolean): {
         privateKeyBuffer = Buffer.from(privateKey, 'hex');
     } else {
         const _keyPair = keyPair();
-        privateKeyBuffer = Buffer.from(_keyPair.privateKey);
+        privateKeyBuffer = _keyPair.privateKey;
     }
 
     return {

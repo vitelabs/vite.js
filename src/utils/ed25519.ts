@@ -5,19 +5,19 @@ import { checkParams, isHexString } from './index';
 export function keyPair(): { privateKey: Buffer; publicKey: Buffer; } {
     const keys = nacl.sign.keyPair();
     return {
-        privateKey: keys.secretKey,
-        publicKey: keys.publicKey
+        privateKey: Buffer.from(keys.secretKey),
+        publicKey: Buffer.from(keys.publicKey)
     };
 }
 
-export function getPublicKey(privKey: Buffer) {
+export function getPublicKey(privKey: Buffer): Buffer {
     const err = checkParams({ privKey }, ['privKey']);
     if (err) {
         throw new Error(err.message);
     }
 
     const key = nacl.sign.keyPair.fromSecretKey(privKey);
-    return key.publicKey;
+    return Buffer.from(key.publicKey);
 }
 
 export function sign(hexStr: Hex, privKey: Hex): Hex {
@@ -41,7 +41,7 @@ export function sign(hexStr: Hex, privKey: Hex): Hex {
     return signatureHex;
 }
 
-export function verify(message: Hex, signature: Hex, publicKey: Hex) {
+export function verify(message: Hex, signature: Hex, publicKey: Hex): boolean {
     const err = checkParams({ message, signature, publicKey }, [ 'message', 'signature', 'publicKey' ], [ {
         name: 'message',
         func: isHexString

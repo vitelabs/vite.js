@@ -2,7 +2,7 @@ const BigNumber = require('bn.js');
 const blake = require('blakejs/blake2b');
 
 import { checkParams, isHexString, isBase64String } from '~@vite/vitejs-utils';
-import { getOriginalAddressFromAddress, getAddressFromPublicKey, isValidAddress } from  '~@vite/vitejs-wallet/address';
+import { getOriginalAddressFromAddress, getAddressFromPublicKey, isValidAddress, createAddressByPrivateKey } from  '~@vite/vitejs-wallet/address';
 
 import {
     isRequestBlock, isResponseBlock, checkAccountBlock, Default_Hash,
@@ -172,6 +172,11 @@ class AccountBlockClass {
         }]);
         if (err) {
             throw err;
+        }
+
+        const { address } = createAddressByPrivateKey(privateKey);
+        if (address !== this.address) {
+            throw new Error('PrivateKey is wrong');
         }
 
         this.privateKey = privateKey;

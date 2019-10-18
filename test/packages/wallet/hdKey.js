@@ -2,10 +2,10 @@ const bip39 = require('bip39');
 const assert = require('assert');
 
 import {
+    ROOT_PATH, getPath,
     createMnemonics, validateMnemonics,
     getMnemonicsFromEntropy, getEntropyFromMnemonics,
     getSeedFromMnemonics, createSeed,
-    ROOT_PATH, getPath,
     deriveKeyPairByPath, deriveKeyPair
 } from '../../../src/wallet/hdKey.ts';
 
@@ -54,8 +54,21 @@ describe('language test', function () {
             const myValidateRes = validateMnemonics(myMnemonic, wordlist);
 
             it('createMnemonics', function () {
+                assert.equal(mnemonic, m);
                 const tmpM = createMnemonics(256, wordlist);
                 assert.equal(true, bip39.validateMnemonic(tmpM, wordlist));
+                assert.equal(true, validateMnemonics(tmpM, wordlist));
+            });
+            it('validateMnemonics', function () {
+                assert.equal(myValidateRes, true);
+            });
+            it('getEntropyFromMnemonics', function () {
+                assert.equal(entropy, myEntropy);
+            });
+            it('getSeedFromMnemonics', function () {
+                assert.deepEqual(seed, mySeed.seed);
+                assert.equal(seed.toString('hex'), mySeed.seedHex);
+                assert.deepEqual(seedHex, mySeed.seedHex);
             });
             it('createSeed', function () {
                 const tmp = createSeed(256, '', wordlist);
@@ -65,76 +78,51 @@ describe('language test', function () {
                 assert.deepEqual(tmpS, tmp.seed);
                 assert.deepEqual(tmpS.toString('hex'), tmp.seedHex);
             });
-            it('mnemonic real', function () {
-                assert.equal(mnemonic, m);
-            });
             it('getMnemonicsFromEntropy', function () {
                 assert.equal(mnemonic, myMnemonic);
             });
-            it('validateMnemonics', function () {
-                assert.equal(myValidateRes, true);
-            });
-            it('getEntropyFromMnemonics', function () {
-                assert.equal(entropy, myEntropy);
-            });
-            it('getSeedFromMnemonics seed', function () {
-                assert.deepEqual(seed, mySeed.seed);
-            });
-            it('getSeedFromMnemonics seedHex', function () {
-                assert.equal(seed.toString('hex'), mySeed.seedHex);
-            });
-            it('seedHex real', function () {
-                assert.deepEqual(seedHex, mySeed.seedHex);
-            });
         });
     });
 });
 
-describe('password test', function () {
-    describe('mnemonic 12 password', function () {
-        const mnemonic = 'banner bar shiver budget window cart snake control venue lonely marine print';
-        const passphrase = '123456';
+describe('mnemonic 12 password', function () {
+    const mnemonic = 'banner bar shiver budget window cart snake control venue lonely marine print';
+    const passphrase = '123456';
 
-        const seed = bip39.mnemonicToSeedSync(mnemonic, passphrase);
-        const seedHex = seed.toString('hex');
-        const myS = getSeedFromMnemonics(mnemonic, passphrase);
-        it('seed real', function () {
-            assert.equal(seedHex, '21a107743295dfec434254374fdbb43ee4701fa699acce6d1810ddae7d356aeeb10bedc09358e5cf8860fc16d225c422f0a44a708267bf0d2bbbbcd3bd299a49');
-        });
-        it('seed', function () {
-            assert.deepEqual(seed, myS.seed);
-        });
-        it('seed_hex', function () {
-            assert.equal(seedHex, myS.seedHex);
-        });
+    const seed = bip39.mnemonicToSeedSync(mnemonic, passphrase);
+    const seedHex = seed.toString('hex');
+    const myS = getSeedFromMnemonics(mnemonic, passphrase);
+    it('bip39.mnemonicToSeedSync', function () {
+        assert.equal(seedHex, '21a107743295dfec434254374fdbb43ee4701fa699acce6d1810ddae7d356aeeb10bedc09358e5cf8860fc16d225c422f0a44a708267bf0d2bbbbcd3bd299a49');
     });
-    describe('mnemonic 24 password', function () {
-        const mnemonic = 'hazard kind issue draw bottom foot net join train elbow census present blind assume suit vague vital crack slab material pill census actress panda';
-        const passphrase = '123456';
-
-        const seed = bip39.mnemonicToSeedSync(mnemonic, passphrase);
-        const seedHex = seed.toString('hex');
-        const myS = getSeedFromMnemonics(mnemonic, passphrase);
-        it('seed real', function () {
-            assert.equal(seedHex, '4e0f10e63407ba168ce6c504631b1d405b121406746b50c7d4831b150985641b867a6edccefaf77554221c44f89bbc0e47038114f50de9f1ffaefbd50c3d6b29');
-        });
-        it('seed', function () {
-            assert.deepEqual(seed, myS.seed);
-        });
-        it('seed_hex', function () {
-            assert.equal(seedHex, myS.seedHex);
-        });
+    it('getSeedFromMnemonics', function () {
+        assert.deepEqual(seed, myS.seed);
+        assert.equal(seedHex, myS.seedHex);
     });
 });
 
-describe('path', function () {
-    it('getPath', function () {
-        assert.equal(`${ ROOT_PATH }/0'`, getPath('0'));
+describe('mnemonic 24 password', function () {
+    const mnemonic = 'hazard kind issue draw bottom foot net join train elbow census present blind assume suit vague vital crack slab material pill census actress panda';
+    const passphrase = '123456';
+
+    const seed = bip39.mnemonicToSeedSync(mnemonic, passphrase);
+    const seedHex = seed.toString('hex');
+    const myS = getSeedFromMnemonics(mnemonic, passphrase);
+    it('bip39.mnemonicToSeedSync', function () {
+        assert.equal(seedHex, '4e0f10e63407ba168ce6c504631b1d405b121406746b50c7d4831b150985641b867a6edccefaf77554221c44f89bbc0e47038114f50de9f1ffaefbd50c3d6b29');
+    });
+    it('getSeedFromMnemonics', function () {
+        assert.deepEqual(seed, myS.seed);
+        assert.equal(seedHex, myS.seedHex);
     });
 });
 
-describe('deriveKeyPair', function () {
-    it('keypair = keyPairPath', function () {
+it('getPath', function () {
+    assert.equal(`${ ROOT_PATH }/0'`, getPath('0'));
+});
+
+describe('keypair', function () {
+    it('deriveKeyPair = deriveKeyPairByPath', function () {
         const seed = '21a107743295dfec434254374fdbb43ee4701fa699acce6d1810ddae7d356aeeb10bedc09358e5cf8860fc16d225c422f0a44a708267bf0d2bbbbcd3bd299a49';
         const index = 1;
         const path = getPath(index);

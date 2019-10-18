@@ -25,11 +25,12 @@ class TransactionClass {
         this.address = address;
     }
 
-    setProvider(provider: ProviderType) {
+    setProvider(provider: ProviderType): TransactionClass {
         this.provider = provider;
+        return this;
     }
 
-    setPrivateKey(privateKey: Hex) {
+    setPrivateKey(privateKey: Hex): TransactionClass {
         const err = checkParams({ privateKey }, ['privateKey'], [{
             name: 'privateKey',
             func: isHexString
@@ -44,6 +45,7 @@ class TransactionClass {
         }
 
         this.privateKey = privateKey;
+        return this;
     }
 
     receive({ sendBlockHash }: { sendBlockHash: Hex }): AccountBlock {
@@ -321,8 +323,6 @@ class TransactionClass {
         if (err) {
             throw err;
         }
-
-        console.log([ beneficiaryAddress, amount ]);
 
         return this.callContract({
             abi: Contracts.CancelStake.abi,

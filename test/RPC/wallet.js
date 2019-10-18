@@ -14,12 +14,8 @@ const viteProvider = new ViteAPI(new HTTP_RPC(config.http), () => {
 
 const myWallet = walletUtils.getWallet(config.myMnemonic);
 const { privateKey, address }  = myWallet.deriveAddress(0);
-
-const tx = new Transaction(address);
-
-tx.setProvider(viteProvider);
-tx.setPrivateKey(privateKey);
-
+const addr2  = myWallet.deriveAddress(1);
+const tx = new Transaction(address).setProvider(viteProvider).setPrivateKey(privateKey);
 
 TestFunc().then(() => {
     console.log('Test Finish');
@@ -62,33 +58,35 @@ async function TestFunc() {
     accountBlock = await withdrawSBPReward(accountBlock);
 
     await sleep(2000);
-    console.log('Step 8 revokeSBP. \n');
-    accountBlock = await revokeSBP(accountBlock);
-
-    console.log('Step 9 getSBPList. \n');
-    await getSBPList();
-
-    await sleep(2000);
     console.log('Step 10 voting. \n');
     accountBlock = await voting(accountBlock);
-
-    await sleep(2000);
-    console.log('Step 11 revokeVoting. \n');
-    accountBlock = await revokeVoting(accountBlock);
 
     console.log('Step 12 getVoteList. \n');
     await getVoteList();
 
     await sleep(2000);
-    console.log('Step 13 withdrawalOfQuota. \n');
-    accountBlock = await withdrawalOfQuota(accountBlock);
+    console.log('Step 11 revokeVoting. \n');
+    accountBlock = await revokeVoting(accountBlock);
+
+    console.log('Step 9 getSBPList. \n');
+    await getSBPList();
+
+    await sleep(2000);
+    console.log('Step 8 revokeSBP. \n');
+    accountBlock = await revokeSBP(accountBlock);
 
     await sleep(2000);
     console.log('Step 14 createContract. \n');
-    await createContract(accountBlock);
+    accountBlock = await createContract(accountBlock);
+
+    await checkMyTokenList(accountBlock);
+
+    await sleep(2000);
+    console.log('Step 13 withdrawalOfQuota. \n');
+    accountBlock = await withdrawalOfQuota(accountBlock);
 
     console.log('Last One CheckMyTxList. \n');
-    await CheckMyTxList();
+    await CheckMyTxList(10);
 
     return null;
 }
@@ -182,7 +180,7 @@ async function ReceiveTx(previousAccountBlock) {
         accountBlock.setPreviousAccountBlock(previousAccountBlock);
     }
 
-    const result = await accountBlock.sign().send();
+    const result = await accountBlock.sendByPoW();
 
     console.log('[LOG] ReceiveTx 2', result, '\n');
     return result;
@@ -303,11 +301,11 @@ async function createContract(previousAccountBlock) {
     return result;
 }
 
-async function CheckMyTxList() {
+async function CheckMyTxList(pageCount) {
     const data = await viteProvider.getTransactionList({
         address,
         pageIndex: 0,
-        pageCount: 50
+        pageCount
     });
 
     // console.log('[LOG] CheckMyTxList', data, '\n');
@@ -319,6 +317,127 @@ async function CheckMyTxList() {
     return data;
 }
 
+async function checkMyTokenList(previousAccountBlock) {
+    let tokens = await viteProvider.request('contract_getTokenInfoListByOwner', address);
+    console.log('[LOG] checkMyTokenList', tokens, '\n');
+
+    if (!tokens || !tokens.length) {
+        await sleep(2000);
+        console.log('Step 13 issueToken. \n');
+        previousAccountBlock = await issueToken(accountBlock);
+
+        await sleep(2000);
+        console.log('Step 13 issueToken. \n');
+        previousAccountBlock = await issueToken(accountBlock);
+
+        await sleep(2000);
+        console.log('Step 13 issueToken. \n');
+        previousAccountBlock = await issueToken(accountBlock);
+
+        await sleep(2000);
+        tokens = await viteProvider.request('contract_getTokenInfoListByOwner', address);
+        console.log('[LOG] checkMyTokenList Again', tokens, '\n');
+    }
+
+    let disableToken = null;
+    let toChangeTransferShipOne = null;
+    let reIssueOne = null;
+
+    tokens.forEach(async (token) => {
+        if (!token.isReIssuable) {
+            return;
+        }
+        disableToken = token;
+        if (reIssueOne) {
+            toChangeTransferShipOne = token;
+            return;
+        }
+        reIssueOne = token;
+    })
+
+    if (reIssueOne) {
+        await sleep(2000);
+        previousAccountBlock = await reIssueToken(previousAccountBlock, reIssueOne);
+    
+        await sleep(2000);
+        previousAccountBlock = await burnToken(previousAccountBlock, reIssueOne);
+    }
+
+    if (disableToken) {
+        await sleep(2000);
+        previousAccountBlock = await disableReIssueToken(previousAccountBlock, disableToken);
+    }
+
+    if (toChangeTransferShipOne) {
+        await sleep(2000);
+        previousAccountBlock = await transferTokenOwnership(previousAccountBlock, toChangeTransferShipOne);
+    }
+
+    return previousAccountBlock;
+}
+
+async function issueToken(previousAccountBlock) {
+    const accountBlock = await tx.issueToken({
+        tokenName: 'cstestToken', 
+        isReIssuable: true, 
+        maxSupply: '10000000000000000000000000', 
+        isOwnerBurnOnly: false, 
+        totalSupply: '100000000000000000000000', 
+        decimals: 2, 
+        tokenSymbol: 'CSTT'
+    });
+
+    const result = await SendTXByPreviousAccountBlock(accountBlock, previousAccountBlock);
+    console.log('[LOG] issueToken', result, '\n');
+
+    return result;
+}
+
+async function disableReIssueToken(previousAccountBlock, token) {
+    const accountBlock = tx.disableReIssueToken(token);
+
+    const result = await SendTXByPreviousAccountBlock(accountBlock, previousAccountBlock);
+    console.log('[LOG] disableReIssueToken', result, '\n');
+
+    return result;
+}
+
+async function reIssueToken(previousAccountBlock, token) {
+    const accountBlock = tx.reIssueToken({
+        tokenId: token.tokenId,
+        amount: '100',
+        receiveAddress: address
+    });
+
+    const result = await SendTXByPreviousAccountBlock(accountBlock, previousAccountBlock);
+    console.log('[LOG] reIssueToken', result, '\n');
+
+    return result;
+}
+
+async function burnToken(previousAccountBlock, token) {
+    const accountBlock = tx.burnToken({
+        tokenId: token.tokenId,
+        amount: '100',
+    });
+
+    const result = await SendTXByPreviousAccountBlock(accountBlock, previousAccountBlock);
+    console.log('[LOG] reIssueToken', result, '\n');
+
+    return result;
+}
+
+async function transferTokenOwnership(previousAccountBlock, token) {
+    const accountBlock = tx.transferTokenOwnership({
+        tokenId: token.tokenId,
+        newOwnerAddress: addr2.address
+    });
+
+    const result = await SendTXByPreviousAccountBlock(accountBlock, previousAccountBlock);
+    console.log('[LOG] reIssueToken', result, '\n');
+
+    return result;
+}
 
 function SendTXByPreviousAccountBlock(accountBlock, previousAccountBlock) {
     if (previousAccountBlock) {

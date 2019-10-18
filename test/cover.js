@@ -22,7 +22,6 @@ describe('Constant Test: src/constant', function () {
 
 describe('AccountBlock Test: src/accountBlock', function () {
     require('./packages/accountBlock/utils');
-    require('./packages/accountBlock/transaction');
 });
 
 describe('wallet Test: src/wallet', function () {

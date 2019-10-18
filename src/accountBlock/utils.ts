@@ -10,7 +10,9 @@ import { checkParams, isNonNegativeInteger, isHexString, isValidTokenId, getOrig
 import { BlockType, Address, Base64, Hex, TokenId, Uint64, BigInt, AccountBlockType, Uint8 } from './type';
 
 export const Default_Hash = '0000000000000000000000000000000000000000000000000000000000000000'; // A total of 64 0
+
 export const Default_Contract_TransactionType = encodeContractList(Contracts);
+
 export enum AccountBlockStatus {
     'Before_Hash' = 1,
     'Before_Signature',

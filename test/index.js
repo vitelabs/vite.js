@@ -13,6 +13,8 @@ describe('ViteAPI Test: src/viteAPI', function () {
     require('./packages/viteAPI/index');
 });
 
+require('./packages/accountBlock/transaction');
+
 // viteAPI
 // http
 // ipc
