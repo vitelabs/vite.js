@@ -1,8 +1,3 @@
-export const no = {
-    code: '100000',
-    message: 'What do you want to do?'
-};
-
 export const paramsMissing = {
     code: '100001',
     message: 'Missing parameter(s).'

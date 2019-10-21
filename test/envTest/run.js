@@ -1,15 +1,14 @@
 const config = require('../../rpcConfig.js');
-const { WS_RPC } = require('@vite/vitejs-ws');
-const { client } = require('@vite/vitejs');
+const { WS_RPC } = require('../../src/WS');
+const { ViteAPI } = require('../../src/viteAPI');
 
 const provider = new WS_RPC(config.ws);
-const Client = client;
 
-const myClient = new Client(provider, _myClient => {
+const myClient = new ViteAPI(provider, _myClient => {
     console.log('Connected');
 });
 
-myClient.ledger.getSnapshotChainHeight().then(result => {
+myClient.request('ledger_getSnapshotChainHeight').then(result => {
     console.log(result);
 }).catch(err => {
     console.warn(err);

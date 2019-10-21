@@ -9,6 +9,16 @@
             console.log(window.$vite_vitejs)
             console.log(window.$vite_abi)
             console.log(window.$vite_WS)
+
+            const wallet = window.$vite_vitejs.wallet.createWallet();
+            console.log(wallet.entropy);
+
+            window.$vite_vitejs.keystore.encrypt(wallet.entropy, '123111').then((keystore) => {
+                console.log(keystore);
+                window.$vite_vitejs.keystore.decrypt(keystore, '123111').then((d) => {
+                    console.log(d, d === wallet.entropy);
+                });
+            });
         </script>
     </head>
 </html>
