@@ -6,7 +6,7 @@ import {
     createMnemonics, validateMnemonics,
     getMnemonicsFromEntropy, getEntropyFromMnemonics,
     getSeedFromMnemonics, createSeed,
-    deriveKeyPairByPath, deriveKeyPair
+    deriveKeyPairByPath, deriveKeyPairByIndex
 } from '../../../src/wallet/hdKey.ts';
 
 describe('language test', function () {
@@ -122,12 +122,12 @@ it('getPath', function () {
 });
 
 describe('keypair', function () {
-    it('deriveKeyPair = deriveKeyPairByPath', function () {
+    it('deriveKeyPairByIndex = deriveKeyPairByPath', function () {
         const seed = '21a107743295dfec434254374fdbb43ee4701fa699acce6d1810ddae7d356aeeb10bedc09358e5cf8860fc16d225c422f0a44a708267bf0d2bbbbcd3bd299a49';
         const index = 1;
         const path = getPath(index);
 
-        const keyPair = deriveKeyPair(seed, index);
+        const keyPair = deriveKeyPairByIndex(seed, index);
         const keyPairPath = deriveKeyPairByPath(seed, path);
         assert.deepEqual(keyPair, keyPairPath);
     });

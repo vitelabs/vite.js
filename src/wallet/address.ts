@@ -84,11 +84,11 @@ export function getAddressFromOriginalAddress(originalAddress: Hex, isContract? 
     return getHexAddr(originalAddressBuf, checkSum);
 }
 
-export function isValidAddress(hexAddr: Hex): AddressType {
-    if (!isValidHex(hexAddr)) {
+export function isValidAddress(address: Hex): AddressType {
+    if (!isValidHex(address)) {
         return AddressType.Illegal;
     }
-    return isValidCheckSum(hexAddr);
+    return isValidCheckSum(address);
 }
 
 

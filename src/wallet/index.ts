@@ -61,6 +61,6 @@ function deriveAddress({ mnemonics, index = 0, wordlist, password = '', isContra
     isContract?: boolean;
 }): AddressObj {
     const { seedHex } = hdKey.getSeedFromMnemonics(mnemonics, password, wordlist);
-    const { privateKey } = hdKey.deriveKeyPair(seedHex, index);
+    const { privateKey } = hdKey.deriveKeyPairByIndex(seedHex, index);
     return addressLib.createAddressByPrivateKey(privateKey, isContract);
 }

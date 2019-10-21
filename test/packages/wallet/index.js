@@ -21,12 +21,9 @@ const addrList = [
 it('deriveAddress', function () {
     const index = 0;
 
-    const AddressObj = walletUtils.deriveAddress({
-        mnemonics,
-        startIndex: index
-    });
+    const AddressObj = walletUtils.deriveAddress({ mnemonics, index });
     const { seedHex } = walletUtils.getSeedFromMnemonics(mnemonics);
-    const keypair = walletUtils.deriveKeyPair(seedHex, index);
+    const keypair = walletUtils.deriveKeyPairByIndex(seedHex, index);
 
     assert.equal(AddressObj.address, addrList[index]);
     assert.equal(AddressObj.privateKey, keypair.privateKey);

@@ -81,7 +81,7 @@ export function deriveKeyPairByPath(seed: Hex, path: String): { privateKey: Hex;
     };
 }
 
-export function deriveKeyPair(seed: Hex, index: number): { privateKey: Hex; publicKey: Hex; } {
+export function deriveKeyPairByIndex(seed: Hex, index: number): { privateKey: Hex; publicKey: Hex; } {
     const path = getPath(index);
     return deriveKeyPairByPath(seed, path);
 }
