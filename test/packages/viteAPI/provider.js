@@ -18,6 +18,6 @@ it('property http isConnected', function () {
     assert.deepEqual(true, viteProvider.isConnected);
 });
 
-[ 'setProvider', 'unsubscribe', 'unsubscribeAll', 'request', 'notification', 'batch', 'subscribe' ].forEach(key => {
+[ 'setProvider', 'unsubscribe', 'unsubscribeAll', 'request', 'sendNotification', 'batch', 'subscribe' ].forEach(key => {
     assert.equal(typeof viteProvider[key], 'function');
 });

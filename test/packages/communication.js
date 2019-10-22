@@ -98,7 +98,7 @@ describe('IPC_WS', function () {
         assert.equal(I instanceof Communication, true);
     });
 
-    [ 'on', 'remove', 'request', 'notification', 'batch', 'subscribe', 'unsubscribe' ].forEach(key => {
+    [ 'on', 'remove', 'request', 'sendNotification', 'batch', 'subscribe', 'unsubscribe' ].forEach(key => {
         it(`function ${ key }`, function () {
             assert.equal(typeof I[key], 'function');
         });

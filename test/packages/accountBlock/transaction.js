@@ -36,9 +36,9 @@ it('send', function () {
     assert.equal(sendAccountBlock.data, data);
 });
 
-it('sendTransaction', function () {
+it('sendWithMessage', function () {
     const message = '121212';
-    const sendAccountBlock = myTransaction.sendTransaction({
+    const sendAccountBlock = myTransaction.sendWithMessage({
         toAddress: address,
         message
     });

@@ -246,7 +246,7 @@ export declare class ProviderType {
     unsubscribe(event)
     unsubscribeAll()
     request(methods: Methods, ...args: any[])
-    notification(methods: Methods, ...args: any[])
+    sendNotification(methods: Methods, ...args: any[])
     batch(reqs: RPCRequest[])
     subscribe(methodName, ...args) 
 }

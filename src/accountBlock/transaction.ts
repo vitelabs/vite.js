@@ -86,7 +86,7 @@ class TransactionClass {
         return accountBlock;
     }
 
-    sendTransaction({ toAddress, tokenId = Vite_TokenId, amount = '0', message }: {
+    sendWithMessage({ toAddress, tokenId = Vite_TokenId, amount = '0', message }: {
         toAddress: Address;
         tokenId: TokenId;
         amount: BigInt;

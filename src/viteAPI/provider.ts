@@ -72,12 +72,12 @@ class ProviderClass {
         return rep.result;
     }
 
-    async notification(methods: Methods, ...args: any[]) {
+    async sendNotification(methods: Methods, ...args: any[]) {
         if (!this.isConnected) {
-            return this._onReq('notification', methods, ...args);
+            return this._onReq('sendNotification', methods, ...args);
         }
 
-        return this._provider.notification(methods, args);
+        return this._provider.sendNotification(methods, args);
     }
 
     async batch(reqs: RPCRequest[]) {

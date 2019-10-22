@@ -106,7 +106,7 @@ class HttpRpc extends Communication {
         });
     }
 
-    notification(methodName, params) {
+    sendNotification(methodName, params) {
         const requestObj = this._getNotificationPayload(methodName, params);
 
         if (requestObj instanceof Error) {
