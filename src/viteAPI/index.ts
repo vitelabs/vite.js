@@ -12,8 +12,8 @@ import Provider from './provider';
 class ViteAPIClass extends Provider {
     private customTransactionType: Object
 
-    constructor(provider: any, firstConnect: Function) {
-        super(provider, firstConnect);
+    constructor(provider: any, onInitCallback: Function) {
+        super(provider, onInitCallback);
 
         // { [funcSign + contractAddress]: { contractAddress, abi, transactionType } }
         this.customTransactionType = {};

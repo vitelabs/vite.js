@@ -10,15 +10,15 @@ class ProviderClass {
     private subscriptionList: Array<EventEmitter>
     private requestList: Array<any>
 
-    constructor(provider: any, firstConnect: Function) {
+    constructor(provider: any, onInitCallback: Function) {
         this._provider = provider;
         this.isConnected = false;
-        this.connectedOnce(firstConnect);
+        this.connectedOnce(onInitCallback);
         this.requestList = [];
         this.subscriptionList = [];
     }
 
-    setProvider(provider, firstConnect, abort) {
+    setProvider(provider, onInitCallback, abort) {
         abort && this._provider.abort(abort);
         this.unsubscribeAll();
 
@@ -28,7 +28,7 @@ class ProviderClass {
 
         this._provider = provider;
         this.isConnected = false;
-        this.connectedOnce(firstConnect);
+        this.connectedOnce(onInitCallback);
     }
 
     unsubscribe(event) {

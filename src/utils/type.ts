@@ -240,9 +240,9 @@ export declare interface RPCError {
 export declare class ProviderType {
     isConnected: Boolean;
 
-    constructor(provider: any, firstConnect: Function)
+    constructor(provider: any, onInitCallback: Function)
 
-    setProvider(provider, firstConnect, abort)
+    setProvider(provider, onInitCallback, abort)
     unsubscribe(event)
     unsubscribeAll()
     request(methods: Methods, ...args: any[])
@@ -254,7 +254,7 @@ export declare class ProviderType {
 export declare class ViteAPI extends ProviderType {
     transactionType: Object
     
-    constructor(provider: any, firstConnect: Function)
+    constructor(provider: any, onInitCallback: Function)
 
     addTransactionType(contractList: Object)
     getBalanceInfo(address: Address)
