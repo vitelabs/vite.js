@@ -75,8 +75,8 @@ class ViteAPIClass extends Provider {
         };
     }
 
-    async getTransactionList({ address, pageIndex, pageCount = 50 }: {
-        address: Address; pageIndex: number; pageCount?: number;
+    async getTransactionList({ address, pageIndex, pageSize = 50 }: {
+        address: Address; pageIndex: number; pageSize?: number;
     }, decodeTxTypeList: 'all' | String[] = 'all'): Promise<Transaction[]> {
         const err = checkParams({ address, pageIndex, decodeTxTypeList }, [ 'address', 'pageIndex' ], [ {
             name: 'address',
@@ -93,7 +93,7 @@ class ViteAPIClass extends Provider {
         }
 
         pageIndex = pageIndex >= 0 ? pageIndex : 0;
-        const data = await this.request('ledger_getBlocksByAccAddr', address, pageIndex, pageCount);
+        const data = await this.request('ledger_getBlocksByAccAddr', address, pageIndex, pageSize);
         const rawList = data || [];
 
         const list: Transaction[] = [];

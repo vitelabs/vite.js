@@ -301,11 +301,11 @@ async function createContract(previousAccountBlock) {
     return result;
 }
 
-async function CheckMyTxList(pageCount) {
+async function CheckMyTxList(pageSize) {
     const data = await viteProvider.getTransactionList({
         address,
         pageIndex: 0,
-        pageCount
+        pageSize
     });
 
     // console.log('[LOG] CheckMyTxList', data, '\n');

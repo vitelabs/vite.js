@@ -258,8 +258,8 @@ export declare class ViteAPI extends ProviderType {
 
     addTransactionType(contractList: Object)
     getBalanceInfo(address: Address)
-    getTransactionList({ address, pageIndex, pageCount }: {
-        address: Address; pageIndex: number; pageCount?: number;
+    getTransactionList({ address, pageIndex, pageSize }: {
+        address: Address; pageIndex: number; pageSize?: number;
     }, decodeTxTypeList: 'all' | String[])
 }
 
