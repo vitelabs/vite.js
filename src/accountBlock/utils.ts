@@ -176,7 +176,7 @@ export function checkAccountBlock(accountBlock: {
     return null;
 }
 
-export function isValidAccountBlockBeforeHash(accountBlock: {
+export function isValidAccountBlockWithoutHash(accountBlock: {
     blockType: BlockType;
     address: Address;
     height: Uint64;
@@ -194,7 +194,7 @@ export function isValidAccountBlockBeforeHash(accountBlock: {
     return !err;
 }
 
-export function isValidAccountBlockBeforeSignature(accountBlock: {
+export function isValidAccountBlockWithoutSignature(accountBlock: {
     blockType: BlockType;
     address: Address;
     height: Uint64;
@@ -440,7 +440,7 @@ export function signAccountBlock(accountBlock: {
 
 // About Transaction and Contracts
 
-export function decodeAccountBlockByContract({ accountBlock, contractAddress, abi, topics = [], methodName }: {
+export function decodeContractAccountBlock({ accountBlock, contractAddress, abi, topics = [], methodName }: {
     accountBlock: AccountBlockType;
     contractAddress: Address;
     abi: any;

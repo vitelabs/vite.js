@@ -4,11 +4,11 @@ import { Contracts } from '../../../src/constant/index';
 import { encodeFunctionSignature, encodeFunctionCall } from '../../../src/abi/index';
 import {
     Default_Hash, Default_Contract_TransactionType,
-    getTransactionType, encodeContractList, decodeAccountBlockByContract, decodeAccountBlockDataByContract,
+    getTransactionType, encodeContractList, decodeContractAccountBlock, decodeAccountBlockDataByContract,
     getAccountBlockHash, signAccountBlock,
     getCreateContractData, getCallContractData,
     AccountBlockStatus, isRequestBlock, isResponseBlock,
-    checkAccountBlock, isValidAccountBlockBeforeHash, isValidAccountBlockBeforeSignature, isValidAccountBlock, isRequestBlock
+    checkAccountBlock, isValidAccountBlockWithoutHash, isValidAccountBlockWithoutSignature, isValidAccountBlock
 } from '../../../src/accountBlock/utils';
 
 import config from '../../config';
@@ -62,16 +62,16 @@ const wrongAccountBlock = {
     confirmations: '223404'
 };
 
-it('isValidAccountBlockBeforeHash', function () {
-    assert.equal(isValidAccountBlockBeforeHash(accountBlock), true);
-    assert.equal(isValidAccountBlockBeforeHash(wrongAccountBlock), false);
+it('isValidAccountBlockWithoutHash', function () {
+    assert.equal(isValidAccountBlockWithoutHash(accountBlock), true);
+    assert.equal(isValidAccountBlockWithoutHash(wrongAccountBlock), false);
     assert.equal(!!checkAccountBlock(accountBlock, AccountBlockStatus.Before_Hash), false);
     assert.equal(!!checkAccountBlock(wrongAccountBlock, AccountBlockStatus.Before_Hash), true);
 });
 
-it('isValidAccountBlockBeforeSignature', function () {
-    assert.equal(isValidAccountBlockBeforeSignature(accountBlock), true);
-    assert.equal(isValidAccountBlockBeforeSignature(wrongAccountBlock), false);
+it('isValidAccountBlockWithoutSignature', function () {
+    assert.equal(isValidAccountBlockWithoutSignature(accountBlock), true);
+    assert.equal(isValidAccountBlockWithoutSignature(wrongAccountBlock), false);
     assert.equal(!!checkAccountBlock(accountBlock, AccountBlockStatus.Before_Signature), false);
     assert.equal(!!checkAccountBlock(wrongAccountBlock, AccountBlockStatus.Before_Signature), true);
 });
@@ -265,7 +265,7 @@ describe('signAccountBlock', function () {
 });
 
 
-describe('decodeAccountBlockByContract decodeAccountBlockDataByContract', function () {
+describe('decodeContractAccountBlock decodeAccountBlockDataByContract', function () {
     for (const txType in config.blockList) {
         if (!Contracts[txType]) {
             continue;
@@ -274,7 +274,7 @@ describe('decodeAccountBlockByContract decodeAccountBlockDataByContract', functi
         const abi = Contracts[txType].abi;
         const accountBlock = config.blockList[txType];
 
-        const decodeRes = decodeAccountBlockByContract({
+        const decodeRes = decodeContractAccountBlock({
             accountBlock,
             contractAddress: Contracts[txType].contractAddress,
             abi

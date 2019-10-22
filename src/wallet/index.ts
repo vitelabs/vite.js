@@ -36,8 +36,8 @@ export default {
         }
         return addressList;
     },
-    createWallet: function (bits: number = 256, wordlist: Array<String> = bip39.wordlists.EN, password: string = '') {
-        const mnemonic = hdKey.createMnemonics(bits, wordlist);
+    createWallet: function (strength: number = 256, wordlist: Array<String> = bip39.wordlists.EN, password: string = '') {
+        const mnemonic = hdKey.createMnemonics(strength, wordlist);
         return new Wallet(mnemonic, wordlist, password);
     },
     getWallet: function (mnemonics: string, wordlist: Array<String> = bip39.wordlists.EN, password: string = '') {

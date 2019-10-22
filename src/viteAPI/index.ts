@@ -2,7 +2,7 @@ import { Contracts } from '~@vite/vitejs-constant';
 import { checkParams, isArray } from '~@vite/vitejs-utils';
 import { isValidAddress, AddressType } from '~@vite/vitejs-wallet/address';
 import { decodeParameters, encodeFunctionCall, getAbiByType } from '~@vite/vitejs-abi';
-import { Default_Contract_TransactionType, encodeContractList, getTransactionType, decodeAccountBlockByContract } from '~@vite/vitejs-accountblock/utils';
+import { Default_Contract_TransactionType, encodeContractList, getTransactionType, decodeContractAccountBlock } from '~@vite/vitejs-accountblock/utils';
 
 import { Address, AccountBlockType, Transaction } from './type';
 
@@ -113,7 +113,7 @@ class ViteAPIClass extends Provider {
 
             if (isDecodeTx) {
                 transaction.contractParams = contractAddress && abi
-                    ? decodeAccountBlockByContract({ accountBlock, contractAddress, abi })
+                    ? decodeContractAccountBlock({ accountBlock, contractAddress, abi })
                     : null;
             }
 
