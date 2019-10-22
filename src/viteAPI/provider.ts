@@ -1,6 +1,6 @@
 import { requestTimeout } from '~@vite/vitejs-error';
 
-import { RPCrequest, RPCresponse, Methods } from './type';
+import { RPCRequest, RPCResponse, Methods } from './type';
 import EventEmitter from './eventEmitter';
 
 
@@ -65,7 +65,7 @@ class ProviderClass {
             return this._onReq('request', methods, ...args);
         }
 
-        const rep: RPCresponse = await this._provider.request(methods, args);
+        const rep: RPCResponse = await this._provider.request(methods, args);
         if (rep.error) {
             throw rep.error;
         }
@@ -80,7 +80,7 @@ class ProviderClass {
         return this._provider.notification(methods, args);
     }
 
-    async batch(reqs: RPCrequest[]) {
+    async batch(reqs: RPCRequest[]) {
         if (!this.isConnected) {
             return this._onReq('batch', reqs);
         }
@@ -88,7 +88,7 @@ class ProviderClass {
         reqs.forEach(v => {
             v.type = v.type || 'request';
         });
-        const reps: RPCresponse[] = await this._provider.batch(reqs);
+        const reps: RPCResponse[] = await this._provider.batch(reqs);
         return reps;
     }
 

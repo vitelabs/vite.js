@@ -219,20 +219,20 @@ export declare type Methods = String |
 'subscribe_createUnreceivedBlockSubscriptionByAddress' |
 'subscribe_createVmlogSubscription';
 
-export declare interface RPCrequest {
+export declare interface RPCRequest {
     type?: string;
     methodName: Methods;
     params: any[];
 }
 
-export declare interface RPCresponse {
+export declare interface RPCResponse {
     jsonrpc?: string;
     id?: number;
     result?: any;
-    error?: RPCerror;
+    error?: RPCError;
 }
 
-export declare interface RPCerror {
+export declare interface RPCError {
     code: number;
     message: string;
 }
@@ -247,7 +247,7 @@ export declare class ProviderType {
     unsubscribeAll()
     request(methods: Methods, ...args: any[])
     notification(methods: Methods, ...args: any[])
-    batch(reqs: RPCrequest[])
+    batch(reqs: RPCRequest[])
     subscribe(methodName, ...args) 
 }
 
