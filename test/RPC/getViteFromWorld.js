@@ -19,7 +19,7 @@ async function GetViteFromWorld(toAddress, amount = Default_Amount) {
     const tx = new Transaction(address);
     tx.setProvider(provider);
     
-    const data = await tx.sendWithMessage({
+    const data = await tx.send({
         toAddress, 
         tokenId: Vite_TokenId,
         amount

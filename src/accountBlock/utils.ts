@@ -389,6 +389,13 @@ export function getCallContractData({ abi, params, methodName }: {
     return Buffer.from(data, 'hex').toString('base64');
 }
 
+export function messageToData(message: string) {
+    if (!message) {
+        return '';
+    }
+    const messageHex = Buffer.from(message).toString('hex');
+    return Buffer.from(messageHex, 'hex').toString('base64');
+}
 
 // Sign
 export function signAccountBlock(accountBlock: {

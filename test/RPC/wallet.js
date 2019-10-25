@@ -141,7 +141,7 @@ async function checkQuota(previousAccountBlock) {
 }
 
 async function SendTxToMyself(previousAccountBlock) {
-    const accountBlock = await tx.sendWithMessage({
+    const accountBlock = await tx.send({
         toAddress: address, 
         tokenId: Vite_TokenId,
         amount: '10000000000000000000'

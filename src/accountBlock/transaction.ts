@@ -86,35 +86,6 @@ class TransactionClass {
         return accountBlock;
     }
 
-    sendWithMessage({ toAddress, tokenId = Vite_TokenId, amount = '0', message }: {
-        toAddress: Address;
-        tokenId: TokenId;
-        amount: BigInt;
-        message: string;
-    }): AccountBlock {
-        const err = checkParams({ toAddress }, ['toAddress']);
-        if (err) {
-            throw err;
-        }
-
-        let data = '';
-        if (message) {
-            const messageHex = Buffer.from(message).toString('hex');
-            data = Buffer.from(messageHex, 'hex').toString('base64');
-        }
-
-        const accountBlock: AccountBlock = new AccountBlock({
-            blockType: BlockType.TransferRequest,
-            address: this.address,
-            toAddress,
-            tokenId,
-            amount,
-            data
-        }, this.provider, this.privateKey);
-
-        return accountBlock;
-    }
-
     createContract({ responseLatency = '0', quotaMultiplier = '10', randomDegree = '0', code, abi, params }: {
         code: Hex;
         responseLatency?: Uint8;

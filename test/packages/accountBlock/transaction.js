@@ -2,7 +2,7 @@ const assert = require('assert');
 
 import { BlockType, Vite_TokenId, Contracts } from '../../../src/constant';
 import Transaction from '../../../src/accountBlock/transaction';
-import { getCreateContractData, getCallContractData } from '../../../src/accountBlock/utils';
+import { getCreateContractData, getCallContractData, messageToData } from '../../../src/accountBlock/utils';
 
 const address = 'vite_69f3bdb5cdcfa145ae6cc42593a89088ff3dac587eb692d689';
 const myTransaction = new Transaction(address);
@@ -36,22 +36,17 @@ it('send', function () {
     assert.equal(sendAccountBlock.data, data);
 });
 
-it('sendWithMessage', function () {
-    const message = '121212';
-    const sendAccountBlock = myTransaction.sendWithMessage({
+it('send 2', function () {
+    const sendAccountBlock = myTransaction.send({
         toAddress: address,
-        message
+        data: messageToData('121212')
     });
-
-    const messageHex = Buffer.from(message).toString('hex');
-    const data = Buffer.from(messageHex, 'hex').toString('base64');
 
     assert.equal(sendAccountBlock.blockType, BlockType.TransferRequest);
     assert.equal(sendAccountBlock.address, address);
     assert.equal(sendAccountBlock.toAddress, address);
     assert.equal(Number(sendAccountBlock.amount), 0);
     assert.equal(sendAccountBlock.tokenId, Vite_TokenId);
-    assert.equal(sendAccountBlock.data, data);
 });
 
 it('createContract', function () {

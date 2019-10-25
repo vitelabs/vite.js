@@ -6,7 +6,7 @@ import {
     Default_Hash, Default_Contract_TransactionType,
     getTransactionType, encodeContractList, decodeContractAccountBlock, decodeAccountBlockDataByContract,
     getAccountBlockHash, signAccountBlock,
-    getCreateContractData, getCallContractData,
+    getCreateContractData, getCallContractData, messageToData,
     AccountBlockStatus, isRequestBlock, isResponseBlock,
     checkAccountBlock, isValidAccountBlockWithoutHash, isValidAccountBlockWithoutSignature, isValidAccountBlock
 } from '../../../src/accountBlock/utils';
@@ -153,6 +153,15 @@ it('getCallContractData', function () {
     const params = [ '00000000000000000001', 'ss', 'vite_553462bca137bac29f440e9af4ab2e2c1bb82493e41d2bc8b2' ];
     const abi = Contracts.RegisterSBP.abi;
     assert.equal(getCallContractData({ params, abi }), data);
+});
+
+it('messageToData', function () {
+    const message = '121212';
+
+    const messageHex = Buffer.from(message).toString('hex');
+    const data = Buffer.from(messageHex, 'hex').toString('base64');
+
+    assert.equal(data, messageToData(message));
 });
 
 
