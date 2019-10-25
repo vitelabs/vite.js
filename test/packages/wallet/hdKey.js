@@ -85,7 +85,7 @@ describe('language test', function () {
     });
 });
 
-describe('mnemonic 12 password', function () {
+describe('mnemonic 12 passphrase', function () {
     const mnemonic = 'banner bar shiver budget window cart snake control venue lonely marine print';
     const passphrase = '123456';
 
@@ -101,7 +101,7 @@ describe('mnemonic 12 password', function () {
     });
 });
 
-describe('mnemonic 24 password', function () {
+describe('mnemonic 24 passphrase', function () {
     const mnemonic = 'hazard kind issue draw bottom foot net join train elbow census present blind assume suit vague vital crack slab material pill census actress panda';
     const passphrase = '123456';
 

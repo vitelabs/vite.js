@@ -20,13 +20,13 @@ class Wallet {
     readonly mnemonics: String
     readonly entropy: Hex
     readonly wordlist: Array<String>
-    readonly password: String
+    readonly passphrase: String
     readonly seed: Buffer
     readonly seedHex: Hex
 
     private addressList: Object
 
-    constructor(mnemonics: String, wordlist: Array<String> = bip39.wordlists.EN, password: String = '') {
+    constructor(mnemonics: String, wordlist: Array<String> = bip39.wordlists.EN, passphrase: String = '') {
         if (!hdKey.validateMnemonics(mnemonics, wordlist)) {
             throw new Error('Illegal mnemonic');
         }
@@ -34,10 +34,10 @@ class Wallet {
         this.rootPath = hdKey.ROOT_PATH;
         this.mnemonics = mnemonics;
         this.wordlist = wordlist;
-        this.password = password;
+        this.passphrase = passphrase;
         this.entropy = hdKey.getEntropyFromMnemonics(mnemonics, wordlist);
 
-        const { seed, seedHex } = hdKey.getSeedFromMnemonics(mnemonics, password, wordlist);
+        const { seed, seedHex } = hdKey.getSeedFromMnemonics(mnemonics, passphrase, wordlist);
         this.seed = seed;
         this.seedHex = seedHex;
         this.addressList = {};
