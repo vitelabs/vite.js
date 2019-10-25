@@ -312,7 +312,7 @@ class TransactionClass {
         });
     }
 
-    cancelStake({ beneficiaryAddress, amount }: {
+    cancelQuotaStake({ beneficiaryAddress, amount }: {
         beneficiaryAddress: Address;
         amount: Uint256;
     }): AccountBlock {
@@ -325,8 +325,8 @@ class TransactionClass {
         }
 
         return this.callContract({
-            abi: Contracts.CancelStake.abi,
-            toAddress: Contracts.CancelStake.contractAddress,
+            abi: Contracts.CancelQuotaStake.abi,
+            toAddress: Contracts.CancelQuotaStake.contractAddress,
             params: [ beneficiaryAddress, amount ]
         });
     }

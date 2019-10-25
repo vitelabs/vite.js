@@ -19,7 +19,7 @@ export enum TransactionType {
     'VoteForSBP',
     'CancelVote',
     'StakeForQuota',
-    'CancelStake',
+    'CancelQuotaStake',
     'IssueToken',
     'ReIssueToken',
     'BurnToken',

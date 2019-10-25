@@ -262,7 +262,7 @@ async function getVoteList() {
 }
 
 async function withdrawalOfQuota(previousAccountBlock) {
-    const accountBlock = tx.cancelStake({
+    const accountBlock = tx.cancelQuotaStake({
         beneficiaryAddress: address,
         amount: '134000000000000000000'
     });
