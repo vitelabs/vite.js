@@ -4,7 +4,7 @@ const blake = require('blakejs/blake2b');
 import { paramsMissing, paramsFormat } from '~@vite/vitejs-error';
 import { Delegate_Gid, Contracts } from '~@vite/vitejs-constant';
 import { getAbiByType, encodeParameters, encodeFunctionCall, encodeFunctionSignature, decodeLog } from '~@vite/vitejs-abi';
-import { isValidAddress, getAddressFromPublicKey, createAddressByPrivateKey, getOriginalAddressFromAddress, AddressType } from '~@vite/vitejs-wallet/address';
+import { isValidAddress, getAddressFromPublicKey, createAddressByPrivateKey, getOriginalAddressFromAddress, AddressType, getAddressFromOriginalAddress } from '~@vite/vitejs-wallet/address';
 import { checkParams, isNonNegativeInteger, isHexString, isValidTokenId, getOriginalTokenIdFromTokenId, isObject, ed25519, isBase64String } from '~@vite/vitejs-utils';
 
 import { BlockType, Address, Base64, Hex, TokenId, Uint64, BigInt, AccountBlockType, Uint8 } from './type';
@@ -231,6 +231,41 @@ export function isResponseBlock(blockType: BlockType): Boolean {
         || blockType === BlockType.GenesisResponse;
 }
 
+export function createContractAddress({ address, height, previousHash }: {
+    address: Address;
+    height: Uint64;
+    previousHash: Hex;
+}): Address {
+    const err = checkParams({ address, height, previousHash },
+        [ 'address', 'height', 'previousHash' ],
+        [ {
+            name: 'address',
+            func: isValidAddress
+        }, {
+            name: 'height',
+            func: isNonNegativeInteger
+        }, {
+            name: 'previousHash',
+            func: isHexString
+        } ]);
+    if (err) {
+        throw err;
+    }
+
+    const originAddressBuffer: Buffer = Buffer.from(getOriginalAddressFromAddress(address), 'hex');
+    const heightBuffer: Buffer = Buffer.from(new BigNumber(height).toArray('big', 8));
+    const previousHashBuffer: Buffer = Buffer.from(previousHash, 'hex');
+
+    const totalLength = originAddressBuffer.length + heightBuffer.length + previousHashBuffer.length;
+    const _o: Buffer = Buffer.concat([ originAddressBuffer, heightBuffer, previousHashBuffer ], totalLength);
+    const _originContractAddress = blake.blake2b(_o, null, 20);
+
+    const originContractAddress = new Uint8Array(21);
+    originContractAddress.set(_originContractAddress);
+    originContractAddress.set([1], 20);
+
+    return getAddressFromOriginalAddress(Buffer.from(originContractAddress).toString('hex'), true);
+}
 
 // Get AccountBlock.hash
 

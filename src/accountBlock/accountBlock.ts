@@ -8,7 +8,7 @@ import {
     isRequestBlock, isResponseBlock, checkAccountBlock, Default_Hash,
     getBlockTypeHex, getHeightHex, getAddressHex, getToAddressHex, getDataHex,
     getAmountHex, getFeeHex, getNonceHex, getPreviousHashHex, getTokenIdHex, getSendBlockHashHex,
-    getAccountBlockHash, signAccountBlock
+    getAccountBlockHash, signAccountBlock, createContractAddress
 } from './utils';
 import { Address, Hex, Base64, BigInt, Uint64, BlockType, TokenId, AccountBlockBlock, ProviderType, AccountBlockType } from './type';
 
@@ -19,7 +19,6 @@ class AccountBlockClass {
     fee?: BigInt;
     data?: Base64;
     sendBlockHash?: Hex;
-    toAddress?: Address;
     tokenId?: TokenId;
     amount?: BigInt;
     height?: Uint64;
@@ -28,6 +27,7 @@ class AccountBlockClass {
     nonce?: Base64;
     signature?: Base64;
     publicKey?: Base64;
+    _toAddress?: Address;
 
     private privateKey: Hex
     private provider: ProviderType
@@ -60,8 +60,8 @@ class AccountBlockClass {
         this.data = data;
         this.sendBlockHash = sendBlockHash;
         this.amount = amount;
-        this.toAddress = toAddress;
         this.tokenId = tokenId;
+        this._toAddress = toAddress;
 
         provider && this.setProvider(provider);
         privateKey && this.setPrivateKey(privateKey);
@@ -85,6 +85,22 @@ class AccountBlockClass {
             publicKey: this.publicKey,
             signature: this.signature
         };
+    }
+
+    get toAddress(): Address {
+        if (this.blockType !== BlockType.CreateContractRequest) {
+            return this._toAddress;
+        }
+
+        if (!this.previousHash || !this.height) {
+            return '';
+        }
+
+        return createContractAddress({
+            address: this.address,
+            height: this.height,
+            previousHash: this.previousHash
+        });
     }
 
     get originalAddress(): Hex {
@@ -217,47 +233,6 @@ class AccountBlockClass {
         return {
             height: this.height,
             previousHash: this.previousHash
-        };
-    }
-
-    async getToAddress(): Promise<Address> {
-        const err = checkParams(this.accountBlock, ['previousHash'], [{
-            name: 'blockType',
-            func: _b => _b === BlockType.CreateContractRequest
-        }]);
-        if (err) {
-            throw err;
-        }
-
-        return this.provider.request('contract_createContractAddress', this.address, this.height, this.previousHash);
-    }
-
-    setToAddress(address: Address): AccountBlockClass {
-        this.toAddress = address;
-        return this;
-    }
-
-    async autoSetToAddress(): Promise<Address> {
-        if (this.blockType !== BlockType.CreateContractRequest) {
-            return this.toAddress;
-        }
-
-        const address = await this.getToAddress();
-        this.setToAddress(address);
-        return this.toAddress;
-    }
-
-    async autoSetProperty(): Promise<{
-        height: Uint64;
-        previousHash: Hex;
-        toAddress: Address;
-    }> {
-        await this.autoSetPreviousAccountBlock();
-        await this.autoSetToAddress();
-        return {
-            height: this.height,
-            previousHash: this.previousHash,
-            toAddress: this.toAddress
         };
     }
 
@@ -409,13 +384,13 @@ class AccountBlockClass {
     }
 
     async autoSendByPoW(privateKey: Hex = this.privateKey): Promise<AccountBlockBlock> {
-        await this.autoSetProperty();
+        await this.autoSetPreviousAccountBlock();
         await this.PoW();
         return this.sign(privateKey).send();
     }
 
     async autoSend(privateKey: Hex = this.privateKey): Promise<AccountBlockBlock> {
-        await this.autoSetProperty();
+        await this.autoSetPreviousAccountBlock();
         return this.sign(privateKey).send();
     }
 }

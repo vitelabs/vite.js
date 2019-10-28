@@ -6,7 +6,7 @@ import {
     Default_Hash, Default_Contract_TransactionType,
     getTransactionType, encodeContractList, decodeContractAccountBlock, decodeAccountBlockDataByContract,
     getAccountBlockHash, signAccountBlock,
-    getCreateContractData, getCallContractData, messageToData,
+    createContractAddress, getCreateContractData, getCallContractData, messageToData,
     AccountBlockStatus, isRequestBlock, isResponseBlock,
     checkAccountBlock, isValidAccountBlockWithoutHash, isValidAccountBlockWithoutSignature, isValidAccountBlock
 } from '../../../src/accountBlock/utils';
@@ -101,6 +101,26 @@ it('isResponseBlock', function () {
     assert.equal(isResponseBlock(5), true);
     assert.equal(isResponseBlock(6), false);
     assert.equal(isResponseBlock(7), true);
+});
+
+describe('createContractAddress', function () {
+    it('case 1', function () {
+        const toAddress = createContractAddress({
+            address: 'vite_553462bca137bac29f440e9af4ab2e2c1bb82493e41d2bc8b2',
+            height: 117,
+            previousHash: 'e0cea481593649f6117c648e35cfd1b1ced91f1a6b37de37257e6be11215289d'
+        });
+        assert.equal('vite_b671995ad63fd0426eb93000bb266a7be748f6502f437ea817', toAddress);
+    });
+
+    it('case 2', function () {
+        const toAddress = createContractAddress({
+            address: 'vite_ab24ef68b84e642c0ddca06beec81c9acb1977bbd7da27a87a',
+            height: 10,
+            previousHash: 'd7dac74e9d297f52f880402f5590fff28705952627770c9d426540c81360eb3e'
+        });
+        assert.equal('vite_b778133ae2a8d95254e93ba57b6fb26121aaa433703e8e074f', toAddress);
+    });
 });
 
 describe('getCreateContractData', function () {

@@ -45,7 +45,7 @@ async function TestFunc() {
     console.log('Step 4 getQuota. \n');
     accountBlock = await checkQuota(accountBlock);
 
-    await sleep(1000);
+    await sleep(2000);
     console.log('Step 5 SBPreg. \n');
     accountBlock = await SBPreg(accountBlock);
 
@@ -285,7 +285,7 @@ async function createContract(previousAccountBlock) {
         result = await accountBlock.autoSendByPoW(privateKey);
         console.log('[LOG] createContract', result, '\n');
     } else {
-        await accountBlock.setPreviousAccountBlock(previousAccountBlock).autoSetToAddress();
+        await accountBlock.setPreviousAccountBlock(previousAccountBlock);
         result = await accountBlock.sendByPoW(privateKey);
         console.log('[LOG] createContract', result, '\n');
     }

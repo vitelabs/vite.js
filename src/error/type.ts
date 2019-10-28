@@ -339,15 +339,7 @@ export declare class AccountBlockClassType {
         height: Uint64;
         previousHash: Hex;
     }>
-    getToAddress(): Promise<Address>
-    setToAddress(address: Address): AccountBlockClassType
-    autoSetToAddress(): Promise<Address>
-    autoSetProperty(): Promise<{
-        height: Uint64;
-        previousHash: Hex;
-        toAddress: Address;
-    }>
-
+    
     getDifficulty(): Promise<BigInt>
     setDifficulty(difficulty: BigInt): AccountBlockClassType
     autoSetDifficulty(): Promise<BigInt> 
