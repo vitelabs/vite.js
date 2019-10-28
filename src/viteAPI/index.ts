@@ -1,10 +1,10 @@
 import { Contracts } from '~@vite/vitejs-constant';
-import { checkParams, isArray } from '~@vite/vitejs-utils';
-import { isValidAddress, AddressType } from '~@vite/vitejs-wallet/address';
+import { checkParams, isArray, blake2bHex } from '~@vite/vitejs-utils';
+import { isValidAddress, AddressType, getOriginalAddressFromAddress } from '~@vite/vitejs-wallet/address';
 import { decodeParameters, encodeFunctionCall, getAbiByType } from '~@vite/vitejs-abi';
 import { Default_Contract_TransactionType, encodeContractList, getTransactionType, decodeContractAccountBlock } from '~@vite/vitejs-accountblock/utils';
 
-import { Address, AccountBlockType, Transaction } from './type';
+import { Address, AccountBlockType, Transaction, Hex, Base64, BigInt } from './type';
 
 import Provider from './provider';
 
@@ -150,6 +150,23 @@ class ViteAPIClass extends Provider {
 
         const hexResult = Buffer.from(result, 'base64').toString('hex');
         return decodeParameters(offchainAbi.outputs, hexResult);
+    }
+
+    async getNonce({ difficulty, previousHash, address }: {
+        difficulty: BigInt;
+        previousHash: Hex;
+        address: Address;
+    }): Promise<Base64> {
+        const err = checkParams({ difficulty, previousHash, address }, [ 'address', 'difficulty', 'previousHash' ]);
+        if (err) {
+            throw err;
+        }
+
+        const originalAddress = getOriginalAddressFromAddress(address);
+        const getNonceHashBuffer = Buffer.from(originalAddress + previousHash, 'hex');
+        const getNonceHash = blake2bHex(getNonceHashBuffer, null, 32);
+
+        return this.request('util_getPoWNonce', difficulty, getNonceHash);
     }
 }
 

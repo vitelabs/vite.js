@@ -261,6 +261,12 @@ export declare class ViteAPI extends ProviderType {
     getTransactionList({ address, pageIndex, pageSize }: {
         address: Address; pageIndex: number; pageSize?: number;
     }, decodeTxTypeList: 'all' | String[])
+    callOffChainContract({ address, abi, code, params })
+    getNonce({ difficulty, previousHash, address }: {
+        difficulty: BigInt;
+        previousHash: Hex;
+        address: Address;
+    }): Promise<Base64>
 }
 
 
