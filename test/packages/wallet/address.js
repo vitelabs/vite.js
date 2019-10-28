@@ -11,26 +11,16 @@ import {
 const privKey = 'afa2a3ab3347b5bbe210dc099b2e010e5491d698e5112db6bc278cfd8fa27eb9f0fde0110193147e7961e61eeb22576c535b3442fd6bd9c457775e0cc69f1951';
 
 const addr = createAddressByPrivateKey();
-const addrContract = createAddressByPrivateKey(null, true);
 const addrPriv = createAddressByPrivateKey(privKey);
-const addrPrivContract = createAddressByPrivateKey(privKey, true);
 
 
 describe('createAddressByPrivateKey', function () {
-    it('with privateKey, isContract = false', function () {
+    it('with privateKey', function () {
         assert.equal(addrPriv.privateKey, privKey);
     });
 
-    it('with privateKey, isContract = true', function () {
-        assert.equal(addrPrivContract.privateKey, privKey);
-    });
-
-    it('without privateKey, isContract = false', function () {
+    it('without privateKey', function () {
         assert.equal(isHexString(addr.privateKey), true);
-    });
-
-    it('without privateKey, isContract = true', function () {
-        assert.equal(isHexString(addrContract.privateKey), true);
     });
 });
 
@@ -38,14 +28,8 @@ describe('isValidAddress', function () {
     it('createAddressByPrivateKey addr', function () {
         assert.equal(isValidAddress(addr.address), AddressType.Account);
     });
-    it('createAddressByPrivateKey addrContract', function () {
-        assert.equal(isValidAddress(addrContract.address), AddressType.Contract);
-    });
     it('createAddressByPrivateKey addrPriv', function () {
         assert.equal(isValidAddress(addrPriv.address), AddressType.Account);
-    });
-    it('createAddressByPrivateKey addrPrivContract', function () {
-        assert.equal(isValidAddress(addrPrivContract.address), AddressType.Contract);
     });
     it('Old user address: case 1', function () {
         assert.equal(isValidAddress('vite_69f3bdb5cdcfa145ae6cc42593a89088ff3dac587eb692d689'), AddressType.Account);

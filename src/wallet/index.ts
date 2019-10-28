@@ -12,13 +12,12 @@ export default {
     ...addressLib,
     ...hdKey,
     deriveAddress,
-    deriveAddressList: function ({ mnemonics, startIndex, endIndex, wordlist, passphrase = '', isContract }: {
+    deriveAddressList: function ({ mnemonics, startIndex, endIndex, wordlist, passphrase = '' }: {
         mnemonics: String;
         startIndex: number;
         endIndex: number;
         wordlist: Array<String>;
         passphrase: String;
-        isContract?: boolean;
     }): Array<AddressObj> {
         const err = checkParams({ startIndex, endIndex }, [ 'startIndex', 'endIndex' ]);
         if (err) {
@@ -31,7 +30,7 @@ export default {
 
         const addressList: Array<AddressObj> = [];
         for (let i = startIndex; i <= endIndex; i++) {
-            const addr: AddressObj = deriveAddress({ mnemonics, index: i, wordlist, passphrase, isContract });
+            const addr: AddressObj = deriveAddress({ mnemonics, index: i, wordlist, passphrase });
             addressList.push(addr);
         }
         return addressList;
@@ -53,14 +52,13 @@ export default {
 };
 
 
-function deriveAddress({ mnemonics, index = 0, wordlist, passphrase = '', isContract }: {
+function deriveAddress({ mnemonics, index = 0, wordlist, passphrase = '' }: {
     mnemonics: String;
     index: number;
     wordlist: Array<String>;
     passphrase: String;
-    isContract?: boolean;
 }): AddressObj {
     const { seedHex } = hdKey.getSeedFromMnemonics(mnemonics, passphrase, wordlist);
     const { privateKey } = hdKey.deriveKeyPairByIndex(seedHex, index);
-    return addressLib.createAddressByPrivateKey(privateKey, isContract);
+    return addressLib.createAddressByPrivateKey(privateKey);
 }

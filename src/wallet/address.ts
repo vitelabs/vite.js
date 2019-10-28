@@ -16,7 +16,7 @@ export enum AddressType {
 }
 
 
-export function createAddressByPrivateKey(privateKey?: Hex, isContract?: boolean): AddressObj {
+export function createAddressByPrivateKey(privateKey?: Hex): AddressObj {
     const err = checkParams({ privateKey }, [], [{
         name: 'privateKey',
         func: isHexString
@@ -25,12 +25,12 @@ export function createAddressByPrivateKey(privateKey?: Hex, isContract?: boolean
         throw err;
     }
 
-    // originalAddress = Blake2b(PubKey)(len:20) + (isContract ? 1 : 0)(len:1)
-    const addressResult = createAddress(privateKey, isContract);
+    // originalAddress = Blake2b(PubKey)(len:20) + (isContract ? 1 : 0)(len:1)  // There is false
+    const addressResult = createAddress(privateKey);
     const originalAddress = addressResult.originAddress;
 
-    // checkSum = isContract ? reverse(Blake2b(address[0:20])(len:5)) : Blake2b(address[0:20])(len:5)
-    const checkSum = getAddrCheckSum(originalAddress, isContract);
+    // checkSum = isContract ? reverse(Blake2b(address[0:20])(len:5)) : Blake2b(address[0:20])(len:5)  // There is false
+    const checkSum = getAddrCheckSum(originalAddress, false);
 
     // address = 'vite_' + Hex(originalAddress[0:20] + checkSum)
     const address = getHexAddr(originalAddress, checkSum);
@@ -44,7 +44,7 @@ export function createAddressByPrivateKey(privateKey?: Hex, isContract?: boolean
     };
 }
 
-export function getAddressFromPublicKey(publicKey: Hex, isContract?: boolean): Address {
+export function getAddressFromPublicKey(publicKey: Hex): Address {
     const err = checkParams({ publicKey }, ['publicKey'], [{
         name: 'publicKey',
         func: isHexString
@@ -55,8 +55,8 @@ export function getAddressFromPublicKey(publicKey: Hex, isContract?: boolean): A
 
     const publicKeyBuffer = Buffer.from(publicKey, 'hex');
 
-    const originalAddress = newAddrFromPub(publicKeyBuffer, isContract);
-    const checkSum = getAddrCheckSum(originalAddress, isContract);
+    const originalAddress = newAddrFromPub(publicKeyBuffer);
+    const checkSum = getAddrCheckSum(originalAddress, false);
 
     return getHexAddr(originalAddress, checkSum);
 }
@@ -101,7 +101,7 @@ function getOriginalAddress(hexAddr: Hex, addrType: AddressType): Hex {
     return `${ addr }01`;
 }
 
-function createAddress(privateKey?: Hex, isContract?: boolean): {
+function createAddress(privateKey?: Hex): {
     originAddress: Buffer;
     privateKey: Buffer;
 } {
@@ -115,25 +115,24 @@ function createAddress(privateKey?: Hex, isContract?: boolean): {
     }
 
     return {
-        originAddress: newAddrFromPriv(privateKeyBuffer, isContract),
+        originAddress: newAddrFromPriv(privateKeyBuffer),
         privateKey: privateKeyBuffer
     };
 }
 
-function newAddrFromPub(publicKey: Buffer, isContract?: boolean): Buffer {
+function newAddrFromPub(publicKey: Buffer): Buffer {
     const _pre = blake2b(publicKey, null, ADDR_SIZE);
-    const isContractByte = isContract ? 1 : 0;
 
     const pre = new Uint8Array(21);
     pre.set(_pre);
-    pre.set([isContractByte], 20);
+    pre.set([0], 20);
 
     return Buffer.from(pre);
 }
 
-function newAddrFromPriv(privateKey: Buffer, isContract?: boolean): Buffer {
+function newAddrFromPriv(privateKey: Buffer): Buffer {
     const publicKey: Buffer = getPublicKey(privateKey);
-    return newAddrFromPub(Buffer.from(publicKey), isContract);
+    return newAddrFromPub(Buffer.from(publicKey));
 }
 
 function getAddrCheckSum(addr: Buffer, isContract? : boolean): Hex {
