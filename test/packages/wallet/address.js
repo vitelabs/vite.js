@@ -72,7 +72,7 @@ describe('getAddressFromOriginalAddress', function () {
         assert.equal(addr, 'vite_69f3bdb5cdcfa145ae6cc42593a89088ff3dac587eb692d689');
     });
     it('contract address', function () {
-        const addr = getAddressFromOriginalAddress('010203040506070809080706050403020102030401', true);
+        const addr = getAddressFromOriginalAddress('010203040506070809080706050403020102030401');
         assert.equal(addr, 'vite_0102030405060708090807060504030201020304eddd83748e');
     });
     it('user address', function () {

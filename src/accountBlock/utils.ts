@@ -264,7 +264,7 @@ export function createContractAddress({ address, height, previousHash }: {
     originContractAddress.set(_originContractAddress);
     originContractAddress.set([1], 20);
 
-    return getAddressFromOriginalAddress(Buffer.from(originContractAddress).toString('hex'), true);
+    return getAddressFromOriginalAddress(Buffer.from(originContractAddress).toString('hex'));
 }
 
 // Get AccountBlock.hash

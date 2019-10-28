@@ -70,7 +70,7 @@ export function getOriginalAddressFromAddress(hexAddr: Hex): Hex {
     return getOriginalAddress(hexAddr, addrType);
 }
 
-export function getAddressFromOriginalAddress(originalAddress: Hex, isContract? : boolean): Address {
+export function getAddressFromOriginalAddress(originalAddress: Hex): Address {
     const err = checkParams({ originalAddress }, ['originalAddress'], [{
         name: 'originalAddress',
         func: _originalAddress => typeof _originalAddress === 'string' && /^[0-9a-fA-F]+$/.test(_originalAddress) && (_originalAddress.length === ADDR_SIZE * 2 || _originalAddress.length === (ADDR_SIZE + 1) * 2)
@@ -78,6 +78,10 @@ export function getAddressFromOriginalAddress(originalAddress: Hex, isContract? 
     if (err) {
         throw new Error(err.message);
     }
+
+    let contractNum = Number(originalAddress.slice(-2));
+    contractNum = contractNum !== 0 && contractNum !== 1 ? 0 : contractNum;
+    const isContract = !!Number(contractNum);
 
     const originalAddressBuf = Buffer.from(originalAddress, 'hex');
     const checkSum = getAddrCheckSum(originalAddressBuf, isContract);
