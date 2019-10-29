@@ -26,9 +26,19 @@ const decode = {
 
 export function encodeParameter(typeStr, params) {
     const typeObj = formatType(typeStr);
-    if (typeObj.isArr && !isArray(params)
-        || (!typeObj.isArr && [ 'string', 'boolean', 'number' ].indexOf(typeof params) === -1)) {
+    if (!typeObj.isArr && [ 'string', 'boolean', 'number' ].indexOf(typeof params) === -1) {
         throw new Error(`[Error] Illegal type or params. type: ${ typeObj.type }, params: ${ params }`);
+    }
+
+    if (typeObj.isArr && !isArray(params)) {
+        try {
+            params = JSON.parse(params);
+            if (!isArray(params)) {
+                throw new Error(`[Error] Illegal type or params. type: ${ typeObj.typeStr }, params: ${ params }`);
+            }
+        } catch (err) {
+            throw new Error(`[Error] Illegal type or params. type: ${ typeObj.typeStr }, params: ${ params }`);
+        }
     }
 
     if (!typeObj.isArr) {
