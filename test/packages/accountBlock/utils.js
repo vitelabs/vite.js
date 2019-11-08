@@ -171,7 +171,7 @@ describe('getCreateContractData', function () {
 it('getCallContractData', function () {
     const data = '8pxs4gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGAAAAAAAAAAAAAAAFU0YryhN7rCn0QOmvSrLiwbuCSTAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACc3MAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=';
     const params = [ '00000000000000000001', 'ss', 'vite_553462bca137bac29f440e9af4ab2e2c1bb82493e41d2bc8b2' ];
-    const abi = Contracts.RegisterSBP.abi;
+    const abi = Contracts.RegisterSBP_V1.abi;
     assert.equal(getCallContractData({ params, abi }), data);
 });
 

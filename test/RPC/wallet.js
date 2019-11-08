@@ -30,56 +30,56 @@ async function TestFunc() {
 
     let accountBlock = null;
 
-    console.log('Step 1 CheckMyBalance. \n');
-    accountBlock = await CheckMyBalance();
+    // console.log('Step 1 CheckMyBalance. \n');
+    // accountBlock = await CheckMyBalance();
 
-    await sleep(2000);
-    console.log('Step 2 SendTxToMyself. \n');
-    accountBlock = await SendTxToMyself(accountBlock);
+    // await sleep(2000);
+    // console.log('Step 2 SendTxToMyself. \n');
+    // accountBlock = await SendTxToMyself(accountBlock);
 
-    await sleep(2000);
-    console.log('Step 3 ReceiveTx. \n');
-    accountBlock = await ReceiveTx(accountBlock);
+    // await sleep(2000);
+    // console.log('Step 3 ReceiveTx. \n');
+    // accountBlock = await ReceiveTx(accountBlock);
 
     await sleep(2000);
     console.log('Step 4 getQuota. \n');
     accountBlock = await checkQuota(accountBlock);
 
-    await sleep(2000);
-    console.log('Step 5 SBPreg. \n');
-    accountBlock = await SBPreg(accountBlock);
+    // await sleep(2000);
+    // console.log('Step 5 SBPreg. \n');
+    // accountBlock = await SBPreg(accountBlock);
 
-    await sleep(2000);
-    console.log('Step 6 updateReg. \n');
-    accountBlock = await updateReg(accountBlock);
+    // await sleep(2000);
+    // console.log('Step 6 updateReg. \n');
+    // accountBlock = await updateReg(accountBlock);
 
-    await sleep(2000);
-    console.log('Step 7 withdrawSBPReward. \n');
-    accountBlock = await withdrawSBPReward(accountBlock);
+    // await sleep(2000);
+    // console.log('Step 7 withdrawSBPReward. \n');
+    // accountBlock = await withdrawSBPReward(accountBlock);
 
-    await sleep(2000);
-    console.log('Step 10 voting. \n');
-    accountBlock = await voting(accountBlock);
+    // await sleep(2000);
+    // console.log('Step 10 voting. \n');
+    // accountBlock = await voting(accountBlock);
 
-    console.log('Step 12 getVoteList. \n');
-    await getVoteList();
+    // console.log('Step 12 getVoteList. \n');
+    // await getVoteList();
 
-    await sleep(2000);
-    console.log('Step 11 revokeVoting. \n');
-    accountBlock = await revokeVoting(accountBlock);
+    // await sleep(2000);
+    // console.log('Step 11 revokeVoting. \n');
+    // accountBlock = await revokeVoting(accountBlock);
 
-    console.log('Step 9 getSBPList. \n');
-    await getSBPList();
+    // console.log('Step 9 getSBPList. \n');
+    // await getSBPList();
 
-    await sleep(2000);
-    console.log('Step 8 revokeSBP. \n');
-    accountBlock = await revokeSBP(accountBlock);
+    // await sleep(2000);
+    // console.log('Step 8 revokeSBP. \n');
+    // accountBlock = await revokeSBP(accountBlock);
 
-    await sleep(2000);
-    console.log('Step 14 createContract. \n');
-    accountBlock = await createContract(accountBlock);
+    // await sleep(2000);
+    // console.log('Step 14 createContract. \n');
+    // accountBlock = await createContract(accountBlock);
 
-    await checkMyTokenList(accountBlock);
+    // await checkMyTokenList(accountBlock);
 
     await sleep(2000);
     console.log('Step 13 withdrawalOfQuota. \n');
@@ -116,12 +116,12 @@ async function CheckMyBalance() {
 }
 
 async function checkQuota(previousAccountBlock) {
-    const quotaResult = await viteProvider.request('contract_getQuotaByAccount', address);
-    console.log('[LOG] contract_getQuotaByAccount', quotaResult, '\n');
+    // const quotaResult = await viteProvider.request('contract_getQuotaByAccount', address);
+    // console.log('[LOG] contract_getQuotaByAccount', quotaResult, '\n');
     
-    if (Number(quotaResult.currentQuota)) {
-        return previousAccountBlock;
-    }
+    // if (Number(quotaResult.currentQuota)) {
+    //     return previousAccountBlock;
+    // }
 
     const accountBlock = await tx.stakeForQuota({
         beneficiaryAddress: address,
@@ -190,6 +190,7 @@ async function SBPreg(previousAccountBlock) {
     const accountBlock = tx.registerSBP({
         sbpName: 'CS_TEST_NODE',
         blockProducingAddress: address,
+        rewardWithdrawAddress: address
     });
 
     const result = await SendTXByPreviousAccountBlock(accountBlock, previousAccountBlock);
@@ -200,7 +201,7 @@ async function SBPreg(previousAccountBlock) {
 async function updateReg(previousAccountBlock) {
     const accountBlock = tx.updateSBPBlockProducingAddress({
         sbpName: 'CS_TEST_NODE',
-        newBlockProducingAddress: 'vite_869a06b8963bd5d88a004723ad5d45f345a71c0884e2c80e88'
+        blockProducingAddress: 'vite_869a06b8963bd5d88a004723ad5d45f345a71c0884e2c80e88'
     });
     
     const result = await SendTXByPreviousAccountBlock(accountBlock, previousAccountBlock);
@@ -247,7 +248,7 @@ async function voting(previousAccountBlock) {
 }
 
 async function revokeVoting(previousAccountBlock) {
-    const accountBlock = tx.cancelVote();
+    const accountBlock = tx.cancelSBPVoting();
 
     const result = await SendTXByPreviousAccountBlock(accountBlock, previousAccountBlock);
     console.log('[LOG] revokeVoting', result, '\n');
@@ -262,6 +263,8 @@ async function getVoteList() {
 }
 
 async function withdrawalOfQuota(previousAccountBlock) {
+    // [TODO]  测试用例补全，取回V1 V2
+    // pledge_getPledgeList
     const accountBlock = tx.cancelQuotaStake({
         beneficiaryAddress: address,
         amount: '134000000000000000000'

@@ -1,11 +1,11 @@
-import { BlockType, Vite_TokenId, Contracts, Snapshot_Gid } from '~@vite/vitejs-constant';
+import { BlockType, Vite_TokenId, Contracts } from '~@vite/vitejs-constant';
 import { isValidAddress, AddressType, createAddressByPrivateKey  } from '~@vite/vitejs-wallet/address';
 import { checkParams, isNonNegativeInteger, isHexString, isArray, isObject, isValidSBPName, isValidTokenId, isBase64String } from '~@vite/vitejs-utils';
 
 import AccountBlock from './accountBlock';
 import { getCreateContractData, getCallContractData } from './utils';
 
-import { Hex, Address, TokenId, BigInt, Base64, Int32, Uint8, Uint32, Uint256, ProviderType } from './type';
+import { Hex, Address, TokenId, BigInt, Base64, Int32, Uint8, Uint32, Uint256, Bytes32, ProviderType } from './type';
 
 
 class TransactionClass {
@@ -149,10 +149,38 @@ class TransactionClass {
         }, this.provider, this.privateKey);
     }
 
-    registerSBP({ sbpName, blockProducingAddress, amount = '1000000000000000000000000' }: {
+    registerSBP({ sbpName, blockProducingAddress, rewardWithdrawAddress, amount = '1000000000000000000000000' }: {
         sbpName: string;
         blockProducingAddress: Address;
+        rewardWithdrawAddress: Address;
         amount?: BigInt;
+    }): AccountBlock {
+        const err = checkParams({ blockProducingAddress, sbpName, rewardWithdrawAddress }, [ 'blockProducingAddress', 'sbpName', 'rewardWithdrawAddress' ], [ {
+            name: 'sbpName',
+            func: isValidSBPName
+        }, {
+            name: 'blockProducingAddress',
+            func: isValidAddress
+        }, {
+            name: 'rewardWithdrawAddress',
+            func: isValidAddress
+        } ]);
+        if (err) {
+            throw err;
+        }
+
+        return this.callContract({
+            abi: Contracts.RegisterSBP.abi,
+            toAddress: Contracts.RegisterSBP.contractAddress,
+            params: [ sbpName, blockProducingAddress, rewardWithdrawAddress ],
+            tokenId: Vite_TokenId,
+            amount
+        });
+    }
+
+    updateSBPBlockProducingAddress({ sbpName, blockProducingAddress }: {
+        sbpName: string;
+        blockProducingAddress: Address;
     }): AccountBlock {
         const err = checkParams({ blockProducingAddress, sbpName }, [ 'blockProducingAddress', 'sbpName' ], [ {
             name: 'sbpName',
@@ -166,23 +194,21 @@ class TransactionClass {
         }
 
         return this.callContract({
-            abi: Contracts.RegisterSBP.abi,
-            toAddress: Contracts.RegisterSBP.contractAddress,
-            params: [ Snapshot_Gid, sbpName, blockProducingAddress ],
-            tokenId: Vite_TokenId,
-            amount
+            abi: Contracts.UpdateSBPBlockProducingAddress.abi,
+            toAddress: Contracts.UpdateSBPBlockProducingAddress.contractAddress,
+            params: [ sbpName, blockProducingAddress ]
         });
     }
 
-    updateSBPBlockProducingAddress({ sbpName, newBlockProducingAddress }: {
+    UpdateSBPRewardWithdrawAddress({ sbpName, rewardWithdrawAddress }: {
         sbpName: string;
-        newBlockProducingAddress: Address;
+        rewardWithdrawAddress: Address;
     }): AccountBlock {
-        const err = checkParams({ newBlockProducingAddress, sbpName }, [ 'newBlockProducingAddress', 'sbpName' ], [ {
+        const err = checkParams({ rewardWithdrawAddress, sbpName }, [ 'rewardWithdrawAddress', 'sbpName' ], [ {
             name: 'sbpName',
             func: isValidSBPName
         }, {
-            name: 'newBlockProducingAddress',
+            name: 'rewardWithdrawAddress',
             func: isValidAddress
         } ]);
         if (err) {
@@ -190,9 +216,9 @@ class TransactionClass {
         }
 
         return this.callContract({
-            abi: Contracts.UpdateBlockProducingAddress.abi,
-            toAddress: Contracts.UpdateBlockProducingAddress.contractAddress,
-            params: [ Snapshot_Gid, sbpName, newBlockProducingAddress ]
+            abi: Contracts.UpdateSBPRewardWithdrawAddress.abi,
+            toAddress: Contracts.UpdateSBPRewardWithdrawAddress.contractAddress,
+            params: [ sbpName, rewardWithdrawAddress ]
         });
     }
 
@@ -210,7 +236,7 @@ class TransactionClass {
         return this.callContract({
             abi: Contracts.RevokeSBP.abi,
             toAddress: Contracts.RevokeSBP.contractAddress,
-            params: [ Snapshot_Gid, sbpName ]
+            params: [sbpName]
         });
     }
 
@@ -232,7 +258,7 @@ class TransactionClass {
         return this.callContract({
             abi: Contracts.WithdrawSBPReward.abi,
             toAddress: Contracts.WithdrawSBPReward.contractAddress,
-            params: [ Snapshot_Gid, sbpName, receiveAddress ]
+            params: [ sbpName, receiveAddress ]
         });
     }
 
@@ -250,15 +276,15 @@ class TransactionClass {
         return this.callContract({
             abi: Contracts.VoteForSBP.abi,
             toAddress: Contracts.VoteForSBP.contractAddress,
-            params: [ Snapshot_Gid, sbpName ]
+            params: [sbpName]
         });
     }
 
-    cancelVote(): AccountBlock {
+    cancelSBPVoting(): AccountBlock {
         return this.callContract({
-            abi: Contracts.CancelVote.abi,
-            toAddress: Contracts.CancelVote.contractAddress,
-            params: [Snapshot_Gid]
+            abi: Contracts.CancelSBPVoting.abi,
+            toAddress: Contracts.CancelSBPVoting.contractAddress,
+            params: []
         });
     }
 
@@ -283,7 +309,22 @@ class TransactionClass {
         });
     }
 
-    cancelQuotaStake({ beneficiaryAddress, amount }: {
+    cancelQuotaStake({ id }: {
+        id: Bytes32;
+    }): AccountBlock {
+        const err = checkParams({ id }, ['id']);
+        if (err) {
+            throw err;
+        }
+
+        return this.callContract({
+            abi: Contracts.CancelQuotaStake.abi,
+            toAddress: Contracts.CancelQuotaStake.contractAddress,
+            params: [id]
+        });
+    }
+
+    cancelQuotaStake_V2({ beneficiaryAddress, amount }: {
         beneficiaryAddress: Address;
         amount: Uint256;
     }): AccountBlock {

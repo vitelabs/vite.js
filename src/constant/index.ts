@@ -25,267 +25,234 @@ export enum BlockType {
     'GenesisResponse'
 }
 
-// SBP
-export const RegisterSBP_Abi = { 'type': 'function', 'name': 'Register', 'inputs': [ { 'name': 'gid', 'type': 'gid' }, { 'name': 'sbpName', 'type': 'string' }, { 'name': 'blockProducingAddress', 'type': 'address' } ] };
-export const UpdateBlockProducingAddress_Abi = { 'type': 'function', 'name': 'UpdateBlockProducingAddress', 'inputs': [ { 'name': 'gid', 'type': 'gid' }, { 'name': 'sbpName', 'type': 'string' }, { 'name': 'newBlockProducingAddress', 'type': 'address' } ] };
-export const RevokeSBP_Abi = { 'type': 'function', 'name': 'Revoke', 'inputs': [ { 'name': 'gid', 'type': 'gid' }, { 'name': 'sbpName', 'type': 'string' } ] };
-export const WithdrawSBPReward_Abi = { 'type': 'function', 'name': 'WithdrawReward', 'inputs': [ { 'name': 'gid', 'type': 'gid' }, { 'name': 'sbpName', 'type': 'string' }, { 'name': 'receiveAddress', 'type': 'address' } ] };
-
-// Vote
-export const VoteForSBP_Abi = { 'type': 'function', 'name': 'Vote', 'inputs': [ { 'name': 'gid', 'type': 'gid' }, { 'name': 'sbpName', 'type': 'string' } ] };
-export const CancelVote_Abi = { 'type': 'function', 'name': 'CancelVote', 'inputs': [{ 'name': 'gid', 'type': 'gid' }] };
-
-// Stake
-export const StakeForQuota_Abi = { 'type': 'function', 'name': 'Stake', 'inputs': [{ 'name': 'beneficiary', 'type': 'address' }] };
-export const CancelStake_Abi = { 'type': 'function', 'name': 'CancelStake', 'inputs': [ { 'name': 'beneficiary', 'type': 'address' }, { 'name': 'amount', 'type': 'uint256' } ] };
-
-// Mintage
-export const IssueToken_Abi = { 'type': 'function', 'name': 'IssueToken', 'inputs': [ { 'name': 'isReIssuable', 'type': 'bool' }, { 'name': 'tokenName', 'type': 'string' }, { 'name': 'tokenSymbol', 'type': 'string' }, { 'name': 'totalSupply', 'type': 'uint256' }, { 'name': 'decimals', 'type': 'uint8' }, { 'name': 'maxSupply', 'type': 'uint256' }, { 'name': 'isOwnerBurnOnly', 'type': 'bool' } ] };
-export const ReIssueToken_Abi = { 'type': 'function', 'name': 'ReIssue', 'inputs': [ { 'name': 'tokenId', 'type': 'tokenId' }, { 'name': 'amount', 'type': 'uint256' }, { 'name': 'receiveAddress', 'type': 'address' } ] };
-export const BurnToken_Abi = { 'type': 'function', 'name': 'Burn', 'inputs': [] };
-export const TransferTokenOwnership_Abi = { 'type': 'function', 'name': 'TransferOwnership', 'inputs': [ { 'name': 'tokenId', 'type': 'tokenId' }, { 'name': 'newOwner', 'type': 'address' } ] };
-export const DisableReIssue_Abi = { 'type': 'function', 'name': 'DisableReIssue', 'inputs': [{ 'name': 'tokenId', 'type': 'tokenId' }] };
-
-// DEX
-export const DexDeposit_Abi = { 'type': 'function', 'name': 'Deposit', 'inputs': [] };
-export const DexWithdraw_Abi = { 'type': 'function', 'name': 'Withdraw', 'inputs': [ { 'name': 'token', 'type': 'tokenId' }, { 'name': 'amount', 'type': 'uint256' } ] };
-export const DexCreateOrder_Abi = { 'type': 'function', 'name': 'PlaceOrder', 'inputs': [ { 'name': 'tradeToken', 'type': 'tokenId' }, { 'name': 'quoteToken', 'type': 'tokenId' }, { 'name': 'side', 'type': 'bool' }, { 'name': 'orderType', 'type': 'uint8' }, { 'name': 'price', 'type': 'string' }, { 'name': 'quantity', 'type': 'uint256' } ] };
-export const DexCancelOrder_Abi =  { 'type': 'function', 'name': 'CancelOrder', 'inputs': [{ 'name': 'orderId', 'type': 'bytes' }] };
-export const DexOpenNewMarket_Abi =  { 'type': 'function', 'name': 'OpenNewMarket', 'inputs': [ { 'name': 'tradeToken', 'type': 'tokenId' }, { 'name': 'quoteToken', 'type': 'tokenId' } ] };
-export const DexStakeForMining_Abi = { 'type': 'function', 'name': 'StakeForMining', 'inputs': [ { 'name': 'actionType', 'type': 'uint8' }, { 'name': 'amount', 'type': 'uint256' } ] };
-export const DexStakeForVIP_Abi = { 'type': 'function', 'name': 'StakeForVIP', 'inputs': [{ 'name': 'actionType', 'type': 'uint8' }] };
-export const DexBindInviteCode_Abi = { 'type': 'function', 'name': 'BindInviteCode', 'inputs': [{ 'name': 'code', 'type': 'uint32' }] };
-export const DexCreateInviteCode_Abi = { 'type': 'function', 'name': 'CreateInviteCode', 'inputs': [] };
-export const DexTransferTokenOwnership_Abi = { 'type': 'function', 'name': 'TransferTokenOwnership', 'inputs': [ { 'name': 'token', 'type': 'tokenId' }, { 'name': 'newOwner', 'type': 'address' } ] };
-export const DexMarketAdminConfig_Abi = { 'type': 'function', 'name': 'MarketAdminConfig', 'inputs': [ { 'name': 'operationCode', 'type': 'uint8' }, { 'name': 'tradeToken', 'type': 'tokenId' }, { 'name': 'quoteToken', 'type': 'tokenId' }, { 'name': 'marketOwner', 'type': 'address' }, { 'name': 'takerFeeRate', 'type': 'int32' }, { 'name': 'makerFeeRate', 'type': 'int32' }, { 'name': 'stopMarket', 'type': 'bool' } ] };
-export const DexStakeForSuperVIP_Abi = { 'type': 'function', 'name': 'StakeForSuperVIP', 'inputs': [{ 'name': 'actionType', 'type': 'uint8' }] };
-export const DexConfigMarketAgents_Abi = { 'type': 'function', 'name': 'ConfigMarketAgents', 'inputs': [ { 'name': 'actionType', 'type': 'uint8' }, { 'name': 'agent', 'type': 'address' }, { 'name': 'tradeTokens', 'type': 'tokenId[]' }, { 'name': 'quoteTokens', 'type': 'tokenId[]' } ] };
-
-
-export const oldAbi = {
-    // SBP
-    UpdateRegistration_Abi: { 'type': 'function', 'name': 'UpdateRegistration', 'inputs': [ { 'name': 'gid', 'type': 'gid' }, { 'name': 'name', 'type': 'string' }, { 'name': 'nodeAddr', 'type': 'address' } ] },
-    CancelRegister_Abi: { 'type': 'function', 'name': 'CancelRegister', 'inputs': [ { 'name': 'gid', 'type': 'gid' }, { 'name': 'name', 'type': 'string' } ] },
-    Reward_Abi: { 'type': 'function', 'name': 'Reward', 'inputs': [ { 'name': 'gid', 'type': 'gid' }, { 'name': 'name', 'type': 'string' }, { 'name': 'beneficialAddr', 'type': 'address' } ] },
-
-    // Pledge
-    Pledge_Abi: { 'type': 'function', 'name': 'Pledge', 'inputs': [{ 'name': 'beneficial', 'type': 'address' }] },
-    CancelPledge_Abi: { 'type': 'function', 'name': 'CancelPledge', 'inputs': [ { 'name': 'beneficial', 'type': 'address' }, { 'name': 'amount', 'type': 'uint256' } ] },
-
-    // Mintage
-    Mint_Abi: { 'type': 'function', 'name': 'Mint', 'inputs': [ { 'name': 'isReIssuable', 'type': 'bool' }, { 'name': 'tokenName', 'type': 'string' }, { 'name': 'tokenSymbol', 'type': 'string' }, { 'name': 'totalSupply', 'type': 'uint256' }, { 'name': 'decimals', 'type': 'uint8' }, { 'name': 'maxSupply', 'type': 'uint256' }, { 'name': 'ownerBurnOnly', 'type': 'bool' } ] },
-    Issue_Abi: { 'type': 'function', 'name': 'Issue', 'inputs': [ { 'name': 'tokenId', 'type': 'tokenId' }, { 'name': 'amount', 'type': 'uint256' }, { 'name': 'beneficial', 'type': 'address' } ] },
-    TransferOwner_Abi: { 'type': 'function', 'name': 'TransferOwner', 'inputs': [ { 'name': 'tokenId', 'type': 'tokenId' }, { 'name': 'newOwner', 'type': 'address' } ] },
-    ChangeTokenType_Abi: { 'type': 'function', 'name': 'ChangeTokenType', 'inputs': [{ 'name': 'tokenId', 'type': 'tokenId' }] },
-
-    // DEX
-    DexTradeCancelOrder_Abi: { 'type': 'function', 'name': 'DexTradeCancelOrder', 'inputs': [{ 'name': 'orderId', 'type': 'bytes' }] },
-    DexFundUserDeposit_Abi: { 'type': 'function', 'name': 'DexFundUserDeposit', 'inputs': [] },
-    DexFundUserWithdraw_Abi: { 'type': 'function', 'name': 'DexFundUserWithdraw', 'inputs': [ { 'name': 'token', 'type': 'tokenId' }, { 'name': 'amount', 'type': 'uint256' } ] },
-    DexFundNewOrder_Abi: { 'type': 'function', 'name': 'DexFundNewOrder', 'inputs': [ { 'name': 'tradeToken', 'type': 'tokenId' }, { 'name': 'quoteToken', 'type': 'tokenId' }, { 'name': 'side', 'type': 'bool' }, { 'name': 'orderType', 'type': 'uint8' }, { 'name': 'price', 'type': 'string' }, { 'name': 'quantity', 'type': 'uint256' } ] },
-    DexFundNewMarket_Abi: { 'type': 'function', 'name': 'DexFundNewMarket', 'inputs': [ { 'name': 'tradeToken', 'type': 'tokenId' }, { 'name': 'quoteToken', 'type': 'tokenId' } ] },
-    DexFundPledgeForVx_Abi: { 'type': 'function', 'name': 'DexFundPledgeForVx', 'inputs': [ { 'name': 'actionType', 'type': 'uint8' }, { 'name': 'amount', 'type': 'uint256' } ] },
-    DexFundPledgeForVip_Abi: { 'type': 'function', 'name': 'DexFundPledgeForVip', 'inputs': [{ 'name': 'actionType', 'type': 'uint8' }] },
-    DexFundBindInviteCode_Abi: { 'type': 'function', 'name': 'DexFundBindInviteCode', 'inputs': [{ 'name': 'code', 'type': 'uint32' }] },
-    DexFundNewInviter_Abi: { 'type': 'function', 'name': 'DexFundNewInviter', 'inputs': [] },
-    DexFundTransferTokenOwner_Abi: { 'type': 'function', 'name': 'DexFundTransferTokenOwner', 'inputs': [ { 'name': 'token', 'type': 'tokenId' }, { 'name': 'owner', 'type': 'address' } ] },
-    DexFundMarketOwnerConfig_Abi: { 'type': 'function', 'name': 'DexFundMarketOwnerConfig', 'inputs': [ { 'name': 'operationCode', 'type': 'uint8' }, { 'name': 'tradeToken', 'type': 'tokenId' }, { 'name': 'quoteToken', 'type': 'tokenId' }, { 'name': 'owner', 'type': 'address' }, { 'name': 'takerFeeRate', 'type': 'int32' }, { 'name': 'makerFeeRate', 'type': 'int32' }, { 'name': 'stopMarket', 'type': 'bool' } ] },
-    DexFundPledgeForSuperVip_Abi: { 'type': 'function', 'name': 'DexFundPledgeForSuperVip', 'inputs': [{ 'name': 'actionType', 'type': 'uint8' }] },
-    DexFundConfigMarketsAgent_Abi: { 'type': 'function', 'name': 'DexFundConfigMarketsAgent', 'inputs': [ { 'name': 'actionType', 'type': 'uint8' }, { 'name': 'agent', 'type': 'address' }, { 'name': 'tradeTokens', 'type': 'tokenId[]' }, { 'name': 'quoteTokens', 'type': 'tokenId[]' } ] }
-};
-
 export const Contracts = {
-    UpdateReg: {
+    RegisterSBP_V1: {
         contractAddress: ConsensusGroup_ContractAddress,
-        abi: oldAbi.UpdateRegistration_Abi
+        abi: { 'type': 'function', 'name': 'Register', 'inputs': [ { 'name': 'gid', 'type': 'gid' }, { 'name': 'sbpName', 'type': 'string' }, { 'name': 'blockProducingAddress', 'type': 'address' } ] }
     },
-    RevokeReg: {
+    UpdateSBPBlockProducingAddress_V1: {
         contractAddress: ConsensusGroup_ContractAddress,
-        abi: oldAbi.CancelRegister_Abi
+        abi: { 'type': 'function', 'name': 'UpdateRegistration', 'inputs': [ { 'name': 'gid', 'type': 'gid' }, { 'name': 'name', 'type': 'string' }, { 'name': 'nodeAddr', 'type': 'address' } ] }
     },
-    RetrieveReward: {
+    UpdateSBPBlockProducingAddress_V2: {
         contractAddress: ConsensusGroup_ContractAddress,
-        abi: oldAbi.Reward_Abi
+        abi: { 'type': 'function', 'name': 'UpdateBlockProducingAddress', 'inputs': [ { 'name': 'gid', 'type': 'gid' }, { 'name': 'sbpName', 'type': 'string' }, { 'name': 'newBlockProducingAddress', 'type': 'address' } ] }
     },
-    GetQuota: {
+    RevokeSBP_V1: {
+        contractAddress: ConsensusGroup_ContractAddress,
+        abi: { 'type': 'function', 'name': 'CancelRegister', 'inputs': [ { 'name': 'gid', 'type': 'gid' }, { 'name': 'name', 'type': 'string' } ] }
+    },
+    RevokeSBP_V2: {
+        contractAddress: ConsensusGroup_ContractAddress,
+        abi: { 'type': 'function', 'name': 'Revoke', 'inputs': [ { 'name': 'gid', 'type': 'gid' }, { 'name': 'sbpName', 'type': 'string' } ] }
+    },
+    WithdrawSBPReward_V1: {
+        contractAddress: ConsensusGroup_ContractAddress,
+        abi: { 'type': 'function', 'name': 'Reward', 'inputs': [ { 'name': 'gid', 'type': 'gid' }, { 'name': 'name', 'type': 'string' }, { 'name': 'beneficialAddr', 'type': 'address' } ] }
+    },
+    WithdrawSBPReward_V2: {
+        contractAddress: ConsensusGroup_ContractAddress,
+        abi: { 'type': 'function', 'name': 'WithdrawReward', 'inputs': [ { 'name': 'gid', 'type': 'gid' }, { 'name': 'sbpName', 'type': 'string' }, { 'name': 'receiveAddress', 'type': 'address' } ] }
+    },
+    VoteForSBP_V1: {
+        contractAddress: ConsensusGroup_ContractAddress,
+        abi: { 'type': 'function', 'name': 'Vote', 'inputs': [ { 'name': 'gid', 'type': 'gid' }, { 'name': 'sbpName', 'type': 'string' } ] }
+    },
+    CancelSBPVoting_V1: {
+        contractAddress: ConsensusGroup_ContractAddress,
+        abi: { 'type': 'function', 'name': 'CancelVote', 'inputs': [{ 'name': 'gid', 'type': 'gid' }] }
+    },
+    StakeForQuota_V1: {
         contractAddress: Staking_ContractAddress,
-        abi: oldAbi.Pledge_Abi
+        abi: { 'type': 'function', 'name': 'Pledge', 'inputs': [{ 'name': 'beneficial', 'type': 'address' }] }
     },
-    WithdrawalOfQuota: {
+    StakeForQuota_V2: {
         contractAddress: Staking_ContractAddress,
-        abi: oldAbi.CancelPledge_Abi
+        abi: { 'type': 'function', 'name': 'Stake', 'inputs': [{ 'name': 'beneficiary', 'type': 'address' }] }
     },
-    Mintage: {
+    CancelQuotaStaking_V1: {
+        contractAddress: Staking_ContractAddress,
+        abi: { 'type': 'function', 'name': 'CancelPledge', 'inputs': [ { 'name': 'beneficial', 'type': 'address' }, { 'name': 'amount', 'type': 'uint256' } ] }
+    },
+    CancelQuotaStaking_V2: {
+        contractAddress: Staking_ContractAddress,
+        abi: { 'type': 'function', 'name': 'CancelStake', 'inputs': [ { 'name': 'beneficiary', 'type': 'address' }, { 'name': 'amount', 'type': 'uint256' } ] }
+    },
+    IssueToken_V1: {
         contractAddress: TokenIssuance_ContractAddress,
-        abi: oldAbi.Mint_Abi
+        abi: { 'type': 'function', 'name': 'Mint', 'inputs': [ { 'name': 'isReIssuable', 'type': 'bool' }, { 'name': 'tokenName', 'type': 'string' }, { 'name': 'tokenSymbol', 'type': 'string' }, { 'name': 'totalSupply', 'type': 'uint256' }, { 'name': 'decimals', 'type': 'uint8' }, { 'name': 'maxSupply', 'type': 'uint256' }, { 'name': 'ownerBurnOnly', 'type': 'bool' } ] }
     },
-    MintageIssue: {
+    ReIssueToken_V1: {
         contractAddress: TokenIssuance_ContractAddress,
-        abi: oldAbi.Issue_Abi
+        abi: { 'type': 'function', 'name': 'Issue', 'inputs': [ { 'name': 'tokenId', 'type': 'tokenId' }, { 'name': 'amount', 'type': 'uint256' }, { 'name': 'beneficial', 'type': 'address' } ] }
     },
-    MintageTransferOwner: {
+    TransferTokenOwnership_V1: {
         contractAddress: TokenIssuance_ContractAddress,
-        abi: oldAbi.TransferOwner_Abi
+        abi: { 'type': 'function', 'name': 'TransferOwner', 'inputs': [ { 'name': 'tokenId', 'type': 'tokenId' }, { 'name': 'newOwner', 'type': 'address' } ] }
     },
-    MintageChangeTokenType: {
+    DisableReIssue_V1: {
         contractAddress: TokenIssuance_ContractAddress,
-        abi: oldAbi.ChangeTokenType_Abi
+        abi: { 'type': 'function', 'name': 'ChangeTokenType', 'inputs': [{ 'name': 'tokenId', 'type': 'tokenId' }] }
     },
-    DexFundUserDeposit: {
+    DexDeposit_V1: {
         contractAddress: DexFund_ContractAddress,
-        abi: oldAbi.DexFundUserDeposit_Abi
+        abi: { 'type': 'function', 'name': 'DexFundUserDeposit', 'inputs': [] }
     },
-    DexFundUserWithdraw: {
+    DexWithdraw_V1: {
         contractAddress: DexFund_ContractAddress,
-        abi: oldAbi.DexFundUserWithdraw_Abi
+        abi: { 'type': 'function', 'name': 'DexFundUserWithdraw', 'inputs': [ { 'name': 'token', 'type': 'tokenId' }, { 'name': 'amount', 'type': 'uint256' } ] }
     },
-    DexFundNewOrder: {
+    DexCreateOrder_V1: {
         contractAddress: DexFund_ContractAddress,
-        abi: oldAbi.DexFundNewOrder_Abi
+        abi: { 'type': 'function', 'name': 'DexFundNewOrder', 'inputs': [ { 'name': 'tradeToken', 'type': 'tokenId' }, { 'name': 'quoteToken', 'type': 'tokenId' }, { 'name': 'side', 'type': 'bool' }, { 'name': 'orderType', 'type': 'uint8' }, { 'name': 'price', 'type': 'string' }, { 'name': 'quantity', 'type': 'uint256' } ] }
     },
-    DexTradeCancelOrder: {
+    DexCancelOrder_V1: {
         contractAddress: DexTrade_ContractAddress,
-        abi: oldAbi.DexTradeCancelOrder_Abi
+        abi: { 'type': 'function', 'name': 'DexTradeCancelOrder', 'inputs': [{ 'name': 'orderId', 'type': 'bytes' }] }
     },
-    DexFundNewMarket: {
+    DexOpenNewMarket_V1: {
         contractAddress: DexFund_ContractAddress,
-        abi: oldAbi.DexFundNewMarket_Abi
+        abi: { 'type': 'function', 'name': 'DexFundNewMarket', 'inputs': [ { 'name': 'tradeToken', 'type': 'tokenId' }, { 'name': 'quoteToken', 'type': 'tokenId' } ] }
     },
-    DexFundPledgeForVx: {
+    DexStakeForMining_V1: {
         contractAddress: DexFund_ContractAddress,
-        abi: oldAbi.DexFundPledgeForVx_Abi
+        abi: { 'type': 'function', 'name': 'DexFundPledgeForVx', 'inputs': [ { 'name': 'actionType', 'type': 'uint8' }, { 'name': 'amount', 'type': 'uint256' } ] }
     },
-    DexFundPledgeForVip: {
+    DexStakeForVIP_V1: {
         contractAddress: DexFund_ContractAddress,
-        abi: oldAbi.DexFundPledgeForVip_Abi
+        abi: { 'type': 'function', 'name': 'DexFundPledgeForVip', 'inputs': [{ 'name': 'actionType', 'type': 'uint8' }] }
     },
-    DexFundBindInviteCode: {
+    DexBindInviteCode_V1: {
         contractAddress: DexFund_ContractAddress,
-        abi: oldAbi.DexFundBindInviteCode_Abi
+        abi: { 'type': 'function', 'name': 'DexFundBindInviteCode', 'inputs': [{ 'name': 'code', 'type': 'uint32' }] }
     },
-    DexFundNewInviter: {
+    DexCreateInviteCode_V1: {
         contractAddress: DexFund_ContractAddress,
-        abi: oldAbi.DexFundNewInviter_Abi
+        abi: { 'type': 'function', 'name': 'DexFundNewInviter', 'inputs': [] }
     },
-    DexFundTransferTokenOwner: {
+    DexTransferTokenOwnership_V1: {
         contractAddress: DexFund_ContractAddress,
-        abi: oldAbi.DexFundTransferTokenOwner_Abi
+        abi: { 'type': 'function', 'name': 'DexFundTransferTokenOwner', 'inputs': [ { 'name': 'token', 'type': 'tokenId' }, { 'name': 'owner', 'type': 'address' } ] }
     },
-    DexFundMarketOwnerConfig: {
+    DexMarketAdminConfig_V1: {
         contractAddress: DexFund_ContractAddress,
-        abi: oldAbi.DexFundMarketOwnerConfig_Abi
+        abi: { 'type': 'function', 'name': 'DexFundMarketOwnerConfig', 'inputs': [ { 'name': 'operationCode', 'type': 'uint8' }, { 'name': 'tradeToken', 'type': 'tokenId' }, { 'name': 'quoteToken', 'type': 'tokenId' }, { 'name': 'owner', 'type': 'address' }, { 'name': 'takerFeeRate', 'type': 'int32' }, { 'name': 'makerFeeRate', 'type': 'int32' }, { 'name': 'stopMarket', 'type': 'bool' } ] }
     },
-    DexFundPledgeForSuperVip: {
+    DexStakeForSuperVIP_V1: {
         contractAddress: DexFund_ContractAddress,
-        abi: oldAbi.DexFundPledgeForSuperVip_Abi
+        abi: { 'type': 'function', 'name': 'DexFundPledgeForSuperVip', 'inputs': [{ 'name': 'actionType', 'type': 'uint8' }] }
     },
-    DexFundConfigMarketsAgent: {
+    DexConfigMarketAgents_V1: {
         contractAddress: DexFund_ContractAddress,
-        abi: oldAbi.DexFundConfigMarketsAgent_Abi
+        abi: { 'type': 'function', 'name': 'DexFundConfigMarketsAgent', 'inputs': [ { 'name': 'actionType', 'type': 'uint8' }, { 'name': 'agent', 'type': 'address' }, { 'name': 'tradeTokens', 'type': 'tokenId[]' }, { 'name': 'quoteTokens', 'type': 'tokenId[]' } ] }
     },
 
     RegisterSBP: {
         contractAddress: ConsensusGroup_ContractAddress,
-        abi: RegisterSBP_Abi
+        abi: { 'type': 'function', 'name': 'RegisterSBP', 'inputs': [ { 'name': 'sbpName', 'type': 'string' }, { 'name': 'blockProducingAddress', 'type': 'address' }, { 'name': 'rewardWithdrawAddress', 'type': 'address' } ] }
     },
-    UpdateBlockProducingAddress: {
+    UpdateSBPBlockProducingAddress: {
         contractAddress: ConsensusGroup_ContractAddress,
-        abi: UpdateBlockProducingAddress_Abi
+        abi: { 'type': 'function', 'name': 'UpdateSBPBlockProducingAddress', 'inputs': [ { 'name': 'sbpName', 'type': 'string' }, { 'name': 'blockProducingAddress', 'type': 'address' } ] }
+    },
+    UpdateSBPRewardWithdrawAddress: {
+        contractAddress: ConsensusGroup_ContractAddress,
+        abi: { 'type': 'function', 'name': 'UpdateSBPRewardWithdrawAddress', 'inputs': [ { 'name': 'sbpName', 'type': 'string' }, { 'name': 'rewardWithdrawAddress', 'type': 'address' } ] }
     },
     RevokeSBP: {
         contractAddress: ConsensusGroup_ContractAddress,
-        abi: RevokeSBP_Abi
+        abi: { 'type': 'function', 'name': 'RevokeSBP', 'inputs': [{ 'name': 'sbpName', 'type': 'string' }] }
     },
     WithdrawSBPReward: {
         contractAddress: ConsensusGroup_ContractAddress,
-        abi: WithdrawSBPReward_Abi
+        abi: { 'type': 'function', 'name': 'WithdrawSBPReward', 'inputs': [ { 'name': 'sbpName', 'type': 'string' }, { 'name': 'receiveAddress', 'type': 'address' } ] }
     },
     VoteForSBP: {
         contractAddress: ConsensusGroup_ContractAddress,
-        abi: VoteForSBP_Abi
+        abi: { 'type': 'function', 'name': 'VoteForSBP', 'inputs': [{ 'name': 'sbpName', 'type': 'string' }] }
     },
-    CancelVote: {
+    CancelSBPVoting: {
         contractAddress: ConsensusGroup_ContractAddress,
-        abi: CancelVote_Abi
+        abi: { 'type': 'function', 'name': 'CancelSBPVoting', 'inputs': [] }
     },
     StakeForQuota: {
         contractAddress: Staking_ContractAddress,
-        abi: StakeForQuota_Abi
+        abi: { 'type': 'function', 'name': 'StakeForQuota', 'inputs': [{ 'name': 'beneficiary', 'type': 'address' }] }
     },
     CancelQuotaStake: {
         contractAddress: Staking_ContractAddress,
-        abi: CancelStake_Abi
+        abi: { 'type': 'function', 'name': 'CancelQuotaStaking', 'inputs': [{ 'name': 'id', 'type': 'bytes32' }] }
     },
     IssueToken: {
         contractAddress: TokenIssuance_ContractAddress,
-        abi: IssueToken_Abi
+        abi: { 'type': 'function', 'name': 'IssueToken', 'inputs': [ { 'name': 'isReIssuable', 'type': 'bool' }, { 'name': 'tokenName', 'type': 'string' }, { 'name': 'tokenSymbol', 'type': 'string' }, { 'name': 'totalSupply', 'type': 'uint256' }, { 'name': 'decimals', 'type': 'uint8' }, { 'name': 'maxSupply', 'type': 'uint256' }, { 'name': 'isOwnerBurnOnly', 'type': 'bool' } ] }
     },
     ReIssueToken: {
         contractAddress: TokenIssuance_ContractAddress,
-        abi: ReIssueToken_Abi
+        abi: { 'type': 'function', 'name': 'ReIssue', 'inputs': [ { 'name': 'tokenId', 'type': 'tokenId' }, { 'name': 'amount', 'type': 'uint256' }, { 'name': 'receiveAddress', 'type': 'address' } ] }
     },
     BurnToken: {
         contractAddress: TokenIssuance_ContractAddress,
-        abi: BurnToken_Abi
+        abi: { 'type': 'function', 'name': 'Burn', 'inputs': [] }
     },
     TransferTokenOwnership: {
         contractAddress: TokenIssuance_ContractAddress,
-        abi: TransferTokenOwnership_Abi
+        abi: { 'type': 'function', 'name': 'TransferOwnership', 'inputs': [ { 'name': 'tokenId', 'type': 'tokenId' }, { 'name': 'newOwner', 'type': 'address' } ] }
     },
     DisableReIssue: {
         contractAddress: TokenIssuance_ContractAddress,
-        abi: DisableReIssue_Abi
+        abi: { 'type': 'function', 'name': 'DisableReIssue', 'inputs': [{ 'name': 'tokenId', 'type': 'tokenId' }] }
     },
     DexDeposit: {
         contractAddress: DexFund_ContractAddress,
-        abi: DexDeposit_Abi
+        abi: { 'type': 'function', 'name': 'Deposit', 'inputs': [] }
     },
     DexWithdraw: {
         contractAddress: DexFund_ContractAddress,
-        abi: DexWithdraw_Abi
+        abi: { 'type': 'function', 'name': 'Withdraw', 'inputs': [ { 'name': 'token', 'type': 'tokenId' }, { 'name': 'amount', 'type': 'uint256' } ] }
     },
     DexCreateOrder: {
         contractAddress: DexFund_ContractAddress,
-        abi: DexCreateOrder_Abi
+        abi: { 'type': 'function', 'name': 'PlaceOrder', 'inputs': [ { 'name': 'tradeToken', 'type': 'tokenId' }, { 'name': 'quoteToken', 'type': 'tokenId' }, { 'name': 'side', 'type': 'bool' }, { 'name': 'orderType', 'type': 'uint8' }, { 'name': 'price', 'type': 'string' }, { 'name': 'quantity', 'type': 'uint256' } ] }
     },
     DexCancelOrder: {
         contractAddress: DexTrade_ContractAddress,
-        abi: DexCancelOrder_Abi
+        abi: { 'type': 'function', 'name': 'CancelOrder', 'inputs': [{ 'name': 'orderId', 'type': 'bytes' }] }
     },
     DexOpenNewMarket: {
         contractAddress: DexFund_ContractAddress,
-        abi: DexOpenNewMarket_Abi
+        abi: { 'type': 'function', 'name': 'OpenNewMarket', 'inputs': [ { 'name': 'tradeToken', 'type': 'tokenId' }, { 'name': 'quoteToken', 'type': 'tokenId' } ] }
     },
     DexStakeForMining: {
         contractAddress: DexFund_ContractAddress,
-        abi: DexStakeForMining_Abi
+        abi: { 'type': 'function', 'name': 'StakeForMining', 'inputs': [ { 'name': 'actionType', 'type': 'uint8' }, { 'name': 'amount', 'type': 'uint256' } ] }
     },
     DexStakeForVIP: {
         contractAddress: DexFund_ContractAddress,
-        abi: DexStakeForVIP_Abi
+        abi: { 'type': 'function', 'name': 'StakeForVIP', 'inputs': [{ 'name': 'actionType', 'type': 'uint8' }] }
     },
     DexBindInviteCode: {
         contractAddress: DexFund_ContractAddress,
-        abi: DexBindInviteCode_Abi
+        abi: { 'type': 'function', 'name': 'BindInviteCode', 'inputs': [{ 'name': 'code', 'type': 'uint32' }] }
     },
     DexCreateInviteCode: {
         contractAddress: DexFund_ContractAddress,
-        abi: DexCreateInviteCode_Abi
+        abi: { 'type': 'function', 'name': 'CreateInviteCode', 'inputs': [] }
     },
     DexTransferTokenOwnership: {
         contractAddress: DexFund_ContractAddress,
-        abi: DexTransferTokenOwnership_Abi
+        abi: { 'type': 'function', 'name': 'TransferTokenOwnership', 'inputs': [ { 'name': 'token', 'type': 'tokenId' }, { 'name': 'newOwner', 'type': 'address' } ] }
     },
     DexMarketAdminConfig: {
         contractAddress: DexFund_ContractAddress,
-        abi: DexMarketAdminConfig_Abi
+        abi: { 'type': 'function', 'name': 'MarketAdminConfig', 'inputs': [ { 'name': 'operationCode', 'type': 'uint8' }, { 'name': 'tradeToken', 'type': 'tokenId' }, { 'name': 'quoteToken', 'type': 'tokenId' }, { 'name': 'marketOwner', 'type': 'address' }, { 'name': 'takerFeeRate', 'type': 'int32' }, { 'name': 'makerFeeRate', 'type': 'int32' }, { 'name': 'stopMarket', 'type': 'bool' } ] }
     },
     DexStakeForSuperVIP: {
         contractAddress: DexFund_ContractAddress,
-        abi: DexStakeForSuperVIP_Abi
+        abi: { 'type': 'function', 'name': 'StakeForSuperVIP', 'inputs': [{ 'name': 'actionType', 'type': 'uint8' }] }
     },
     DexConfigMarketAgents: {
         contractAddress: DexFund_ContractAddress,
-        abi: DexConfigMarketAgents_Abi
+        abi: { 'type': 'function', 'name': 'ConfigMarketAgents', 'inputs': [ { 'name': 'actionType', 'type': 'uint8' }, { 'name': 'agent', 'type': 'address' }, { 'name': 'tradeTokens', 'type': 'tokenId[]' }, { 'name': 'quoteTokens', 'type': 'tokenId[]' } ] }
     }
 };
