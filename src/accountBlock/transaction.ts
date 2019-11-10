@@ -309,6 +309,27 @@ class TransactionClass {
         });
     }
 
+    stakeForQuota_V2({ beneficiaryAddress, amount }: {
+        beneficiaryAddress: Address;
+        amount: BigInt;
+    }): AccountBlock {
+        const err = checkParams({ beneficiaryAddress, amount }, [ 'beneficiaryAddress', 'amount' ], [{
+            name: 'beneficiaryAddress',
+            func: isValidAddress
+        }]);
+        if (err) {
+            throw err;
+        }
+
+        return this.callContract({
+            abi: Contracts.StakeForQuota_V2.abi,
+            toAddress: Contracts.StakeForQuota_V2.contractAddress,
+            params: [beneficiaryAddress],
+            tokenId: Vite_TokenId,
+            amount
+        });
+    }
+
     cancelQuotaStake({ id }: {
         id: Bytes32;
     }): AccountBlock {
@@ -337,8 +358,8 @@ class TransactionClass {
         }
 
         return this.callContract({
-            abi: Contracts.CancelQuotaStake.abi,
-            toAddress: Contracts.CancelQuotaStake.contractAddress,
+            abi: Contracts.CancelQuotaStake_V2.abi,
+            toAddress: Contracts.CancelQuotaStake_V2.contractAddress,
             params: [ beneficiaryAddress, amount ]
         });
     }

@@ -70,11 +70,11 @@ export const Contracts = {
         contractAddress: Staking_ContractAddress,
         abi: { 'type': 'function', 'name': 'Stake', 'inputs': [{ 'name': 'beneficiary', 'type': 'address' }] }
     },
-    CancelQuotaStaking_V1: {
+    CancelQuotaStake_V1: {
         contractAddress: Staking_ContractAddress,
         abi: { 'type': 'function', 'name': 'CancelPledge', 'inputs': [ { 'name': 'beneficial', 'type': 'address' }, { 'name': 'amount', 'type': 'uint256' } ] }
     },
-    CancelQuotaStaking_V2: {
+    CancelQuotaStake_V2: {
         contractAddress: Staking_ContractAddress,
         abi: { 'type': 'function', 'name': 'CancelStake', 'inputs': [ { 'name': 'beneficiary', 'type': 'address' }, { 'name': 'amount', 'type': 'uint256' } ] }
     },
