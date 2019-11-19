@@ -500,29 +500,29 @@ class TransactionClass {
         });
     }
 
-    dexCancelOrder({ orderId }: {
-        orderId: Hex | Base64;
+    dexOpenNewMarket({ tradeToken, quoteToken }: {
+        tradeToken: TokenId;
+        quoteToken: TokenId;
     }): AccountBlock {
-        const err = checkParams({ orderId }, ['orderId'], [{
-            name: 'orderId',
-            func: _o => isHexString(_o) || isBase64String(_o)
-        }]);
+        const err = checkParams({ tradeToken, quoteToken }, [ 'tradeToken', 'quoteToken' ], [ {
+            name: 'tradeToken',
+            func: isValidTokenId
+        }, {
+            name: 'quoteToken',
+            func: isValidTokenId
+        } ]);
         if (err) {
             throw err;
         }
 
-        if (isBase64String(orderId)) {
-            orderId = Buffer.from(orderId, 'base64').toString('hex');
-        }
-
         return this.callContract({
-            abi: Contracts.DexCancelOrder.abi,
-            toAddress: Contracts.DexCancelOrder.contractAddress,
-            params: [`0x${ orderId }`]
+            toAddress: Contracts.DexOpenNewMarket.contractAddress,
+            abi: Contracts.DexOpenNewMarket.abi,
+            params: [ tradeToken, quoteToken ]
         });
     }
 
-    dexCreateOrder({ tradeToken, quoteToken, side, price, quantity, orderType = '0' }: {
+    dexPlaceOrder({ tradeToken, quoteToken, side, price, quantity, orderType = '0' }: {
         tradeToken: TokenId;
         quoteToken: TokenId;
         side: '0' | '1';
@@ -547,32 +547,32 @@ class TransactionClass {
         }
 
         return this.callContract({
-            abi: Contracts.DexCreateOrder.abi,
-            toAddress: Contracts.DexCreateOrder.contractAddress,
+            abi: Contracts.DexPlaceOrder.abi,
+            toAddress: Contracts.DexPlaceOrder.contractAddress,
             params: [ tradeToken, quoteToken, side, orderType, price, quantity ],
             tokenId: tradeToken
         });
     }
 
-    dexOpenNewMarket({ tradeToken, quoteToken }: {
-        tradeToken: TokenId;
-        quoteToken: TokenId;
+    dexCancelOrder({ orderId }: {
+        orderId: Hex | Base64;
     }): AccountBlock {
-        const err = checkParams({ tradeToken, quoteToken }, [ 'tradeToken', 'quoteToken' ], [ {
-            name: 'tradeToken',
-            func: isValidTokenId
-        }, {
-            name: 'quoteToken',
-            func: isValidTokenId
-        } ]);
+        const err = checkParams({ orderId }, ['orderId'], [{
+            name: 'orderId',
+            func: _o => isHexString(_o) || isBase64String(_o)
+        }]);
         if (err) {
             throw err;
         }
 
+        if (isBase64String(orderId)) {
+            orderId = Buffer.from(orderId, 'base64').toString('hex');
+        }
+
         return this.callContract({
-            toAddress: Contracts.DexOpenNewMarket.contractAddress,
-            abi: Contracts.DexOpenNewMarket.abi,
-            params: [ tradeToken, quoteToken ]
+            abi: Contracts.DexCancelOrder.abi,
+            toAddress: Contracts.DexCancelOrder.contractAddress,
+            params: [`0x${ orderId }`]
         });
     }
 
@@ -617,46 +617,6 @@ class TransactionClass {
         });
     }
 
-    dexBindInviteCode({ code }: {
-        code: Uint32;
-    }): AccountBlock {
-        const err = checkParams({ code }, ['code']);
-        if (err) {
-            throw err;
-        }
-
-        return this.callContract({
-            abi: Contracts.DexBindInviteCode.abi,
-            toAddress: Contracts.DexBindInviteCode.contractAddress,
-            params: [code]
-        });
-    }
-
-    dexCreateInviteCode(): AccountBlock {
-        return this.callContract({
-            abi: Contracts.DexCreateInviteCode.abi,
-            toAddress: Contracts.DexCreateInviteCode.contractAddress,
-            params: []
-        });
-    }
-
-    dexTransferTokenOwnership({ tokenId, newOwner }): AccountBlock {
-        const err = checkParams({ tokenId, newOwner }, [ 'tokenId', 'newOwner' ], [{
-            name: 'newOwner',
-            func: isValidAddress
-        }]);
-        if (err) {
-            throw err;
-        }
-
-        return this.callContract({
-            abi: Contracts.DexTransferTokenOwnership.abi,
-            toAddress: Contracts.DexTransferTokenOwnership.contractAddress,
-            params: [ tokenId, newOwner ],
-            tokenId
-        });
-    }
-
     dexMarketAdminConfig({ operationCode, tradeToken, quoteToken, marketOwner, takerFeeRate, makerFeeRate, stopMarket }: {
         operationCode: Uint8;
         tradeToken: TokenId;
@@ -690,6 +650,46 @@ class TransactionClass {
             toAddress: Contracts.DexMarketAdminConfig.contractAddress,
             params: [ operationCode, tradeToken, quoteToken, marketOwner, takerFeeRate, makerFeeRate, !!stopMarket ],
             tokenId: quoteToken
+        });
+    }
+
+    dexTransferTokenOwnership({ tokenId, newOwner }): AccountBlock {
+        const err = checkParams({ tokenId, newOwner }, [ 'tokenId', 'newOwner' ], [{
+            name: 'newOwner',
+            func: isValidAddress
+        }]);
+        if (err) {
+            throw err;
+        }
+
+        return this.callContract({
+            abi: Contracts.DexTransferTokenOwnership.abi,
+            toAddress: Contracts.DexTransferTokenOwnership.contractAddress,
+            params: [ tokenId, newOwner ],
+            tokenId
+        });
+    }
+
+    dexCreateNewInviter(): AccountBlock {
+        return this.callContract({
+            abi: Contracts.DexCreateNewInviter.abi,
+            toAddress: Contracts.DexCreateNewInviter.contractAddress,
+            params: []
+        });
+    }
+
+    dexBindInviteCode({ code }: {
+        code: Uint32;
+    }): AccountBlock {
+        const err = checkParams({ code }, ['code']);
+        if (err) {
+            throw err;
+        }
+
+        return this.callContract({
+            abi: Contracts.DexBindInviteCode.abi,
+            toAddress: Contracts.DexBindInviteCode.contractAddress,
+            params: [code]
         });
     }
 
@@ -754,6 +754,81 @@ class TransactionClass {
             abi: Contracts.DexConfigMarketAgents.abi,
             toAddress: Contracts.DexConfigMarketAgents.contractAddress,
             params: [ actionType, agent, tradeTokens, quoteTokens ]
+        });
+    }
+
+    dexLockVxForDividend({ actionType, amount }: {
+        actionType: Uint8;
+        amount: Uint256;
+    }) {
+        const err = checkParams({ actionType, amount }, [ 'actionType', 'amount' ], [ {
+            name: 'actionType',
+            func: _a => Number(actionType) === 1 || Number(actionType) === 2
+        }, {
+            name: 'amount',
+            func: isNonNegativeInteger,
+            msg: 'Amount must be an non-negative integer string.'
+        } ]);
+        if (err) {
+            throw err;
+        }
+
+        return this.callContract({
+            abi: Contracts.DexLockVxForDividend.abi,
+            toAddress: Contracts.DexLockVxForDividend.contractAddress,
+            params: [ actionType, amount ]
+        });
+    }
+
+    dexSwitchConfig({ switchType, enable }: {
+        switchType: Uint8;
+        enable: boolean;
+    }) {
+        const err = checkParams({ switchType, enable }, [ 'switchType', 'enable' ]);
+        if (err) {
+            throw err;
+        }
+
+        return this.callContract({
+            abi: Contracts.DexSwitchConfig.abi,
+            toAddress: Contracts.DexSwitchConfig.contractAddress,
+            params: [ switchType, enable ]
+        });
+    }
+
+    dexStakeForPrincipalSVIP({ principal }: {
+        principal: Address;
+    }) {
+        const err = checkParams({ principal }, ['principal'], [{
+            name: 'principal',
+            func: isValidAddress
+        }]);
+        if (err) {
+            throw err;
+        }
+
+        return this.callContract({
+            abi: Contracts.DexStakeForPrincipalSVIP.abi,
+            toAddress: Contracts.DexStakeForPrincipalSVIP.contractAddress,
+            params: [principal]
+        });
+    }
+
+    dexCancelStakeById({ id }: {
+        id: Hex;
+    }) {
+        const err = checkParams({ id }, ['id'], [{
+            name: 'id',
+            func: isHexString
+        }]);
+        if (err) {
+            throw err;
+        }
+
+        return this.callContract({
+            abi: Contracts.DexCancelStakeById.abi,
+            toAddress: Contracts.DexCancelStakeById.contractAddress,
+            params: [id]
         });
     }
 }

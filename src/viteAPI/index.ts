@@ -93,7 +93,7 @@ class ViteAPIClass extends Provider {
         }
 
         pageIndex = pageIndex >= 0 ? pageIndex : 0;
-        const data = await this.request('ledger_getBlocksByAccAddr', address, pageIndex, pageSize);
+        const data = await this.request('ledger_getAccountBlocksByAddress', address, pageIndex, pageSize);
         const rawList = data || [];
 
         const list: Transaction[] = [];

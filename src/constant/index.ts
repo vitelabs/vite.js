@@ -102,7 +102,7 @@ export const Contracts = {
         contractAddress: DexFund_ContractAddress,
         abi: { 'type': 'function', 'name': 'DexFundUserWithdraw', 'inputs': [ { 'name': 'token', 'type': 'tokenId' }, { 'name': 'amount', 'type': 'uint256' } ] }
     },
-    DexCreateOrder_V1: {
+    DexPlaceOrder_V1: {
         contractAddress: DexFund_ContractAddress,
         abi: { 'type': 'function', 'name': 'DexFundNewOrder', 'inputs': [ { 'name': 'tradeToken', 'type': 'tokenId' }, { 'name': 'quoteToken', 'type': 'tokenId' }, { 'name': 'side', 'type': 'bool' }, { 'name': 'orderType', 'type': 'uint8' }, { 'name': 'price', 'type': 'string' }, { 'name': 'quantity', 'type': 'uint256' } ] }
     },
@@ -126,7 +126,7 @@ export const Contracts = {
         contractAddress: DexFund_ContractAddress,
         abi: { 'type': 'function', 'name': 'DexFundBindInviteCode', 'inputs': [{ 'name': 'code', 'type': 'uint32' }] }
     },
-    DexCreateInviteCode_V1: {
+    DexCreateNewInviter_V1: {
         contractAddress: DexFund_ContractAddress,
         abi: { 'type': 'function', 'name': 'DexFundNewInviter', 'inputs': [] }
     },
@@ -211,17 +211,17 @@ export const Contracts = {
         contractAddress: DexFund_ContractAddress,
         abi: { 'type': 'function', 'name': 'Withdraw', 'inputs': [ { 'name': 'token', 'type': 'tokenId' }, { 'name': 'amount', 'type': 'uint256' } ] }
     },
-    DexCreateOrder: {
+    DexOpenNewMarket: {
+        contractAddress: DexFund_ContractAddress,
+        abi: { 'type': 'function', 'name': 'OpenNewMarket', 'inputs': [ { 'name': 'tradeToken', 'type': 'tokenId' }, { 'name': 'quoteToken', 'type': 'tokenId' } ] }
+    },
+    DexPlaceOrder: {
         contractAddress: DexFund_ContractAddress,
         abi: { 'type': 'function', 'name': 'PlaceOrder', 'inputs': [ { 'name': 'tradeToken', 'type': 'tokenId' }, { 'name': 'quoteToken', 'type': 'tokenId' }, { 'name': 'side', 'type': 'bool' }, { 'name': 'orderType', 'type': 'uint8' }, { 'name': 'price', 'type': 'string' }, { 'name': 'quantity', 'type': 'uint256' } ] }
     },
     DexCancelOrder: {
         contractAddress: DexTrade_ContractAddress,
         abi: { 'type': 'function', 'name': 'CancelOrder', 'inputs': [{ 'name': 'orderId', 'type': 'bytes' }] }
-    },
-    DexOpenNewMarket: {
-        contractAddress: DexFund_ContractAddress,
-        abi: { 'type': 'function', 'name': 'OpenNewMarket', 'inputs': [ { 'name': 'tradeToken', 'type': 'tokenId' }, { 'name': 'quoteToken', 'type': 'tokenId' } ] }
     },
     DexStakeForMining: {
         contractAddress: DexFund_ContractAddress,
@@ -231,28 +231,44 @@ export const Contracts = {
         contractAddress: DexFund_ContractAddress,
         abi: { 'type': 'function', 'name': 'StakeForVIP', 'inputs': [{ 'name': 'actionType', 'type': 'uint8' }] }
     },
-    DexBindInviteCode: {
+    DexMarketAdminConfig: {
         contractAddress: DexFund_ContractAddress,
-        abi: { 'type': 'function', 'name': 'BindInviteCode', 'inputs': [{ 'name': 'code', 'type': 'uint32' }] }
-    },
-    DexCreateInviteCode: {
-        contractAddress: DexFund_ContractAddress,
-        abi: { 'type': 'function', 'name': 'CreateInviteCode', 'inputs': [] }
+        abi: { 'type': 'function', 'name': 'MarketAdminConfig', 'inputs': [ { 'name': 'operationCode', 'type': 'uint8' }, { 'name': 'tradeToken', 'type': 'tokenId' }, { 'name': 'quoteToken', 'type': 'tokenId' }, { 'name': 'marketOwner', 'type': 'address' }, { 'name': 'takerFeeRate', 'type': 'int32' }, { 'name': 'makerFeeRate', 'type': 'int32' }, { 'name': 'stopMarket', 'type': 'bool' } ] }
     },
     DexTransferTokenOwnership: {
         contractAddress: DexFund_ContractAddress,
         abi: { 'type': 'function', 'name': 'TransferTokenOwnership', 'inputs': [ { 'name': 'token', 'type': 'tokenId' }, { 'name': 'newOwner', 'type': 'address' } ] }
     },
-    DexMarketAdminConfig: {
+    DexCreateNewInviter: {
         contractAddress: DexFund_ContractAddress,
-        abi: { 'type': 'function', 'name': 'MarketAdminConfig', 'inputs': [ { 'name': 'operationCode', 'type': 'uint8' }, { 'name': 'tradeToken', 'type': 'tokenId' }, { 'name': 'quoteToken', 'type': 'tokenId' }, { 'name': 'marketOwner', 'type': 'address' }, { 'name': 'takerFeeRate', 'type': 'int32' }, { 'name': 'makerFeeRate', 'type': 'int32' }, { 'name': 'stopMarket', 'type': 'bool' } ] }
+        abi: { 'type': 'function', 'name': 'CreateNewInviter', 'inputs': [] }
+    },
+    DexBindInviteCode: {
+        contractAddress: DexFund_ContractAddress,
+        abi: { 'type': 'function', 'name': 'BindInviteCode', 'inputs': [{ 'name': 'code', 'type': 'uint32' }] }
     },
     DexStakeForSuperVIP: {
         contractAddress: DexFund_ContractAddress,
-        abi: { 'type': 'function', 'name': 'StakeForSuperVIP', 'inputs': [{ 'name': 'actionType', 'type': 'uint8' }] }
+        abi: { 'type': 'function', 'name': 'StakeForSVIP', 'inputs': [{ 'name': 'actionType', 'type': 'uint8' }] }
     },
     DexConfigMarketAgents: {
         contractAddress: DexFund_ContractAddress,
         abi: { 'type': 'function', 'name': 'ConfigMarketAgents', 'inputs': [ { 'name': 'actionType', 'type': 'uint8' }, { 'name': 'agent', 'type': 'address' }, { 'name': 'tradeTokens', 'type': 'tokenId[]' }, { 'name': 'quoteTokens', 'type': 'tokenId[]' } ] }
+    },
+    DexLockVxForDividend: {
+        contractAddress: DexFund_ContractAddress,
+        abi: { 'type': 'function', 'name': 'LockVxForDividend', 'inputs': [ { 'name': 'actionType', 'type': 'uint8' }, { 'name': 'amount', 'type': 'uint256' } ] }
+    },
+    DexSwitchConfig: {
+        contractAddress: DexFund_ContractAddress,
+        abi: { 'type': 'function', 'name': 'SwitchConfig', 'inputs': [ { 'name': 'switchType', 'type': 'uint8' }, { 'name': 'enable', 'type': 'bool' } ] }
+    },
+    DexStakeForPrincipalSVIP: {
+        contractAddress: DexFund_ContractAddress,
+        abi: { 'type': 'function', 'name': 'StakeForPrincipalSVIP', 'inputs': [{ 'name': 'principal', 'type': 'address' }] }
+    },
+    DexCancelStakeById: {
+        contractAddress: DexFund_ContractAddress,
+        abi: { 'type': 'function', 'name': 'CancelStakeById', 'inputs': [{ 'name': 'id', 'type': 'bytes32' }] }
     }
 };

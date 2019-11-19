@@ -128,10 +128,10 @@ async function checkQuota(previousAccountBlock) {
         amount: '1000000000000000000000'
     });
 
-    const accountBlock = tx.stakeForQuota_V2({
-        beneficiaryAddress: address,
-        amount: '1000000000000000000000'
-    });
+    // const accountBlock = tx.stakeForQuota_V2({
+    //     beneficiaryAddress: address,
+    //     amount: '1000000000000000000000'
+    // });
 
     if (previousAccountBlock) {
         await accountBlock.setPreviousAccountBlock(previousAccountBlock).PoW();
@@ -268,14 +268,14 @@ async function getVoteList() {
 }
 
 async function withdrawalOfQuota(previousAccountBlock) {
-    const list = await viteProvider.request('pledge_getPledgeList', address, 0, 10);
-    console.log('[LOG] pledge_getPledgeList', list, '\n');
+    const list = await viteProvider.request('contract_getStakeList', address, 0, 10);
+    console.log('[LOG] contract_getStakeList', list, '\n');
 
-    if (!list || !list.pledgeInfoList || !list.pledgeInfoList.length) {
+    if (!list || !list.stakeList || !list.stakeList.length) {
         return;
     }
 
-    let backQuota = list.pledgeInfoList[0];
+    let backQuota = list.stakeList[0];
 
     const accountBlock = null;
     if (!backQuota.id) {

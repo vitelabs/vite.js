@@ -236,7 +236,7 @@ const BLOCK_LIST = {
         toAddress: 'vite_0000000000000000000000000000000000000003f6af7459b9',
         tokenId: 'tti_5649544520544f4b454e6e40'
     },
-    DexCreateOrder_V1: {
+    DexPlaceOrder_V1: {
         accountAddress: 'vite_553462bca137bac29f440e9af4ab2e2c1bb82493e41d2bc8b2',
         address: 'vite_553462bca137bac29f440e9af4ab2e2c1bb82493e41d2bc8b2',
         amount: '0',
@@ -440,7 +440,7 @@ const BLOCK_LIST = {
         toAddress: 'vite_0000000000000000000000000000000000000006e82b8ba657',
         tokenId: 'tti_5649544520544f4b454e6e40'
     },
-    DexCreateInviteCode_V1: {
+    DexCreateNewInviter_V1: {
         accountAddress: 'vite_553462bca137bac29f440e9af4ab2e2c1bb82493e41d2bc8b2',
         address: 'vite_553462bca137bac29f440e9af4ab2e2c1bb82493e41d2bc8b2',
         amount: '0',
