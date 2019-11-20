@@ -617,17 +617,17 @@ class TransactionClass {
         });
     }
 
-    dexMarketAdminConfig({ operationCode, tradeToken, quoteToken, marketOwner, takerFeeRate, makerFeeRate, stopMarket }: {
+    dexMarketAdminConfig({ operationCode, tradeToken, quoteToken, marketOwner, takerFeeRate, makerFeeRate, stopMarket = false }: {
         operationCode: Uint8;
         tradeToken: TokenId;
         quoteToken: TokenId;
         marketOwner: Address;
         takerFeeRate: Int32;
         makerFeeRate: Int32;
-        stopMarket: boolean;
+        stopMarket?: boolean;
     }): AccountBlock {
-        const err = checkParams({ operationCode, tradeToken, quoteToken, marketOwner, takerFeeRate, makerFeeRate, stopMarket },
-            [ 'operationCode', 'tradeToken', 'quoteToken', 'marketOwner', 'takerFeeRate', 'makerFeeRate', 'stopMarket' ],
+        const err = checkParams({ operationCode, tradeToken, quoteToken, marketOwner, takerFeeRate, makerFeeRate },
+            [ 'operationCode', 'tradeToken', 'quoteToken', 'marketOwner', 'takerFeeRate', 'makerFeeRate' ],
             [ {
                 name: 'tradeToken',
                 func: isValidTokenId

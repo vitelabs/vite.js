@@ -6,6 +6,14 @@ export const Vite_Token_Info = {
     tokenSymbol: 'VITE'
 };
 
+export const VX_TokenId = 'tti_564954455820434f494e69b5';
+export const VX_Token_Info = {
+    decimals: 18,
+    tokenId: VX_TokenId,
+    tokenName: 'ViteX Coin',
+    tokenSymbol: 'VX'
+};
+
 export const Snapshot_Gid = '00000000000000000001';
 export const Delegate_Gid = '00000000000000000002';
 

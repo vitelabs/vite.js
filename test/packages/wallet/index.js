@@ -139,6 +139,8 @@ describe('getWallet', function () {
     });
     it('wallet.getAddressList', () => {
         const _addressList = wallet.getAddressList();
-        assert.deepEqual(addressList, _addressList);
+        for (let i = 0; i < addressList.length; i++) {
+            assert.deepEqual(addressList[i], _addressList[i]);
+        }
     });
 });

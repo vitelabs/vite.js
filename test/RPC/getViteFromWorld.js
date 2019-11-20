@@ -14,7 +14,7 @@ async function GetViteFromWorld(toAddress, amount = Default_Amount) {
     const { address, privateKey }  = worldWallet.deriveAddress(config.addrIndex);
 
     const balanceInfo = await provider.getBalanceInfo(address);
-    console.log('[LOG] getViteFromWorld BalanceInfo', address, balanceInfo, '\n');
+    console.log('[LOG] GetViteFromWorld BalanceInfo', address, balanceInfo, '\n');
 
     const tx = new Transaction(address);
     tx.setProvider(provider);
@@ -25,7 +25,7 @@ async function GetViteFromWorld(toAddress, amount = Default_Amount) {
         amount
     }).autoSend(privateKey);
 
-    console.log('[LOG] getViteFromWorld', data, '\n');
+    console.log('[LOG] GetViteFromWorld', data, '\n');
     return data;
 }
 
