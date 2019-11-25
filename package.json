@@ -1,6 +1,6 @@
 {
     "name": "@vite/vitejs",
-    "version": "2.2.8",
+    "version": "2.3.0",
     "description": "",
     "scripts": {
         "format-type": "node build/type",
