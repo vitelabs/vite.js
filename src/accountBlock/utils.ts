@@ -559,7 +559,7 @@ export function encodeContractList(contractList: Object): Object {
 
         const funcSign = encodeFunctionSignature(abi);
         const _contract: {
-            transactionType: String;
+            transactionType: string;
             contractAddress: Address;
             abi: Object;
         } = {

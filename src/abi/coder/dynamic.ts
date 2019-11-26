@@ -47,7 +47,7 @@ function getRawData(type, params) {
 
 function getBytesData(type, params) {
     if (typeof params !== 'string') {
-        throw new Error('[Error] Illegal params. Should be String');
+        throw new Error('[Error] Illegal params. Should be string');
     }
 
     if (type === 'string') {

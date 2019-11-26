@@ -84,8 +84,8 @@ export enum TransactionType {
 }
 
 export declare type TokenInfo = {
-    tokenName: String;
-    tokenSymbol: String;
+    tokenName: string;
+    tokenSymbol: string;
     totalSupply: BigInt;
     decimals: Uint8;
     owner: Address;
@@ -153,7 +153,7 @@ export declare type Transaction = {
     timestamp?: Uint64;
     receiveBlockHeight?: Uint64;
     receiveBlockHash?: Hex;
-    transationType?: String;
+    transationType?: string;
     contractParams?: Object;
 }
 
@@ -174,7 +174,7 @@ export enum BlockType {
     'GenesisResponse'
 }
 
-export declare type Methods = String |
+export declare type Methods = string |
 'wallet_getEntropyFilesInStandardDir' |
 'wallet_getAllEntropyFiles' |
 'wallet_exportMnemonics' |
@@ -274,7 +274,7 @@ export declare class ViteAPI extends ProviderType {
     getBalanceInfo(address: Address)
     getTransactionList({ address, pageIndex, pageSize }: {
         address: Address; pageIndex: number; pageSize?: number;
-    }, decodeTxTypeList: 'all' | String[])
+    }, decodeTxTypeList: 'all' | string[])
     callOffChainContract({ address, abi, code, params })
     getNonce({ difficulty, previousHash, address }: {
         difficulty: BigInt;

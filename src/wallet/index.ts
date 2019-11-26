@@ -13,11 +13,11 @@ export default {
     ...hdKey,
     deriveAddress,
     deriveAddressList: function ({ mnemonics, startIndex, endIndex, wordlist, passphrase = '' }: {
-        mnemonics: String;
+        mnemonics: string;
         startIndex: number;
         endIndex: number;
-        wordlist: Array<String>;
-        passphrase: String;
+        wordlist: Array<string>;
+        passphrase: string;
     }): Array<AddressObj> {
         const err = checkParams({ startIndex, endIndex }, [ 'startIndex', 'endIndex' ]);
         if (err) {
@@ -35,11 +35,11 @@ export default {
         }
         return addressList;
     },
-    createWallet: function (strength: number = 256, wordlist: Array<String> = bip39.wordlists.EN, passphrase: string = '') {
+    createWallet: function (strength: number = 256, wordlist: Array<string> = bip39.wordlists.EN, passphrase: string = '') {
         const mnemonic = hdKey.createMnemonics(strength, wordlist);
         return new Wallet(mnemonic, wordlist, passphrase);
     },
-    getWallet: function (mnemonics: string, wordlist: Array<String> = bip39.wordlists.EN, passphrase: string = '') {
+    getWallet: function (mnemonics: string, wordlist: Array<string> = bip39.wordlists.EN, passphrase: string = '') {
         const err = checkParams({ mnemonics, wordlist }, [ 'mnemonics', 'wordlist' ], [{
             name: 'mnemonics',
             func: _m => hdKey.validateMnemonics(_m, wordlist)
@@ -53,10 +53,10 @@ export default {
 
 
 function deriveAddress({ mnemonics, index = 0, wordlist, passphrase = '' }: {
-    mnemonics: String;
+    mnemonics: string;
     index: number;
-    wordlist: Array<String>;
-    passphrase: String;
+    wordlist: Array<string>;
+    passphrase: string;
 }): AddressObj {
     const { seedHex } = hdKey.getSeedFromMnemonics(mnemonics, passphrase, wordlist);
     const { privateKey } = hdKey.deriveKeyPairByIndex(seedHex, index);

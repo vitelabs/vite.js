@@ -12,21 +12,21 @@ interface AddressObj {
     privateKey: Hex;
     originalAddress: Hex;
     address: Address;
-    path: String;
+    path: string;
 }
 
 class Wallet {
-    readonly rootPath: String
-    readonly mnemonics: String
+    readonly rootPath: string
+    readonly mnemonics: string
     readonly entropy: Hex
-    readonly wordlist: Array<String>
-    readonly passphrase: String
+    readonly wordlist: Array<string>
+    readonly passphrase: string
     readonly seed: Buffer
     readonly seedHex: Hex
 
     private addressList: Object
 
-    constructor(mnemonics: String, wordlist: Array<String> = bip39.wordlists.EN, passphrase: String = '') {
+    constructor(mnemonics: string, wordlist: Array<string> = bip39.wordlists.EN, passphrase: string = '') {
         if (!hdKey.validateMnemonics(mnemonics, wordlist)) {
             throw new Error('Illegal mnemonic');
         }

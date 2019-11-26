@@ -77,7 +77,7 @@ class ViteAPIClass extends Provider {
 
     async getTransactionList({ address, pageIndex, pageSize = 50 }: {
         address: Address; pageIndex: number; pageSize?: number;
-    }, decodeTxTypeList: 'all' | String[] = 'all'): Promise<Transaction[]> {
+    }, decodeTxTypeList: 'all' | string[] = 'all'): Promise<Transaction[]> {
         const err = checkParams({ address, pageIndex, decodeTxTypeList }, [ 'address', 'pageIndex' ], [ {
             name: 'address',
             func: isValidAddress

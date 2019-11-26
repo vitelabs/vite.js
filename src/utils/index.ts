@@ -15,7 +15,7 @@ declare const enum Charset {
 export const ed25519 = _e;
 
 export function uriStringify(o: {
-    schema: String; prefix: String; target_address: String; chain_id: Number; function_name: String; params: Object;
+    schema: string; prefix: string; target_address: string; chain_id: Number; function_name: string; params: Object;
 }) {
     const { schema, prefix, target_address, chain_id, function_name, params } = o;
     const _schema = schema ? `${ schema }:` : 'vite:';
@@ -129,7 +129,7 @@ export function isObject(obj): Boolean {
     return type === 'function' || type === 'object' && !!obj;
 }
 
-export function getBytesSize(str: String, charset: Charset = Charset.utf8): number {
+export function getBytesSize(str: string, charset: Charset = Charset.utf8): number {
     const err = checkParams({ str }, ['str']);
     if (err) {
         throw new Error(err.message);
