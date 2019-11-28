@@ -12,12 +12,12 @@ export default {
     ...addressLib,
     ...hdKey,
     deriveAddress,
-    deriveAddressList: function ({ mnemonics, startIndex, endIndex, wordlist, passphrase = '' }: {
+    deriveAddressList: function ({ mnemonics, startIndex, endIndex, wordlist = bip39.wordlists.EN, passphrase = '' }: {
         mnemonics: string;
         startIndex: number;
         endIndex: number;
-        wordlist: Array<string>;
-        passphrase: string;
+        wordlist?: Array<string>;
+        passphrase?: string;
     }): Array<AddressObj> {
         const err = checkParams({ startIndex, endIndex }, [ 'startIndex', 'endIndex' ]);
         if (err) {
@@ -52,11 +52,11 @@ export default {
 };
 
 
-function deriveAddress({ mnemonics, index = 0, wordlist, passphrase = '' }: {
+function deriveAddress({ mnemonics, index = 0, wordlist = bip39.wordlists.EN, passphrase = '' }: {
     mnemonics: string;
     index: number;
-    wordlist: Array<string>;
-    passphrase: string;
+    wordlist?: Array<string>;
+    passphrase?: string;
 }): AddressObj {
     const { seedHex } = hdKey.getSeedFromMnemonics(mnemonics, passphrase, wordlist);
     const { privateKey } = hdKey.deriveKeyPairByIndex(seedHex, index);

@@ -103,7 +103,7 @@ class Wallet {
             throw new Error(err.message);
         }
 
-        if (startIndex >= endIndex) {
+        if (startIndex > endIndex) {
             throw new Error('Illegal index');
         }
 

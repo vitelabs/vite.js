@@ -48,7 +48,7 @@ class ViteAPIClass extends Provider {
         }
 
         const data = await this.batch([ {
-            methodName: 'ledger_getAccountByAccAddr',
+            methodName: 'ledger_getAccountInfoByAddress',
             params: [address]
         }, {
             methodName: 'ledger_getUnreceivedTransactionSummaryByAddress',
