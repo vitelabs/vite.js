@@ -315,7 +315,7 @@ async function CheckTxList(pageSize) {
     // console.log('[LOG] CheckMyTxList', data, '\n');
 
     data.forEach((ele, i) => {
-        console.log(`[LOG] CheckTxList TxType ${ i }: ${ ele.transationType } \n`);
+        console.log(`[LOG] CheckTxList TxType ${ i }: ${ ele.transactionType } \n`);
         console.log(`[LOG] CheckTxList Contract ${ i }: ${ JSON.stringify(ele.contractParams) } \n`);
     });
     return data;

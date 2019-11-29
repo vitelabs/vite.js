@@ -153,7 +153,7 @@ export declare type Transaction = {
     timestamp?: Uint64;
     receiveBlockHeight?: Uint64;
     receiveBlockHash?: Hex;
-    transationType?: string;
+    transactionType?: string;
     contractParams?: Object;
 }
 

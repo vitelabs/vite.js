@@ -101,7 +101,7 @@ class ViteAPIClass extends Provider {
             const transaction: Transaction = accountBlock;
             const { abi, transactionType, contractAddress } = getTransactionType(accountBlock, this.customTransactionType);
 
-            transaction.transationType = transactionType;
+            transaction.transactionType = transactionType;
 
             const isDecodeTx = contractAddress
                 && abi
