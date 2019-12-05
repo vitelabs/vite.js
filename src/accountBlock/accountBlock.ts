@@ -5,8 +5,8 @@ import { checkParams, isHexString, isBase64String } from '~@vite/vitejs-utils';
 import { getOriginalAddressFromAddress, getAddressFromPublicKey, isValidAddress, createAddressByPrivateKey } from  '~@vite/vitejs-wallet/address';
 
 import {
-    isRequestBlock, isResponseBlock, checkAccountBlock, Default_Hash,
-    getBlockTypeHex, getHeightHex, getAddressHex, getToAddressHex, getDataHex,
+    isRequestBlock, isResponseBlock, isValidAccountBlockWithoutHash, checkAccountBlock,
+    Default_Hash, getBlockTypeHex, getHeightHex, getAddressHex, getToAddressHex, getDataHex,
     getAmountHex, getFeeHex, getNonceHex, getPreviousHashHex, getTokenIdHex, getSendBlockHashHex,
     getAccountBlockHash, signAccountBlock, createContractAddress
 } from './utils';
@@ -71,19 +71,19 @@ class AccountBlockClass {
         return {
             blockType: this.blockType,
             address: this.address,
-            fee: this.fee,
-            data: this.data,
-            sendBlockHash: this.sendBlockHash,
-            toAddress: this.toAddress,
-            tokenId: this.tokenId,
-            amount: this.amount,
-            height: this.height,
-            previousHash: this.previousHash,
-            difficulty: this.difficulty,
-            nonce: this.nonce,
-            hash: this.hash,
-            publicKey: this.publicKey,
-            signature: this.signature
+            fee: this.fee === '' ? null : this.fee,
+            data: this.data === '' ? null : this.data,
+            sendBlockHash: this.sendBlockHash === '' ? null : this.sendBlockHash,
+            toAddress: this.toAddress === '' ? null : this.toAddress,
+            tokenId: this.tokenId === '' ? null : this.tokenId,
+            amount: this.amount === '' ? null : this.amount,
+            height: this.height === '' ? null : this.height,
+            previousHash: this.previousHash === '' ? null : this.previousHash,
+            difficulty: this.difficulty === '' ? null : this.difficulty,
+            nonce: this.nonce === '' ? null : this.nonce,
+            hash: this.hash === '' ? null : this.hash,
+            publicKey: this.publicKey === '' ? null : this.publicKey,
+            signature: this.signature === '' ? null : this.signature
         };
     }
 
@@ -160,7 +160,7 @@ class AccountBlockClass {
     }
 
     get hash(): Hex {
-        return getAccountBlockHash({
+        const block = {
             blockType: this.blockType,
             address: this.address,
             fee: this.fee,
@@ -173,7 +173,12 @@ class AccountBlockClass {
             previousHash: this.previousHash,
             difficulty: this.difficulty,
             nonce: this.nonce
-        });
+        };
+
+        if (isValidAccountBlockWithoutHash(block)) {
+            return getAccountBlockHash(block);
+        }
+        return null;
     }
 
     setProvider(provider: ProviderType): AccountBlockClass {
