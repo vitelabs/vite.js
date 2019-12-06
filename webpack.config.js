@@ -56,14 +56,14 @@ module.exports = {
     module: {
         rules: [ {
             test: /\.ts$/,
-            exclude: /node_modules/,
+            exclude: /node_modules(?!(\/bip39)|(\/scryptsy))/,
             use: {
                 loader: 'ts-loader',
                 options: { configFile: 'tsconfig.json' }
             }
         }, {
             test: /\.js$/,
-            exclude: /node_modules/,
+            exclude: /node_modules(?!(\/bip39)|(\/scryptsy))/,
             use: {
                 loader: 'babel-loader',
                 options: { presets: ['@babel/preset-env'] }
