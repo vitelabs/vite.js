@@ -1,0 +1,1 @@
+{"name":"@vite/vitejs-communication","version":"2.3.1","main":"dist/index.node.js","browser":"dist/index.web.js","repository":{"type":"git","url":"git+https://github.com/vitelabs/vite.js.git"},"license":"ISC","bugs":{"url":"https://github.com/vitelabs/vite.js/issues"},"homepage":"https://github.com/vitelabs/vite.js#readme","publishConfig":{"access":"public"}}

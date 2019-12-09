@@ -1,4 +1,4 @@
-import { wallet } from '../../src/vitejs/distSrc';
+import { wallet } from '../../packages/vitejs/src';
 
 console.log(wallet);
 

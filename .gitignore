@@ -5,13 +5,10 @@ node_modules
 coverage
 .nyc_output/
 package-lock.json
-dist
 docs
 lib
 static
 lerna-debug.log
-es5
-distSrc
-packages
 rpcConfig.js
 tempSrc
+yarn-error.log

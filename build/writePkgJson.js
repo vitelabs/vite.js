@@ -4,7 +4,7 @@ const traversing = require('./traversing');
 
 const packageJsonContent = require('../common/package.json');
 const currPackageJsonContent = require('../package.json');
-const currTsConfigJsonContent = require('../tsconfig.json');
+// const currTsConfigJsonContent = require('../tsconfig.json');
 const lernaJsonContent = require('../lerna.json');
 
 // Change `dist/${packageName}.${"node"||"web"}.js` to `packages/${packageName}/index.${"node"||"web"}.js`
@@ -18,6 +18,9 @@ traversing('./dist', (fPath, next, name) => {
     const packagePath = path.join(__dirname, `../packages/${ packageName }`);
     const distPath = path.join(__dirname, `../packages/${ packageName }/dist`);
 
+    if (!fs.existsSync(packagePath)) {
+        fs.mkdirSync(packagePath);
+    }
     if (!fs.existsSync(distPath)) {
         fs.mkdirSync(distPath);
     }
@@ -36,24 +39,22 @@ function copyFile({ fromPath, name }) {
     packageJsonContent.name = name;
     packageJsonContent.version = lernaJsonContent.version;
 
-    if (name === '@vite/vitejs') {
-        packageJsonContent.dependencies = currPackageJsonContent.dependencies;
-        packageJsonContent.types = './src/index.ts';
-
-        const indexTSPath = path.join(fromPath, './index.ts');
-        if (fs.existsSync(indexTSPath)) {
-            fs.unlinkSync(indexTSPath);
-        }
-    }
-
     const packageFile = path.join(fromPath, './package.json');
     fs.writeFileSync(packageFile, JSON.stringify(packageJsonContent));
 
-    const tsConfigFile = path.join(fromPath, './tsconfig.json');
-    delete currTsConfigJsonContent.compilerOptions.baseUrl;
-    delete currTsConfigJsonContent.compilerOptions.paths;
-    delete currTsConfigJsonContent.compilerOptions.outDir;
-    delete currTsConfigJsonContent.include;
-    delete currTsConfigJsonContent.exclude;
-    fs.writeFileSync(tsConfigFile, JSON.stringify(currTsConfigJsonContent));
+    if (name !== '@vite/vitejs') {
+        return;
+    }
+
+    packageJsonContent.dependencies = currPackageJsonContent.dependencies;
+    packageJsonContent.types = './src/index.ts';
+
+    const indexTSPath = path.join(fromPath, './index.ts');
+    if (fs.existsSync(indexTSPath)) {
+        fs.unlinkSync(indexTSPath);
+    }
+
+    // const tsConfigFile = path.join(fromPath, './tsconfig.json');
+    // delete currTsConfigJsonContent.compilerOptions.outDir;
+    // fs.writeFileSync(tsConfigFile, JSON.stringify(currTsConfigJsonContent));
 }
