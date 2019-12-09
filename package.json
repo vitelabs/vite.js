@@ -4,11 +4,11 @@
     "description": "",
     "scripts": {
         "format-type": "node build/type",
-        "prebuild": "rm -rf ./dist && rm -rf ./distSrc && node build/clean",
+        "prebuild": "rm -rf ./dist && rm -rf ./packages",
         "build:node": "build_target=node webpack",
         "build:web": "build_target=web webpack",
         "build:vitejsES5": "tsc && node build/vitejsES5",
-        "build:vitets": "cp -r ./src/. ./distSrc && cp -r ./distSrc ./src/vitejs/distSrc",
+        "build:vitets": "cp -r ./src/. ./packages && cp -r ./src/. ./packages/vitejs/src",
         "build:vitejs": "yarn run build:vitets && yarn run build:vitejsES5",
         "build:all": "yarn run build:node && yarn run build:web",
         "build": "yarn run build:vitejs && yarn run build:all && node build/writePkgJson.js",

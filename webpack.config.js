@@ -9,6 +9,7 @@ const plugins = [
     new webpack.DefinePlugin({ 'processSilence': process.env.NODE_ENV && process.env.NODE_ENV.indexOf('test') === 0 ? 0 : 1 }),
     new webpack.IgnorePlugin(/^\.\/wordlists\/(?!english)/, /bip39\/src/)
 ];
+
 if (target === 'web') {
     plugins.push(new webpack.NormalModuleReplacementPlugin(/\/buffer\//, function (resource) {
         resource.request = Buffer_Path;

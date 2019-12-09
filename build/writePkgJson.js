@@ -7,7 +7,7 @@ const currPackageJsonContent = require('../package.json');
 const currTsConfigJsonContent = require('../tsconfig.json');
 const lernaJsonContent = require('../lerna.json');
 
-// Change `dist/${packageName}.${"node"||"web"}.js` to `src/${packageName}/index.${"node"||"web"}.js`
+// Change `dist/${packageName}.${"node"||"web"}.js` to `packages/${packageName}/index.${"node"||"web"}.js`
 traversing('./dist', (fPath, next, name) => {
     const stats = fs.statSync(fPath);
     if (!stats.isFile()) {
@@ -15,8 +15,8 @@ traversing('./dist', (fPath, next, name) => {
     }
 
     const packageName = name.split('.')[0];
-    const packagePath = path.join(__dirname, `../src/${ packageName }`);
-    const distPath = path.join(__dirname, `../src/${ packageName }/dist`);
+    const packagePath = path.join(__dirname, `../packages/${ packageName }`);
+    const distPath = path.join(__dirname, `../packages/${ packageName }/dist`);
 
     if (!fs.existsSync(distPath)) {
         fs.mkdirSync(distPath);
@@ -38,7 +38,12 @@ function copyFile({ fromPath, name }) {
 
     if (name === '@vite/vitejs') {
         packageJsonContent.dependencies = currPackageJsonContent.dependencies;
-        packageJsonContent.types = './distSrc/index.ts';
+        packageJsonContent.types = './src/index.ts';
+
+        const indexTSPath = path.join(fromPath, './index.ts');
+        if (fs.existsSync(indexTSPath)) {
+            fs.unlinkSync(indexTSPath);
+        }
     }
 
     const packageFile = path.join(fromPath, './package.json');

@@ -12,5 +12,6 @@ static
 lerna-debug.log
 es5
 distSrc
+packages
 rpcConfig.js
 tempSrc
