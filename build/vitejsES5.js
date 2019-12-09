@@ -14,6 +14,19 @@ traversing('./src/vitejs/es5', (fPath, next, val, folderLevel) => {
     }
 }, './');
 
+traversing('./src/vitejs/distSrc', (fPath, next, val, folderLevel) => {
+    const stats = fs.statSync(fPath);
+
+    if (stats.isDirectory()) {
+        next(fPath, `${ folderLevel }../`);
+        return;
+    }
+
+    if (stats.isFile()) {
+        formatFile(fPath, folderLevel);
+    }
+}, './');
+
 
 function formatFile(filePath, folderLevel) {
     let fileStr = fs.readFileSync(filePath, { encoding: 'utf8' });
