@@ -565,10 +565,6 @@ class TransactionClass {
             throw err;
         }
 
-        if (isBase64String(orderId)) {
-            orderId = Buffer.from(orderId, 'base64').toString('hex');
-        }
-
         return this.callContract({
             abi: Contracts.DexCancelOrder.abi,
             toAddress: Contracts.DexCancelOrder.contractAddress,

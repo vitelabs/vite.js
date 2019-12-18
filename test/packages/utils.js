@@ -100,6 +100,7 @@ it('isBase64String', function () {
     assert.equal(true, isBase64String('f0fde0110193147e7961e61eeb22576c535b3442fd6bd9c457775e0cc69f1951'));
     assert.equal(false, isBase64String('f0fde0110193147e71e61eeb22576c535b3442fd6bd9c457775e0cc69f1951'));
     assert.equal(true, isBase64String('pinFMQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB'));
+    // assert.equal(false, isBase64String('00000500fffffffffeffffffffff005dfb62cb000001'));
 });
 
 describe('ed25519', function () {

@@ -1,0 +1,162 @@
+Arguments: 
+  /Users/sisi/.nvm/versions/node/v12.13.0/bin/node /usr/local/Cellar/yarn/1.15.2/libexec/bin/yarn.js
+
+PATH: 
+  /Users/sisi/.nvm/versions/node/v12.13.0/bin:/Library/Frameworks/Python.framework/Versions/3.7/bin:/Users/sisi/workspace/vite.js/flutter/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Library/Frameworks/Python.framework/Versions/3.7/bin://flutter/bin:/usr/local/mysql/bin:/usr/local/mysql/bin:/Users/sisi/.nvm/versions/node/v12.13.0/bin
+
+Yarn version: 
+  1.15.2
+
+Node version: 
+  12.13.0
+
+Platform: 
+  darwin x64
+
+Trace: 
+  Error: https://registry.npmjs.org/typescript-eslint-parser: ESOCKETTIMEDOUT
+      at ClientRequest.<anonymous> (/usr/local/Cellar/yarn/1.15.2/libexec/lib/cli.js:130168:19)
+      at Object.onceWrapper (events.js:299:28)
+      at ClientRequest.emit (events.js:210:5)
+      at TLSSocket.emitRequestTimeout (_http_client.js:690:9)
+      at Object.onceWrapper (events.js:299:28)
+      at TLSSocket.emit (events.js:210:5)
+      at TLSSocket.Socket._onTimeout (net.js:468:8)
+      at listOnTimeout (internal/timers.js:531:17)
+      at processTimers (internal/timers.js:475:7)
+
+npm manifest: 
+  {
+      "name": "@vite/vitejs",
+      "version": "2.3.0",
+      "description": "",
+      "scripts": {
+          "format-type": "node build/type",
+          "prebuild": "rm -rf ./dist && rm -rf ./packages",
+          "build:node": "build_target=node webpack",
+          "build:web": "build_target=web webpack",
+          "build:vitejsES5": "tsc && node build/vitejsES5",
+          "build:vitets": "mkdir ./packages && mkdir ./packages/vitejs && cp -r ./src/. ./packages/vitejs/src",
+          "build:vitejs": "yarn run build:vitets && yarn run build:vitejsES5",
+          "build:all": "yarn run build:node && yarn run build:web",
+          "build": "yarn run build:vitejs && yarn run build:all && node build/writePkgJson.js && rm -rf ./dist",
+          "test:rpc": "cross-env NODE_ENV=test nyc mocha --compilers ts:ts-node/register -r tsconfig-paths/register test/rpc/index.js",
+          "test:buildTs": "cross-env NODE_ENV=test nyc mocha --compilers ts:ts-node/register -r tsconfig-paths/register test/envTest/testTs.ts",
+          "test:coverage": "cross-env NODE_ENV=test nyc mocha --compilers ts:ts-node/register -r tsconfig-paths/register test/cover.js  --no-timeouts",
+          "test": "yarn run format-type && cross-env NODE_ENV=test nyc mocha --compilers ts:ts-node/register -r tsconfig-paths/register test/index.js  --no-timeouts",
+          "coverage": "nyc report --reporter=text-lcov | coveralls",
+          "lint": "eslint --ext js,ts --cache --fix .",
+          "lint-all": "eslint --ext js,ts --fix .",
+          "publish-alpha": "yarn run build && lerna publish --dist-tag alpha",
+          "publish-latest": "yarn run build && lerna publish",
+          "changelog": "conventional-changelog -p angular -i CHANGELOG.md"
+      },
+      "config": {
+          "commitizen": {
+              "path": "./node_modules/cz-conventional-changelog"
+          }
+      },
+      "repository": {
+          "type": "git",
+          "url": "git+https://github.com/vitelabs/vite.js.git"
+      },
+      "author": "",
+      "license": "ISC",
+      "bugs": {
+          "url": "https://github.com/vitelabs/vite.js/issues"
+      },
+      "homepage": "https://github.com/vitelabs/vite.js#readme",
+      "devDependencies": {
+          "@babel/cli": "^7.0.0",
+          "@babel/core": "^7.0.1",
+          "@babel/polyfill": "^7.0.0",
+          "@babel/preset-env": "^7.1.5",
+          "@babel/preset-es2015": "^7.0.0-beta.53",
+          "@babel/register": "^7.0.0",
+          "@types/bn.js": "^4.11.3",
+          "@types/buffers": "^0.1.31",
+          "@types/core-js": "^2.5.0",
+          "@types/mocha": "^5.2.5",
+          "@types/node": "^12.7.5",
+          "@vite/vitejs": "^2.1.2",
+          "@vite/vitejs-ws": "^2.1.2",
+          "babel-eslint": "^10.0.1",
+          "babel-plugin-istanbul": "^5.0.1",
+          "babelify": "^10.0.0-beta.1",
+          "browser-builtins": "^3.3.1",
+          "browserify": "~16.2.2",
+          "browserify-replace": "^0.9.3",
+          "chai": "^4.1.2",
+          "core-js": "^2.5.7",
+          "coveralls": "^3.0.2",
+          "cross-env": "^5.2.0",
+          "eslint": "^4.19.1",
+          "eslint-config-alloy": "^1.4.2",
+          "eslint-plugin-typescript": "^0.14.0",
+          "mocha": "^5.2.0",
+          "nyc": "^13.0.1",
+          "pre-commit": "^1.2.2",
+          "regenerator-runtime": "^0.12.1",
+          "tern": "^0.23.0",
+          "terser-webpack-plugin": "^1.1.0",
+          "ts-loader": "^6.1.0",
+          "tsconfig-paths": "^3.7.0",
+          "tslint": "^5.14.0",
+          "typedoc": "^0.13.0",
+          "typedoc-webpack-plugin": "^1.1.4",
+          "typescript-eslint-parser": "^22.0.0",
+          "webpack": "^4.25.1",
+          "webpack-cli": "^3.1.2",
+          "webpack-merge": "^4.1.4"
+      },
+      "dependencies": {
+          "@sisi/ed25519-blake2b-hd-key": "^1.0.2",
+          "@sisi/tweetnacl-blake2b": "^1.0.0",
+          "babel-loader": "^8.0.4",
+          "bip39": "^3.0.2",
+          "blake2b": "^2.1.3",
+          "blakejs": "^1.1.0",
+          "bn.js": "^4.11.8",
+          "browserify-aes": "^1.2.0",
+          "buffer": "~5.2.1",
+          "commitizen": "^3.1.1",
+          "conventional-changelog-cli": "^2.0.21",
+          "create-hmac": "^1.1.7",
+          "es6-promise": "^4.2.5",
+          "jsonrpc-lite": "^2.0.3",
+          "lerna": "^3.13.1",
+          "net": "^1.0.2",
+          "pure-uuid": "^1.5.3",
+          "qs": "^6.6.0",
+          "scryptsy": "^2.0.0",
+          "ts-node": "^7.0.1",
+          "websocket": "^1.0.26",
+          "xhr2": "^0.1.4"
+      },
+      "nyc": {
+          "extension": [
+              ".js",
+              ".ts"
+          ],
+          "include": [
+              "src/*"
+          ],
+          "exclude": [
+              "*.d.ts",
+              "src/*/dist/**",
+              "src/*/es5/**"
+          ],
+          "reporter": [
+              "html",
+              "text"
+          ],
+          "sourceMap": false,
+          "instrument": true
+      }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
