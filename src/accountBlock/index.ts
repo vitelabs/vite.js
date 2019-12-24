@@ -2,11 +2,13 @@ import { checkParams, isObject } from '~@vite/vitejs-utils';
 
 import _AccountBlock from './accountBlock';
 import _Transaction from './transaction';
+import { ReceiveAccountBlockTask as _ReceiveAccountBlockTask } from './receiveAccountBlock';
 import * as _utils from './utils';
 
 export const AccountBlock = _AccountBlock;
 export const Transaction = _Transaction;
 export const utils = _utils;
+export const ReceiveAccountBlockTask = _ReceiveAccountBlockTask;
 
 export function createAccountBlock(methodName: string, params: any) {
     const err = checkParams({ methodName, params }, [ 'methodName', 'params' ], [ {

@@ -29,6 +29,7 @@ module.exports = {
     ],
     "rules": {
         "guard-for-in": "off",
+        "no-throw-literal": "off",
         "prefer-promise-reject-errors": "off",
         "eqeqeq": "error",
         "no-else-return": "error",

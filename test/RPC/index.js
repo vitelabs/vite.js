@@ -2,10 +2,12 @@
 
 import walletTest from './wallet';
 import dexTest from './dex';
+import receiveAccountBlock from './receiveAccountBlock';
 
 async function TestFunc() {
     await walletTest();
     await dexTest();
+    await receiveAccountBlock();
 }
 
 TestFunc().then(() => {
