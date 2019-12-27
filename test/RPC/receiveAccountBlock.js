@@ -1,5 +1,5 @@
 import { Vite_TokenId } from '../../src/constant/index';
-import { ReceiveAccountBlockTask } from '../../src/accountBlock/receiveAccountBlock';
+import { ReceiveAccountBlockTask } from '../../src/accountBlock/receiveAccountBlockTask';
 
 import { sleep, viteProvider, privateKey, address, tx } from './utils';
 

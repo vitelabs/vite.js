@@ -3,7 +3,7 @@ import { checkParams, isHexString } from '~@vite/vitejs-utils';
 
 import Transaction from './transaction';
 
-import { Address, Hex, ProviderType } from './type';
+import { Address, Hex, ProviderType, AccountBlockBlock } from './type';
 
 export class ReceiveAccountBlockTask {
     address: Address;
@@ -42,17 +42,17 @@ export class ReceiveAccountBlockTask {
 
     start({
         checkTime = 3000,
-        receivedNumberATime = 5
+        transctionNumber = 5
     }: {
         checkTime: number;
-        receivedNumberATime: number;
+        transctionNumber: number;
     }) {
         this.stop();
 
         const toReceive = () => {
             this._timer = setTimeout(async () => {
                 try {
-                    const result = await this.reveive(receivedNumberATime);
+                    const result = await this.reveive(transctionNumber);
                     this.emitSuccess(result);
                 } catch (error) {
                     this.emitError(error);
@@ -80,7 +80,7 @@ export class ReceiveAccountBlockTask {
         this.successCB = successCB;
     }
 
-    private async reveive(pageSize: number): Promise<{ status: string; message: string }> {
+    private async reveive(pageSize: number): Promise<{ status: string; message: string; accountBlockList: AccountBlockBlock[] }> {
         let unreceivedBlocks = null;
         try {
             unreceivedBlocks = await this.getUnreceivedBlocks(pageSize);
@@ -95,7 +95,8 @@ export class ReceiveAccountBlockTask {
         if (!unreceivedBlocks.length) {
             return {
                 status: 'ok',
-                message: 'Don\'t have unreceivedAccountBlocks.'
+                message: 'Don\'t have unreceivedAccountBlocks.',
+                accountBlockList: []
             };
         }
 
@@ -128,7 +129,8 @@ export class ReceiveAccountBlockTask {
 
         return {
             status: 'ok',
-            message: 'Receive accountBlock success'
+            message: 'Receive accountBlock success',
+            accountBlockList
         };
     }
 
