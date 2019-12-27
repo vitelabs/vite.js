@@ -27,14 +27,16 @@ export default async function start() {
 
     ReceiveTask.onSuccess((result) => {
         console.log('success', result);
-        ReceiveTask.stop();
+        if(!result.accountBlockList) {
+            ReceiveTask.stop();
+        }
     });
     ReceiveTask.onError((error) => {
         console.log('error', error);
     });
     ReceiveTask.start({
         checkTime: 3000,
-        receivedNumberATime: 10
+        transctionNumber: 10
     });
 }
 

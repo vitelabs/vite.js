@@ -46,18 +46,15 @@ export class ReceiveAccountBlockTask {
     }: {
         checkTime: number;
         transctionNumber: number;
+    } = {
+        checkTime: 3000,
+        transctionNumber: 5
     }) {
         this.stop();
 
         const toReceive = () => {
             this._timer = setTimeout(async () => {
-                try {
-                    const result = await this.reveive(transctionNumber);
-                    this.emitSuccess(result);
-                } catch (error) {
-                    this.emitError(error);
-                }
-
+                await this.reveive(transctionNumber);
                 if (!this._timer) {
                     return;
                 }
@@ -80,66 +77,75 @@ export class ReceiveAccountBlockTask {
         this.successCB = successCB;
     }
 
-    private async reveive(pageSize: number): Promise<{ status: string; message: string; accountBlockList: AccountBlockBlock[] }> {
+    private async reveive(pageSize: number) {
         let unreceivedBlocks = null;
         try {
             unreceivedBlocks = await this.getUnreceivedBlocks(pageSize);
         } catch (error) {
-            throw {
-                status: 'error',
+            this.emitError({
                 message: 'Get unreceivedAccountBlocks error',
                 error
-            };
+            });
+            return;
         }
 
         if (!unreceivedBlocks.length) {
-            return {
-                status: 'ok',
-                message: 'Don\'t have unreceivedAccountBlocks.',
-                accountBlockList: []
-            };
+            this.emitSuccess({ message: 'Don\'t have unreceivedAccountBlocks.' });
+            return;
         }
 
         const accountBlockList = [];
         for (let i = 0; i < unreceivedBlocks.length; i++) {
             const unreceivedBlock = unreceivedBlocks[i];
-            const accountBlock = this._transaction.receive({ sendBlockHash: unreceivedBlock.hash });
             const previousAccountBlock = accountBlockList.length
                 ? accountBlockList[accountBlockList.length - 1]
                 : null;
 
-            try {
-                if (!previousAccountBlock) {
-                    const sendBlock = await accountBlock.autoSendByPoW();
-                    accountBlockList.push(sendBlock);
-                    continue;
-                }
+            const sendBlockHash = unreceivedBlock.hash;
+            let accountBlock = null;
 
-                accountBlock.setPreviousAccountBlock(previousAccountBlock);
-                const sendBlock = await accountBlock.sendByPoW();
-                accountBlockList.push(sendBlock);
+            try {
+                accountBlock = await this.receiveAccountBlockByPrevious({
+                    sendBlockHash: unreceivedBlock.hash,
+                    previousAccountBlock
+                });
+                accountBlockList.push(accountBlock);
             } catch (error) {
-                throw {
-                    status: 'error',
-                    message: `Receive accountBlock ${ unreceivedBlock.hash } error`,
+                accountBlockList.length && this.emitSuccess({
+                    message: 'Receive accountBlock success',
+                    accountBlockList
+                });
+
+                this.emitError({
+                    message: `Receive accountBlock ${ sendBlockHash } error`,
+                    unreceivedHash: sendBlockHash,
                     error
-                };
+                });
+                return;
             }
         }
 
-        return {
-            status: 'ok',
+        this.emitSuccess({
             message: 'Receive accountBlock success',
             accountBlockList
-        };
+        });
+        return;
     }
 
-    private emitSuccess(result: { status: string; message: string }) {
-        this.successCB && this.successCB(result);
+    private emitSuccess(result: { message: string; accountBlockList?: AccountBlockBlock[] }) {
+        this.successCB && this.successCB({
+            status: 'ok',
+            timestamp: new Date().getTime(),
+            ...result
+        });
     }
 
-    private emitError(error: { status: string; message: string; error: any }) {
-        this.errorCB && this.errorCB(error);
+    private emitError(error: { message: string; error: any; unreceivedHash?: Hex; }) {
+        this.errorCB && this.errorCB({
+            status: 'error',
+            timestamp: new Date().getTime(),
+            ...error
+        });
     }
 
     private async getUnreceivedBlocks(pageSize) {
@@ -148,5 +154,16 @@ export class ReceiveAccountBlockTask {
             return [];
         }
         return data;
+    }
+
+    private receiveAccountBlockByPrevious({ sendBlockHash, previousAccountBlock }) {
+        const accountBlock = this._transaction.receive({ sendBlockHash });
+
+        if (!previousAccountBlock) {
+            return accountBlock.autoSendByPoW();
+        }
+
+        accountBlock.setPreviousAccountBlock(previousAccountBlock);
+        return accountBlock.sendByPoW();
     }
 }
