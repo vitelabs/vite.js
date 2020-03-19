@@ -9,30 +9,46 @@ export class ReceiveAccountBlockTask {
     address: Address;
 
     private provider: ProviderType
+    private sign: Function | undefined | null
+    private privateKey: Hex | undefined | null
     private _transaction: Transaction
     private _timer: any
     private successCB: Function
     private errorCB: Function
 
-    constructor({ address, provider, privateKey }: {
-        address: Address; provider: ProviderType; privateKey: Hex;
+    constructor({ address, provider, privateKey, sign }: {
+        address: Address; provider: ProviderType; privateKey: Hex | undefined | null; sign: Function | undefined;
     }) {
         const err = checkParams({ address, provider, privateKey }, [ 'address', 'provider', 'privateKey' ], [ {
             name: 'address',
             func: isValidAddress
         }, {
             name: 'privateKey',
-            func: isHexString
+            func: function(str: string | undefined | null): Boolean {
+                if (!sign && !privateKey) return false;
+                if (str === undefined || str === null) {
+                    return true;
+                }
+                return isHexString(str);
+            }
         } ]);
         if (err) {
             throw err;
         }
 
+        
+
         this.address = address;
         this.provider = provider;
+        this.sign = sign;
+        this.privateKey = privateKey;
 
         this._transaction = new Transaction(address);
-        this._transaction.setProvider(provider).setPrivateKey(privateKey);
+        this._transaction.setProvider(provider);
+
+        if (privateKey) {
+            this._transaction.setPrivateKey(privateKey);
+        }
 
         this._timer = null;
 
@@ -159,11 +175,15 @@ export class ReceiveAccountBlockTask {
     private receiveAccountBlockByPrevious({ sendBlockHash, previousAccountBlock }) {
         const accountBlock = this._transaction.receive({ sendBlockHash });
 
-        if (!previousAccountBlock) {
-            return accountBlock.autoSendByPoW();
+        if (this.privateKey) {
+            if (!previousAccountBlock) {
+                return accountBlock.autoSendByPoW();
+            }
+    
+            accountBlock.setPreviousAccountBlock(previousAccountBlock);
+            return accountBlock.sendByPoW();
+        } else {
+            return this.sign(accountBlock).send();
         }
-
-        accountBlock.setPreviousAccountBlock(previousAccountBlock);
-        return accountBlock.sendByPoW();
     }
 }
