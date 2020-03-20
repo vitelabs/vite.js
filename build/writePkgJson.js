@@ -42,7 +42,7 @@ function copyFile({ fromPath, name }) {
     }
 
     const packageFile = path.join(fromPath, './package.json');
-    fs.writeFileSync(packageFile, JSON.stringify(packageJsonContent));
+    fs.writeFileSync(packageFile, JSON.stringify(packageJsonContent, null, 4));
 
     const tsConfigFile = path.join(fromPath, './tsconfig.json');
     delete currTsConfigJsonContent.compilerOptions.baseUrl;
@@ -50,5 +50,5 @@ function copyFile({ fromPath, name }) {
     delete currTsConfigJsonContent.compilerOptions.outDir;
     delete currTsConfigJsonContent.include;
     delete currTsConfigJsonContent.exclude;
-    fs.writeFileSync(tsConfigFile, JSON.stringify(currTsConfigJsonContent));
+    fs.writeFileSync(tsConfigFile, JSON.stringify(currTsConfigJsonContent, null, 4));
 }

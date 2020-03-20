@@ -172,7 +172,7 @@ export class ReceiveAccountBlockTask {
         return data;
     }
 
-    private receiveAccountBlockByPrevious({ sendBlockHash, previousAccountBlock }) {
+    private async receiveAccountBlockByPrevious({ sendBlockHash, previousAccountBlock }) {
         const accountBlock = this._transaction.receive({ sendBlockHash });
 
         if (this.privateKey) {
@@ -182,8 +182,14 @@ export class ReceiveAccountBlockTask {
     
             accountBlock.setPreviousAccountBlock(previousAccountBlock);
             return accountBlock.sendByPoW();
+        } else if (!previousAccountBlock) {
+            await accountBlock.autoSetPreviousAccountBlock();
         } else {
-            return this.sign(accountBlock).send();
+            accountBlock.setPreviousAccountBlock(previousAccountBlock);
         }
+
+        await accountBlock.PoW();
+        await this.sign(accountBlock);
+        return accountBlock.send();
     }
 }
