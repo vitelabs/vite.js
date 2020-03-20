@@ -19,7 +19,7 @@
         "coverage": "nyc report --reporter=text-lcov | coveralls",
         "lint": "eslint --ext js,ts --cache --fix .",
         "lint-all": "eslint --ext js,ts --fix .",
-        "publish-alpha": "yarn run build && lerna publish --dist-tag alpha --no-commit-hooks",
+        "publish-alpha": "yarn run build && lerna publish --dist-tag alpha --no-commit-hooks --force-publish",
         "publish-latest": "yarn run build && lerna publish",
         "changelog": "conventional-changelog -p angular -i CHANGELOG.md"
     },
