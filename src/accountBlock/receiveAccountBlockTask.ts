@@ -19,7 +19,7 @@ export class ReceiveAccountBlockTask {
     constructor({ address, provider, privateKey, sign }: {
         address: Address; provider: ProviderType; privateKey?: Hex; sign?: Function;
     }) {
-        const err = checkParams({ address, provider, privateKey }, [ 'address', 'provider', 'privateKey' ], [ {
+        const err = checkParams({ address, provider, privateKey }, [ 'address', 'provider' ], [ {
             name: 'address',
             func: isValidAddress
         }, {
