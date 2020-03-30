@@ -1,3 +1,16 @@
+# [](https://github.com/vitelabs/vite.js/compare/v2.3.8-1...v) (2020-03-30)
+
+
+
+## [2.3.8-1](https://github.com/vitelabs/vite.js/compare/v2.3.8-0...v2.3.8-1) (2020-03-30)
+
+
+### Bug Fixes
+
+* eslint autofix cause some bugs ([95dc6a7](https://github.com/vitelabs/vite.js/commit/95dc6a78e13607b85b84ed7f8996cf43f6f9c512))
+
+
+
 # [](https://github.com/vitelabs/vite.js/compare/v2.3.8-0...v) (2020-03-30)
 
 
