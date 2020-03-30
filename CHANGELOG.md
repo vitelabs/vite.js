@@ -1,3 +1,16 @@
+# [](https://github.com/vitelabs/vite.js/compare/v2.3.8-2...v) (2020-03-30)
+
+
+
+## [2.3.8-2](https://github.com/vitelabs/vite.js/compare/v2.3.8-1...v2.3.8-2) (2020-03-30)
+
+
+### Reverts
+
+* revert code of eslintAutoFix ([7f306b3](https://github.com/vitelabs/vite.js/commit/7f306b3bd02f8a2ecc9a0854c1183846eb7c7156))
+
+
+
 # [](https://github.com/vitelabs/vite.js/compare/v2.3.8-1...v) (2020-03-30)
 
 
