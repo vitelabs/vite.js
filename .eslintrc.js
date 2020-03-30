@@ -1,7 +1,7 @@
 module.exports = {
-    "parser": 'typescript-eslint-parser',
+    "parser": '@typescript-eslint/parser',
     "plugins": [
-        'typescript'
+        '@typescript-eslint'
     ],
     "env": {
         "browser": true,
@@ -123,14 +123,15 @@ module.exports = {
         "no-confusing-arrow": "warn",
         "no-duplicate-imports": "error",
         "no-useless-computed-key": "warn",
-        "no-useless-constructor": "warn",
         "no-var": "error",
         "no-useless-rename": "error",
         "prefer-const": "warn",
         "prefer-template": "error",
         "rest-spread-spacing": ["error", "never"],
         "yield-star-spacing": ["error", "before"],
-        "template-curly-spacing": ["error", "always"]
+        "template-curly-spacing": ["error", "always"],
+        "no-useless-constructor": "off",
+        "@typescript-eslint/no-useless-constructor": "error",
         // "require-jsdoc": ["error", {
         //     "require": {
         //         "FunctionDeclaration": true,
