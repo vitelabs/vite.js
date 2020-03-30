@@ -7,7 +7,7 @@ module.exports = function traversing(startPath, cb, folderLevel) {
 
         files.forEach(val => {
             const fPath = path.join(startPath, val);
-            cb?.(fPath, readdirSync, val, folderLevel);
+            cb && cb(fPath, readdirSync, val, folderLevel);
         });
     }
     readdirSync(startPath, folderLevel);

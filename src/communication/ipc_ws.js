@@ -112,7 +112,7 @@ class IpcWs extends Communication {
 
             this.responseCbs[id] = data => {
                 clearRequestAndTimeout();
-                if (data?.error) {
+                if (data && data.error) {
                     return rej(data);
                 }
                 res(data);

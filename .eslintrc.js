@@ -143,6 +143,7 @@ module.exports = {
             "skipTemplates": true
         }],
         "@typescript-eslint/prefer-for-of": "warn",
+        "@typescript-eslint/prefer-optional-chain": "warn"
         // "require-jsdoc": ["error", {
         //     "require": {
         //         "FunctionDeclaration": true,
