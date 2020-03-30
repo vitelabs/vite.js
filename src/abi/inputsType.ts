@@ -16,7 +16,7 @@ function formatType(typeStr) {
         }
         _typeStrArr.forEach(_tArr => {
             const _len = _tArr.match(/\d+/g);
-            const len = _len?.[0] ? _len[0] : 0;
+            const len = _len && _len[0] ? _len[0] : 0;
             isDynamic = isDynamic || !len;
             arrLen.push(len);
         });
@@ -62,7 +62,7 @@ function validType(typeStr) {
     }
 
     const _type = typeStr.match(/^[a-zA-Z]+/g);
-    let type = _type?.[0] ? _type[0] : '';
+    let type = _type && _type[0] ? _type[0] : '';
     if (!type || typePre.indexOf(type) === -1) {
         throw new Error(`[Error] Illegal type. ${ typeStr }`);
     }
@@ -95,7 +95,7 @@ function validType(typeStr) {
 function getTypes(jsonInterface) {
     if (isArray(jsonInterface)) {
         const types = [];
-        jsonInterface?.forEach(function (param) {
+        jsonInterface && jsonInterface.forEach(function (param) {
             const type = typeof param === 'string' ? param : param.type;
             validType(type);
             types.push(type);

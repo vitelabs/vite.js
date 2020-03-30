@@ -23,11 +23,11 @@ export function encrypt(key, pwd, _scryptParams, selfScryptsy) {
     }
 
     const scryptParams = {
-        n: _scryptParams?.n ? _scryptParams.n : n,
-        r: _scryptParams?.r ? _scryptParams.r : r,
-        p: _scryptParams?.p ? _scryptParams.p : p,
-        keylen: _scryptParams?.keylen ? _scryptParams.keylen : keyLen,
-        salt: _scryptParams?.salt ? _scryptParams.salt : Buffer.from(random()).toString('hex')
+        n: _scryptParams && _scryptParams.n ? _scryptParams.n : n,
+        r: _scryptParams && _scryptParams.r ? _scryptParams.r : r,
+        p: _scryptParams && _scryptParams.p ? _scryptParams.p : p,
+        keylen: _scryptParams && _scryptParams.keylen ? _scryptParams.keylen : keyLen,
+        salt: _scryptParams && _scryptParams.salt ? _scryptParams.salt : Buffer.from(random()).toString('hex')
     };
 
     const getResult = (encryptPwd, res, rej) => {

@@ -33,7 +33,7 @@ class EventEmitter {
         const loop = () => {
             this.timeLoop = setTimeout(() => {
                 this.provider.request('subscribe_getChangesByFilterId', this.id).then(data => {
-                    cb?.(data);
+                    cb && cb(data);
                     loop();
                 }).catch(() => {
                     loop();

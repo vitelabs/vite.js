@@ -80,7 +80,7 @@ it('createContract: params check, responseLatency must >= randomDegree', functio
 
     const data = getCreateContractData(d);
     try {
-        myTransaction.createContract(d);
+        const accountBlock = myTransaction.createContract(d);
     } catch (err) {
         if (!err) throw 'createContract: params check failed';
         assert.equal(err.code, paramsConflict.code);
