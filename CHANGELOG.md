@@ -1,3 +1,6 @@
+## [2.3.6](https://github.com/vitelabs/vite.js/compare/v2.3.6-alpha.5...v2.3.6) (2020-03-30)
+* Add async sign function for `ReceiveAccountBlockTask`, details: [receiveAccountBlockTask](https://vite.wiki/api/vitejs/accountBlock/receiveAccountBlockTask.html#constructor)
+
 ## [2.3.4-0](https://github.com/vitelabs/vite.js/compare/v2.3.6...v2.3.4-0) (2020-03-30)
 
 
