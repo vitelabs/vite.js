@@ -31,7 +31,7 @@ export function uriStringify(o: {
     return str;
 }
 
-export function checkParams(params: Object, requiredP: Array<string> = [], validFunc: Array<{ name; func; msg? }> = []): {
+export function checkParams(params: Object, requiredP: Array<string> = [], validFunc: Array<{ name: string; func: Function; msg?: string }> = []): {
     code: string;
     message: string;
 } {
@@ -39,7 +39,7 @@ export function checkParams(params: Object, requiredP: Array<string> = [], valid
         return null;
     }
 
-    const isHave = name => params.hasOwnProperty(name)
+    const isHave = name => Object.prototype.hasOwnProperty.call(params, name)
             && typeof params[name] !== 'undefined'
             && params[name] !== null;
 

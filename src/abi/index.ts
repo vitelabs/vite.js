@@ -27,7 +27,9 @@ export function encodeParameters(types, params, methodName?: string) {
             const func = getFunction(types, methodName);
             types = getTypes(func);
         }
-    } catch (err) {}
+    } catch (err) {
+        // Do nothing
+    }
 
     return _encodeParameters(getTypes(types), params);
 }
@@ -37,7 +39,9 @@ export function decodeParameters(types, params, methodName?: string) {
             const func = getFunction(types, methodName);
             types = getTypes(func);
         }
-    } catch (err) {}
+    } catch (err) {
+        // Do nothing
+    }
     return _decodeParameters(getTypes(types), params);
 }
 
@@ -112,7 +116,9 @@ function getInputs(inputs, methodName?: string) {
     try {
         const func = getFunction(inputs, methodName);
         func && (inputs = func);
-    } catch (err) {}
+    } catch (err) {
+        // Do nothing
+    }
 
     if (!isArray(inputs) && !isObject(inputs)) {
         throw new Error(`[Error] decodeLog: Illegal inputs ${ JSON.stringify(inputs) }. Should be Array or JsonInterface.`);

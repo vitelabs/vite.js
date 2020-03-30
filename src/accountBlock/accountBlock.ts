@@ -2,7 +2,7 @@ const BigNumber = require('bn.js');
 const blake = require('blakejs/blake2b');
 
 import { checkParams, isHexString, isBase64String } from '~@vite/vitejs-utils';
-import { getOriginalAddressFromAddress, getAddressFromPublicKey, isValidAddress, createAddressByPrivateKey } from  '~@vite/vitejs-wallet/address';
+import { getOriginalAddressFromAddress, getAddressFromPublicKey, isValidAddress, createAddressByPrivateKey } from '~@vite/vitejs-wallet/address';
 
 import {
     isRequestBlock, isResponseBlock, isValidAccountBlockWithoutHash, checkAccountBlock,
@@ -220,11 +220,11 @@ class AccountBlockClass {
     }
 
     setPreviousAccountBlock(previousAccountBlock: AccountBlockType): AccountBlockClass {
-        let height: Uint64 = previousAccountBlock && previousAccountBlock.height ? previousAccountBlock.height : '';
+        let height: Uint64 = previousAccountBlock?.height ? previousAccountBlock.height : '';
         height = height ? new BigNumber(height).add(new BigNumber(1)).toString() : '1';
         this.setHeight(height);
 
-        const previousHash: Hex = previousAccountBlock && previousAccountBlock.hash ? previousAccountBlock.hash : Default_Hash;
+        const previousHash: Hex = previousAccountBlock?.hash ? previousAccountBlock.hash : Default_Hash;
         this.setPreviousHash(previousHash);
         return this;
     }

@@ -67,7 +67,7 @@ class HttpRpc extends Communication {
 
                 try {
                     result = result ? JSON.parse(result) : null;
-                    if (result && result.error) {
+                    if (result?.error) {
                         return rej(result);
                     }
                 } catch (e) {
@@ -139,8 +139,8 @@ class HttpRpc extends Communication {
                     return;
                 }
                 _results.push({
-                    result: results && results[i] ? results[i].result || null : null,
-                    error: results && results[i] ? results[i].error || null : null
+                    result: results?.[i] ? results[i].result || null : null,
+                    error: results?.[i] ? results[i].error || null : null
                 });
                 i++;
             });

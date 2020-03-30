@@ -14,11 +14,11 @@ files.forEach(val => {
     if (val === 'vitejs') {
         const es5Path = path.join(firstP, 'es5');
         if (fs.existsSync(es5Path)) {
-            deleteFolder(es5Path);
+            deleteFolder(es5Path, stats);
         }
         const distSrcPath = path.join(firstP, 'distSrc');
         if (fs.existsSync(distSrcPath)) {
-            deleteFolder(distSrcPath);
+            deleteFolder(distSrcPath, stats);
         }
     }
 
@@ -37,12 +37,11 @@ files.forEach(val => {
         return;
     }
 
-    deleteFolder(fPath);
+    deleteFolder(fPath, stats);
 });
 
 
-
-function deleteFolder(fPath) {
+function deleteFolder(fPath, stats) {
     traversing(fPath, p => {
         stats = fs.statSync(p);
         if (!stats.isFile()) {

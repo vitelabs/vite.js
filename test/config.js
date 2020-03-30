@@ -763,7 +763,6 @@ const BLOCK_LIST = {
 };
 
 
-
 export default {
     addrAccountFuncList: [
         'getBalance', 'callOffChainContract', 'getTxList',

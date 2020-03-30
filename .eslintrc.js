@@ -132,6 +132,17 @@ module.exports = {
         "template-curly-spacing": ["error", "always"],
         "no-useless-constructor": "off",
         "@typescript-eslint/no-useless-constructor": "error",
+        "@typescript-eslint/no-require-imports": "off",
+        "@typescript-eslint/explicit-member-accessibility": "off",
+        "@typescript-eslint/explicit-member-accessibility": "off",
+        "@typescript-eslint/consistent-type-definitions": "off",
+        "no-irregular-whitespace": ["error", {
+            "skipStrings": true,
+            "skipComments": true,
+            "skipRegExps": true,
+            "skipTemplates": true
+        }],
+        "@typescript-eslint/prefer-for-of": "warn",
         // "require-jsdoc": ["error", {
         //     "require": {
         //         "FunctionDeclaration": true,

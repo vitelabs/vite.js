@@ -44,7 +44,7 @@ class ProviderClass {
             return;
         }
 
-        event && event.stopLoop();
+        event?.stopLoop();
         this.subscriptionList.splice(i, 1);
 
         if (!this.subscriptionList || !this.subscriptionList.length) {
@@ -189,9 +189,9 @@ class ProviderClass {
         const connectedCB = () => {
             this.isConnected = true;
             this.requestList && this.requestList.forEach(_q => {
-                _q && _q();
+                _q?.();
             });
-            cb && cb(this);
+            cb?.(this);
         };
 
         if (this._provider.type === 'http' || this._provider.connectStatus) {

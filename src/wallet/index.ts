@@ -35,11 +35,11 @@ export default {
         }
         return addressList;
     },
-    createWallet: function (strength: number = 256, wordlist: Array<string> = bip39.wordlists.EN, passphrase: string = '') {
+    createWallet: function (strength = 256, wordlist: Array<string> = bip39.wordlists.EN, passphrase = '') {
         const mnemonic = hdKey.createMnemonics(strength, wordlist);
         return new Wallet(mnemonic, wordlist, passphrase);
     },
-    getWallet: function (mnemonics: string, wordlist: Array<string> = bip39.wordlists.EN, passphrase: string = '') {
+    getWallet: function (mnemonics: string, wordlist: Array<string> = bip39.wordlists.EN, passphrase = '') {
         const err = checkParams({ mnemonics, wordlist }, [ 'mnemonics', 'wordlist' ], [{
             name: 'mnemonics',
             func: _m => hdKey.validateMnemonics(_m, wordlist)

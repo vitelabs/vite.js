@@ -261,10 +261,10 @@ function decodeArrs(typeObj, params) {
         let _r = [];
 
         if (result) {
-            let resultOpt = result && result.length;
+            let resultOpt = result?.length;
             while (resultOpt) {
                 _r.push(result.splice(0, l));
-                resultOpt = result && result.length;
+                resultOpt = result?.length;
             }
         } else {
             while (params) {

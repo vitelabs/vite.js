@@ -63,7 +63,7 @@ export function verify(message: Hex, signature: Hex, publicKey: Hex): boolean {
     return nacl.sign.detached.verify(_msg, _signature, _publicKey);
 }
 
-export function random(bytesLen: number = 32) {
+export function random(bytesLen = 32) {
     const err = checkParams({ bytesLen }, ['bytesLen']);
     if (err) {
         throw new Error(err.message);

@@ -118,7 +118,7 @@ export declare type AccountBlockType = {
     quotaByStake?: Uint64;
     totalQuota?: Uint64;
     vmlogHash?: Hex;
-    
+
     triggeredSendBlockList?: AccountBlockType[]
     confirmations?: Uint64;
     firstSnapshotHash?: Hex;
@@ -262,12 +262,12 @@ export declare class ProviderType {
     request(methods: Methods, ...args: any[])
     sendNotification(methods: Methods, ...args: any[])
     batch(reqs: RPCRequest[])
-    subscribe(methodName, ...args) 
+    subscribe(methodName, ...args)
 }
 
 export declare class ViteAPI extends ProviderType {
     transactionType: Object
-    
+
     constructor(provider: any, onInitCallback: Function)
 
     addTransactionType(contractList: Object)
@@ -275,6 +275,7 @@ export declare class ViteAPI extends ProviderType {
     getTransactionList({ address, pageIndex, pageSize }: {
         address: Address; pageIndex: number; pageSize?: number;
     }, decodeTxTypeList: 'all' | string[])
+
     callOffChainContract({ address, abi, code, params })
     getNonce({ difficulty, previousHash, address }: {
         difficulty: BigInt;
@@ -317,7 +318,7 @@ export declare class AccountBlockClassType {
     nonce?: Base64;
     signature?: Base64;
     publicKey?: Base64;
-    
+
     originalAddress: Hex;
     blockTypeHex: Hex;
     previousHashHex: Hex;
@@ -359,10 +360,10 @@ export declare class AccountBlockClassType {
         height: Uint64;
         previousHash: Hex;
     }>
-    
+
     getDifficulty(): Promise<BigInt>
     setDifficulty(difficulty: BigInt): AccountBlockClassType
-    autoSetDifficulty(): Promise<BigInt> 
+    autoSetDifficulty(): Promise<BigInt>
     getNonce(): Promise<Base64>
     setNonce(nonce: Base64): AccountBlockClassType
     autoSetNonce(): Promise<Base64>
@@ -374,7 +375,7 @@ export declare class AccountBlockClassType {
 
     send(): Promise<AccountBlockBlock>
     sendByPoW(privateKey?: Hex): Promise<AccountBlockBlock>
-    
+
     autoSendByPoW(privateKey?: Hex): Promise<AccountBlockBlock>
     autoSend(privateKey?: Hex): Promise<AccountBlockBlock>
 }

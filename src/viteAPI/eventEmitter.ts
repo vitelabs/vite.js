@@ -29,11 +29,11 @@ class EventEmitter {
         this.callback && this.callback(result);
     }
 
-    startLoop(cb: Function, time: number = 2000) {
+    startLoop(cb: Function, time = 2000) {
         const loop = () => {
             this.timeLoop = setTimeout(() => {
                 this.provider.request('subscribe_getChangesByFilterId', this.id).then(data => {
-                    cb && cb(data);
+                    cb?.(data);
                     loop();
                 }).catch(() => {
                     loop();
