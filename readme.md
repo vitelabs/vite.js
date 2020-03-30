@@ -2,11 +2,12 @@
 
 [![Build Status](https://www.travis-ci.org/vitelabs/vite.js.svg?branch=master)](https://www.travis-ci.org/vitelabs/vite.js) [![Coverage Status](https://coveralls.io/repos/github/vitelabs/vite.js/badge.svg?branch=master)](https://coveralls.io/github/vitelabs/vite.js?branch=master)
 
-ViteJS 最新版本为 2.3.0 与旧版本不兼容: 更改了大部分的包结构，包括函数名、传参方式等，具体可参考：https://vite.wiki/api/vitejs/
-如果暂时不想升级可以继续使用 <=2.2.10 的版本
-
-The latest version of ViteJS is 2.3.0, it is not compatible with the old version: most of the package structure has been changed, including the function name, parameters, etc. Please refer to: https://vite.wiki/api/vitejs/
+The latest version of ViteJS is 2.3.6, it is not compatible with the old version: most of the package structure has been changed, including the function name, parameters, etc. Please refer to: https://vite.wiki/api/vitejs/
 If you do not want to upgrade, you can continue to use the version <= 2.2.10
+
+* Documentation: [vite.wiki](https://vite.wiki/api/vitejs/)
+* Changelog: [CHANGELOG.md](./CHANGELOG.md)
+
 
 ## Prerequisites
 
@@ -37,3 +38,10 @@ If you do not want to upgrade, you can continue to use the version <= 2.2.10
 #### Examples
 
 ` 'dev/2.0.0/utf8' from 'dev/1.0.0' || 'master' `
+
+### Release
+
+```
+yarn release
+```
+
