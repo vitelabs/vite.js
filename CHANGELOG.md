@@ -7,6 +7,19 @@
 
 ### Bug Fixes
 
+* Add params check for createContract: responseLatency must >= randomDegree ([1a913d0](https://github.com/vitelabs/vite.js/commit/1a913d01f8a398ff37213f0e747618fe240697fd))
+
+
+
+# [](https://github.com/vitelabs/vite.js/compare/v2.3.7...v) (2020-03-30)
+
+
+
+## [2.3.7](https://github.com/vitelabs/vite.js/compare/v2.3.6...v2.3.7) (2020-03-30)
+
+
+### Bug Fixes
+
 * Add params check for createContract: responseLatency must >= randomDegree ([1a913d0](https://github.com/vitelabs/vite.js/commit/1a913d0))
 
 

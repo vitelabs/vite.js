@@ -76,8 +76,7 @@ const release = async () => {
         version,
         '--force-publish',
         '--npm-tag',
-        npmTag,
-        '*'
+        npmTag
     ];
 
     console.log(`lerna ${ releaseArguments.join(' ') }`);
