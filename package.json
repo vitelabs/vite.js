@@ -1,7 +1,6 @@
 {
     "name": "@vite/vitejs",
-    "version": "2.3.4-0",
-    "description": "",
+    "description": "Vite Javascript API",
     "scripts": {
         "format-type": "node build/type",
         "prebuild": "rm -rf ./dist && rm -rf ./distSrc && node build/clean",
