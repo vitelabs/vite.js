@@ -1,6 +1,6 @@
 {
     "name": "@vite/vitejs-utils",
-    "version": "2.3.6-alpha.5",
+    "version": "2.3.6",
     "main": "dist/index.node.js",
     "browser": "dist/index.web.js",
     "repository": {
