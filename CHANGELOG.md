@@ -1,7 +1,3 @@
-# [0.0.0](https://github.com/vitelabs/vite.js/compare/v2.3.9...v0.0.0) (2020-06-16)
-
-
-
 ## [2.3.9](https://github.com/vitelabs/vite.js/compare/v2.3.8...v2.3.9) (2020-06-16)
 
 
