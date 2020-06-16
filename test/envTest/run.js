@@ -1,4 +1,4 @@
-const config = require('../../rpcConfig.js');
+const config = require('../rpcConfig');
 const { WS_RPC } = require('../../src/WS');
 const { ViteAPI } = require('../../src/viteAPI');
 

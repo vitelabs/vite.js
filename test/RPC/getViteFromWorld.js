@@ -1,4 +1,4 @@
-const config = require('../../rpcConfig.js');
+const config = require('../rpcConfig');
 
 import HTTP_RPC from '../../src/HTTP';
 import ViteAPI from '../../src/viteAPI/index';
