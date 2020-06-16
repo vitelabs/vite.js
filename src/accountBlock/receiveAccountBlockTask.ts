@@ -1,4 +1,4 @@
-import { isValidAddress } from  '~@vite/vitejs-wallet/address';
+import { isValidAddress } from '~@vite/vitejs-wallet/address';
 import { checkParams, isHexString } from '~@vite/vitejs-utils';
 
 import Transaction from './transaction';
@@ -24,7 +24,7 @@ export class ReceiveAccountBlockTask {
             func: isValidAddress
         }, {
             name: 'privateKey',
-            func: function(str: string | undefined | null): Boolean {
+            func: function (str: string | undefined | null): Boolean {
                 if (!sign && !privateKey) return false;
                 if (str === undefined || str === null) {
                     return true;
@@ -36,7 +36,6 @@ export class ReceiveAccountBlockTask {
             throw err;
         }
 
-        
 
         this.address = address;
         this.provider = provider;
@@ -179,13 +178,13 @@ export class ReceiveAccountBlockTask {
             if (!previousAccountBlock) {
                 return accountBlock.autoSendByPoW();
             }
-    
+
             accountBlock.setPreviousAccountBlock(previousAccountBlock);
             return accountBlock.sendByPoW();
-        } else if (!previousAccountBlock) {
-            await accountBlock.autoSetPreviousAccountBlock();
-        } else {
+        } else if (previousAccountBlock) {
             accountBlock.setPreviousAccountBlock(previousAccountBlock);
+        } else {
+            await accountBlock.autoSetPreviousAccountBlock();
         }
 
         await accountBlock.PoW();

@@ -26,7 +26,7 @@ class Wallet {
 
     private addressList: Object
 
-    constructor(mnemonics: string, wordlist: Array<string> = bip39.wordlists.EN, passphrase: string = '') {
+    constructor(mnemonics: string, wordlist: Array<string> = bip39.wordlists.EN, passphrase = '') {
         if (!hdKey.validateMnemonics(mnemonics, wordlist)) {
             throw new Error('Illegal mnemonic');
         }

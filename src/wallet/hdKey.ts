@@ -8,7 +8,7 @@ import { Hex } from './type';
 export const ROOT_PATH = 'm/44\'/666666\'';
 
 
-export function createMnemonics(strength: number = 256, wordlist: Array<string> = bip39.wordlists.EN): string {
+export function createMnemonics(strength = 256, wordlist: Array<string> = bip39.wordlists.EN): string {
     const err = checkParams({ strength, wordlist }, [ 'strength', 'wordlist' ]);
     if (err) {
         throw new Error(err.message);
@@ -33,7 +33,7 @@ export function getEntropyFromMnemonics(mnemonic: string, wordlist: Array<string
     return bip39.mnemonicToEntropy(mnemonic, wordlist);
 }
 
-export function getSeedFromMnemonics(mnemonic: string, passphrase: string = '', wordlist: Array<string> = bip39.wordlists.EN): {
+export function getSeedFromMnemonics(mnemonic: string, passphrase = '', wordlist: Array<string> = bip39.wordlists.EN): {
     seed: Buffer;
     seedHex: Hex;
 } {
@@ -50,7 +50,7 @@ export function getSeedFromMnemonics(mnemonic: string, passphrase: string = '', 
     return { seed, seedHex };
 }
 
-export function createSeed(strength: number = 256, passphrase: string = '', wordlist: Array<string> = bip39.wordlists.EN): {
+export function createSeed(strength = 256, passphrase = '', wordlist: Array<string> = bip39.wordlists.EN): {
     mnemonic: string;
     seed: Buffer;
     seedHex: Hex;

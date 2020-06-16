@@ -1,7 +1,7 @@
 module.exports = {
-    "parser": 'typescript-eslint-parser',
+    "parser": '@typescript-eslint/parser',
     "plugins": [
-        'typescript'
+        '@typescript-eslint'
     ],
     "env": {
         "browser": true,
@@ -123,14 +123,27 @@ module.exports = {
         "no-confusing-arrow": "warn",
         "no-duplicate-imports": "error",
         "no-useless-computed-key": "warn",
-        "no-useless-constructor": "warn",
         "no-var": "error",
         "no-useless-rename": "error",
         "prefer-const": "warn",
         "prefer-template": "error",
         "rest-spread-spacing": ["error", "never"],
         "yield-star-spacing": ["error", "before"],
-        "template-curly-spacing": ["error", "always"]
+        "template-curly-spacing": ["error", "always"],
+        "no-useless-constructor": "off",
+        "@typescript-eslint/no-useless-constructor": "error",
+        "@typescript-eslint/no-require-imports": "off",
+        "@typescript-eslint/explicit-member-accessibility": "off",
+        "@typescript-eslint/explicit-member-accessibility": "off",
+        "@typescript-eslint/consistent-type-definitions": "off",
+        "no-irregular-whitespace": ["error", {
+            "skipStrings": true,
+            "skipComments": true,
+            "skipRegExps": true,
+            "skipTemplates": true
+        }],
+        "@typescript-eslint/prefer-for-of": "warn",
+        "@typescript-eslint/prefer-optional-chain": "off"
         // "require-jsdoc": ["error", {
         //     "require": {
         //         "FunctionDeclaration": true,

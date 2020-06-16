@@ -96,7 +96,6 @@ export function isValidAddress(address: Hex): AddressType {
 }
 
 
-
 function getOriginalAddress(hexAddr: Hex, addrType: AddressType): Hex {
     const addr = hexAddr.slice(ADDR_PRE.length, ADDR_PRE.length + ADDR_SIZE * 2);
     if (addrType === AddressType.Account) {

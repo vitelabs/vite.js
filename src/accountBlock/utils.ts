@@ -617,7 +617,6 @@ export function getTransactionType({ toAddress, data, blockType }: {
 }
 
 
-
 function leftPadBytes(bytesData, len) {
     if (bytesData && len - bytesData.length < 0) {
         return bytesData.toString('hex');

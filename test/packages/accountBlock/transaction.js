@@ -69,7 +69,7 @@ it('createContract', function () {
     assert.equal(accountBlock.fee, '10000000000000000000');
 });
 
-it('createContract: params check, responseLatency must >= randomDegree', function() {
+it('createContract: params check, responseLatency must >= randomDegree', function () {
     const d = {
         'responseLatency': 3,
         'randomDegree': 4,
@@ -80,9 +80,9 @@ it('createContract: params check, responseLatency must >= randomDegree', functio
 
     const data = getCreateContractData(d);
     try {
-        const accountBlock = myTransaction.createContract(d);        
+        const accountBlock = myTransaction.createContract(d);
     } catch (err) {
-        if (!err) throw "createContract: params check failed";
+        if (!err) throw 'createContract: params check failed';
         assert.equal(err.code, paramsConflict.code);
     }
 });

@@ -5,3 +5,10 @@ coverage/*
 dist/*
 test/RPC/*
 common/vitejs.ts
+src/**/dist/*
+src/**/tsconfig.json
+src/**/package.json
+src/vitejs/dist
+src/vitejs/distSrc
+src/vitejs/es5
+distSrc
