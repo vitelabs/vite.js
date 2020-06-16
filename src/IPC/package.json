@@ -1,6 +1,6 @@
 {
     "name": "@vite/vitejs-ipc",
-    "version": "2.3.8-2",
+    "version": "2.3.8",
     "main": "dist/index.node.js",
     "browser": "dist/index.web.js",
     "repository": {
