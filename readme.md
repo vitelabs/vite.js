@@ -16,15 +16,20 @@ If you do not want to upgrade, you can continue to use the version <= 2.2.10
 
 ## Building (gulp)
 
-`yarn run build`
+```
+yarn build
+```
 
 ## Testing (mocha) 
 
-`yarn run test`
+```
+yarn test
+```
 
 ## Starting
 
-1. `yarn install`
+1. `yarn`
+
 2. Configure eslint in your editor, rules like '.eslintrc'.
 
 ### Branch naming rules
@@ -37,11 +42,19 @@ If you do not want to upgrade, you can continue to use the version <= 2.2.10
 
 #### Examples
 
-` 'dev/2.0.0/utf8' from 'dev/1.0.0' || 'master' `
+```
+'dev/2.0.0/utf8' from 'dev/1.0.0' || 'master' 
+```
 
 ### Release
 
-```
+```bash
 yarn release
+```
+
+### Commit File
+
+```bash
+yarn commit
 ```
 
