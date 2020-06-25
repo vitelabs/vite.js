@@ -14,16 +14,22 @@ If you do not want to upgrade, you can continue to use the version <= 2.2.10
 * node.js
 * yarn
 
-## Building (gulp)
+## Build
 
 ```
 yarn build
 ```
 
-## Testing (mocha) 
+## Test
 
 ```
 yarn test
+```
+
+## Lint
+
+```
+yarn lint
 ```
 
 ## Starting
@@ -37,8 +43,9 @@ yarn test
 * Develop on branch 'dev/{version}/{function name}'
 * Fixed version on branch 'dev/{version}'
 
-> Notice 1: development branch split from `dev/{last_version}`. If `dev/{last_version}` is not exist, split from `master`
-> Notice 2: change `src/type.ts`. You should run `yarn run format-type` after changing the file `src/type.ts`
+* Notice 1: development branch split from `dev/{last_version}`. If `dev/{last_version}` is not exist, split from `master`
+
+* Notice 2: change `src/type.ts`. You should run `yarn run format-type` after changing the file `src/type.ts`
 
 #### Examples
 
