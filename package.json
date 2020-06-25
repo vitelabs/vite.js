@@ -1,5 +1,6 @@
 {
     "name": "@vite/vitejs",
+    "private": true,
     "description": "Vite Javascript API",
     "scripts": {
         "format-type": "node build/type",
@@ -124,6 +125,5 @@
         ],
         "sourceMap": false,
         "instrument": true
-    },
-    "version": "2.3.9"
+    }
 }
