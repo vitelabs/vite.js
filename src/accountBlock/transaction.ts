@@ -210,7 +210,7 @@ class TransactionClass {
         });
     }
 
-    UpdateSBPRewardWithdrawAddress({ sbpName, rewardWithdrawAddress }: {
+    updateSBPRewardWithdrawAddress({ sbpName, rewardWithdrawAddress }: {
         sbpName: string;
         rewardWithdrawAddress: Address;
     }): AccountBlock {
