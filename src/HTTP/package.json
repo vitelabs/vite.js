@@ -1,6 +1,6 @@
 {
     "name": "@vite/vitejs-http",
-    "version": "2.3.11-0",
+    "version": "2.3.11",
     "main": "dist/index.node.js",
     "browser": "dist/index.web.js",
     "repository": {
