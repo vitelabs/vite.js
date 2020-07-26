@@ -1,3 +1,17 @@
+# [](https://github.com/vitelabs/vite.js/compare/v2.3.11...v) (2020-07-26)
+
+
+
+## [2.3.11](https://github.com/vitelabs/vite.js/compare/v2.3.11-0...v2.3.11) (2020-07-26)
+
+
+### Bug Fixes
+
+* **ws:** add destory method to WS Provider ([dfcf417](https://github.com/vitelabs/vite.js/commit/dfcf417673a54f1b776cef294d71a8f05f8e6021))
+* **ws:** disconnect ws before reconnect ([54f02f9](https://github.com/vitelabs/vite.js/commit/54f02f9c8b029b7c6bc8c24cd9d7e9ff5cd879c0))
+
+
+
 # [](https://github.com/vitelabs/vite.js/compare/v2.3.11-0...v) (2020-06-26)
 
 
