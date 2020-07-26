@@ -25,6 +25,7 @@ class WsRpc extends IPC_WS {
         this.clientConfig = options.clientConfig;
 
         this._timeout = null;
+        this._destroyed = false;
 
         this.reconnect();
 
@@ -45,6 +46,7 @@ class WsRpc extends IPC_WS {
     }
 
     reconnect() {
+        if (this._destroyed) return;
         this.disconnect();
         this.socket = new Websocket(this.path, this.protocol, null, this.headers, null, this.clientConfig);
         this.socket.onopen = () => {
@@ -66,6 +68,14 @@ class WsRpc extends IPC_WS {
         this.socket && this.socket.close && this.socket.close();
         clearTimeout(this._timeout);
         this.socket = null;
+    }
+
+    destroy() {
+        this.disconnect();
+        this.remove('error');
+        this.remove('close');
+        this.remove('connect');
+        this._destroyed = true;
     }
 }
 
