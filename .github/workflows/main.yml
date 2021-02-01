@@ -43,7 +43,7 @@ jobs:
 
       # Runs a set of commands using the runners shell
       - name: Build
-        run: VUEPRESS_BASE=/vitejs/ yarn run build
+        run: VUEPRESS_BASE=/vite.js/ yarn run build
         working-directory: docs
           
       - name: Deploy
