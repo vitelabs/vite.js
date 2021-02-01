@@ -22,11 +22,10 @@ module.exports = {
         src: path.join(basePath, '/logo.svg'),
       },
       custom: true,
-      algolia: {
-        id: "BH4D9OD16A",
-        key: "ac317234e6a42074175369b2f42e9754",
-        index: "cosmos-sdk"
-      },
+      // algolia: {
+      //   key: "fe006d1336f2a85d144fdfaf4a089378",
+      //   index: "vite_labs"
+      // },
       topbar: {
         banner: false
       },
