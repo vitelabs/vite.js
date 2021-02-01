@@ -2,7 +2,7 @@
 
 ## Type
 
-```typescript
+```js
 // RPC
 export declare interface RPCRequest {
     type?: string;
@@ -187,7 +187,7 @@ const originalTokenId = "5649544520544f4b454e";
 
 ### Module Import
 
-```javascript import
+```javascript
 import { constant } from '@vite/vitejs';
 ```
 
@@ -214,7 +214,7 @@ import { constant } from '@vite/vitejs';
 
 ### Contracts
 
-```typescript
+```javascript
 
 export const Contracts = {
     RegisterSBP: {

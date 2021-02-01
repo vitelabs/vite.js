@@ -22,7 +22,7 @@ Event subscription is provided in `ViteAPI`. Refer to [ViteAPI](./ViteAPI/start)
 
 ## Sending Transaction
 
-```typescript
+```javascript
 import HTTP_RPC from '../../src/HTTP';
 import { wallet, accountBlock, ViteAPI, constant } from '@vite/vitejs';
 

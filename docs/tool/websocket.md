@@ -2,27 +2,15 @@
 
 ## Installation
 
-:::demo
-```bash tab:npm
+```bash
 npm install @vite/vitejs-ws --save
 ```
 
-```bash tab:yarn
-yarn add @vite/vitejs-ws
-```
-:::
-
 ## Module Import
 
-:::demo
-```javascript tab:ES6
+```javascript
 import WS_RPC from "@vite/vitejs-ws";
 ```
-
-```javascript tab:require
-const { WS_RPC } = require('@vite/vitejs-ws');
-```
-:::
 
 ## Constructor
 

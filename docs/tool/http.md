@@ -2,27 +2,15 @@
 
 ## Installation
 
-:::demo
-```bash tab:npm
+```bash
 npm install @vite/vitejs-http --save
 ```
 
-```bash tab:yarn
-yarn add @vite/vitejs-http
-```
-:::
-
 ## Module Import
 
-:::demo
-```javascript tab:ES6
+```javascript
 import HTTP_RPC from "@vite/vitejs-http";
 ```
-
-```javascript tab:require
-const { HTTP_RPC } = require('@vite/vitejs-http');
-```
-:::
 
 ## Constructor
 

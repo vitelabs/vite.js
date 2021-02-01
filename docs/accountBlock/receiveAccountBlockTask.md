@@ -16,8 +16,9 @@ Enable auto-receive on the account for incoming transactions
         - `sign?: Function`<Badge text="v2.3.6"/>  Used for when you can't get the `privateKey`, such as the privateKey is on the hardware wallet. You can use this function to set signature. See bellow Examples. 
 
 - **Example**
-:::: tabs
-::: tab privateKey
+
+With private key:
+
 ```javascript
 import { accountBlock } from '@vite/vitejs';
 
@@ -40,9 +41,9 @@ ReceiveTask.start({
     transctionNumber: 10
 });
 ```
-:::
 
-::: tab sign
+Without private key, such as using hardware wallet to sign tx:
+
 ```javascript
 import { accountBlock } from '@vite/vitejs';
 
@@ -79,8 +80,7 @@ ReceiveTask.start({
     transctionNumber: 10
 });
 ```
-:::
-::::
+
 ## Methods
 
 ### start

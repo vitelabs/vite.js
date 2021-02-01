@@ -3,42 +3,27 @@ sidebarDepth: 4
 title: Start
 ---
 
-:::tip Maintainer
-[cs](https://github.com/lovelycs)
-[hurrytospring](https://github.com/hurrytospring)
-:::
-
-The Vite Javascript SDK
-
-:::tip Tips
-
-Before you start, reading through the following documents is highly recommended
-1. [Key Concepts](./QA.md)
-2. [Vite RPC API](../rpc/README.md)
-
-:::
+# Vite.js
 
 ## Installation
 
-:::demo
-
-```bash tab:npm
+```bash
 npm install @vite/vitejs --save
 npm install @vite/vitejs-ws --save
 ```
 
-```bash tab:yarn
+Or
+
+```bash
 yarn add @vite/vitejs
 yarn add @vite/vitejs-ws
 ```
 
-:::
-
 ## Module Import
 
-:::demo
+ES6:
 
-```javascript tab:ES6
+```javascript
 import {
     abi, error, keystore, utils, constant,
     accountBlock, ViteAPI, wallet
@@ -50,7 +35,9 @@ import http from '@vite/vitejs-http';
 import ipc from '@vite/vitejs-ipc';
 ```
 
-```javascript tab:require
+Common:
+
+```javascript
 const {
     abi, error, keystore, utils, constant,
     accountBlock, ViteAPI, wallet
@@ -61,8 +48,6 @@ const { WS_RPC } = require('@vite/vitejs-ws');
 const { HTTP_RPC } = require('@vite/vitejs-http');
 const { IPC_RPC } = require('@vite/vitejs-ipc');
 ```
-
-:::
 
 ## Quick Start
 

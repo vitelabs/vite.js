@@ -27,18 +27,8 @@ The following functions are integrated into the `accountBlock` library
 
 ## Module Import
 
-:::demo
-
-```javascript tab:ES6
+```javascript
 import { accountBlock } from '@vite/vitejs';
 
 const { createAccountBlock, utils, AccountBlock } = accountBlock;
 ```
-
-```javascript tab:require
-const { accountBlock } = require('@vite/vitejs');
-
-const { createAccountBlock, utils, AccountBlock } = accountBlock;
-```
-
-:::demo

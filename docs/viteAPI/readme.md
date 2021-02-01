@@ -11,17 +11,17 @@ ViteAPI wraps and extends Gvite-RPC API. Functions of network request/listening 
 
 ## Module Import
 
-:::demo
+ES6:
 
-```javascript tab:ES6
+```javascript
 import { ViteAPI } from '@vite/vitejs';
 ```
 
-```javascript tab:require
+Common:
+
+```javascript
 const { ViteAPI } = require('@vite/vitejs');
 ```
-
-:::
 
 ## Constructor
 
@@ -30,6 +30,7 @@ const { ViteAPI } = require('@vite/vitejs');
     * `onInitCallback : function` : Callback function that will be called when connection is established
 
 - **Example**
+
 ```javascript
 import WS_RPC from '@vite/vitejs-ws';
 import { ViteAPI } from '@vite/vitejs';
@@ -84,8 +85,9 @@ Return transaction list by account
 
 - **Example**
 
-:::demo
-```javascript tab:request
+Request:
+
+```javascript
 provider.getTransactionList({
     address: 'vite_553462bca137bac29f440e9af4ab2e2c1bb82493e41d2bc8b2',
     pageIndex: 0,
@@ -93,7 +95,9 @@ provider.getTransactionList({
 });
 ```
 
-```json tab:responce
+Responce:
+
+```json
 [{
     "accountAddress": "vite_553462bca137bac29f440e9af4ab2e2c1bb82493e41d2bc8b2",
     "amount": "100000000",
@@ -119,7 +123,6 @@ provider.getTransactionList({
     }
 }]
 ```
-:::
 
 ### callOffChainContract
 Call contract's offchain method 
@@ -143,7 +146,7 @@ Add new transaction type. When `provider.getTransactionList` is called, transact
         - `abi` ABI
 
 - **Example**
-```js ::Demo
+```js
 // ...
 
 provider.addTransactionType({ 

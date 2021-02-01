@@ -9,17 +9,9 @@ parent:
 
 ## Module Import
 
-:::demo
-
-```javascript tab:ES6
+```javascript
 import { wallet } from '@vite/vitejs';
 ```
-
-```javascript tab:require
-const { wallet } = require('@vite/vitejs');
-```
-
-:::
 
 ## Common Types
 

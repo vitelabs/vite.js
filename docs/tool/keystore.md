@@ -4,19 +4,13 @@ Legacy keystore interface. For new users, use [Wallet](../wallet/start.md) to ma
 
 ## Installation
 
-:::demo
-```bash tab:npm
+```bash
 npm install @vite/vitejs-keystore --save
 ```
 
-```bash tab:yarn
-yarn add @vite/vitejs-keystore
-```
-:::
-
 ## Module Import
 
-```javascript import
+```javascript
 import { keystore } from '@vite/vitejs';
 // Or
 import * as keystore from '@vite/vitejs-keystore';

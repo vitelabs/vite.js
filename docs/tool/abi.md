@@ -2,19 +2,13 @@
 
 ## Installation
 
-:::demo
-```bash tab:npm
+```bash
 npm install @vite/vitejs-abi --save
 ```
 
-```bash tab:yarn
-yarn add @vite/vitejs-abi
-```
-:::
-
 ## Module Import
 
-```javascript import
+```javascript
 import { abi } from '@vite/vitejs';
 // Or
 import * as abi from '@vite/vitejs-abi';
@@ -43,7 +37,7 @@ Currently, the following parameter types are supported:
 
 - **Example jsonInterface**
 
-```json ::Demo
+```json
 {
     "type": "event",
     "name": "methodName",
@@ -65,7 +59,7 @@ Currently, the following parameter types are supported:
     * `hexString`
 
 - **Example**
-```js ::Demo
+```js
 let encodeLogSignatureResult1 = abi.encodeLogSignature({
     'type': 'event',
     'name': 'balance',
@@ -91,7 +85,7 @@ let encodeLogSignatureResult22 = abi.encodeLogSignature([
     * `hexString`
 
 - **Example**
-```js ::Demo
+```js
 let encodeMethodResult1 = abi.encodeFunctionSignature({
     'type': 'function',
     'name': 'singleParam',
@@ -111,7 +105,7 @@ let encodeMethodResult1 = abi.encodeFunctionSignature({
     * `hexString`
 
 - **Example**
-```js ::Demo
+```js
 let result = abi.encodeFunctionCall({
     name: 'myMethod',
     type: 'function',
@@ -177,7 +171,7 @@ let encodeParameterResult4 = abi.encodeParameter('uint16[]', [1,2]);
     * `decodeResult`
 
 - **Example**
-```js ::Demo
+```js
 let _r = abi.decodeParameter('uint256', '000000000000000000000000000000000000000000000000000000008bd02b7b');
 // 2345675643
 
@@ -196,7 +190,7 @@ let encodeParameterResult2 = abi.decodeParameter('uint8[]', '0000000000000000000
     * `hexString`
 
 - **Example**
-```js ::Demo
+```js
 let encodeParametersResult1 = abi.encodeParameters({'type':'constructor','inputs':[
     {'type':'uint8[]'}, {'type': 'bytes'}
 ]}, [['34','43'], '324567ff']);
@@ -232,7 +226,7 @@ let encodeParametersResult12 = abi.encodeParameters([
     * `decodeResult`
 
 - **Example**
-```js ::Demo
+```js
 let decodeParametersResult1 = abi.decodeParameters({'type':'constructor','inputs':[
     {'type':'uint8[]'}, {'type': 'bytes'}
 ]}, '000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000022000000000000000000000000000000000000000000000000000000000000002b0000000000000000000000000000000000000000000000000000000000000004324567ff00000000000000000000000000000000000000000000000000000000');
@@ -263,7 +257,7 @@ let decodeParametersResult22 = abi.decodeParameters([
     * `decodeResult`
 
 - **Example**
-```js ::Demo
+```js
 let decodeResult2 = abi.decodeLog(
     [
         {'indexed':true,'name':'from','type':'address'},

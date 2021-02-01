@@ -2,27 +2,15 @@
 
 ## Installation
 
-:::demo
-```bash tab:npm
+```bash
 npm install @vite/vitejs-ipc --save
 ```
 
-```bash tab:yarn
-yarn add @vite/vitejs-ipc
-```
-:::
-
 ## Module Import
 
-:::demo
-```javascript tab:ES6
+```javascript
 import IPC_RPC from "@vite/vitejs-ipc";
 ```
-
-```javascript tab:require
-const { IPC_RPC } = require('@vite/vitejs-ipc');
-```
-:::
 
 ## Constructor
 
