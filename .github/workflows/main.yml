@@ -6,7 +6,9 @@ name: CI
 on:
   # Triggers the workflow on push or pull request events but only for the master branch
   push:
-    branches: [ master ]
+    branches:
+      - master
+      - docs
   pull_request:
     branches: [ master ]
 
@@ -30,21 +32,22 @@ jobs:
         with:
           node-version: '14.x'
           
-      - uses: c-hive/gha-yarn-cache@v1 
+      - uses: bahmutov/npm-install@v1
+        with:
+          working-directory: docs
 
       # Runs a single command using the runners shell
       - name: Install JS dependencies
-        run:  |
-          cd docs
-          yarn install
+        run:  yarn install
+        working-directory: docs
 
       # Runs a set of commands using the runners shell
       - name: Build
-        run: |
-          yarn run build
+        run: VUEPRESS_BASE=/vite.js/ yarn run build
+        working-directory: docs
           
-      - name: deploy
+      - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./docs/.vuepress/dist     
+          publish_dir: ./docs/.vuepress/dist
