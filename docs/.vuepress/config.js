@@ -1,7 +1,11 @@
+const path = require('path');
+
+const basePath = process.env.VUEPRESS_BASE || '/';
+
 module.exports = {
     theme: "cosmos",
     title: "Vite.js",
-    base: process.env.VUEPRESS_BASE || '/',
+    base: basePath,
 
     locales: {
       "/": {
@@ -15,7 +19,7 @@ module.exports = {
       docsDir: 'docs',
       editLinks: true,
       logo: {
-        src: '/logo.svg',
+        src: path.join(basePath, '/logo.svg'),
       },
       custom: true,
       algolia: {
@@ -27,7 +31,6 @@ module.exports = {
         banner: false
       },
       sidebar: {
-        // Auto-sidebar, true by default
         auto: true,
         nav: [
           {
@@ -42,7 +45,7 @@ module.exports = {
         ]
       },
       footer: {
-        logo: "/logo.svg",
+        logo: path.join(basePath, "/logo.svg"),
         textLink: {
           text: "vite.org",
           url: "https://vite.org"
