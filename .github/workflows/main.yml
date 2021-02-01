@@ -43,10 +43,10 @@ jobs:
 
       # Runs a set of commands using the runners shell
       - name: Build
-        run: yarn run build
+        run: VUEPRESS_BASE=/vitejs/ yarn run build
         working-directory: docs
           
-      - name: deploy
+      - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
