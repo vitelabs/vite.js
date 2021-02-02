@@ -16,7 +16,7 @@
         "test:buildTs": "cross-env NODE_ENV=test nyc mocha --reporter=progress --require ts-node/register -r tsconfig-paths/register test/envTest/testTs.ts",
         "test:coverage": "cross-env NODE_ENV=test nyc mocha --reporter=progress --require ts-node/register -r tsconfig-paths/register test/cover.js  --no-timeouts",
         "test": "yarn run format-type && cross-env NODE_ENV=test nyc mocha --reporter=progress --require ts-node/register -r tsconfig-paths/register test/index.js  --no-timeouts",
-        "coverage": "nyc report --reporter=text-lcov | coveralls",
+        "coverage": "nyc report --reporter=lcov",
         "lint": "eslint --ext js,ts --cache .",
         "lint:fix": "eslint --ext js,ts --fix --cache .",
         "lint-all": "eslint --ext js,ts .",
