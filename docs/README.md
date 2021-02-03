@@ -1,8 +1,3 @@
----
-sidebarDepth: 4
-title: Start
----
-
 # Vite.js
 
 ## Installation

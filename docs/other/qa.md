@@ -1,3 +1,8 @@
+---
+parent:
+    title: Other
+---
+
 # Q&A
 
 ## Mnemonics
