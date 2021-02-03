@@ -8320,7 +8320,7 @@ vuepress-theme-cosmos@^1.0.180:
     vuepress-plugin-google-tag-manager "0.0.5"
     vuepress-plugin-sitemap "^2.3.1"
 
-vuepress@^1.5.4, vuepress@^1.8.0:
+vuepress@^1.5.4:
   version "1.8.0"
   resolved "https://registry.yarnpkg.com/vuepress/-/vuepress-1.8.0.tgz#0139d466b33fbfdb628abb76d555368b85cf9772"
   integrity sha512-YvNitvoEc+JSJRv1W+IoRnvOTFyTWyUMuGuF2kTIbiSwIHb1hNinc3lqNSeBQJy7IBqyEzK5fnTq1mlynh4gwA==

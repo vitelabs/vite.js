@@ -18,10 +18,10 @@ module.exports = {
       docsRepo: "vitelabs/vite.js",
       docsDir: 'docs',
       editLinks: true,
+      custom: true,
       logo: {
         src: path.join(basePath, '/logo.svg'),
       },
-      custom: true,
       // algolia: {
       //   key: "fe006d1336f2a85d144fdfaf4a089378",
       //   index: "vite_labs"
@@ -71,8 +71,18 @@ module.exports = {
             url: "https://github.com/vitelabs"
           }
         ],
-        smallprint:
-          `© ${new Date().getFullYear()} Vite Labs.`,
+        smallprint: `© ${new Date().getFullYear()} Vite Labs.`,
+        links: [
+          {
+            title: "Community",
+            children: [
+              {
+                title: "Blog",
+                url: "https://medium.com/vitelabs"
+              },
+            ]
+          }
+        ]
       }
     },
 };
