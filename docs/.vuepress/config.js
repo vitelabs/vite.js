@@ -45,8 +45,8 @@ module.exports = {
             title: "Resources",
             children: [
               {
-                title: "vite.org",
-                path: "https://vite.org"
+                title: "Vite Documentation",
+                path: "https://docs.vite.org"
               }
             ]
           }
@@ -81,17 +81,6 @@ module.exports = {
           }
         ],
         smallprint: `© ${new Date().getFullYear()} Vite Labs.`,
-        links: [
-          {
-            title: "Community",
-            children: [
-              {
-                title: "Blog",
-                url: "https://medium.com/vitelabs"
-              },
-            ]
-          }
-        ]
       }
     },
 };
