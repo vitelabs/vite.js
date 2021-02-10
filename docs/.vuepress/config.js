@@ -13,6 +13,15 @@ module.exports = {
       },
     },
 
+    plugins: [
+      [
+        "sitemap",
+        {
+          hostname: "https://docs.vite.org"
+        }
+      ]
+    ],
+
     themeConfig: {
       repo: "vitelabs/vite.js",
       docsRepo: "vitelabs/vite.js",
