@@ -294,6 +294,7 @@ Type of cancelling quota staking
 
 - **Parameters** 
     * `__namedParameters: object`
+        - `address: Address` Address of current account
         - `id: string` Staking id
 
 - **Return**
@@ -302,6 +303,7 @@ Type of cancelling quota staking
 - **Example**
 ```javascript
 const accountBlock = createAccountBlock('cancelQuotaStake', {
+    address: 'vite_553462bca137bac29f440e9af4ab2e2c1bb82493e41d2bc8b2',
     id: '401d46c2330d3c76c8f0da6be2a24b17c5e3ece9c28d80a74e91146d1f95ad2e'
 });
 ```
