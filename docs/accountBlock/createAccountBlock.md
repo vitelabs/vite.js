@@ -294,9 +294,8 @@ Type of cancelling quota staking
 
 - **Parameters** 
     * `__namedParameters: object`
-        - `address: Address` Address of current account      
-        - `beneficiaryAddress: Address` Address of staking beneficiary
-        - `amount: Uint256` Amount of VITE to retrieve, including decimals. Cannot be less than 134 VITE. The remaining staking amount cannot be less than 134 VITE. For example, retrieving 134 VITE, fill in `134000000000000000000`
+        - `address: Address` Address of current account
+        - `id: string` Staking id
 
 - **Return**
     * accountBlock instance
@@ -305,8 +304,7 @@ Type of cancelling quota staking
 ```javascript
 const accountBlock = createAccountBlock('cancelQuotaStake', {
     address: 'vite_553462bca137bac29f440e9af4ab2e2c1bb82493e41d2bc8b2',
-    beneficiaryAddress: 'vite_553462bca137bac29f440e9af4ab2e2c1bb82493e41d2bc8b2',
-    amount: '134000000000000000000'
+    id: '401d46c2330d3c76c8f0da6be2a24b17c5e3ece9c28d80a74e91146d1f95ad2e'
 });
 ```
 
