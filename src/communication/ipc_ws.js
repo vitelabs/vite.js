@@ -12,7 +12,7 @@ class IpcWs extends Communication {
         this.responseCbs = {};
 
         this._connectEnd = null;
-        this._connectErr = null;
+        this._connectError = null;
         this._connectTimeout = null;
         this._connectConnect = null;
         this._connectClose = null;
@@ -31,7 +31,7 @@ class IpcWs extends Communication {
     }
 
     _errored(err) {
-        this._connectErr && this._connectErr(err);
+        this._connectError && this._connectError(err);
     }
 
     _parse(data) {

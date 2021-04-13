@@ -11,6 +11,7 @@ describe('Communication Test: src/communication', function () {
 describe('ViteAPI Test: src/viteAPI', function () {
     require('./packages/viteAPI/provider');
     require('./packages/viteAPI/index');
+    require('./packages/viteAPI/ws');
 });
 
 require('./packages/accountBlock/transaction');
