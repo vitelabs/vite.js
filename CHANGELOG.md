@@ -1,3 +1,21 @@
+# [](https://github.com/vitelabs/vite.js/compare/v2.3.12...v) (2021-04-13)
+
+
+
+## [2.3.12](https://github.com/vitelabs/vite.js/compare/v2.3.11...v2.3.12) (2021-04-13)
+
+
+### Bug Fixes
+
+* **ws:** when connected failed, it have not trigger a error event ([b38c399](https://github.com/vitelabs/vite.js/commit/b38c3991ad6a90847c83c6d6a8ed6e138c9c3c67))
+
+
+### Reverts
+
+* Revert "docs: update cancelQuotaStake" ([d963683](https://github.com/vitelabs/vite.js/commit/d96368316aadddb1a429a8a0de755489cee8433a))
+
+
+
 # [](https://github.com/vitelabs/vite.js/compare/v2.3.11...v) (2020-07-26)
 
 
