@@ -55,7 +55,7 @@ class WsRpc extends IPC_WS {
         this.socket.onclose = () => {
             this._closed();
         };
-        this.socket.onerror = (err) => {
+        this.socket.onerror = err => {
             this._errored(err);
         };
         this.socket.onmessage = e => {
