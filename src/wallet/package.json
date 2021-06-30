@@ -1,6 +1,6 @@
 {
     "name": "@vite/vitejs-wallet",
-    "version": "2.3.12",
+    "version": "2.3.13",
     "main": "dist/index.node.js",
     "browser": "dist/index.web.js",
     "repository": {
@@ -24,7 +24,6 @@
         "bn.js": "^5.1.1",
         "browserify-aes": "^1.2.0",
         "buffer": "^5.5.0",
-        "conventional-changelog-cli": "^2.0.21",
         "create-hmac": "^1.1.7",
         "es6-promise": "^4.2.5",
         "jsonrpc-lite": "^2.0.3",
