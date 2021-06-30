@@ -1,12 +1,18 @@
-# [](https://github.com/vitelabs/vite.js/compare/v2.3.13...v) (2021-06-30)
-
-
-
 ## [2.3.13](https://github.com/vitelabs/vite.js/compare/v2.3.12...v2.3.13) (2021-06-30)
 
 
+### chore
 
-# [](https://github.com/vitelabs/vite.js/compare/v2.3.12...v) (2021-04-13)
+* 2.3.12 changelog ([a618adc](https://github.com/vitelabs/vite.js/commit/a618adc885e4a5e8f047b5e37bac2b4a2cfc8a18))
+* move conventional-changelog-cli to devDependencies ([6eaf8dc](https://github.com/vitelabs/vite.js/commit/6eaf8dc18cc5cb80007f09c79fae3e844fd3987d)), closes [#37](https://github.com/vitelabs/vite.js/issues/37)
+
+### docs
+
+* update docs dependencies ([e3221a7](https://github.com/vitelabs/vite.js/commit/e3221a7864209fb325ad13295f8c5adbb2f16ecc))
+
+### style
+
+* format code ([14b87a6](https://github.com/vitelabs/vite.js/commit/14b87a6ddc68fe5836816f949f85d6161e6cfed8))
 
 
 
