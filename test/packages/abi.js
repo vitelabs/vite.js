@@ -1,5 +1,6 @@
 const assert = require('assert');
 
+import { type } from 'os';
 import * as abi from '../../src/abi/index';
 
 describe('encodeParameter', function () {
@@ -294,9 +295,13 @@ describe('encodeParameter', function () {
         const encodeParameterResult5666 = abi.encodeParameter('gid', '01000000000000000000');
         assert.equal('0000000000000000000000000000000000000000000001000000000000000000', encodeParameterResult5666);
     });
-    it('bool', function () {
+    it('bool: 0000000000000000000000000000000000000000000000000000000000000001 is true', function () {
         const encodeParameterResult5667 = abi.encodeParameter('bool', true);
         assert.equal('0000000000000000000000000000000000000000000000000000000000000001', encodeParameterResult5667);
+    });
+    it('bool: 0000000000000000000000000000000000000000000000000000000000000000 is false', function () {
+        const encodeParameterResult5667 = abi.encodeParameter('bool', false);
+        assert.equal('0000000000000000000000000000000000000000000000000000000000000000', encodeParameterResult5667);
     });
     it('bytes32[]', function () {
         const encodeParameterResult58 = abi.encodeParameter('bytes32[]', [ '0x0100000000000000000000000000000000000000000000000000000000000000', '0x0200000000000000000000000000000000000000000000000000000000000000' ]);
@@ -354,6 +359,14 @@ describe('decodeParameter', function () {
     it('uint8', function () {
         const encodeParameterResult1 = abi.decodeParameter('uint8', '0000000000000000000000000000000000000000000000000000000000000002');
         assert.equal('2', encodeParameterResult1);
+    });
+    it('bool: 0000000000000000000000000000000000000000000000000000000000000001 is decode to 1', function () {
+        const encodeParameterResult1 = abi.decodeParameter('bool', '0000000000000000000000000000000000000000000000000000000000000001');
+        assert.equal('1', encodeParameterResult1);
+    });
+    it('bool: 0000000000000000000000000000000000000000000000000000000000000000 is decode to 0', function () {
+        const encodeParameterResult1 = abi.decodeParameter('bool', '0000000000000000000000000000000000000000000000000000000000000000');
+        assert.equal('0', encodeParameterResult1);
     });
     it('uint16', function () {
         const encodeParameterResult3 = abi.decodeParameter('uint16', '0000000000000000000000000000000000000000000000000000000000000002');
@@ -761,6 +774,18 @@ describe('decodeParameters', function () {
     it('case 8', function () {
         const encodeParametersResult6 = abi.decodeParameters([ 'int64', 'int32[]', 'int8' ], 'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000060fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff70000000000000000000000000000000000000000000000000000000000000002ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff9dfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffb');
         assert.deepEqual([ -1, [ -99, -5 ], -9 ], encodeParametersResult6);
+    });
+
+    it('case 9: decode for bool', function () {
+        const types = [
+            { name: 'success', type: 'bool' },
+            { name: 'successStr', type: 'string' }
+        ];
+        const result = abi.decodeParameters(types, Buffer.from('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEdHJ1ZQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=', 'base64').toString('hex'));
+        assert.deepEqual([ '1', 'true' ], result);
+
+        const result2 = abi.decodeParameters(types, Buffer.from('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFZmFsc2UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=', 'base64').toString('hex'));
+        assert.deepEqual([ '0', 'false' ], result2);
     });
 });
 

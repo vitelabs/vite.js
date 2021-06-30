@@ -70,7 +70,7 @@ function getRawData({ type, typeStr, actualByteLen }, params, _params) {
     case 'address':
         return getAddressFromOriginalAddress(params);
     case 'bool':
-        return showNumber(params ? '1' : '0', 'uint');
+        return showNumber(params === '01' ? '1' : '0', 'uint');
     case 'number':
         return showNumber(params, typeStr, actualByteLen, _params);
     case 'gid':
