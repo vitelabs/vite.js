@@ -1,3 +1,21 @@
+## [2.3.14](https://github.com/vitelabs/vite.js/compare/v2.3.13...v2.3.14) (2021-06-30)
+
+
+### chore
+
+* 2.3.13 changelog ([e1cec6a](https://github.com/vitelabs/vite.js/commit/e1cec6ac414ba98bc156ad84140b58115c828391))
+* change changelog style to eslint ([682230c](https://github.com/vitelabs/vite.js/commit/682230c8b2bb1e600914423ca4e4f562224e5656))
+
+### docs
+
+* update Changelog.md ([c95bbca](https://github.com/vitelabs/vite.js/commit/c95bbcacc4405e99fb1e363bb40f7bb25bb110e6))
+
+### fix
+
+* decoded bool always 1 ([05eb008](https://github.com/vitelabs/vite.js/commit/05eb00893aa5773293d34259693279b3ef3495fa)), closes [#35](https://github.com/vitelabs/vite.js/issues/35)
+
+
+
 ## [2.3.13](https://github.com/vitelabs/vite.js/compare/v2.3.12...v2.3.13) (2021-06-30)
 
 
