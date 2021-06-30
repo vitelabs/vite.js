@@ -1,3 +1,11 @@
+# [](https://github.com/vitelabs/vite.js/compare/v2.3.13...v) (2021-06-30)
+
+
+
+## [2.3.13](https://github.com/vitelabs/vite.js/compare/v2.3.12...v2.3.13) (2021-06-30)
+
+
+
 # [](https://github.com/vitelabs/vite.js/compare/v2.3.12...v) (2021-04-13)
 
 
