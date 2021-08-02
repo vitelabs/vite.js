@@ -36,13 +36,13 @@ async function sendAccountBlock() {
 
 ## Quota Mechanism
 
-Learn about [Quota](../../../tutorial/rule/quota.md)
+Learn about [Quota](https://docs.vite.org/go-vite/reference/quota.html)
 
 Quota are consumed for sending account block. Transaction will fail if the quota in the account is insufficient. The following message shows a failed transaction due to out of quota: 
 
 `{"code":-35002,"message":"out of quota"}`
 
-In Vite Mainnet, [Two Methods to Obtain Quota](../../../tutorial/rule/quota.html#two-methods-to-obtain-quota) are provided: Staking or PoW
+In Vite Mainnet, [Two Methods to Obtain Quota](https://docs.vite.org/go-vite/reference/quota.html#two-methods-to-obtain-quota) are provided: Staking or PoW
 
 ### Staking
 For how to send staking request, see [createAccountBlock](./createAccountBlock.md) for details.
@@ -78,7 +78,7 @@ provider.request('contract_getQuotaByAccount', address).then(result => {
 
 ### PoW
 
-For how PoW works in Vite, refer to [PoW](../../../tutorial/rule/quota.html#calculating-pow) for more information
+For how PoW works in Vite, refer to [PoW](https://docs.vite.org/go-vite/reference/quota.html#calculating-pow) for more information
 
 At the time being, GVite-RPC provides an API `util_getPoWNonce` for getting nonce
 

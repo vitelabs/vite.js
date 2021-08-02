@@ -1,6 +1,6 @@
 # Common Error
 
-1. [Gvite Common Error](../rpc/README.md)
+1. [Gvite Common Error](https://docs.vite.org/go-vite/api/rpc/#common-rpc-errors)
 
 2. Vite.js Common Error
 

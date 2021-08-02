@@ -7,7 +7,7 @@ parent:
 
 ## Mnemonics
 
-Multiple private keys can be derived from one mnemonic phrases, each having independent address. Refer to [HD Wallet](/tutorial/wallet/hdwallet.md) for more information
+Multiple private keys can be derived from one mnemonic phrases, each having independent address. Refer to [HD Wallet](https://docs.vite.org/go-vite/reference/hdwallet.html) for more information
 
 :::warning Note
 Always keep your mnemonic phrase safe
@@ -15,15 +15,15 @@ Always keep your mnemonic phrase safe
 
 ## Quota
 
-Quota is necessary for sending transaction on Vite. In the Mainnet, quota can be obtained through PoW or staking. Refer to [Quota](/tutorial/rule/quota) for details
+Quota is necessary for sending transaction on Vite. In the Mainnet, quota can be obtained through PoW or staking. Refer to [Quota](https://docs.vite.org/go-vite/reference/quota.html) for details
 
 ## Token Issuance
 
-Refer to [RPC Token Issuance API](../rpc/contract_v2)
+Refer to [RPC Token Issuance API](https://docs.vite.org/go-vite/api/rpc/contract_v2.html#token-issuance-contract)
 
 ## Subscription
 
-Event subscription is provided in `ViteAPI`. Refer to [ViteAPI](./ViteAPI/start) for detailed information
+Event subscription is provided in `ViteAPI`. Refer to [ViteAPI](/ViteAPI) for detailed information
 
 ## Sending Transaction
 

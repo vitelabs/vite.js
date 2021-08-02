@@ -11,7 +11,7 @@ import { utils } from '@vite/vitejs';
 ```
 
 ## uriStringify
-Generate a [VEP-6](../../../vep/vep-6.md) compatible Vite schema URI based on the given parameters
+Generate a [VEP-6](https://docs.vite.org/go-vite/vep/vep-6.html) compatible Vite schema URI based on the given parameters
 
 - **Parameters**
     * `opt : object`

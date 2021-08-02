@@ -4,9 +4,9 @@
 ## RPC Interface
 
 See the following links for detailed description of RPC API definitions
-- [Wallet](/api/rpc/wallet_v2.md) 
-- [Ledger](/api/rpc/ledger_v2.md) 
-- [Contract](/api/rpc/contract_v2.md)
+- [Wallet](https://docs.vite.org/go-vite/api/rpc/wallet_v2.html) 
+- [Ledger](https://docs.vite.org/go-vite/api/rpc/ledger_v2.html) 
+- [Contract](https://docs.vite.org/go-vite/api/rpc/contract_v2.html)
 
 ## Example
 

@@ -15,7 +15,7 @@ import { wallet } from '@vite/vitejs';
 
 ## Common Types
 
-```typescript
+```javascript
 export declare type AddressObj = {
     originalAddress: Hex;
     publicKey: Hex;
