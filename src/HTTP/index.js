@@ -10,6 +10,7 @@ class HttpRpc extends Communication {
         this.host = host;
         this.timeout = timeout;
         this.headers = options.headers;
+        this.requestId = 0;
     }
 
     _getRequest() {
@@ -22,6 +23,7 @@ class HttpRpc extends Communication {
         this.headers && this.headers.forEach(function (header) {
             request.setRequestHeader(header.name, header.value);
         });
+        request.id = this.requestId++
 
         return request;
     }
