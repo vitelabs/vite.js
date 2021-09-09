@@ -110,8 +110,7 @@ export class ReceiveAccountBlockTask {
         }
 
         const accountBlockList = [];
-        for (let i = 0; i < unreceivedBlocks.length; i++) {
-            const unreceivedBlock = unreceivedBlocks[i];
+        for (const unreceivedBlock of unreceivedBlocks) {
             const previousAccountBlock = accountBlockList.length
                 ? accountBlockList[accountBlockList.length - 1]
                 : null;
