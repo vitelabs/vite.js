@@ -5,17 +5,16 @@ import EventEmitter from './eventEmitter';
 
 
 class ProviderClass {
-    isConnected: Boolean
+    isConnected: Boolean = false
     private _provider: any
-    private subscriptionList: Array<EventEmitter>
-    private requestList: Array<any>
+    private subscriptionList: {[id:number]:EventEmitter} = {}
+    private subscriptionId = 0
+    private requestList: {[id:number]:()=>void} = {}
+    private requestId = 0
 
     constructor(provider: any, onInitCallback: Function) {
         this._provider = provider;
-        this.isConnected = false;
         this.connectedOnce(onInitCallback);
-        this.requestList = [];
-        this.subscriptionList = [];
     }
 
     setProvider(provider, onInitCallback, abort) {
@@ -31,32 +30,22 @@ class ProviderClass {
         this.connectedOnce(onInitCallback);
     }
 
-    unsubscribe(event) {
-        let i;
-
-        for (i = 0; i < this.subscriptionList.length; i++) {
-            if (this.subscriptionList[i] === event) {
-                break;
-            }
-        }
-
-        if (i >= this.subscriptionList.length) {
-            return;
-        }
+    unsubscribe(event:EventEmitter) {
+        if (this.subscriptionList[event['_id'] || 0] !== event) return;
 
         event && event.stopLoop();
-        this.subscriptionList.splice(i, 1);
+        delete this.subscriptionList[event['_id']];
 
-        if (!this.subscriptionList || !this.subscriptionList.length) {
+        if (!Object.keys(this.subscriptionList).length) {
             this._provider.unsubscribe && this._provider.unsubscribe();
         }
     }
 
     unsubscribeAll() {
-        this.subscriptionList.forEach(s => {
+        Object.values(this.subscriptionList).forEach(s => {
             s.stopLoop();
         });
-        this.subscriptionList = [];
+        this.subscriptionList = {};
         this._provider.unsubscribe && this._provider.unsubscribe();
     }
 
@@ -106,8 +95,8 @@ class ProviderClass {
 
         const subscription = rep;
 
-        if (!this.subscriptionList || !this.subscriptionList.length) {
-            this.subscriptionList = [];
+        if (!Object.keys(this.subscriptionList)) {
+            this.subscriptionList = {};
             this._provider.subscribe && this._provider.subscribe(jsonEvent => {
                 this.subscribeCallback(jsonEvent);
             });
@@ -120,22 +109,15 @@ class ProviderClass {
             });
         }
 
-        this.subscriptionList.push(event);
+        event._id = this.subscriptionId++;
+
+        this.subscriptionList[event._id] = event;
         return event;
     }
 
 
     private _offReq(_q) {
-        let i;
-        for (i = 0; i < this.requestList.length; i++) {
-            if (this.requestList[i] === _q) {
-                break;
-            }
-        }
-        if (i === this.requestList.length) {
-            return;
-        }
-        this.requestList.splice(i, 1);
+        delete this.requestList[_q.id];
     }
 
     private _onReq(type, methods, ...args) {
@@ -151,8 +133,9 @@ class ProviderClass {
                     rej(err);
                 });
             };
+            _q._id = this.requestId++;
 
-            this.requestList.push(_q);
+            this.requestList[_q._id] = _q;
 
             const _timeout = setTimeout(() => {
                 this._offReq(_q);
@@ -171,7 +154,7 @@ class ProviderClass {
             return;
         }
 
-        this.subscriptionList && this.subscriptionList.forEach(s => {
+        Object.values(this.subscriptionList).forEach(s => {
             if (s.id !== id) {
                 return;
             }
@@ -188,7 +171,7 @@ class ProviderClass {
     private connectedOnce(cb) {
         const connectedCB = () => {
             this.isConnected = true;
-            this.requestList && this.requestList.forEach(_q => {
+            this.requestList && Object.values(this.requestList).forEach((_q:()=>void) => {
                 _q && _q();
             });
             cb && cb(this);

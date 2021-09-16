@@ -102,13 +102,7 @@ export function getAbiByType(jsonInterfaces, type) {
     }
 
     // jsonInterfaces is an array
-    for (let i = 0; i < jsonInterfaces.length; i++) {
-        if (jsonInterfaces[i].type === type) {
-            return jsonInterfaces[i];
-        }
-    }
-
-    return null;
+    return jsonInterfaces.find(e => e.type === type) || null;
 }
 
 

@@ -7,31 +7,26 @@ class Communication {
         this.ERRORS = errors;
         this.jsonrpc = jsonrpc;
 
-        this._requestManager = [];
+        this._requestManager = {};
         this._requestId = 0;
     }
 
     abort() {
-        this._requestManager.forEach(({ request, rej }) => {
+        Object.values(this._requestManager).forEach(({ request, rej }) => {
             request.abort();
             rej(this.ERRORS.ABORT());
         });
-        this._requestManager = [];
+        this._requestManager = {};
     }
 
     _addReq({ request, rej }) {
         const _request = { request, rej };
-        this._requestManager.push(_request);
+        this._requestManager[request.id] = _request;
         return _request;
     }
 
     _removeReq(_request) {
-        for (let i = 0; i < this._requestManager.length; i++) {
-            if (this._requestManager[i] === _request) {
-                this._requestManager.splice(i, 1);
-                break;
-            }
-        }
+        delete this._requestManager[_request.request.id];
     }
 
     _getRequestPayload(methodName, params) {

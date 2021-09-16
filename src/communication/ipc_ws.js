@@ -130,7 +130,7 @@ class IpcWs extends Communication {
                 requestTimeout = null;
                 this._removeReq(_request);
                 for (const key in this.responseCbs) {
-                    if (this.responseCbs[key] === id) {
+                    if (key === String(id)) {
                         delete this.responseCbs[key];
                         break;
                     }

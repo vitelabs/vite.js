@@ -328,7 +328,7 @@ Decode account block of smart contract
 
 - **Example**
 ```javascript
-import { accountblock, constant } from '@vite/vitejs';
+import { accountBlock, constant } from '@vite/vitejs';
 
 const { utils } = accountBlock;
 

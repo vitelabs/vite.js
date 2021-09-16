@@ -22,11 +22,7 @@ export function getFunction(jsonFunction, methodName?) {
         return jsonFunction[0];
     }
 
-    for (let i = 0; i < jsonFunction.length; i++) {
-        if (jsonFunction[i].name === methodName) {
-            return jsonFunction[i];
-        }
-    }
+    return jsonFunction.find(e => e.name === methodName);
 }
 
 

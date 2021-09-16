@@ -5,8 +5,8 @@
     "scripts": {
         "format-type": "node build/type",
         "prebuild": "rm -rf ./dist && rm -rf ./distSrc && node build/clean",
-        "build:node": "build_target=node webpack",
-        "build:web": "build_target=web webpack",
+        "build:node": "cross-env build_target=node webpack",
+        "build:web": "cross-env build_target=web webpack",
         "build:vitejsES5": "tsc && node build/vitejsES5",
         "build:vitets": "cp -r ./src/. ./distSrc && cp -r ./distSrc ./src/vitejs/distSrc",
         "build:vitejs": "yarn run build:vitets && yarn run build:vitejsES5",

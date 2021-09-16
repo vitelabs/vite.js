@@ -3,7 +3,7 @@ import * as _error from './error/index';
 import * as _keystore from './keystore/index';
 import * as _utils from './utils/index';
 import * as _constant from './constant/index';
-import * as _accountBlock from './accountblock/index';
+import * as _accountBlock from './accountBlock/index';
 import _viteAPI from './viteAPI/index';
 import _wallet from './wallet/index';
 

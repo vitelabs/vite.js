@@ -734,8 +734,8 @@ class TransactionClass {
             }, {
                 name: 'tradeTokens',
                 func: _t => {
-                    for (let i = 0; i < _t.length; i++) {
-                        if (!isValidTokenId(_t[i])) {
+                    for (const tti of _t) {
+                        if (!isValidTokenId(tti)) {
                             return false;
                         }
                     }
@@ -744,8 +744,8 @@ class TransactionClass {
             }, {
                 name: 'quoteTokens',
                 func: _t => {
-                    for (let i = 0; i < _t.length; i++) {
-                        if (!isValidTokenId(_t[i])) {
+                    for (const tti of _t) {
+                        if (!isValidTokenId(tti)) {
                             return false;
                         }
                     }

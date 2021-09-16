@@ -43,8 +43,7 @@ export function checkParams(params: Object, requiredP: Array<string> = [], valid
             && typeof params[name] !== 'undefined'
             && params[name] !== null;
 
-    for (let i = 0; i < requiredP.length; i++) {
-        const name = requiredP[i];
+    for (const name of requiredP) {
         if (!isHave(name)) {
             return {
                 code: paramsMissing.code,
@@ -53,8 +52,7 @@ export function checkParams(params: Object, requiredP: Array<string> = [], valid
         }
     }
 
-    for (let i = 0; i < validFunc.length; i++) {
-        const { name, func, msg } = validFunc[i];
+    for (const { name, func, msg } of validFunc) {
         if (!name || !func || !isHave(name)) {
             continue;
         }
