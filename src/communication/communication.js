@@ -26,7 +26,7 @@ class Communication {
     }
 
     _removeReq(_request) {
-        delete this._requestManager[_request.request.id]
+        delete this._requestManager[_request.request.id];
     }
 
     _getRequestPayload(methodName, params) {

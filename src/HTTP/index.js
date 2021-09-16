@@ -23,7 +23,7 @@ class HttpRpc extends Communication {
         this.headers && this.headers.forEach(function (header) {
             request.setRequestHeader(header.name, header.value);
         });
-        request.id = this.requestId++
+        request.id = this.requestId++;
 
         return request;
     }
