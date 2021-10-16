@@ -1,3 +1,12 @@
+## [2.3.15](https://github.com/vitelabs/vite.js/compare/v2.3.14...v2.3.15) (2021-10-16)
+
+
+### chore
+
+* 2.3.14 changelog ([2c1a86a](https://github.com/vitelabs/vite.js/commit/2c1a86ab810b7abb84fa5dc3732986d41e87a69c))
+
+
+
 ## [2.3.14](https://github.com/vitelabs/vite.js/compare/v2.3.13...v2.3.14) (2021-06-30)
 
 

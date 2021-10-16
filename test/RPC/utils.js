@@ -6,7 +6,7 @@ import walletUtils from '../../src/wallet/index';
 import Transaction from '../../src/accountBlock/transaction';
 
 export const viteProvider = new ViteAPI(new HTTP_RPC(config.http), () => {
-    console.log('Connetct');
+    console.log('Connected');
 });
 
 export const myWallet = walletUtils.getWallet(config.myMnemonic);

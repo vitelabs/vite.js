@@ -367,7 +367,7 @@ async function OpenNewMarket(previousAccountBlock) {
 
     await sleep(2000);
 
-    let accountBlock = tx.dexPlaceOrder({
+    accountBlock = tx.dexPlaceOrder({
         tradeToken: tokens[0].tokenId, 
         quoteToken: Vite_TokenId, 
         side: 1, 

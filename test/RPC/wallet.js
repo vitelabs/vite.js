@@ -58,7 +58,7 @@ export default async function TestFunc() {
     console.log('Step 13 CreateContract. \n');
     accountBlock = await CreateContract(accountBlock);
 
-    await CheckTokenList(accountBlock);
+    accountBlock = await CheckTokenList(accountBlock);
 
     await sleep(2000);
     console.log('Step 14 CancelQuotaStake. \n');
@@ -328,15 +328,15 @@ async function CheckTokenList(previousAccountBlock) {
     if (!tokens || !tokens.length) {
         await sleep(2000);
         console.log('Step 13 IssueToken 1. \n');
-        previousAccountBlock = await IssueToken(accountBlock);
+        previousAccountBlock = await IssueToken(previousAccountBlock);
 
         await sleep(2000);
         console.log('Step 13 IssueToken 2. \n');
-        previousAccountBlock = await IssueToken(accountBlock);
+        previousAccountBlock = await IssueToken(previousAccountBlock);
 
         await sleep(2000);
         console.log('Step 13 IssueToken 3. \n');
-        previousAccountBlock = await IssueToken(accountBlock);
+        previousAccountBlock = await IssueToken(previousAccountBlock);
 
         await sleep(2000);
         tokens = await viteProvider.request('contract_getTokenInfoListByOwner', address);
@@ -363,7 +363,7 @@ async function CheckTokenList(previousAccountBlock) {
         await sleep(2000);
         previousAccountBlock = await ReIssueToken(previousAccountBlock, reIssueOne);
     
-        await sleep(2000);
+        await sleep(2000 * 3);
         previousAccountBlock = await BurnToken(previousAccountBlock, reIssueOne);
     }
 
