@@ -1,3 +1,16 @@
+## [2.3.16](https://github.com/vitelabs/vite.js/compare/v2.3.15...v2.3.16) (2021-10-27)
+
+
+### chore
+
+* 2.3.15 changelog ([9054a35](https://github.com/vitelabs/vite.js/commit/9054a35e823a595f470da73ba5d648b740541da2))
+
+### fix
+
+* fix subscription ([ae07be5](https://github.com/vitelabs/vite.js/commit/ae07be5a3bb32dc2fd5cf609281ef1817bf0b0ec))
+
+
+
 ## [2.3.15](https://github.com/vitelabs/vite.js/compare/v2.3.14...v2.3.15) (2021-10-16)
 
 
