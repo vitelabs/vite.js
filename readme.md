@@ -2,8 +2,9 @@
 
 ![example workflow name](https://github.com/vitelabs/vite.js/workflows/CI/badge.svg) [![Coverage Status](https://coveralls.io/repos/github/vitelabs/vite.js/badge.svg?branch=master)](https://coveralls.io/github/vitelabs/vite.js?branch=master)
 
-The latest version of ViteJS is 2.3.6, it is not compatible with the old version: most of the package structure has been changed, including the function name, parameters, etc. Please refer to: https://vite.wiki/api/vitejs/
-If you do not want to upgrade, you can continue to use the version <= 2.2.10
+The latest version of ViteJS is 2.3.16. 
+
+**Note: 2.3.x is not compatible with 2.2. You can continue to use the version <= 2.2.10 if you do not want to upgrade.**
 
 * Documentation: [vite.wiki](https://vite.wiki/api/vitejs/)
 * Changelog: [CHANGELOG.md](./CHANGELOG.md)
