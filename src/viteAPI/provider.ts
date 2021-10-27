@@ -95,7 +95,7 @@ class ProviderClass {
 
         const subscription = rep;
 
-        if (!Object.keys(this.subscriptionList)) {
+        if (!Object.keys(this.subscriptionList).length) {
             this.subscriptionList = {};
             this._provider.subscribe && this._provider.subscribe(jsonEvent => {
                 this.subscribeCallback(jsonEvent);
@@ -117,7 +117,7 @@ class ProviderClass {
 
 
     private _offReq(_q) {
-        delete this.requestList[_q.id];
+        delete this.requestList[_q._id];
     }
 
     private _onReq(type, methods, ...args) {
