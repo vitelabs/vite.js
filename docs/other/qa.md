@@ -23,7 +23,7 @@ Refer to [RPC Token Issuance API](https://docs.vite.org/go-vite/api/rpc/contract
 
 ## Subscription
 
-Event subscription is provided in `ViteAPI`. Refer to [ViteAPI](/ViteAPI) for detailed information
+Event subscription is provided in `ViteAPI`. Refer to [ViteAPI](https://docs.vite.org/vite.js/viteAPI/#subscribe) for detailed information
 
 ## Sending Transaction
 
