@@ -1,6 +1,6 @@
 {
     "name": "@vite/vitejs-wallet",
-    "version": "2.3.17-alpha.1",
+    "version": "2.3.17-alpha.4",
     "main": "dist/index.node.js",
     "browser": "dist/index.web.js",
     "repository": {
