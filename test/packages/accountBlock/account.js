@@ -1,20 +1,20 @@
 const assert = require('assert');
 
 import { BlockType, Vite_TokenId, Contracts } from '../../../src/constant';
-import Transaction from '../../../src/accountBlock/transaction';
+import Account from '../../../src/accountBlock/account';
 import { getCreateContractData, getCallContractData, messageToData } from '../../../src/accountBlock/utils';
 import { paramsConflict } from '../../../src/error/index';
 
 const address = 'vite_69f3bdb5cdcfa145ae6cc42593a89088ff3dac587eb692d689';
-const myTransaction = new Transaction(address);
+const myAccount = new Account(address);
 
 it('address', function () {
-    assert.equal(address, myTransaction.address);
+    assert.equal(address, myAccount.address);
 });
 
 it('receive', function () {
     const sendBlockHash = '18095215a419e346dde2f678180382b65146502fb543a7e96c41b141136b47d9';
-    const receiveAccountBlock = myTransaction.receive({ sendBlockHash });
+    const receiveAccountBlock = myAccount.receive({ sendBlockHash });
 
     assert.equal(receiveAccountBlock.blockType, BlockType.Response);
     assert.equal(receiveAccountBlock.address, address);
@@ -23,7 +23,7 @@ it('receive', function () {
 
 it('send', function () {
     const data = 'jefc/QAAAAAAAAAAAAAAVTRivKE3usKfRA6a9KsuLBu4JJMA';
-    const sendAccountBlock = myTransaction.send({
+    const sendAccountBlock = myAccount.send({
         toAddress: address,
         amount: 0,
         data
@@ -38,7 +38,7 @@ it('send', function () {
 });
 
 it('send 2', function () {
-    const sendAccountBlock = myTransaction.send({
+    const sendAccountBlock = myAccount.send({
         toAddress: address,
         data: messageToData('121212')
     });
@@ -60,7 +60,7 @@ it('createContract', function () {
     };
 
     const data = getCreateContractData(d);
-    const accountBlock = myTransaction.createContract(d);
+    const accountBlock = myAccount.createContract(d);
 
     assert.equal(accountBlock.blockType, BlockType.CreateContractRequest);
     assert.equal(accountBlock.address, address);
@@ -80,7 +80,7 @@ it('createContract: params check, responseLatency must >= randomDegree', functio
 
     const data = getCreateContractData(d);
     try {
-        const accountBlock = myTransaction.createContract(d);
+        const accountBlock = myAccount.createContract(d);
     } catch (err) {
         if (!err) throw 'createContract: params check failed';
         assert.equal(err.code, paramsConflict.code);
@@ -97,7 +97,7 @@ it('callContract', function () {
 
     const data = getCallContractData(d);
     const amount = '239283472429';
-    const accountBlock = myTransaction.callContract({
+    const accountBlock = myAccount.callContract({
         ...d,
         amount
     });

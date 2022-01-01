@@ -3,7 +3,7 @@ const config = require('../rpcConfig');
 import HTTP_RPC from '../../src/HTTP/index';
 import ViteAPI from '../../src/viteAPI/index';
 import walletUtils from '../../src/wallet/index';
-import Transaction from '../../src/accountBlock/transaction';
+import Account from '../../src/accountBlock/account';
 
 export const viteProvider = new ViteAPI(new HTTP_RPC(config.http), () => {
     console.log('Connected');
@@ -15,8 +15,8 @@ const addr1  = myWallet.deriveAddress(0);
 export const privateKey = addr1.privateKey;
 export const address = addr1.address;
 export const addr2  = myWallet.deriveAddress(1);
-export const tx = new Transaction(address).setProvider(viteProvider).setPrivateKey(privateKey);
-export const tx2 = new Transaction(addr2.address).setProvider(viteProvider).setPrivateKey(addr2.privateKey);
+export const tx = new Account(address).setProvider(viteProvider).setPrivateKey(privateKey);
+export const tx2 = new Account(addr2.address).setProvider(viteProvider).setPrivateKey(addr2.privateKey);
 
 export function SendTXByPreviousAccountBlock(accountBlock, previousAccountBlock) {
     if (previousAccountBlock) {

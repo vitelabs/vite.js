@@ -14,7 +14,7 @@ describe('ViteAPI Test: src/viteAPI', function () {
     require('./packages/viteAPI/ws');
 });
 
-require('./packages/accountBlock/transaction');
+require('./packages/accountBlock/account');
 
 // viteAPI
 // http

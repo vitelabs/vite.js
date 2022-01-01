@@ -1,12 +1,12 @@
 import { checkParams, isObject } from '~@vite/vitejs-utils';
 
 import _AccountBlock from './accountBlock';
-import _Transaction from './transaction';
+import _Account from './account';
 import { ReceiveAccountBlockTask as _ReceiveAccountBlockTask } from './receiveAccountBlockTask';
 import * as _utils from './utils';
 
 export const AccountBlock = _AccountBlock;
-export const Transaction = _Transaction;
+export const Account = _Account;
 export const ReceiveAccountBlockTask = _ReceiveAccountBlockTask;
 export const utils = _utils;
 
@@ -22,10 +22,10 @@ export function createAccountBlock(methodName: string, params: any) {
         throw err;
     }
 
-    const tx = new _Transaction(params.address);
-    if (!tx[methodName]) {
+    const a = new _Account(params.address);
+    if (!a[methodName]) {
         throw new Error(`Don\'t support transaction type ${ methodName }`);
     }
 
-    return tx[methodName](params);
+    return a[methodName](params);
 }
