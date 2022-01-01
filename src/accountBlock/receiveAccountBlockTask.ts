@@ -1,7 +1,7 @@
 import { isValidAddress } from '~@vite/vitejs-wallet/address';
 import { checkParams, isHexString } from '~@vite/vitejs-utils';
 
-import Transaction from './transaction';
+import Account from './account';
 
 import { Address, Hex, ProviderType, AccountBlockBlock } from './type';
 
@@ -11,7 +11,7 @@ export class ReceiveAccountBlockTask {
     private provider: ProviderType
     private sign: Function | undefined | null
     private privateKey: Hex | undefined | null
-    private _transaction: Transaction
+    private _account: Account
     private _timer: any
     private successCB: Function
     private errorCB: Function
@@ -42,11 +42,11 @@ export class ReceiveAccountBlockTask {
         this.sign = sign;
         this.privateKey = privateKey;
 
-        this._transaction = new Transaction(address);
-        this._transaction.setProvider(provider);
+        this._account = new Account(address);
+        this._account.setProvider(provider);
 
         if (privateKey) {
-            this._transaction.setPrivateKey(privateKey);
+            this._account.setPrivateKey(privateKey);
         }
 
         this._timer = null;
@@ -171,7 +171,7 @@ export class ReceiveAccountBlockTask {
     }
 
     private async receiveAccountBlockByPrevious({ sendBlockHash, previousAccountBlock }) {
-        const accountBlock = this._transaction.receive({ sendBlockHash });
+        const accountBlock = this._account.receive({ sendBlockHash });
 
         if (this.privateKey) {
             if (!previousAccountBlock) {
