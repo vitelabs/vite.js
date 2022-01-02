@@ -843,83 +843,123 @@ describe('encodeLogSignature', function () {
 });
 
 describe('decodeLog', function () {
-    it('case 1', function () {
-        const decodeResult1 = abi.decodeLog({
-            'type': 'constructor',
-            'inputs': [
-                { type: 'string', name: 'myString' },
-                { type: 'uint256', name: 'myNumber', indexed: true },
-                { type: 'uint8', name: 'mySmallNumber', indexed: true }
-            ]
-        },
-        '0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000748656c6c6f252100000000000000000000000000000000000000000000000000',
-        [ '000000000000000000000000000000000000000000000000000000000000f310', '0000000000000000000000000000000000000000000000000000000000000010' ]);
-        assert.deepEqual({
-            '0': 'Hello%!',
-            '1': '62224',
-            '2': '16',
-            myString: 'Hello%!',
-            myNumber: '62224',
-            mySmallNumber: '16'
-        }, decodeResult1);
+    it('only one non-indexed param', function () {
+        const decodeResult = abi.decodeLog({"anonymous":false,"inputs":[{"indexed":false,"internalType":"string","name":"data","type":"string"}],"name":"Event1","type":"event"},
+        '0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000b68656c6c6f20776f726c64000000000000000000000000000000000000000000',
+        ["30e00162ff22a0d2aaa98f7013fc6dcb0bfae6a56ed30e35c5ea19326211a1a9"],
+        'Event1'
+        );
+
+        assert.deepEqual(decodeResult, {
+            '0': 'hello world',
+            data: 'hello world'
+        });
     });
-    it('case 2', function () {
-        const decodeResult222 = abi.decodeLog([
-            {
-                'type': 'constructor',
-                'name': '89xxx',
-                'inputs': [{ type: 'string', name: 'myString' }]
-            },
-            { 'name': '232', 'inputs': [] },
-            {
-                'type': 'constructor',
-                'name': 'xxxxx',
-                'inputs': [
-                    { type: 'string', name: 'myString' },
-                    { type: 'uint256', name: 'myNumber', indexed: true },
-                    { type: 'uint8', name: 'mySmallNumber', indexed: true }
-                ]
-            }
-        ],
-        '0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000748656c6c6f252100000000000000000000000000000000000000000000000000',
-        [ '000000000000000000000000000000000000000000000000000000000000f310', '0000000000000000000000000000000000000000000000000000000000000010' ], 'xxxxx');
-        assert.deepEqual({
-            '0': 'Hello%!',
-            '1': '62224',
-            '2': '16',
-            myString: 'Hello%!',
-            myNumber: '62224',
-            mySmallNumber: '16'
-        }, decodeResult222);
+
+    it('two non-indexed params', function () {
+        const decodeResult= abi.decodeLog({"anonymous":false,
+        "inputs":[
+            {"indexed":false,"internalType":"uint256","name":"i","type":"uint256"},
+            {"indexed":false,"internalType":"string","name":"s","type":"string"}
+        ],"name":"Event2","type":"event"},
+        '000000000000000000000000000000000000000000000000000000000000007b0000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000000b68656c6c6f20776f726c64000000000000000000000000000000000000000000',
+        ["89dd96aeda3674789db84f190f6ddc0fe541b74ad26f0175aec573e0232e0fd5"]
+        );
+
+        assert.deepEqual(decodeResult, {
+            '0': '123',
+            '1': 'hello world',
+            i: '123',
+            s: 'hello world'
+        });
     });
-    it('case 3', function () {
-        const decodeResult2 = abi.decodeLog([ { 'indexed': true, 'name': 'from', 'type': 'address' }, { 'indexed': true, 'name': 'to', 'type': 'address' }, { 'indexed': false, 'name': 'value', 'type': 'uint256' } ],
-            '00000000000000000000000000000000000000000000000000000000000f4240',
-            [ '0000000000000000000000000100000000000000000000000000000000000000', '0000000000000000000000000200000000000000000000000000000000000000' ]);
-        assert.deepEqual({
-            '0': 'vite_00010000000000000000000000000000000000005cce05dbde',
-            '1': 'vite_0002000000000000000000000000000000000000fe64322db1',
-            '2': '1000000',
-            from: 'vite_00010000000000000000000000000000000000005cce05dbde',
-            to: 'vite_0002000000000000000000000000000000000000fe64322db1',
-            value: '1000000'
-        }, decodeResult2);
+
+    it('one indexed and two non-indexed params', function () {
+        const decodeResult= abi.decodeLog({"anonymous":false,
+        "inputs":[
+            {"indexed":true,"internalType":"uint256","name":"t","type":"uint256"},
+            {"indexed":false,"internalType":"uint256","name":"i","type":"uint256"},
+            {"indexed":false,"internalType":"string","name":"s","type":"string"}
+        ],"name":"Event3","type":"event"},
+        '000000000000000000000000000000000000000000000000000000000000007b0000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000000b68656c6c6f20776f726c64000000000000000000000000000000000000000000',
+        [
+            "ff75de284617dcb8120f62e0ab99092112d2fa831082b3cb4d6703a07a757a88",
+            "0000000000000000000000000000000000000000000000000000000000000001"
+        ]
+        );
+
+        assert.deepEqual(decodeResult, {
+            '0': '1',
+            '1': '123',
+            '2': 'hello world',
+            t: '1',
+            i: '123',
+            s: 'hello world'
+          });
     });
-    it('case 4', function () {
-        const decodeResult3 = abi.decodeLog([
-            { 'indexed': false, 'name': 'who', 'type': 'address' },
-            { 'indexed': false, 'name': 'wad', 'type': 'uint128' },
-            { 'indexed': false, 'name': 'currency', 'type': 'bytes3' } ],
-        '00000000000000000000000000ce0d46d924cc8437c806721496599fc3ffa2680000000000000000000000000000000000000000000000000000020489e800007573640000000000000000000000000000000000000000000000000000000000',
-        []);
-        assert.deepEqual({
-            '0': 'vite_0000ce0d46d924cc8437c806721496599fc3ffa288d2bea2cf',
-            '1': '2218516807680',
-            '2': '757364',
-            who: 'vite_0000ce0d46d924cc8437c806721496599fc3ffa288d2bea2cf',
-            wad: '2218516807680',
-            currency: '757364'
-        }, decodeResult3);
+
+    it('two indexed and two non-indexed params', function () {
+        const decodeResult= abi.decodeLog({"anonymous":false,
+        "inputs":[
+            {"indexed":false,"internalType":"uint256","name":"i","type":"uint256"},
+            {"indexed":true,"internalType":"uint256","name":"t1","type":"uint256"},
+            {"indexed":false,"internalType":"string","name":"s","type":"string"},
+            {"indexed":true,"internalType":"string","name":"t2","type":"string"}
+        ],"name":"Event4","type":"event"},
+        '000000000000000000000000000000000000000000000000000000000000007b0000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000000b68656c6c6f20776f726c64000000000000000000000000000000000000000000',
+        [
+            "b787fae491b126a61d9e5c4f03e16463e6f1f985d0682dd2d1a844331b539e9c",
+            "0000000000000000000000000000000000000000000000000000000000000001",
+            "afd7f7d4710d29fbfc539d707a42ff910cd4d41a4c9eae3356180f074e8c3da1"
+        ]
+        );
+
+        assert.deepEqual(decodeResult, {
+            '0': '123',
+            '1': '1',
+            '2': 'hello world',
+            '3': 'afd7f7d4710d29fbfc539d707a42ff910cd4d41a4c9eae3356180f074e8c3da1',
+            i: '123',
+            t1: '1',
+            s: 'hello world',
+            t2: 'afd7f7d4710d29fbfc539d707a42ff910cd4d41a4c9eae3356180f074e8c3da1'
+          });
+    });
+
+    it('anonymous event', function () {
+        const decodeResult= abi.decodeLog({"anonymous":true,
+        "inputs":[
+            {"indexed":false,"internalType":"uint256","name":"i","type":"uint256"},
+            {"indexed":false,"internalType":"string","name":"data","type":"string"}
+        ],"name":"AnonymousEvent","type":"event"},
+        '000000000000000000000000000000000000000000000000000000000000007b0000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000000b68656c6c6f20776f726c64000000000000000000000000000000000000000000',
+        null
+        );
+
+        assert.deepEqual(decodeResult, {
+            '0': '123',
+            '1': 'hello world',
+            i: '123',
+            data: 'hello world'
+        });
+    });
+
+    it('anonymous event with indexed params', function () {
+        const decodeResult= abi.decodeLog({"anonymous":true,
+        "inputs":[
+            {"indexed":true,"internalType":"uint256","name":"i","type":"uint256"},
+            {"indexed":false,"internalType":"string","name":"data","type":"string"}
+        ],"name":"AnonymousEvent","type":"event"},
+        '0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000b68656c6c6f20776f726c64000000000000000000000000000000000000000000',
+        ["000000000000000000000000000000000000000000000000000000000000007b"]
+        );
+
+        assert.deepEqual(decodeResult, {
+            '0': '123',
+            '1': 'hello world',
+            i: '123',
+            data: 'hello world'
+        });
     });
 });
 

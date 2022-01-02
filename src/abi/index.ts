@@ -45,40 +45,37 @@ export function decodeParameters(types, params, methodName?: string) {
     return _decodeParameters(getTypes(types), params);
 }
 
-export function decodeLog(inputs, data = '', topics, methodName?: string) {
-    let topicCount = 0;
-    topics = isArray(topics) ? topics : [topics];
-
-    const notIndexedInputsShow = [];
-    const indexedParams = [];
-
-    inputs = getInputs(inputs, methodName);
-    inputs.forEach((input, i) => {
-        indexedParams[i] = input;
-
-        if (!input.indexed) {
-            notIndexedInputsShow.push(input.type);
-            return;
-        }
-
-        indexedParams[i].result = decodeParameter(input.type, topics[topicCount]);
-        topicCount++;
-    });
-
-    const notIndexedParams = data ? decodeParameters(notIndexedInputsShow, data) : [];
-
+export function decodeLog(abi, data = '', topics, methodName?: string) {
+    const nonIndexedInputs = [];
+    const nonIndexedTypes = [];
+    let inputs = getInputs(abi, methodName);
     const returnValues = {};
-    let notIndexedCount = 0;
-
-    indexedParams.forEach(({ indexed, name, result }, i) => {
-        if (!indexed) {
-            result = notIndexedParams[notIndexedCount];
-            notIndexedCount++;
+    let topicIndex = abi.anonymous ? 0 : 1;  // for non-anonymous events, topics[0] always refers to the hash of the event signature
+    inputs.forEach((input, i) => {
+        if (input.indexed) {
+            // parse indexed params from topics
+            // if it's a reference type such as a string for an indexed argument, the blake2b hash of the value is stored as a topic instead.
+            let param =  (['bool', 'int', 'uint', 'address', 'fixed', 'ufixed'].find(function (staticType) {
+                return input.type.indexOf(staticType) !== -1;
+            })) ? decodeParameter(input.type, topics[topicIndex]) : topics[topicIndex];
+            topicIndex++;
+            // add the indexed param to the return values
+            returnValues[i] = param;
+            if (input.name) returnValues[input.name] = param;
+        } else {
+            nonIndexedInputs.push(input);
+            nonIndexedTypes.push(input.type);
         }
-
-        returnValues[i] = result;
-        if (name) {
-            returnValues[name] = result;
+    });
+    // parse non-indexed params from data
+    const nonIndexedParams = decodeParameters(nonIndexedTypes, data);
+    // add non-indexed params to the return values
+    let index = 0;  
+    inputs.forEach((input, i) => {
+        if (!input.indexed) {
+            returnValues[i] = nonIndexedParams[index];
+            if (input.name) returnValues[input.name] = nonIndexedParams[index];
+            index++;
         }
     });
 

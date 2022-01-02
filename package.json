@@ -13,6 +13,7 @@
         "build:all": "yarn run build:node && yarn run build:web",
         "build": "yarn run build:vitejs && yarn run build:all && node build/writePkgJson.js",
         "test:rpc": "cross-env NODE_ENV=test nyc mocha --reporter=list --require ts-node/register -r tsconfig-paths/register test/rpc/index.js",
+        "test:abi": "cross-env NODE_ENV=test nyc mocha --reporter=list --require ts-node/register -r tsconfig-paths/register test/packages/abi.js",
         "test:buildTs": "cross-env NODE_ENV=test nyc mocha --reporter=progress --require ts-node/register -r tsconfig-paths/register test/envTest/testTs.ts",
         "test:coverage": "cross-env NODE_ENV=test nyc mocha --reporter=progress --require ts-node/register -r tsconfig-paths/register test/cover.js  --no-timeouts",
         "test": "yarn run format-type && cross-env NODE_ENV=test nyc mocha --reporter=progress --require ts-node/register -r tsconfig-paths/register test/index.js  --no-timeouts",
