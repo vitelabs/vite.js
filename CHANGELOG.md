@@ -1,3 +1,17 @@
+## [2.3.17-alpha.5](https://github.com/vitelabs/vite.js/compare/v2.3.17-alpha.2...v2.3.17-alpha.5) (2022-01-02)
+
+
+### fix
+
+* fix lint ([c62ba88](https://github.com/vitelabs/vite.js/commit/c62ba88903dc084510a00a7dd64e9973cd2ae764))
+
+
+
+## [2.3.17-alpha.4](https://github.com/vitelabs/vite.js/compare/v2.3.17-alpha.1...v2.3.17-alpha.4) (2022-01-01)
+
+
+
+
 ## [2.3.16](https://github.com/vitelabs/vite.js/compare/v2.3.15...v2.3.16) (2021-10-27)
 
 
