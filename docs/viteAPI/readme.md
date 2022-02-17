@@ -251,7 +251,7 @@ Refer to [Vite RPC Subscription](/api/rpc/subscribe_v2)
 ```javascript
 // ...
 
-provider.subscribe('createAccountBlockSubscription').then((event) => {
+provider.subscribe('subscribe_createAccountBlockSubscription').then((event) => {
     event.on((result) => {
         console.log(result);
     });
