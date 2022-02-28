@@ -82,7 +82,7 @@ class ProviderClass {
     }
 
     async subscribe(methodName, ...args) {
-        const subMethodName = this._provider.subscribe ? 'subscribe_subscribe' : methodName;
+        const subMethodName = this._provider.subscribe ? 'subscribe_subscribe' : `subscribe_${ methodName }Filter`;
         const params = this._provider.subscribe ? [ methodName, ...args ] : args;
 
         let rep;
