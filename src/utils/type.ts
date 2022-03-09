@@ -220,18 +220,18 @@ export declare type Methods = string |
 'net_nodeInfo' |
 'net_peers' |
 'util_getPoWNonce' |
-'subscribe_createSnapshotBlockFilter' |
-'subscribe_createAccountBlockFilter' |
-'subscribe_createAccountBlockFilterByAddress' |
-'subscribe_createUnreceivedBlockFilterByAddress' |
-'subscribe_createVmlogFilter' |
+'subscribe_newSnapshotBlockFilter' |
+'subscribe_newAccountBlockFilter' |
+'subscribe_newAccountBlockByAddressFilter' |
+'subscribe_newUnreceivedBlockByAddressFilter' |
+'subscribe_newVmLogFilter' |
 'subscribe_uninstallFilter' |
 'subscribe_getChangesByFilterId' |
-'subscribe_createSnapshotBlockSubscription' |
-'subscribe_createAccountBlockSubscription' |
-'subscribe_createAccountBlockSubscriptionByAddress' |
-'subscribe_createUnreceivedBlockSubscriptionByAddress' |
-'subscribe_createVmlogSubscription';
+'subscribe_newSnapshotBlock' |
+'subscribe_newAccountBlock' |
+'subscribe_newAccountBlockByAddress' |
+'subscribe_newUnreceivedBlockByAddress' |
+'subscribe_newVmLog';
 
 export declare interface RPCRequest {
     type?: string;
