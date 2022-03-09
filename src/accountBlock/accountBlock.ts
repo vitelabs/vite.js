@@ -326,11 +326,11 @@ class AccountBlockClass {
             throw err;
         }
 
-        const publicKeyBase64 = isBase64String(publicKey)
+        const publicKeyHex = isHexString(publicKey)
             ? publicKey
-            : Buffer.from(`${ publicKey }`, 'hex').toString('base64');
-        const publicKeyHex = isBase64String(publicKey)
-            ? Buffer.from(`${ publicKey }`, 'base64').toString('hex')
+            : Buffer.from(`${ publicKey }`, 'base64').toString('hex');
+        const publicKeyBase64 = isHexString(publicKey)
+            ? Buffer.from(`${ publicKey }`, 'hex').toString('base64')
             : publicKey;
 
         const address = getAddressFromPublicKey(publicKeyHex);
