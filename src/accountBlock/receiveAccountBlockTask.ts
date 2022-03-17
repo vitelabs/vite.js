@@ -8,13 +8,13 @@ import { Address, Hex, ProviderType, AccountBlockBlock } from './type';
 export class ReceiveAccountBlockTask {
     address: Address;
 
-    private provider: ProviderType
-    private sign: Function | undefined | null
-    private privateKey: Hex | undefined | null
-    private _account: Account
-    private _timer: any
-    private successCB: Function
-    private errorCB: Function
+    private provider: ProviderType;
+    private sign: Function | undefined | null;
+    private privateKey: Hex | undefined | null;
+    private _account: Account;
+    private _timer: any;
+    private successCB: Function;
+    private errorCB: Function;
 
     constructor({ address, provider, privateKey, sign }: {
         address: Address; provider: ProviderType; privateKey?: Hex; sign?: Function;

@@ -84,9 +84,9 @@ module.exports = {
             '~@vite/vitejs': path.join(__dirname, '/src/vitejs/')
         },
         fallback: {
-            "vm": false,
-            "stream": false,
-            "crypto": require.resolve('crypto-browserify'),
+            'vm': false,
+            'stream': false,
+            'crypto': require.resolve('crypto-browserify')
         },
         extensions: [ '.js', '.json', '.ts' ]
     }

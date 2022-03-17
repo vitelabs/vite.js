@@ -16,15 +16,15 @@ interface AddressObj {
 }
 
 class Wallet {
-    readonly rootPath: string
-    readonly mnemonics: string
-    readonly entropy: Hex
-    readonly wordlist: Array<string>
-    readonly passphrase: string
-    readonly seed: Buffer
-    readonly seedHex: Hex
+    readonly rootPath: string;
+    readonly mnemonics: string;
+    readonly entropy: Hex;
+    readonly wordlist: Array<string>;
+    readonly passphrase: string;
+    readonly seed: Buffer;
+    readonly seedHex: Hex;
 
-    private addressList: Object
+    private addressList: Object;
 
     constructor(mnemonics: string, wordlist: Array<string> = bip39.wordlists.EN, passphrase = '') {
         if (!hdKey.validateMnemonics(mnemonics, wordlist)) {

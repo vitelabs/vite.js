@@ -10,7 +10,7 @@ import Provider from './provider';
 
 
 class ViteAPIClass extends Provider {
-    private customTransactionType: Object
+    private customTransactionType: Object;
 
     constructor(provider: any, onInitCallback: Function) {
         super(provider, onInitCallback);

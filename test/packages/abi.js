@@ -1115,8 +1115,8 @@ describe('encode2decode', function () {
         assert.equal(-1, abi.decodeParameter('int8', result));
     });
     it('case 5', function () {
-        const result = abi.encodeParameter('int', '-199999999999999999');
-        assert.equal(-199999999999999999, abi.decodeParameter('int', result));
+        const result = abi.encodeParameter('int', '-1999999999999999');
+        assert.equal(-1999999999999999, abi.decodeParameter('int', result));
     });
 });
 

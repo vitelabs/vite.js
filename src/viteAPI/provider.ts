@@ -5,12 +5,12 @@ import EventEmitter from './eventEmitter';
 
 
 class ProviderClass {
-    isConnected: Boolean = false
-    private _provider: any
-    private subscriptionList: {[id:number]:EventEmitter} = {}
-    private subscriptionId = 0
-    private requestList: {[id:number]:()=>void} = {}
-    private requestId = 0
+    isConnected: Boolean = false;
+    private _provider: any;
+    private subscriptionList: {[id:number]:EventEmitter} = {};
+    private subscriptionId = 0;
+    private requestList: {[id:number]:()=>void} = {};
+    private requestId = 0;
 
     constructor(provider: any, onInitCallback: Function) {
         this._provider = provider;

@@ -29,8 +29,8 @@ class AccountBlockClass {
     publicKey?: Base64;
     _toAddress?: Address;
 
-    private privateKey: Hex
-    private provider: ProviderType
+    private privateKey: Hex;
+    private provider: ProviderType;
 
     constructor({ blockType, address, fee, data, sendBlockHash, amount, toAddress, tokenId }: {
         blockType: BlockType;

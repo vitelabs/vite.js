@@ -266,7 +266,7 @@ export declare class ProviderType {
 }
 
 export declare class ViteAPI extends ProviderType {
-    transactionType: Object
+    transactionType: Object;
 
     constructor(provider: any, onInitCallback: Function)
 
@@ -333,10 +333,10 @@ export declare class AccountBlockClassType {
     nonceHex: Hex;
     hash: Hex;
 
-    isRequestBlock: Boolean
-    isResponseBlock: Boolean
+    isRequestBlock: Boolean;
+    isResponseBlock: Boolean;
 
-    accountBlock: AccountBlockBlock
+    accountBlock: AccountBlockBlock;
 
     constructor({ blockType, address, fee, data, sendBlockHash, amount, toAddress, tokenId }: {
         blockType: BlockType;
