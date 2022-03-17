@@ -1,3 +1,8 @@
+## [2.3.18-alpha.2](https://github.com/vitelabs/vite.js/compare/v2.3.18-alpha.1...v2.3.18-alpha.2) (2022-03-17)
+
+
+
+
 ## [2.3.17-alpha.5](https://github.com/vitelabs/vite.js/compare/v2.3.17-alpha.2...v2.3.17-alpha.5) (2022-01-02)
 
 
