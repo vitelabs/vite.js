@@ -1170,7 +1170,7 @@ describe('getAbiByName', function () {
     });
     it('myethod', function () {
         const name = 'myethod';
-        const _data = abi.getAbiByName([ {
+        const _data = abi.getAbiByName([{
             name: 'myethod',
             type: 'function',
             inputs: [ {
@@ -1180,7 +1180,7 @@ describe('getAbiByName', function () {
                 type: 'string',
                 name: 'myString'
             } ]
-        } ], name);
+        }], name);
 
         assert.equal(_data.name, name);
     });
