@@ -1141,6 +1141,51 @@ describe('getAbiByType', function () {
     });
 });
 
+describe('getAbiByName', function () {
+    it('myMethod', function () {
+        const name = 'myMethod';
+        const _data = abi.getAbiByName([ {
+            name: 'myMethod',
+            type: 'function',
+            inputs: [ {
+                type: 'uint256',
+                name: 'myNumber'
+            }, {
+                type: 'string',
+                name: 'myString'
+            } ]
+        }, {
+            name: 'myethod',
+            type: 'function',
+            inputs: [ {
+                type: 'uint256',
+                name: 'myNumber'
+            }, {
+                type: 'string',
+                name: 'myString'
+            } ]
+        } ], name);
+
+        assert.equal(_data.name, name);
+    });
+    it('myethod', function () {
+        const name = 'myethod';
+        const _data = abi.getAbiByName([ {
+            name: 'myethod',
+            type: 'function',
+            inputs: [ {
+                type: 'uint256',
+                name: 'myNumber'
+            }, {
+                type: 'string',
+                name: 'myString'
+            } ]
+        } ], name);
+
+        assert.equal(_data.name, name);
+    });
+});
+
 describe('catch error', function () {
     it('uint', function () {
         try {

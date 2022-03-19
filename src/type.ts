@@ -277,6 +277,7 @@ export declare class ViteAPI extends ProviderType {
     }, decodeTxTypeList: 'all' | string[])
 
     callOffChainContract({ address, abi, code, params })
+    queryContractState({ address, abi, methodName, params })
     getNonce({ difficulty, previousHash, address }: {
         difficulty: BigInt;
         previousHash: Hex;

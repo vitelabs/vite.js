@@ -102,6 +102,25 @@ export function getAbiByType(jsonInterfaces, type) {
     return jsonInterfaces.find(e => e.type === type) || null;
 }
 
+export function getAbiByName(jsonInterfaces, methodName) {
+    if (!jsonInterfaces || !methodName) {
+        return null;
+    }
+
+    if (!(isArray(jsonInterfaces) || isObject(jsonInterfaces))) {
+        throw new Error('jsonInterfaces need array or object ');
+    }
+
+    // jsonInterfaces is an object
+    if (!isArray(jsonInterfaces) && isObject(jsonInterfaces)) {
+        if (jsonInterfaces.name === methodName) {
+            return jsonInterfaces;
+        }
+    }
+
+    // jsonInterfaces is an array
+    return jsonInterfaces.find(e => e.name === methodName) || null;
+}
 
 function getInputs(inputs, methodName?: string) {
     try {
