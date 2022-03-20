@@ -1,3 +1,24 @@
+## [2.3.18-alpha.3](https://github.com/vitelabs/vite.js/compare/v2.3.18-alpha.2...v2.3.18-alpha.3) (2022-03-20)
+
+
+### chore
+
+* 2.3.18-alpha.2 changelog ([4cb5000](https://github.com/vitelabs/vite.js/commit/4cb50002da455042cd06e6ec6683ac4dcd3000ac))
+
+### ci
+
+* update to use node 16 ([0d378f8](https://github.com/vitelabs/vite.js/commit/0d378f8ef216005873b10e2c26ebdee82cea0c3c))
+
+### feat
+
+* support contract_query ([fdab7da](https://github.com/vitelabs/vite.js/commit/fdab7dab3eb592c3ca5c13855245ad0f863195c6))
+
+### style
+
+* fix lint error ([262b1fb](https://github.com/vitelabs/vite.js/commit/262b1fb039369d365db8c2cf5ae2fff67f0a526b))
+
+
+
 ## [2.3.18-alpha.2](https://github.com/vitelabs/vite.js/compare/v2.3.18-alpha.1...v2.3.18-alpha.2) (2022-03-17)
 
 
