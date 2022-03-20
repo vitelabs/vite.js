@@ -1,6 +1,6 @@
 {
     "name": "@vite/vitejs-error",
-    "version": "2.3.18-alpha.2",
+    "version": "2.3.18-alpha.3",
     "main": "dist/index.node.js",
     "browser": "dist/index.web.js",
     "repository": {
