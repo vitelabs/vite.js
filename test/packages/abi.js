@@ -1139,50 +1139,63 @@ describe('getAbiByType', function () {
 
         assert.equal(_data.type, type);
     });
+    it('type is object', function () {
+        const type = 'constructor';
+        const _data = abi.getAbiByType({ 'type': 'constructor', 'inputs': [{ 'type': 'address' }] }, type);
+
+        assert.equal(_data.type, type);
+    });
+    it('empty type', function () {
+        const type = undefined;
+        const _data = abi.getAbiByType([
+            { 'type': 'offchain', 'inputs': [{ 'type': 'address' }] },
+            { 'type': 'constructor', 'inputs': [{ 'type': 'address' }] }
+        ], type);
+
+        assert.equal(_data, null);
+    });
 });
 
 describe('getAbiByName', function () {
-    it('myMethod', function () {
+    it('empty method name', function () {
+        const name = undefined;
+        const _data = abi.getAbiByName([
+            { name: 'myMethod', type: 'function', inputs: [ {type: 'uint256', name: 'myNumber'}, { type: 'string', name: 'myString'} ]},
+            { name: 'myethod', type: 'function', inputs: [ {type: 'uint256', name: 'myNumber'}, {type: 'string', name: 'myString'} ]}
+        ], name);
+
+        assert.equal(_data, null);
+    });
+    it('method doesn\'t exist', function () {
+        const name = 'myethod';
+        const _data = abi.getAbiByName([
+            { name: 'myMethod', type: 'function', inputs: [ {type: 'uint256', name: 'myNumber'}, { type: 'string', name: 'myString'} ]}
+        ], name);
+
+        assert.equal(_data, null);
+    });
+    it('abi is array', function () {
         const name = 'myMethod';
-        const _data = abi.getAbiByName([ {
-            name: 'myMethod',
-            type: 'function',
-            inputs: [ {
-                type: 'uint256',
-                name: 'myNumber'
-            }, {
-                type: 'string',
-                name: 'myString'
-            } ]
-        }, {
-            name: 'myethod',
-            type: 'function',
-            inputs: [ {
-                type: 'uint256',
-                name: 'myNumber'
-            }, {
-                type: 'string',
-                name: 'myString'
-            } ]
-        } ], name);
+        const _data = abi.getAbiByName([
+            { name: 'myMethod', type: 'function', inputs: [ {type: 'uint256', name: 'myNumber'}, { type: 'string', name: 'myString'} ]},
+            { name: 'myethod', type: 'function', inputs: [ {type: 'uint256', name: 'myNumber'}, {type: 'string', name: 'myString'} ]}
+        ], name);
 
         assert.equal(_data.name, name);
     });
-    it('myethod', function () {
-        const name = 'myethod';
-        const _data = abi.getAbiByName([{
-            name: 'myethod',
-            type: 'function',
-            inputs: [ {
-                type: 'uint256',
-                name: 'myNumber'
-            }, {
-                type: 'string',
-                name: 'myString'
-            } ]
-        }], name);
+    it('abi is object', function () {
+        const name = 'myMethod';
+        const _data = abi.getAbiByName({ name: 'myMethod', type: 'function', inputs: [{type: 'uint256', name: 'myNumber'}]}, name);
 
         assert.equal(_data.name, name);
+    });
+    it('abi is wrong', function () {
+        try {
+            const name = 'myMethod';
+            abi.getAbiByName('myMethod', name);
+        } catch (err) {
+            assert.equal(err.message.indexOf('jsonInterfaces need array or object') !== -1, true);
+        }
     });
 });
 
