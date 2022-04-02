@@ -15,7 +15,7 @@ declare const enum Charset {
 export const ed25519 = _e;
 
 export function uriStringify(o: {
-    schema: string; prefix: string; target_address: string; chain_id: Number; function_name: string; params: Object;
+    schema: string; prefix: string; target_address: string; chain_id: number; function_name: string; params: Object;
 }) {
     const { schema, prefix, target_address, chain_id, function_name, params } = o;
     const _schema = schema ? `${ schema }:` : 'vite:';
@@ -68,7 +68,7 @@ export function checkParams(params: Object, requiredP: Array<string> = [], valid
     return null;
 }
 
-export function isValidTokenId(tokenId: string): Boolean {
+export function isValidTokenId(tokenId: string): boolean {
     if (tokenId.indexOf('tti_') !== 0 || tokenId.length !== 28) {
         return false;
     }
@@ -104,25 +104,25 @@ export function getTokenIdFromOriginalTokenId(originalTokenId: string): TokenId 
     return `tti_${ originalTokenId }${ getTokenIdCheckSum(originalTokenId) }`;
 }
 
-export function isValidSBPName(sbpName: string): Boolean {
+export function isValidSBPName(sbpName: string): boolean {
     return /^[a-zA-Z0-9_\.]+(\s{1}[a-zA-Z0-9_\.]+)*$/g.test(sbpName) && sbpName.length <= 40;
 }
 
-export function isNonNegativeInteger(num: string): Boolean {
+export function isNonNegativeInteger(num: string): boolean {
     num = `${ num }`;
     return num && (/(^[1-9]\d*$)/g.test(num) || num === '0');
 }
 
-export function isInteger(num: string): Boolean {
+export function isInteger(num: string): boolean {
     num = `${ num }`;
     return num && (/^[\-]{0,1}[1-9]\d*$/g.test(num) || num === '0');
 }
 
-export const isArray = Array.isArray || function (obj): Boolean {
+export const isArray = Array.isArray || function (obj): boolean {
     return Object.prototype.toString.call(obj) === '[object Array]';
 };
 
-export function isObject(obj): Boolean {
+export function isObject(obj): boolean {
     const type = typeof obj;
     return type === 'function' || type === 'object' && !!obj;
 }
@@ -174,11 +174,11 @@ export function isSafeInteger(num): -1 | 0 | 1 {
     return 1;
 }
 
-export function isHexString(str: string): Boolean {
+export function isHexString(str: string): boolean {
     return /^[0-9a-fA-F]+$/.test(str);
 }
 
-export function isBase64String(str): Boolean {
+export function isBase64String(str): boolean {
     if (str === '') {
         return true;
     }

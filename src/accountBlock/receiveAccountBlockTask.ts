@@ -24,7 +24,7 @@ export class ReceiveAccountBlockTask {
             func: isValidAddress
         }, {
             name: 'privateKey',
-            func: function (str: string | undefined | null): Boolean {
+            func: function (str: string | undefined | null): boolean {
                 if (!sign && !privateKey) return false;
                 if (str === undefined || str === null) {
                     return true;
@@ -57,19 +57,19 @@ export class ReceiveAccountBlockTask {
 
     start({
         checkTime = 3000,
-        transctionNumber = 5
+        transactionNumber = 5
     }: {
         checkTime: number;
-        transctionNumber: number;
+        transactionNumber: number;
     } = {
         checkTime: 3000,
-        transctionNumber: 5
+        transactionNumber: 5
     }) {
         this.stop();
 
         const toReceive = () => {
             this._timer = setTimeout(async () => {
-                await this.reveive(transctionNumber);
+                await this.receive(transactionNumber);
                 if (!this._timer) {
                     return;
                 }
@@ -92,7 +92,7 @@ export class ReceiveAccountBlockTask {
         this.successCB = successCB;
     }
 
-    private async reveive(pageSize: number) {
+    private async receive(pageSize: number) {
         let unreceivedBlocks = null;
         try {
             unreceivedBlocks = await this.getUnreceivedBlocks(pageSize);

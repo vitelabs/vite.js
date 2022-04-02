@@ -159,7 +159,7 @@ function getHexAddr(originalAddress: Buffer, checkSum: Hex): Address {
     return ADDR_PRE + originalAddress.slice(0, 20).toString('hex') + checkSum;
 }
 
-function isValidHex(hexAddr: Address): Boolean {
+function isValidHex(hexAddr: Address): boolean {
     return hexAddr && hexAddr.length === ADDR_LEN && hexAddr.indexOf(ADDR_PRE) === 0;
 }
 
