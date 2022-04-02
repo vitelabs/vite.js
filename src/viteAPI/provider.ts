@@ -5,7 +5,7 @@ import EventEmitter from './eventEmitter';
 
 
 class ProviderClass {
-    isConnected: boolean = false;
+    isConnected = false;
     private _provider: any;
     private subscriptionList: {[id:number]:EventEmitter} = {};
     private subscriptionId = 0;
