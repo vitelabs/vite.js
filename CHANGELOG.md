@@ -1,3 +1,16 @@
+## [2.3.18](https://github.com/vitelabs/vite.js/compare/v2.3.18-alpha.3...v2.3.18) (2022-04-02)
+
+
+### chore
+
+* 2.3.18-alpha.3 changelog ([90b943b](https://github.com/vitelabs/vite.js/commit/90b943bcaa467fee4b38665e0b4df0fcf8e2b2bc))
+
+### test
+
+* add unit test ([8465c39](https://github.com/vitelabs/vite.js/commit/8465c39fbe8e8a187a98777fae6425be31723088))
+
+
+
 ## [2.3.18-alpha.3](https://github.com/vitelabs/vite.js/compare/v2.3.18-alpha.2...v2.3.18-alpha.3) (2022-03-20)
 
 
