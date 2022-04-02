@@ -101,6 +101,7 @@
         "es6-promise": "^4.2.5",
         "jsonrpc-lite": "^2.0.3",
         "net": "^1.0.2",
+        "node-fetch": "^2.6.0",
         "pure-uuid": "^1.5.3",
         "qs": "^6.6.0",
         "scryptsy": "^2.0.0",

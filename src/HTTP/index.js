@@ -1,6 +1,6 @@
 import Communication from '~@vite/vitejs-communication/communication.js';
-const XMLHttpRequest = typeof window !== 'undefined' && window.XMLHttpRequest
-    ? window.XMLHttpRequest : require('xhr2');
+const fetch = typeof window !== 'undefined' && window.fetch
+    ? window.fetch : require('node-fetch');
 
 class HttpRpc extends Communication {
     constructor(host = 'http://localhost:8415', timeout = 60000, options = { headers: [] }) {
@@ -13,26 +13,28 @@ class HttpRpc extends Communication {
         this.requestId = 0;
     }
 
-    _getRequest() {
-        const request = new XMLHttpRequest();
-
-        request.open('POST', this.host);
-
-        // Set headers
-        request.setRequestHeader('Content-Type', 'application/json;charset=utf-8');
-        this.headers && this.headers.forEach(function (header) {
-            request.setRequestHeader(header.name, header.value);
-        });
-        request.id = this.requestId++;
-
-        return request;
-    }
-
     _send(payload) {
         return new Promise((res, rej) => {
             // Init request
             let resetAbort = false;
-            const request = this._getRequest();
+
+            const headers = {
+                'Content-Type': 'application/json;charset=utf-8'
+            };
+            this.headers && this.headers.forEach(function (header) {
+                headers[header.name] = header.value;
+            });
+            
+            // const controller = new AbortController();
+
+            const request = fetch(this.host, {
+                method: 'POST',
+                headers,
+                body: JSON.stringify(payload),
+                // signal: controller.signal
+            });
+            request.id = this.requestId++;
+            
             const _request = this._addReq({
                 request,
                 rej: err => {
@@ -53,39 +55,32 @@ class HttpRpc extends Communication {
                     return;
                 }
 
-                request.abort();
+                // controller.abort();
+
                 clearRequestAndTimeout();
                 return rej(this.ERRORS.TIMEOUT(this.timeout));
             }, this.timeout) : null;
 
-            // Request finish
-            request.onreadystatechange = () => {
-                if (request.readyState !== 4 || resetAbort) {
-                    return;
-                }
-
-                clearRequestAndTimeout();
-                let result = request.responseText;
-
-                try {
-                    result = result ? JSON.parse(result) : null;
-                    if (result && result.error) {
-                        return rej(result);
+            request.then(response => {
+                return response.text().then((responseText) => {
+                    clearRequestAndTimeout();
+                    let result = responseText;
+    
+                    try {
+                        result = result ? JSON.parse(result) : null;
+                        if (result && result.error) {
+                            return rej(result);
+                        }
+                    } catch (e) {
+                        return rej(this.ERRORS.INVAILID_RESPONSE(result));
                     }
-                } catch (e) {
-                    return rej(this.ERRORS.INVAILID_RESPONSE(result));
-                }
-
-                return res(result);
-            };
-
-            // Send request
-            try {
-                request.send(JSON.stringify(payload));
-            } catch (err) {
+    
+                    return res(result);
+                });
+            }, (err) => {
                 clearRequestAndTimeout();
                 return rej(this.ERRORS.CONNECT(this.host));
-            }
+            });
         });
     }
 
