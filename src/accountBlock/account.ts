@@ -10,9 +10,9 @@ import { Hex, Address, TokenId, BigInt, Base64, Int32, Uint8, Uint32, Uint256, B
 
 
 class AccountClass {
-    readonly address: Address
-    private provider: ProviderType
-    private privateKey: Hex
+    readonly address: Address;
+    private provider: ProviderType;
+    private privateKey: Hex;
 
     constructor(address: Address) {
         const err = checkParams({ address }, ['address'], [{

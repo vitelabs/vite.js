@@ -1,3 +1,42 @@
+## [2.3.18](https://github.com/vitelabs/vite.js/compare/v2.3.18-alpha.3...v2.3.18) (2022-04-02)
+
+
+### chore
+
+* 2.3.18-alpha.3 changelog ([90b943b](https://github.com/vitelabs/vite.js/commit/90b943bcaa467fee4b38665e0b4df0fcf8e2b2bc))
+
+### test
+
+* add unit test ([8465c39](https://github.com/vitelabs/vite.js/commit/8465c39fbe8e8a187a98777fae6425be31723088))
+
+
+
+## [2.3.18-alpha.3](https://github.com/vitelabs/vite.js/compare/v2.3.18-alpha.2...v2.3.18-alpha.3) (2022-03-20)
+
+
+### chore
+
+* 2.3.18-alpha.2 changelog ([4cb5000](https://github.com/vitelabs/vite.js/commit/4cb50002da455042cd06e6ec6683ac4dcd3000ac))
+
+### ci
+
+* update to use node 16 ([0d378f8](https://github.com/vitelabs/vite.js/commit/0d378f8ef216005873b10e2c26ebdee82cea0c3c))
+
+### feat
+
+* support contract_query ([fdab7da](https://github.com/vitelabs/vite.js/commit/fdab7dab3eb592c3ca5c13855245ad0f863195c6))
+
+### style
+
+* fix lint error ([262b1fb](https://github.com/vitelabs/vite.js/commit/262b1fb039369d365db8c2cf5ae2fff67f0a526b))
+
+
+
+## [2.3.18-alpha.2](https://github.com/vitelabs/vite.js/compare/v2.3.18-alpha.1...v2.3.18-alpha.2) (2022-03-17)
+
+
+
+
 ## [2.3.17-alpha.5](https://github.com/vitelabs/vite.js/compare/v2.3.17-alpha.2...v2.3.17-alpha.5) (2022-01-02)
 
 
