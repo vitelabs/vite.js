@@ -218,14 +218,14 @@ export function isValidAccountBlock(accountBlock) {
     return !err;
 }
 
-export function isRequestBlock(blockType: BlockType): Boolean {
+export function isRequestBlock(blockType: BlockType): boolean {
     return blockType === BlockType.CreateContractRequest
         || blockType === BlockType.TransferRequest
         || blockType === BlockType.RefundByContractRequest
         || blockType === BlockType.ReIssueRequest;
 }
 
-export function isResponseBlock(blockType: BlockType): Boolean {
+export function isResponseBlock(blockType: BlockType): boolean {
     return blockType === BlockType.Response
         || blockType === BlockType.ResponseFail
         || blockType === BlockType.GenesisResponse;

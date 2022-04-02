@@ -151,11 +151,11 @@ class AccountBlockClass {
         return getNonceHex(this.nonce);
     }
 
-    get isRequestBlock(): Boolean {
+    get isRequestBlock(): boolean {
         return isRequestBlock(this.blockType);
     }
 
-    get isResponseBlock(): Boolean {
+    get isResponseBlock(): boolean {
         return isResponseBlock(this.blockType);
     }
 
@@ -251,7 +251,7 @@ class AccountBlockClass {
             requiredQuota: Uint64;
             difficulty: BigInt;
             qc: BigInt;
-            isCongestion: Boolean;
+            isCongestion: boolean;
         } = await this.provider.request('ledger_getPoWDifficulty', {
             address: this.address,
             previousHash: this.previousHash,
