@@ -11,27 +11,33 @@ class IpcWs extends Communication {
         this.connectStatus = false;
         this.responseCbs = {};
 
-        this._connectEnd = null;
-        this._connectError = null;
-        this._connectTimeout = null;
-        this._connectConnect = null;
-        this._connectClose = null;
+        this._connectEnd = new Set();
+        this._connectError = new Set();
+        this._connectTimeout = new Set();
+        this._connectConnect = new Set();
+        this._connectClose = new Set();
 
         this.subscribeMethod = null;
     }
 
+    _doCall(s, ...args) {
+        for (const f of s) {
+            f(...args);
+        }
+    }
+
     _connected() {
         this.connectStatus = true;
-        this._connectConnect && this._connectConnect();
+        this._doCall(this._connectConnect);
     }
 
     _closed() {
         this.connectStatus = false;
-        this._connectClose && this._connectClose();
+        this._doCall(this._connectClose);
     }
 
     _errored(err) {
-        this._connectError && this._connectError(err);
+        this._doCall(this._connectError, err);
     }
 
     _parse(data) {
@@ -69,13 +75,13 @@ class IpcWs extends Communication {
                 return;
             }
 
-            for (let i = 0; i < ele.length; i++) {
-                if (!ele[i].id) {
-                    this.subscribeMethod && this.subscribeMethod(ele[i]);
+            for (const x of ele) {
+                if (!x.id) {
+                    this.subscribeMethod && this.subscribeMethod(x);
                     continue;
                 }
 
-                const id = ele[i].id;
+                const id = x.id;
                 if (!this.responseCbs[id]) {
                     continue;
                 }
@@ -164,12 +170,19 @@ class IpcWs extends Communication {
         if (!cb) {
             return this.ERRORS.IPC_ON_CB(type);
         }
-        this[eventType] = cb;
+        this[eventType].add(cb);
     }
 
-    remove(type) {
+    remove(type, cb) {
         const eventType = this._checkOnType(type);
-        eventType && (this[eventType] = null);
+        if (eventType && this[eventType].has(cb)) {
+            this[eventType].delete(cb);
+        }
+    }
+
+    removeAll(type) {
+        const eventType = this._checkOnType(type);
+        eventType && this[eventType].clear();
     }
 
     request(methodName, params) {
@@ -224,9 +237,9 @@ export default IPC_WS;
 function getIdFromPayloads(payloads) {
     let id;
     if (payloads instanceof Array) {
-        for (let i = 0; i < payloads.length; i++) {
-            if (payloads[i].id) {
-                id = payloads[i].id;
+        for (const p of payloads) {
+            if (p.id) {
+                id = p.id;
                 break;
             }
         }

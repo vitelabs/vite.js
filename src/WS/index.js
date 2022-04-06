@@ -5,7 +5,10 @@ class WsRpc extends IPC_WS {
     constructor(path = 'ws://localhost:31420', timeout = 60000, options = {
         protocol: '',
         headers: '',
-        clientConfig: '',
+        clientConfig: {
+            keepalive: true,
+            keepaliveInterval: 30 * 1000
+        },
         retryTimes: 10,
         retryInterval: 10000
     }) {
@@ -72,9 +75,9 @@ class WsRpc extends IPC_WS {
 
     destroy() {
         this.disconnect();
-        this.remove('error');
-        this.remove('close');
-        this.remove('connect');
+        this.removeAll('error');
+        this.removeAll('close');
+        this.removeAll('connect');
         this._destroyed = true;
     }
 }
