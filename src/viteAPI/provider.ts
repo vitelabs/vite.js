@@ -182,10 +182,12 @@ class ProviderClass {
             return;
         }
 
-        this._provider.on && this._provider.on('connect', () => {
+        const once = () => {
             connectedCB();
-            this._provider.remove('connect');
-        });
+            this._provider.remove('connect', once);
+        };
+
+        this._provider.on && this._provider.on('connect', once);
     }
 }
 
