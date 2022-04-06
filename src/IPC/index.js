@@ -43,10 +43,10 @@ class IpcRpc extends IPC_WS {
             this._errored();
         });
         this.socket.on('end', err => {
-            this._connectEnd && this._connectEnd(err);
+            this._doCall(this._connectEnd, err);
         });
         this.socket.on('timeout', err => {
-            this._connectTimeout && this._connectTimeout(err);
+            this._doCall(this._connectTimeout, err);
         });
 
         let ipcBuffer = '';

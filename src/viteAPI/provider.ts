@@ -12,6 +12,7 @@ class ProviderClass {
     private requestList: {[id:number]:()=>void} = {};
     private requestId = 0;
 
+
     constructor(provider: any, onInitCallback: Function) {
         this._provider = provider;
         this.connectedOnce(onInitCallback);
@@ -182,10 +183,12 @@ class ProviderClass {
             return;
         }
 
-        this._provider.on && this._provider.on('connect', () => {
+        const once = () => {
             connectedCB();
-            this._provider.remove('connect');
-        });
+            this._provider.remove('connect', once);
+        };
+
+        this._provider.on && this._provider.on('connect', once);
     }
 }
 
