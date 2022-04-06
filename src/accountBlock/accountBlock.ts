@@ -29,8 +29,8 @@ class AccountBlockClass {
     publicKey?: Base64;
     _toAddress?: Address;
 
-    private privateKey: Hex
-    private provider: ProviderType
+    private privateKey: Hex;
+    private provider: ProviderType;
 
     constructor({ blockType, address, fee, data, sendBlockHash, amount, toAddress, tokenId }: {
         blockType: BlockType;
@@ -151,11 +151,11 @@ class AccountBlockClass {
         return getNonceHex(this.nonce);
     }
 
-    get isRequestBlock(): Boolean {
+    get isRequestBlock(): boolean {
         return isRequestBlock(this.blockType);
     }
 
-    get isResponseBlock(): Boolean {
+    get isResponseBlock(): boolean {
         return isResponseBlock(this.blockType);
     }
 
@@ -251,7 +251,7 @@ class AccountBlockClass {
             requiredQuota: Uint64;
             difficulty: BigInt;
             qc: BigInt;
-            isCongestion: Boolean;
+            isCongestion: boolean;
         } = await this.provider.request('ledger_getPoWDifficulty', {
             address: this.address,
             previousHash: this.previousHash,
@@ -326,11 +326,11 @@ class AccountBlockClass {
             throw err;
         }
 
-        const publicKeyBase64 = isBase64String(publicKey)
+        const publicKeyHex = isHexString(publicKey)
             ? publicKey
-            : Buffer.from(`${ publicKey }`, 'hex').toString('base64');
-        const publicKeyHex = isBase64String(publicKey)
-            ? Buffer.from(`${ publicKey }`, 'base64').toString('hex')
+            : Buffer.from(`${ publicKey }`, 'base64').toString('hex');
+        const publicKeyBase64 = isHexString(publicKey)
+            ? Buffer.from(`${ publicKey }`, 'hex').toString('base64')
             : publicKey;
 
         const address = getAddressFromPublicKey(publicKeyHex);

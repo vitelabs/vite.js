@@ -2,7 +2,7 @@ const config = require('../rpcConfig');
 
 import HTTP_RPC from '../../src/HTTP';
 import ViteAPI from '../../src/viteAPI/index';
-import Transaction from '../../src/accountBlock/transaction';
+import Account from '../../src/accountBlock/account';
 import walletUtils from '../../src/wallet/index';
 import { Vite_TokenId } from '../../src/constant/index';
 
@@ -16,7 +16,7 @@ async function GetViteFromWorld(toAddress, amount = Default_Amount) {
     const balanceInfo = await provider.getBalanceInfo(address);
     console.log('[LOG] GetViteFromWorld BalanceInfo', address, balanceInfo, '\n');
 
-    const tx = new Transaction(address);
+    const tx = new Account(address);
     tx.setProvider(provider);
     
     const data = await tx.send({

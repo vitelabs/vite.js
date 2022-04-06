@@ -36,7 +36,7 @@ export default async function start() {
     });
     ReceiveTask.start({
         checkTime: 3000,
-        transctionNumber: 10
+        transactionNumber: 10
     });
 }
 

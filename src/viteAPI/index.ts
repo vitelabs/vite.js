@@ -1,7 +1,7 @@
 import { Contracts } from '~@vite/vitejs-constant';
 import { checkParams, isArray, blake2bHex } from '~@vite/vitejs-utils';
 import { isValidAddress, AddressType, getOriginalAddressFromAddress } from '~@vite/vitejs-wallet/address';
-import { decodeParameters, encodeFunctionCall, getAbiByType } from '~@vite/vitejs-abi';
+import { decodeParameters, encodeFunctionCall, getAbiByType, getAbiByName } from '~@vite/vitejs-abi';
 import { Default_Contract_TransactionType, encodeContractList, getTransactionType, decodeContractAccountBlock } from '~@vite/vitejs-accountblock/utils';
 
 import { Address, AccountBlockType, Transaction, Hex, Base64, BigInt } from './type';
@@ -10,7 +10,7 @@ import Provider from './provider';
 
 
 class ViteAPIClass extends Provider {
-    private customTransactionType: Object
+    private customTransactionType: Object;
 
     constructor(provider: any, onInitCallback: Function) {
         super(provider, onInitCallback);
@@ -150,6 +150,34 @@ class ViteAPIClass extends Provider {
 
         const hexResult = Buffer.from(result, 'base64').toString('hex');
         return decodeParameters(offchainAbi.outputs, hexResult);
+    }
+
+    async queryContractState({ address, abi, methodName, params }) {
+        const err = checkParams({ address, abi }, [ 'address', 'abi' ], [{
+            name: 'address',
+            func: _a => isValidAddress(_a) === AddressType.Contract
+        }]);
+        if (err) {
+            throw err;
+        }
+
+        const methodAbi = getAbiByName(abi, methodName);
+        if (!methodAbi) {
+            throw new Error('Can\'t find abi for the method');
+        }
+
+        const data = encodeFunctionCall(methodAbi, params || []);
+        const result = await this.request('contract_query', {
+            address,
+            data: Buffer.from(data, 'hex').toString('base64')
+        });
+
+        if (!result) {
+            return null;
+        }
+
+        const hexResult = Buffer.from(result, 'base64').toString('hex');
+        return decodeParameters(methodAbi.outputs, hexResult);
     }
 
     async getNonce({ difficulty, previousHash, address }: {

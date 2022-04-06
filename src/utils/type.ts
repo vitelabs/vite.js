@@ -90,9 +90,9 @@ export declare type TokenInfo = {
     decimals: Uint8;
     owner: Address;
     tokenId: TokenId;
-    isReIssuable: Boolean;
+    isReIssuable: boolean;
     maxSupply: BigInt;
-    isOwnerBurnOnly: Boolean;
+    isOwnerBurnOnly: boolean;
     index: Uint16;
 }
 
@@ -220,18 +220,18 @@ export declare type Methods = string |
 'net_nodeInfo' |
 'net_peers' |
 'util_getPoWNonce' |
-'subscribe_createSnapshotBlockFilter' |
-'subscribe_createAccountBlockFilter' |
-'subscribe_createAccountBlockFilterByAddress' |
-'subscribe_createUnreceivedBlockFilterByAddress' |
-'subscribe_createVmlogFilter' |
+'subscribe_newSnapshotBlockFilter' |
+'subscribe_newAccountBlockFilter' |
+'subscribe_newAccountBlockByAddressFilter' |
+'subscribe_newUnreceivedBlockByAddressFilter' |
+'subscribe_newVmLogFilter' |
 'subscribe_uninstallFilter' |
 'subscribe_getChangesByFilterId' |
-'subscribe_createSnapshotBlockSubscription' |
-'subscribe_createAccountBlockSubscription' |
-'subscribe_createAccountBlockSubscriptionByAddress' |
-'subscribe_createUnreceivedBlockSubscriptionByAddress' |
-'subscribe_createVmlogSubscription';
+'subscribe_newSnapshotBlock' |
+'subscribe_newAccountBlock' |
+'subscribe_newAccountBlockByAddress' |
+'subscribe_newUnreceivedBlockByAddress' |
+'subscribe_newVmLog';
 
 export declare interface RPCRequest {
     type?: string;
@@ -252,7 +252,7 @@ export declare interface RPCError {
 }
 
 export declare class ProviderType {
-    isConnected: Boolean;
+    isConnected: boolean;
 
     constructor(provider: any, onInitCallback: Function)
 
@@ -266,7 +266,7 @@ export declare class ProviderType {
 }
 
 export declare class ViteAPI extends ProviderType {
-    transactionType: Object
+    transactionType: Object;
 
     constructor(provider: any, onInitCallback: Function)
 
@@ -277,6 +277,7 @@ export declare class ViteAPI extends ProviderType {
     }, decodeTxTypeList: 'all' | string[])
 
     callOffChainContract({ address, abi, code, params })
+    queryContractState({ address, abi, methodName, params })
     getNonce({ difficulty, previousHash, address }: {
         difficulty: BigInt;
         previousHash: Hex;
@@ -333,10 +334,10 @@ export declare class AccountBlockClassType {
     nonceHex: Hex;
     hash: Hex;
 
-    isRequestBlock: Boolean
-    isResponseBlock: Boolean
+    isRequestBlock: boolean;
+    isResponseBlock: boolean;
 
-    accountBlock: AccountBlockBlock
+    accountBlock: AccountBlockBlock;
 
     constructor({ blockType, address, fee, data, sendBlockHash, amount, toAddress, tokenId }: {
         blockType: BlockType;

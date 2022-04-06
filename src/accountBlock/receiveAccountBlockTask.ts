@@ -1,20 +1,20 @@
 import { isValidAddress } from '~@vite/vitejs-wallet/address';
 import { checkParams, isHexString } from '~@vite/vitejs-utils';
 
-import Transaction from './transaction';
+import Account from './account';
 
 import { Address, Hex, ProviderType, AccountBlockBlock } from './type';
 
 export class ReceiveAccountBlockTask {
     address: Address;
 
-    private provider: ProviderType
-    private sign: Function | undefined | null
-    private privateKey: Hex | undefined | null
-    private _transaction: Transaction
-    private _timer: any
-    private successCB: Function
-    private errorCB: Function
+    private provider: ProviderType;
+    private sign: Function | undefined | null;
+    private privateKey: Hex | undefined | null;
+    private _account: Account;
+    private _timer: any;
+    private successCB: Function;
+    private errorCB: Function;
 
     constructor({ address, provider, privateKey, sign }: {
         address: Address; provider: ProviderType; privateKey?: Hex; sign?: Function;
@@ -24,7 +24,7 @@ export class ReceiveAccountBlockTask {
             func: isValidAddress
         }, {
             name: 'privateKey',
-            func: function (str: string | undefined | null): Boolean {
+            func: function (str: string | undefined | null): boolean {
                 if (!sign && !privateKey) return false;
                 if (str === undefined || str === null) {
                     return true;
@@ -42,11 +42,11 @@ export class ReceiveAccountBlockTask {
         this.sign = sign;
         this.privateKey = privateKey;
 
-        this._transaction = new Transaction(address);
-        this._transaction.setProvider(provider);
+        this._account = new Account(address);
+        this._account.setProvider(provider);
 
         if (privateKey) {
-            this._transaction.setPrivateKey(privateKey);
+            this._account.setPrivateKey(privateKey);
         }
 
         this._timer = null;
@@ -57,19 +57,19 @@ export class ReceiveAccountBlockTask {
 
     start({
         checkTime = 3000,
-        transctionNumber = 5
+        transactionNumber = 5
     }: {
         checkTime: number;
-        transctionNumber: number;
+        transactionNumber: number;
     } = {
         checkTime: 3000,
-        transctionNumber: 5
+        transactionNumber: 5
     }) {
         this.stop();
 
         const toReceive = () => {
             this._timer = setTimeout(async () => {
-                await this.reveive(transctionNumber);
+                await this.receive(transactionNumber);
                 if (!this._timer) {
                     return;
                 }
@@ -92,7 +92,7 @@ export class ReceiveAccountBlockTask {
         this.successCB = successCB;
     }
 
-    private async reveive(pageSize: number) {
+    private async receive(pageSize: number) {
         let unreceivedBlocks = null;
         try {
             unreceivedBlocks = await this.getUnreceivedBlocks(pageSize);
@@ -171,7 +171,7 @@ export class ReceiveAccountBlockTask {
     }
 
     private async receiveAccountBlockByPrevious({ sendBlockHash, previousAccountBlock }) {
-        const accountBlock = this._transaction.receive({ sendBlockHash });
+        const accountBlock = this._account.receive({ sendBlockHash });
 
         if (this.privateKey) {
             if (!previousAccountBlock) {

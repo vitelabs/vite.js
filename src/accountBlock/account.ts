@@ -9,10 +9,10 @@ import { getCreateContractData, getCallContractData } from './utils';
 import { Hex, Address, TokenId, BigInt, Base64, Int32, Uint8, Uint32, Uint256, Bytes32, ProviderType } from './type';
 
 
-class TransactionClass {
-    readonly address: Address
-    private provider: ProviderType
-    private privateKey: Hex
+class AccountClass {
+    readonly address: Address;
+    private provider: ProviderType;
+    private privateKey: Hex;
 
     constructor(address: Address) {
         const err = checkParams({ address }, ['address'], [{
@@ -26,12 +26,12 @@ class TransactionClass {
         this.address = address;
     }
 
-    setProvider(provider: ProviderType): TransactionClass {
+    setProvider(provider: ProviderType): AccountClass {
         this.provider = provider;
         return this;
     }
 
-    setPrivateKey(privateKey: Hex): TransactionClass {
+    setPrivateKey(privateKey: Hex): AccountClass {
         const err = checkParams({ privateKey }, ['privateKey'], [{
             name: 'privateKey',
             func: isHexString
@@ -839,5 +839,5 @@ class TransactionClass {
     }
 }
 
-export const Transaction = TransactionClass;
-export default TransactionClass;
+export const Account = AccountClass;
+export default AccountClass;
