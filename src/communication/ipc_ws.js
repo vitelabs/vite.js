@@ -75,13 +75,13 @@ class IpcWs extends Communication {
                 return;
             }
 
-            for (const x of ele) {
-                if (!x.id) {
-                    this.subscribeMethod && this.subscribeMethod(x);
+            for (let i = 0; i < ele.length; i++) {
+                if (!ele[i].id) {
+                    this.subscribeMethod && this.subscribeMethod(ele[i]);
                     continue;
                 }
 
-                const id = x.id;
+                const id = ele[i].id;
                 if (!this.responseCbs[id]) {
                     continue;
                 }
@@ -241,9 +241,9 @@ export default IPC_WS;
 function getIdFromPayloads(payloads) {
     let id;
     if (payloads instanceof Array) {
-        for (const p of payloads) {
-            if (p.id) {
-                id = p.id;
+        for (let i = 0; i < payloads.length; i++) {
+            if (payloads[i].id) {
+                id = payloads[i].id;
                 break;
             }
         }

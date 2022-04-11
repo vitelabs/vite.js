@@ -12,14 +12,16 @@ class ProviderClass {
     private requestList: {[id:number]:()=>void} = {};
     private requestId = 0;
 
-
     constructor(provider: any, onInitCallback: Function) {
         this._provider = provider;
         this.connectedOnce(onInitCallback);
     }
 
     setProvider(provider, onInitCallback, abort) {
-        abort && this._provider.abort(abort);
+        try {
+            abort && this._provider.abort(abort);
+        } catch (e) {
+        }
         this.unsubscribeAll();
 
         if (!provider) {
@@ -183,7 +185,7 @@ class ProviderClass {
             return;
         }
 
-        const once = () => {
+        const once = (): void => {
             connectedCB();
             this._provider.remove('connect', once);
         };
