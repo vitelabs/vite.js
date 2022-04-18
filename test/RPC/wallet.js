@@ -85,8 +85,8 @@ async function CheckBalance() {
     
     console.log('[LOG] CheckMyBalance unreceived', unreceived, '\n');
 
-    if (balance && Number(balance.totalNumber)) {
-        console.log('[LOG] CheckMyBalance', balance.tokenBalanceInfoMap[Vite_TokenId], '\n');
+    if (balance && Number(balance.blockCount)) {
+        console.log('[LOG] CheckMyBalance', balance.balanceInfoMap[Vite_TokenId], '\n');
         return null;
     }
 
@@ -97,7 +97,7 @@ async function CheckBalance() {
 async function CheckQuota(previousAccountBlock) {
     const quotaResult = await viteProvider.request('contract_getQuotaByAccount', address);
     console.log('[LOG] contract_getQuotaByAccount', quotaResult, '\n');
-    
+
     if (Number(quotaResult.currentQuota)) {
         return previousAccountBlock;
     }
@@ -126,7 +126,7 @@ async function CheckQuota(previousAccountBlock) {
 
 async function SendTxToMyself(previousAccountBlock) {
     const accountBlock = await tx.send({
-        toAddress: address, 
+        toAddress: address,
         tokenId: Vite_TokenId,
         amount: '10000000000000000000'
     });
@@ -187,7 +187,7 @@ async function UpdateSBPBlockProducingAddress(previousAccountBlock) {
         sbpName: 'CS_TEST_NODE',
         blockProducingAddress: 'vite_869a06b8963bd5d88a004723ad5d45f345a71c0884e2c80e88'
     });
-    
+
     const result = await SendTXByPreviousAccountBlock(accountBlock, previousAccountBlock);
     console.log('[LOG] UpdateSBPBlockProducingAddress', result, '\n');
     return result;
@@ -196,7 +196,7 @@ async function UpdateSBPBlockProducingAddress(previousAccountBlock) {
 async function WithdrawSBPReward(previousAccountBlock) {
     const accountBlock = tx.withdrawSBPReward({
         sbpName:'CS_TEST_NODE',
-        receiveAddress: address    
+        receiveAddress: address
     });
 
     const result = await SendTXByPreviousAccountBlock(accountBlock, previousAccountBlock);
@@ -206,7 +206,7 @@ async function WithdrawSBPReward(previousAccountBlock) {
 
 async function RevokeSBP(previousAccountBlock) {
     const accountBlock = tx.revokeSBP({
-        sbpName:'CS_TEST_NODE'  
+        sbpName:'CS_TEST_NODE'
     });
 
     const result = await SendTXByPreviousAccountBlock(accountBlock, previousAccountBlock);
@@ -256,7 +256,7 @@ async function CancelQuotaStake(previousAccountBlock) {
 
     let backQuota = list.stakeList[0];
 
-    const accountBlock = null;
+    let accountBlock = null;
     if (!backQuota.id) {
         console.log('[LOG] cancelQuotaStake_V2 no id', backQuota, '\n');
 
@@ -362,7 +362,7 @@ async function CheckTokenList(previousAccountBlock) {
     if (reIssueOne) {
         await sleep(2000);
         previousAccountBlock = await ReIssueToken(previousAccountBlock, reIssueOne);
-    
+
         await sleep(2000 * 3);
         previousAccountBlock = await BurnToken(previousAccountBlock, reIssueOne);
     }
@@ -382,12 +382,12 @@ async function CheckTokenList(previousAccountBlock) {
 
 async function IssueToken(previousAccountBlock) {
     const accountBlock = await tx.issueToken({
-        tokenName: 'cstestToken', 
-        isReIssuable: true, 
-        maxSupply: '10000000000000000000000000', 
-        isOwnerBurnOnly: false, 
-        totalSupply: '100000000000000000000000', 
-        decimals: 2, 
+        tokenName: 'cstestToken',
+        isReIssuable: true,
+        maxSupply: '10000000000000000000000000',
+        isOwnerBurnOnly: false,
+        totalSupply: '100000000000000000000000',
+        decimals: 2,
         tokenSymbol: 'CSTT'
     });
 

@@ -13,28 +13,30 @@ class HttpRpc extends Communication {
         this.requestId = 0;
     }
 
+    _getRequest(payload) {
+        const headers = {'Content-Type': 'application/json;charset=utf-8'};
+        this.headers && this.headers.forEach(function (header) {
+            headers[header.name] = header.value;
+        });
+
+        const controller = new AbortController();
+        const request = fetch(this.host, {
+            method: 'POST',
+            headers,
+            body: JSON.stringify(payload),
+            signal: controller.signal
+        });
+        request.id = this.requestId++;
+        request.abort = () => controller.abort();
+
+        return request;
+    }
+
     _send(payload) {
         return new Promise((res, rej) => {
             // Init request
             let resetAbort = false;
-
-            const headers = {
-                'Content-Type': 'application/json;charset=utf-8'
-            };
-            this.headers && this.headers.forEach(function (header) {
-                headers[header.name] = header.value;
-            });
-            
-            // const controller = new AbortController();
-
-            const request = fetch(this.host, {
-                method: 'POST',
-                headers,
-                body: JSON.stringify(payload),
-                // signal: controller.signal
-            });
-            request.id = this.requestId++;
-            
+            const request = this._getRequest(payload);
             const _request = this._addReq({
                 request,
                 rej: err => {
@@ -55,29 +57,28 @@ class HttpRpc extends Communication {
                     return;
                 }
 
-                // controller.abort();
-
+                request.abort();
                 clearRequestAndTimeout();
                 return rej(this.ERRORS.TIMEOUT(this.timeout));
             }, this.timeout) : null;
 
+            // Request finish
             request.then(response => {
-                return response.text().then((responseText) => {
-                    clearRequestAndTimeout();
-                    let result = responseText;
-    
-                    try {
-                        result = result ? JSON.parse(result) : null;
-                        if (result && result.error) {
-                            return rej(result);
-                        }
-                    } catch (e) {
-                        return rej(this.ERRORS.INVAILID_RESPONSE(result));
+                if (!response.ok) {
+                    return rej(this.ERRORS.INVAILID_RESPONSE(response));
+                }
+                return response.json().then(responseText => {
+                    if (resetAbort) {
+                        return;
                     }
-    
+                    clearRequestAndTimeout();
+                    const result = responseText;
+                    if (result && result.error) {
+                        return rej(result);
+                    }
                     return res(result);
-                });
-            }, (err) => {
+                }).catch(err => rej(this.ERRORS.INVAILID_RESPONSE(err)));
+            }).catch(err => {
                 clearRequestAndTimeout();
                 return rej(this.ERRORS.CONNECT(this.host));
             });
@@ -152,3 +153,4 @@ class HttpRpc extends Communication {
 
 export const HTTP_RPC = HttpRpc;
 export default HTTP_RPC;
+

@@ -1,6 +1,6 @@
 const config = require('../rpcConfig');
 
-import HTTP_RPC from '../../src/HTTP';
+import HTTP_RPC from '../../src/HTTP/index';
 import ViteAPI from '../../src/viteAPI/index';
 import Account from '../../src/accountBlock/account';
 import walletUtils from '../../src/wallet/index';
@@ -9,7 +9,9 @@ import { Vite_TokenId } from '../../src/constant/index';
 const Default_Amount = '1000000000000000000000000'; // 1000000 VITE
 
 async function GetViteFromWorld(toAddress, amount = Default_Amount) {
-    const provider = new ViteAPI(new HTTP_RPC(config.http));
+    const provider = new ViteAPI(new HTTP_RPC(config.http), () => {
+        console.log('Connected');
+    });
     const worldWallet = walletUtils.getWallet(config.mnemonic);
     const { address, privateKey }  = worldWallet.deriveAddress(config.addrIndex);
 

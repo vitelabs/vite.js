@@ -12,6 +12,7 @@ describe('ViteAPI Test: src/viteAPI', function () {
     require('./packages/viteAPI/provider');
     require('./packages/viteAPI/index');
     require('./packages/viteAPI/ws');
+    require('./packages/viteAPI/http');
 });
 
 require('./packages/accountBlock/account');

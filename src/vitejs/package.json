@@ -32,7 +32,7 @@
         "qs": "^6.10.3",
         "scryptsy": "^2.1.0",
         "websocket": "^1.0.34",
-        "xhr2": "^0.2.1"
+        "node-fetch": "^2.6.7"
     },
     "types": "./distSrc/index.ts"
 }
