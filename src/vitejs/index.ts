@@ -1,4 +1,4 @@
-import '@babel/polyfill';
+import 'core-js/stable';
 require('es6-promise').polyfill();
 
 import * as _abi from '~@vite/vitejs-abi';

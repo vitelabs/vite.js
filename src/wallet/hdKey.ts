@@ -17,7 +17,7 @@ export function createMnemonics(strength = 256, wordlist: Array<string> = bip39.
     return bip39.generateMnemonic(strength, null, wordlist);
 }
 
-export function validateMnemonics(mnemonic: string, wordlist: Array<string> = bip39.wordlists.EN): Boolean {
+export function validateMnemonics(mnemonic: string, wordlist: Array<string> = bip39.wordlists.EN): boolean {
     return mnemonic && bip39.validateMnemonic(mnemonic, wordlist);
 }
 

@@ -1,11 +1,11 @@
 import { ProviderType } from './type';
 
 class EventEmitter {
-    readonly id: string
-    readonly isSubscribe: boolean
-    private provider: ProviderType
-    private timeLoop: any
-    private callback: Function
+    readonly id: string;
+    readonly isSubscribe: boolean;
+    private provider: ProviderType;
+    private timeLoop: any;
+    private callback: Function;
 
     constructor(id: string, provider: ProviderType, isSubscribe: boolean) {
         this.id = id;

@@ -765,7 +765,7 @@ const BLOCK_LIST = {
 
 export default {
     addrAccountFuncList: [
-        'getBalance', 'callOffChainContract', 'getTxList',
+        'getBalance', 'callOffChainContract', 'queryContractState', 'getTxList',
         'getOnroad', 'getOnroadBlocks', 'getBlocks',
         'getAccountBalance', 'getLatestBlock',
         'getBlockByHeight', 'getBlocksByHash',
