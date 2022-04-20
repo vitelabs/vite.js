@@ -1,5 +1,6 @@
 const path = require('path');
 const webpack = require('webpack');
+const TerserPlugin = require('terser-webpack-plugin');
 
 const baseDir = path.join(__dirname, './src');
 const target = process.env.build_target;
@@ -7,7 +8,8 @@ const Buffer_Path = path.join(__dirname, './node_modules/buffer/index.js');
 
 const plugins = [
     new webpack.DefinePlugin({ 'processSilence': process.env.NODE_ENV && process.env.NODE_ENV.indexOf('test') === 0 ? 0 : 1 }),
-    new webpack.IgnorePlugin({ resourceRegExp: /^\.\/wordlists\/(?!english)/, contextRegExp: /bip39\/src/ })
+    new webpack.IgnorePlugin({ resourceRegExp: /^\.\/wordlists\/(?!english)/, contextRegExp: /bip39\/src/ }),
+    new webpack.optimize.ModuleConcatenationPlugin()
 ];
 if (target === 'web') {
     plugins.push(new webpack.NormalModuleReplacementPlugin(/\/buffer\//, function (resource) {
@@ -51,7 +53,18 @@ module.exports = {
                     reuseExistingChunk: true
                 }
             }
-        }
+        },
+        minimize: true,
+        minimizer: [
+            new TerserPlugin({
+                parallel: true,
+                terserOptions: {
+                    mangle: true,
+                    keep_classnames: /AbortSignal/,
+                    keep_fnames: /AbortSignal/
+                }
+            })
+        ]
     },
     module: {
         rules: [ {

@@ -1,6 +1,7 @@
 import Communication from '~@vite/vitejs-communication/communication.js';
+import { AbortController } from 'node-abort-controller';
 const fetch = typeof window !== 'undefined' && window.fetch
-    ? window.fetch : require('node-fetch');
+    ? window.fetch : require('node-fetch').default;
 
 class HttpRpc extends Communication {
     constructor(host = 'http://localhost:8415', timeout = 60000, options = { headers: [] }) {
