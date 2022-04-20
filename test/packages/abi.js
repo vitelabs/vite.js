@@ -993,6 +993,26 @@ describe('decodeLog', function () {
             tti: 'tti_b0de22e5d54c92c43c3a9e54'
         });
     });
+
+    it('only one indexed token id', function () {
+        const decodeResult = abi.decodeLog({
+            'anonymous': false,
+            'inputs': [
+                {'indexed': true, 'internalType': 'tokenId', 'name': 'tti', 'type': 'tokenId'}
+            ],
+            'name': 'TestEvent',
+            'type': 'event'
+        },
+        '00000000000000000000000000000000000000000000b0de22e5d54c92c43c3a',
+        [
+            '8b5075daac7054843301efa983d65ebb0a2ab0943c4464c5d90116bac31b558e',
+            '00000000000000000000000000000000000000000000b0de22e5d54c92c43c3a' ]);
+
+        assert.deepEqual(decodeResult, {
+            '0': 'tti_b0de22e5d54c92c43c3a9e54',
+            tti: 'tti_b0de22e5d54c92c43c3a9e54'
+        });
+    });
 });
 
 describe('encodeFunctionCall', function () {
