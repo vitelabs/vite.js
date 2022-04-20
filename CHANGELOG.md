@@ -1,3 +1,17 @@
+## [2.3.19-alpha.1](https://github.com/vitelabs/vite.js/compare/v2.3.18...v2.3.19-alpha.1) (2022-04-20)
+
+
+### chore
+
+* 2.3.18 changelog ([0350a4a](https://github.com/vitelabs/vite.js/commit/0350a4a89d18815178dc3e8339f256a37aaf679c))
+* remove outdated package ([686ad6b](https://github.com/vitelabs/vite.js/commit/686ad6b1279867362ac0584d562d077bd01e1aed))
+
+### fix
+
+* lint ([ce26532](https://github.com/vitelabs/vite.js/commit/ce26532f3f945205301806bd006bc6a714bab5fa))
+
+
+
 ## [2.3.18](https://github.com/vitelabs/vite.js/compare/v2.3.18-alpha.3...v2.3.18) (2022-04-02)
 
 
