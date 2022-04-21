@@ -5,7 +5,10 @@ class WsRpc extends IPC_WS {
     constructor(path = 'ws://localhost:31420', timeout = 60000, options = {
         protocol: '',
         headers: '',
-        clientConfig: '',
+        clientConfig: {
+            keepalive: true,
+            keepaliveInterval: 30 * 1000
+        },
         retryTimes: 10,
         retryInterval: 10000
     }) {
