@@ -21,6 +21,7 @@ class ProviderClass {
         try {
             abort && this._provider.abort(abort);
         } catch (e) {
+            // eslint-disable-line
         }
         this.unsubscribeAll();
 
