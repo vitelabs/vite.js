@@ -1,3 +1,22 @@
+## [2.3.19-alpha.2](https://github.com/vitelabs/vite.js/compare/v2.3.19-alpha.1...v2.3.19-alpha.2) (2022-04-22)
+
+
+### chore
+
+* use tsc-alias ([cc9d06c](https://github.com/vitelabs/vite.js/commit/cc9d06ceac0b3e04bd92966e2af3ea6e3e292ac2))
+* v2.3.19-alpha.1 changelog ([59012a1](https://github.com/vitelabs/vite.js/commit/59012a18a70b052aa1cde4858f4a62c410cb96d8))
+
+### fix
+
+* make keepalive default ([7719e50](https://github.com/vitelabs/vite.js/commit/7719e50f9f413e3e4ed0fc9e563656435d83fe00))
+
+### test
+
+* add test case ([f566fdf](https://github.com/vitelabs/vite.js/commit/f566fdff92ad48eb74696a349fbf65416083033a))
+* add test case for decodeLog ([ba64095](https://github.com/vitelabs/vite.js/commit/ba640954f654582c7d1612dfd092a31a86c2595f))
+
+
+
 ## [2.3.19-alpha.1](https://github.com/vitelabs/vite.js/compare/v2.3.18...v2.3.19-alpha.1) (2022-04-20)
 
 
