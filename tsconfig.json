@@ -13,8 +13,6 @@
         "baseUrl": "./src",
         "paths": {
             "~@vite/vitejs-abi": ["abi/index.ts"],
-            "~@vite/vitejs-addraccount": ["addrAccount/index.ts"],
-            "~@vite/vitejs-account": ["account/index.ts"],
             "~@vite/vitejs-accountblock": ["accountBlock/index.ts"],
             "~@vite/vitejs-accountblock/*": ["accountBlock/*"],
             "~@vite/vitejs-communication/*": ["communication/*"],
