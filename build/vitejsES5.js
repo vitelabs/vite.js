@@ -34,7 +34,8 @@ function formatFile(filePath, folderLevel) {
     if (!fileStr.match(/(\~@vite\/vitejs\-)/)) {
         return;
     }
-
+    fileStr = fileStr.replace(/(\~@vite\/vitejs-accountblock)/g, "~@vite/vitejs-accountBlock");
+    fileStr = fileStr.replace(/(\~@vite\/vitejs-viteapi)/g, "~@vite/vitejs-viteAPI");
     fileStr = fileStr.replace(/(\~@vite\/vitejs-)/g, folderLevel);
     fs.writeFileSync(filePath, fileStr, 'utf8');
 }
