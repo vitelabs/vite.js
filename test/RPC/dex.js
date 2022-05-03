@@ -96,6 +96,28 @@ export default async function TestFunc() {
     console.log('Step 16 OpenNewMarket. \n');
     previousAccountBlock = await OpenNewMarket(previousAccountBlock);
 
+    // 7. Internal Transfer, Agent Deposit And Assigned Withdraw
+
+    await sleep(2000);
+
+    console.log('Step 17 Dex Transfer. \n');
+    previousAccountBlock = await InternalTransfer();
+
+    await sleep(2000);
+
+    console.log('Step 18 Agent Deposit. \n');
+    previousAccountBlock = await AgentDeposit(previousAccountBlock);
+
+    await sleep(2000);
+
+    console.log('Step 19 Assigned Withdraw. \n');
+    previousAccountBlock = await AssignedWithdraw(previousAccountBlock);
+
+    await sleep(2000);
+
+    console.log('Step 20 Assigned Withdraw with Label. \n');
+    previousAccountBlock = await AssignedWithdrawWithLabel(previousAccountBlock);
+
     return null;
 }
 
@@ -144,7 +166,7 @@ async function StakeForMining(previousAccountBlock) {
 async function CancelStakeMining(previousAccountBlock) {
     const data = await viteProvider.request('dex_getMiningStakeInfoList', address, 0, 10);
     console.log('[LOG] dex_getMiningStakeInfoList', data, '\n');
-    
+
     if (!data || !data.stakeList || !data.stakeList.length) {
         return;
     }
@@ -205,7 +227,7 @@ async function CreateNewInviter(previousAccountBlock) {
 async function BindInviteCode(previousAccountBlock) {
     const code = await viteProvider.request('dex_getInviteCode', address);
     console.log('[LOG] dex_getInviteCode', code, '\n');
-    
+
     // 1. Stake Quota For addr2
     let accountBlock = tx.stakeForQuota({
         beneficiaryAddress: addr2.address,
@@ -220,7 +242,7 @@ async function BindInviteCode(previousAccountBlock) {
     await sleep(2000);
 
     accountBlock = tx.send({
-        toAddress: addr2.address, 
+        toAddress: addr2.address,
         tokenId: Vite_TokenId,
         amount: '10000000000000000000'
     });
@@ -368,10 +390,10 @@ async function OpenNewMarket(previousAccountBlock) {
     await sleep(2000);
 
     accountBlock = tx.dexPlaceOrder({
-        tradeToken: tokens[0].tokenId, 
-        quoteToken: Vite_TokenId, 
-        side: 1, 
-        price: '1', 
+        tradeToken: tokens[0].tokenId,
+        quoteToken: Vite_TokenId,
+        side: 1,
+        price: '1',
         quantity: '10'
     });
 
@@ -379,4 +401,58 @@ async function OpenNewMarket(previousAccountBlock) {
     console.log('[LOG] PlaceOrder', previousAccountBlock, '\n');
 
     return previousAccountBlock;
+}
+
+async function InternalTransfer(previousAccountBlock) {
+    const accountBlock = await tx.dexTransfer({
+        destination: addr2.address,
+        tokenId: Vite_TokenId,
+        amount: '100000000000000000000'
+    });
+
+    const result = await SendTXByPreviousAccountBlock(accountBlock, previousAccountBlock);
+    console.log('[LOG] Dex Transfer', result, '\n');
+    return result;
+}
+
+async function AgentDeposit(previousAccountBlock) {
+    const accountBlock = await tx.dexAgentDeposit({
+        beneficiary: addr2.address,
+        tokenId: Vite_TokenId,
+        amount: '300000000000000000000'
+    });
+
+    const result = await SendTXByPreviousAccountBlock(accountBlock, previousAccountBlock);
+    console.log('[LOG] Agent Deposit', result, '\n');
+    return result;
+}
+
+async function AssignedWithdraw(previousAccountBlock) {
+    const accountBlock = await tx.dexAssignedWithdraw({
+        destination: addr2.address,
+        tokenId: Vite_TokenId,
+        amount: '1000000000000000000'
+    });
+
+    const result = await SendTXByPreviousAccountBlock(accountBlock, previousAccountBlock);
+    console.log('[LOG] Withdraw', result, '\n');
+    return result;
+}
+
+async function AssignedWithdrawWithLabel(previousAccountBlock) {
+    const label = Buffer.concat([
+        Buffer.from('0bc3', 'hex'),
+        Buffer.from([0]),
+        Buffer.from('0x0000000000000000000000000000000000000001')
+    ]).toString("hex");
+    const accountBlock = await tx.dexAssignedWithdraw({
+        destination: addr2.address,
+        tokenId: Vite_TokenId,
+        amount: '1000000000000000000',
+        label
+    });
+
+    const result = await SendTXByPreviousAccountBlock(accountBlock, previousAccountBlock);
+    console.log('[LOG] Assigned Withdraw', result, '\n');
+    return result;
 }
