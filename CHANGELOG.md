@@ -1,3 +1,18 @@
+## [2.3.19-alpha.3](https://github.com/vitelabs/vite.js/compare/v2.3.19-alpha.2...v2.3.19-alpha.3) (2022-05-09)
+
+
+### chore
+
+* 2.3.19-alpha.2 changelog ([71a3cbb](https://github.com/vitelabs/vite.js/commit/71a3cbbbb8b24bfcac638eb2f1df03e369370663))
+
+### feat
+
+* add rpc modules into main package ([652686d](https://github.com/vitelabs/vite.js/commit/652686d22178ad03595ccbe25798c3378cc4f473))
+* add support for dex internal transfer, agent deposit and assigned withdraw ([b7756cc](https://github.com/vitelabs/vite.js/commit/b7756cc60dcc895e6c1d473b05cdb5f4aa9d91bc))
+* refactor reconnect and support for renew subscription ([5bd74e1](https://github.com/vitelabs/vite.js/commit/5bd74e135dfcdb6e86e5fe33cbf78d56534ee823))
+
+
+
 ## [2.3.19-alpha.2](https://github.com/vitelabs/vite.js/compare/v2.3.19-alpha.1...v2.3.19-alpha.2) (2022-04-22)
 
 
