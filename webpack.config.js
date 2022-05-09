@@ -30,9 +30,9 @@ module.exports = {
         wallet: path.join(baseDir, '/wallet/index.ts'),
         utils: path.join(baseDir, '/utils/index.ts'),
         vitejs: path.join(baseDir, '/vitejs/index.ts'),
-        WS: path.join(baseDir, 'WS/index.js'),
-        HTTP: path.join(baseDir, 'HTTP/index.js'),
-        IPC: path.join(baseDir, 'IPC/index.js')
+        WS: path.join(baseDir, '/WS/index.js'),
+        HTTP: path.join(baseDir, '/HTTP/index.js'),
+        IPC: path.join(baseDir, '/IPC/index.js')
     },
     output: {
         globalObject: 'this',
@@ -81,6 +81,9 @@ module.exports = {
             '~@vite/vitejs-viteapi': path.join(__dirname, '/src/viteAPI/'),
             '~@vite/vitejs-wallet': path.join(__dirname, '/src/wallet/'),
             '~@vite/vitejs-accountblock': path.join(__dirname, '/src/accountBlock/'),
+            '~@vite/vitejs-ipc': path.join(__dirname, '/src/IPC/'),
+            '~@vite/vitejs-http': path.join(__dirname, '/src/HTTP/'),
+            '~@vite/vitejs-ws': path.join(__dirname, '/src/WS/'),
             '~@vite/vitejs': path.join(__dirname, '/src/vitejs/')
         },
         fallback: {
