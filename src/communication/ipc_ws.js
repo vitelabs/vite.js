@@ -5,18 +5,21 @@ class IpcWs extends Communication {
         super();
 
         this.path = path;
+        // supported connection event types
         this._onEventTypes = onEventTypes || [];
+        // the method name of the socket object to send the request
         this._sendFuncName = sendFuncName;
 
         this.connectStatus = false;
+        // non-subscription request response processing callbacks
         this.responseCbs = {};
-
+        // connection event callback methods
         this._connectEnd = null;
         this._connectError = null;
         this._connectTimeout = null;
         this._connectConnect = null;
         this._connectClose = null;
-
+        // subscription event handler
         this.subscribeMethod = null;
     }
 
@@ -34,6 +37,8 @@ class IpcWs extends Communication {
         this._connectError && this._connectError(err);
     }
 
+    // process the response content returned by the socket.This method parses the response content as json
+    // and calls the registered subscription event handler or request response callback
     _parse(data) {
         const results = [];
         data.forEach(ele => {
@@ -59,17 +64,17 @@ class IpcWs extends Communication {
         });
 
         results.forEach(ele => {
-            if (!(ele instanceof Array) && !ele.id) {
+            if (!(ele instanceof Array) && !ele.id) { // not an array and no id, call the subscription event handler
                 this.subscribeMethod && this.subscribeMethod(ele);
                 return;
             }
 
-            if (ele.id) {
+            if (ele.id) { // with an id, call the corresponding response callback
                 this.responseCbs[ele.id] && this.responseCbs[ele.id](ele);
                 return;
             }
 
-            for (let i = 0; i < ele.length; i++) {
+            for (let i = 0; i < ele.length; i++) { // response is array
                 if (!ele[i].id) {
                     this.subscribeMethod && this.subscribeMethod(ele[i]);
                     continue;
@@ -85,6 +90,7 @@ class IpcWs extends Communication {
         });
     }
 
+    // parse the connection event callback name, the supported types are defined in the ws/ipc constructor
     _checkOnType(type) {
         const i = this._onEventTypes.indexOf(type);
         if (i < 0) {
@@ -95,6 +101,7 @@ class IpcWs extends Communication {
         return `_connect${ eventType }`;
     }
 
+    // register the corresponding response processing callback according to the request id and return a promise object
     _onSend(payloads) {
         const id = getIdFromPayloads(payloads);
         if (!id) {
@@ -109,7 +116,7 @@ class IpcWs extends Communication {
                     resetAbort = true;
                 }
             };
-
+            // register the response processing callback with timeout
             this.responseCbs[id] = data => {
                 clearRequestAndTimeout();
                 if (data && data.error) {
@@ -148,14 +155,18 @@ class IpcWs extends Communication {
         });
     }
 
+    // send json request and return a promise object
     _send(payloads) {
         if (!this.connectStatus) {
             return Promise.reject(this.ERRORS.CONNECT(this.path));
         }
         this.socket[this._sendFuncName](JSON.stringify(payloads));
+        // processing response
         return this._onSend(payloads);
     }
 
+    // register the connection event callback method. Call this method to override
+    // the default event callback in order to implement different processing behavior
     on(type, cb) {
         const eventType = this._checkOnType(type);
         if (!eventType) {
@@ -164,7 +175,7 @@ class IpcWs extends Communication {
         if (!cb) {
             return this.ERRORS.IPC_ON_CB(type);
         }
-        this[eventType] = cb;
+        this[eventType] = cb; // register event callback
     }
 
     remove(type) {
@@ -205,6 +216,7 @@ class IpcWs extends Communication {
         return this._send(_requests);
     }
 
+    // register subscription event handler
     subscribe(callback) {
         if (typeof callback !== 'function') {
             throw new Error('[Error] callback should be a function.');

@@ -7,13 +7,14 @@ import { Default_Contract_TransactionType, encodeContractList, getTransactionTyp
 import { Address, AccountBlockType, Transaction, Hex, Base64, BigInt } from './type';
 
 import Provider from './provider';
+import ConnectHandler from './connectHandler';
 
 
 class ViteAPIClass extends Provider {
     private customTransactionType: Object;
 
-    constructor(provider: any, onInitCallback: Function) {
-        super(provider, onInitCallback);
+    constructor(provider: any, onInitCallback: Function, onConnectCallback?: ConnectHandler) {
+        super(provider, onInitCallback, onConnectCallback);
 
         // { [funcSign + contractAddress]: { contractAddress, abi, transactionType } }
         this.customTransactionType = {};

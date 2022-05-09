@@ -2,11 +2,7 @@ import IPC_WS from '~@vite/vitejs-communication/ipc_ws';
 const net = require('net');
 
 class IpcRpc extends IPC_WS {
-    constructor(path = '', timeout = 60000, options = {
-        delimiter: '\n',
-        retryTimes: 10,
-        retryInterval: 10000
-    }) {
+    constructor(path = '', timeout = 60000, options = {delimiter: '\n'}) {
         super({
             onEventTypes: [ 'error', 'end', 'timeout', 'data', 'close', 'connect' ],
             sendFuncName: 'write',
