@@ -15,6 +15,7 @@
             "~@vite/vitejs-abi": ["abi/index.ts"],
             "~@vite/vitejs-accountblock": ["accountBlock/index.ts"],
             "~@vite/vitejs-accountblock/*": ["accountBlock/*"],
+            "~@vite/vitejs-communication": ["communication/index.js"],
             "~@vite/vitejs-communication/*": ["communication/*"],
             "~@vite/vitejs-constant": ["constant/index.ts"],
             "~@vite/vitejs-error": ["error/index.ts"],
