@@ -1,8 +1,8 @@
 {
     "name": "@vite/vitejs-keystore",
     "version": "2.3.18",
-    "main": "dist/index.node.js",
-    "browser": "dist/index.web.js",
+    "main": "dist/index.js",
+    "browser": "dist/index.js",
     "repository": {
         "type": "git",
         "url": "git+https://github.com/vitelabs/vite.js.git"
@@ -14,5 +14,9 @@
     "homepage": "https://github.com/vitelabs/vite.js#readme",
     "publishConfig": {
         "access": "public"
+    },
+    "dependencies": {
+        "pure-uuid": "^1.6.2",
+        "scryptsy": "^2.1.0"
     }
 }

@@ -1,5 +1,6 @@
-import IPC_WS from '~@vite/vitejs-communication/ipc_ws';
-const Websocket = require('websocket').w3cwebsocket;
+import { IPC_WS } from '@vite/vitejs-communication';
+import { w3cwebsocket } from 'websocket';
+const Websocket = w3cwebsocket;
 
 class WsRpc extends IPC_WS {
     constructor(path = 'ws://localhost:31420', timeout = 60000, options = {

@@ -1,5 +1,5 @@
-import { checkParams, ed25519, blake2b, isHexString } from '~@vite/vitejs-utils';
-import { addressIllegal } from '~@vite/vitejs-error';
+import { checkParams, ed25519, blake2b, isHexString } from '@vite/vitejs-utils';
+import { addressIllegal } from '@vite/vitejs-error';
 
 import { Hex, AddressObj, Address } from './type';
 
@@ -124,7 +124,7 @@ function createAddress(privateKey?: Hex): {
 }
 
 function newAddrFromPub(publicKey: Buffer): Buffer {
-    const _pre = blake2b(publicKey, null, ADDR_SIZE);
+    const _pre = blake2b(publicKey, undefined, ADDR_SIZE);
 
     const pre = new Uint8Array(21);
     pre.set(_pre);
@@ -140,14 +140,14 @@ function newAddrFromPriv(privateKey: Buffer): Buffer {
 
 function getAddrCheckSum(addr: Buffer, isContract? : boolean): Hex {
     const addrPre20 = addr.slice(0, 20);
-    const _checkSum = blake2b(addrPre20, null, ADDR_CHECK_SUM_SIZE);
+    const _checkSum = blake2b(addrPre20, undefined, ADDR_CHECK_SUM_SIZE);
     const checkSum = Buffer.from(_checkSum);
 
     if (!isContract) {
         return checkSum.toString('hex');
     }
 
-    const newCheckSum = [];
+    const newCheckSum:number[] = [];
     checkSum.forEach(function (byte) {
         newCheckSum.push(byte ^ 0xFF);
     });
@@ -160,7 +160,10 @@ function getHexAddr(originalAddress: Buffer, checkSum: Hex): Address {
 }
 
 function isValidHex(hexAddr: Address): boolean {
-    return hexAddr && hexAddr.length === ADDR_LEN && hexAddr.indexOf(ADDR_PRE) === 0;
+    if(hexAddr){
+        return hexAddr.length === ADDR_LEN && hexAddr.indexOf(ADDR_PRE) === 0;
+    }
+    return false;
 }
 
 function isValidCheckSum(hexAddr: Address): AddressType {

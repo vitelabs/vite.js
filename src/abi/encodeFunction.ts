@@ -1,4 +1,4 @@
-import { blake2bHex, isArray, isObject } from '~@vite/vitejs-utils';
+import { blake2bHex, isArray, isObject } from '@vite/vitejs-utils';
 import { getTypes } from './inputsType';
 
 
@@ -6,7 +6,7 @@ export function encodeFunction(jsonFunction, methodName?) {
     const isArr = isArray(jsonFunction);
     const _jsonFunction = isArr ? getFunction(jsonFunction, methodName) : jsonFunction;
     const result = jsonFunctionToString(_jsonFunction);
-    return blake2bHex(result, null, 32);
+    return blake2bHex(result, undefined, 32);
 }
 
 export function getFunction(jsonFunction, methodName?) {

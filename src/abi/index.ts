@@ -1,4 +1,4 @@
-import { isArray, isObject } from '~@vite/vitejs-utils';
+import { isArray, isObject } from '@vite/vitejs-utils';
 
 import { encodeFunction, getFunction } from './encodeFunction';
 import { encodeParameter as _encodeParameter, encodeParameters as _encodeParameters, decodeParameter as _decodeParameter, decodeParameters as _decodeParameters } from './coder';
@@ -46,8 +46,8 @@ export function decodeParameters(types, params, methodName?: string) {
 }
 
 export function decodeLog(abi, data = '', topics, methodName?: string) {
-    const nonIndexedInputs = [];
-    const nonIndexedTypes = [];
+    const nonIndexedInputs: any[] = [];
+    const nonIndexedTypes: any[] = [];
     const inputs = getInputs(abi, methodName);
     const returnValues = {};
     let topicIndex = abi.anonymous ? 0 : 1; // for non-anonymous events, topics[0] always refers to the hash of the event signature
@@ -72,7 +72,7 @@ export function decodeLog(abi, data = '', topics, methodName?: string) {
     // add non-indexed params to the return values
     let index = 0;
     inputs.forEach((input, i) => {
-        if (!input.indexed) {
+        if (!input.indexed && nonIndexedParams) {
             returnValues[i] = nonIndexedParams[index];
             if (input.name) returnValues[input.name] = nonIndexedParams[index];
             index++;
@@ -84,7 +84,7 @@ export function decodeLog(abi, data = '', topics, methodName?: string) {
 
 export function getAbiByType(jsonInterfaces, type) {
     if (!jsonInterfaces || !type) {
-        return null;
+        return undefined;
     }
 
     if (!(isArray(jsonInterfaces) || isObject(jsonInterfaces))) {
@@ -99,12 +99,12 @@ export function getAbiByType(jsonInterfaces, type) {
     }
 
     // jsonInterfaces is an array
-    return jsonInterfaces.find(e => e.type === type) || null;
+    return jsonInterfaces.find(e => e.type === type) || undefined;
 }
 
 export function getAbiByName(jsonInterfaces, methodName) {
     if (!jsonInterfaces || !methodName) {
-        return null;
+        return undefined;
     }
 
     if (!(isArray(jsonInterfaces) || isObject(jsonInterfaces))) {
@@ -119,7 +119,7 @@ export function getAbiByName(jsonInterfaces, methodName) {
     }
 
     // jsonInterfaces is an array
-    return jsonInterfaces.find(e => e.name === methodName) || null;
+    return jsonInterfaces.find(e => e.name === methodName) || undefined;
 }
 
 function getInputs(inputs, methodName?: string) {

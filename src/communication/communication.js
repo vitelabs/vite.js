@@ -1,4 +1,4 @@
-const jsonrpc = require('jsonrpc-lite');
+import * as jsonrpc from 'jsonrpc-lite';
 
 import errors from './errors';
 

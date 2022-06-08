@@ -1,20 +1,9 @@
 {
+    "extends": "../../config/ts/tsconfig.json",
     "compilerOptions": {
-        "allowSyntheticDefaultImports": true,
-        "allowJs": true,
-        "target": "es5",
-        "module": "commonjs",
-        "noImplicitAny": false,
-        "removeComments": true,
-        "preserveConstEnums": true,
-        "sourceMap": false,
-        "moduleResolution": "node",
-        "resolveJsonModule": true,
-        "lib": [
-            "es5",
-            "es2017",
-            "es2015",
-            "es2017.typedarrays"
-        ]
-    }
-}
+      "outDir": "./dist",
+      "composite": true,
+    },
+    "exclude": ["./dist", "./node_modules"]
+  }
+  

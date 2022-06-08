@@ -1,8 +1,7 @@
-const bn = require('bn.js');
+import * as bn from 'bn.js';
 import { stringify } from 'qs';
-const blake = require('blakejs/blake2b');
-
-import { paramsMissing, paramsFormat } from '~@vite/vitejs-error';
+import * as blake  from 'blakejs';
+import { paramsMissing, paramsFormat } from '@vite/vitejs-error';
 
 import * as _e from './ed25519';
 import { Hex, TokenId } from './type';
@@ -34,9 +33,9 @@ export function uriStringify(o: {
 export function checkParams(params: Object, requiredP: Array<string> = [], validFunc: Array<{ name: string; func: Function; msg?: string }> = []): {
     code: string;
     message: string;
-} {
+} | undefined {
     if (!params) {
-        return null;
+        return undefined;
     }
 
     const isHave = name => Object.prototype.hasOwnProperty.call(params, name)
@@ -65,7 +64,7 @@ export function checkParams(params: Object, requiredP: Array<string> = [], valid
         }
     }
 
-    return null;
+    return undefined;
 }
 
 export function isValidTokenId(tokenId: string): boolean {
@@ -110,12 +109,18 @@ export function isValidSBPName(sbpName: string): boolean {
 
 export function isNonNegativeInteger(num: string): boolean {
     num = `${ num }`;
-    return num && (/(^[1-9]\d*$)/g.test(num) || num === '0');
+    if(num){
+        return (/(^[1-9]\d*$)/g.test(num) || num === '0');
+    }
+    return false
 }
 
 export function isInteger(num: string): boolean {
     num = `${ num }`;
-    return num && (/^[\-]{0,1}[1-9]\d*$/g.test(num) || num === '0');
+    if(num){
+        return (/^[\-]{0,1}[1-9]\d*$/g.test(num) || num === '0');
+    }
+    return false
 }
 
 export const isArray = Array.isArray || function (obj): boolean {
@@ -195,5 +200,5 @@ export const _Buffer = Buffer;
 export const _bn = bn;
 
 function getTokenIdCheckSum(originalTokenId: Hex): Hex {
-    return blake.blake2bHex(Buffer.from(originalTokenId, 'hex'), null, 2);
+    return blake.blake2bHex(Buffer.from(originalTokenId, 'hex'), undefined, 2);
 }

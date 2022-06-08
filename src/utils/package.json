@@ -1,8 +1,8 @@
 {
     "name": "@vite/vitejs-utils",
     "version": "2.3.18",
-    "main": "dist/index.node.js",
-    "browser": "dist/index.web.js",
+    "main": "dist/index.js",
+    "browser": "dist/index.js",
     "repository": {
         "type": "git",
         "url": "git+https://github.com/vitelabs/vite.js.git"
@@ -14,5 +14,10 @@
     "homepage": "https://github.com/vitelabs/vite.js#readme",
     "publishConfig": {
         "access": "public"
+    },
+    "dependencies": {
+        "@sisi/tweetnacl-blake2b": "^1.0.0",
+        "bn.js": "^5.2.1",
+        "qs": "^6.10.3"
     }
 }

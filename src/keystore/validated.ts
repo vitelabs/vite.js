@@ -1,6 +1,6 @@
-const UUID = require('pure-uuid');
-import { checkParams } from '~@vite/vitejs-utils';
-import { isValidAddress } from '~@vite/vitejs-wallet/address';
+import UUID from 'pure-uuid';
+import { checkParams } from '@vite/vitejs-utils';
+import { isValidAddress } from '@vite/vitejs-wallet/address';
 
 import { currentVersion, algorithm, scryptName } from './vars';
 

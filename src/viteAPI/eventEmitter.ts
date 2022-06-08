@@ -5,15 +5,16 @@ class EventEmitter {
     readonly isSubscribe: boolean;
     private provider: ProviderType;
     private timeLoop: any;
-    private callback: Function;
+    private callback?: Function;
+    _id: number;
 
     constructor(id: string, provider: ProviderType, isSubscribe: boolean) {
         this.id = id;
-        this.callback = null;
+        this.callback = undefined;
         this.provider = provider;
         this.isSubscribe = isSubscribe;
-
-        this.timeLoop = null;
+        this.timeLoop = undefined;
+        this._id = 0;
     }
 
     on(callback: Function) {

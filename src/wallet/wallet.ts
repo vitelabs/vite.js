@@ -1,7 +1,7 @@
-const bip39 = require('bip39');
-const blake = require('blakejs/blake2b');
+import * as bip39 from 'bip39';
+import * as blake from 'blakejs';
 
-import { checkParams, isNonNegativeInteger } from '~@vite/vitejs-utils';
+import { checkParams, isNonNegativeInteger } from '@vite/vitejs-utils';
 
 import * as hdKey from './hdKey';
 import * as addressLib from './address';
@@ -53,7 +53,7 @@ class Wallet {
         }
 
         const addressBuffer = Buffer.from(address);
-        const idBuffer = blake.blake2b(addressBuffer, null, 32);
+        const idBuffer = blake.blake2b(addressBuffer, undefined, 32);
         return Buffer.from(idBuffer).toString('hex');
     }
 

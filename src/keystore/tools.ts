@@ -1,4 +1,4 @@
-const scryptsy = require('scryptsy');
+import * as scryptsy from 'scryptsy';
 
 declare const window;
 const crypto = typeof window === 'undefined' ? require('crypto') : require('browserify-aes');

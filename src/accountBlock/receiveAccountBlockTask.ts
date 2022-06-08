@@ -1,5 +1,5 @@
-import { isValidAddress } from '~@vite/vitejs-wallet/address';
-import { checkParams, isHexString } from '~@vite/vitejs-utils';
+import { isValidAddress } from '@vite/vitejs-wallet/address';
+import { checkParams, isHexString } from '@vite/vitejs-utils';
 
 import Account from './account';
 
@@ -9,12 +9,12 @@ export class ReceiveAccountBlockTask {
     address: Address;
 
     private provider: ProviderType;
-    private sign: Function | undefined | null;
+    private sign?: Function;
     private privateKey: Hex | undefined | null;
     private _account: Account;
     private _timer: any;
-    private successCB: Function;
-    private errorCB: Function;
+    private successCB?: Function;
+    private errorCB?: Function;
 
     constructor({ address, provider, privateKey, sign }: {
         address: Address; provider: ProviderType; privateKey?: Hex; sign?: Function;
@@ -51,8 +51,8 @@ export class ReceiveAccountBlockTask {
 
         this._timer = null;
 
-        this.successCB = null;
-        this.errorCB = null;
+        this.successCB = undefined;
+        this.errorCB = undefined;
     }
 
     start({
@@ -93,7 +93,7 @@ export class ReceiveAccountBlockTask {
     }
 
     private async receive(pageSize: number) {
-        let unreceivedBlocks = null;
+        let unreceivedBlocks: any = undefined;
         try {
             unreceivedBlocks = await this.getUnreceivedBlocks(pageSize);
         } catch (error) {
@@ -104,26 +104,28 @@ export class ReceiveAccountBlockTask {
             return;
         }
 
-        if (!unreceivedBlocks.length) {
+        if (!unreceivedBlocks || !unreceivedBlocks.length) {
             this.emitSuccess({ message: 'Don\'t have unreceivedAccountBlocks.' });
             return;
         }
 
-        const accountBlockList = [];
+        const accountBlockList: AccountBlockBlock[] = [];
         for (const unreceivedBlock of unreceivedBlocks) {
             const previousAccountBlock = accountBlockList.length
                 ? accountBlockList[accountBlockList.length - 1]
                 : null;
 
             const sendBlockHash = unreceivedBlock.hash;
-            let accountBlock = null;
+            let accountBlock: AccountBlockBlock | undefined = undefined;
 
             try {
                 accountBlock = await this.receiveAccountBlockByPrevious({
                     sendBlockHash: unreceivedBlock.hash,
                     previousAccountBlock
                 });
-                accountBlockList.push(accountBlock);
+                if (accountBlock){
+                    accountBlockList.push(accountBlock);
+                }
             } catch (error) {
                 accountBlockList.length && this.emitSuccess({
                     message: 'Receive accountBlock success',
@@ -165,7 +167,7 @@ export class ReceiveAccountBlockTask {
     private async getUnreceivedBlocks(pageSize) {
         const data = await this.provider.request('ledger_getUnreceivedBlocksByAddress', this.address, 0, pageSize);
         if (!data || !data.length) {
-            return [];
+            return undefined;
         }
         return data;
     }
@@ -186,8 +188,10 @@ export class ReceiveAccountBlockTask {
             await accountBlock.autoSetPreviousAccountBlock();
         }
 
-        await accountBlock.PoW();
-        await this.sign(accountBlock);
-        return accountBlock.send();
+        if (this.sign){
+            await accountBlock.PoW();
+            await this.sign(accountBlock);
+            return accountBlock.send();
+        }
     }
 }

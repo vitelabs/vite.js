@@ -1,7 +1,7 @@
-import { BlockType, Vite_TokenId, Contracts } from '~@vite/vitejs-constant';
-import { isValidAddress, AddressType, createAddressByPrivateKey } from '~@vite/vitejs-wallet/address';
-import { checkParams, isNonNegativeInteger, isHexString, isArray, isObject, isValidSBPName, isValidTokenId, isBase64String } from '~@vite/vitejs-utils';
-import { paramsConflict } from '~@vite/vitejs-error';
+import { BlockType, Vite_TokenId, Contracts } from '@vite/vitejs-constant';
+import { isValidAddress, AddressType, createAddressByPrivateKey } from '@vite/vitejs-wallet/address';
+import { checkParams, isNonNegativeInteger, isHexString, isArray, isObject, isValidSBPName, isValidTokenId, isBase64String } from '@vite/vitejs-utils';
+import { paramsConflict } from '@vite/vitejs-error';
 
 import AccountBlock from './accountBlock';
 import { getCreateContractData, getCallContractData } from './utils';
@@ -11,8 +11,8 @@ import { Hex, Address, TokenId, BigInt, Base64, Int32, Uint8, Uint32, Uint256, B
 
 class AccountClass {
     readonly address: Address;
-    private provider: ProviderType;
-    private privateKey: Hex;
+    private provider?: ProviderType;
+    private privateKey?: Hex;
 
     constructor(address: Address) {
         const err = checkParams({ address }, ['address'], [{

@@ -1,7 +1,7 @@
-const bip39 = require('bip39');
-const hd = require('@sisi/ed25519-blake2b-hd-key');
+import * as bip39 from 'bip39';
+import * as hd from '@sisi/ed25519-blake2b-hd-key';
 
-import { checkParams } from '~@vite/vitejs-utils';
+import { checkParams } from '@vite/vitejs-utils';
 
 import { Hex } from './type';
 
@@ -14,11 +14,11 @@ export function createMnemonics(strength = 256, wordlist: Array<string> = bip39.
         throw new Error(err.message);
     }
 
-    return bip39.generateMnemonic(strength, null, wordlist);
+    return bip39.generateMnemonic(strength, undefined, wordlist);
 }
 
 export function validateMnemonics(mnemonic: string, wordlist: Array<string> = bip39.wordlists.EN): boolean {
-    return mnemonic && bip39.validateMnemonic(mnemonic, wordlist);
+    return mnemonic ? bip39.validateMnemonic(mnemonic, wordlist) : false;
 }
 
 export function getEntropyFromMnemonics(mnemonic: string, wordlist: Array<string> = bip39.wordlists.EN): Hex {

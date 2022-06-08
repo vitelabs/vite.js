@@ -1,5 +1,5 @@
-import IPC_WS from '~@vite/vitejs-communication/ipc_ws';
-const net = require('net');
+import { IPC_WS } from '@vite/vitejs-communication';
+import * as net from 'net';
 
 class IpcRpc extends IPC_WS {
     constructor(path = '', timeout = 60000, options = {

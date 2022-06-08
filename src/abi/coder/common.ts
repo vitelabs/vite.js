@@ -1,10 +1,10 @@
 // address bool gid number
 
-const BigNumber = require('bn.js');
+import * as BigNumber from 'bn.js';
 
-import { unsafeInteger, integerIllegal } from '~@vite/vitejs-error';
-import { getAddressFromOriginalAddress, getOriginalAddressFromAddress } from '~@vite/vitejs-wallet/address';
-import { getOriginalTokenIdFromTokenId, getTokenIdFromOriginalTokenId, isSafeInteger } from '~@vite/vitejs-utils';
+import { unsafeInteger, integerIllegal } from '@vite/vitejs-error';
+import { getAddressFromOriginalAddress, getOriginalAddressFromAddress } from '@vite/vitejs-wallet/address';
+import { getOriginalTokenIdFromTokenId, getTokenIdFromOriginalTokenId, isSafeInteger } from '@vite/vitejs-utils';
 
 
 export function encode(typeObj, params) {

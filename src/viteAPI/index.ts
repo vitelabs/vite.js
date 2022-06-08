@@ -1,8 +1,8 @@
-import { Contracts } from '~@vite/vitejs-constant';
-import { checkParams, isArray, blake2bHex } from '~@vite/vitejs-utils';
-import { isValidAddress, AddressType, getOriginalAddressFromAddress } from '~@vite/vitejs-wallet/address';
-import { decodeParameters, encodeFunctionCall, getAbiByType, getAbiByName } from '~@vite/vitejs-abi';
-import { Default_Contract_TransactionType, encodeContractList, getTransactionType, decodeContractAccountBlock } from '~@vite/vitejs-accountblock/utils';
+import { Contracts } from '@vite/vitejs-constant';
+import { checkParams, isArray, blake2bHex } from '@vite/vitejs-utils';
+import { isValidAddress, AddressType, getOriginalAddressFromAddress } from '@vite/vitejs-wallet/address';
+import { decodeParameters, encodeFunctionCall, getAbiByType, getAbiByName } from '@vite/vitejs-abi';
+import { Default_Contract_TransactionType, encodeContractList, getTransactionType, decodeContractAccountBlock } from '@vite/vitejs-accountblock/utils';
 
 import { Address, AccountBlockType, Transaction, Hex, Base64, BigInt } from './type';
 
@@ -38,7 +38,7 @@ class ViteAPIClass extends Provider {
         this.customTransactionType = Object.assign({}, this.customTransactionType, transactionTypeAfterEncode);
     }
 
-    async getBalanceInfo(address: Address): Promise<{ balance: Object; unreceived: Object }> {
+    async getBalanceInfo(address: Address): Promise<{ balance: any; unreceived: any}> {
         const err = checkParams({ address }, ['address'], [{
             name: 'address',
             func: isValidAddress
@@ -47,7 +47,7 @@ class ViteAPIClass extends Provider {
             throw err;
         }
 
-        const data = await this.batch([ {
+        const data:any = await this.batch([ {
             methodName: 'ledger_getAccountInfoByAddress',
             params: [address]
         }, {
@@ -57,10 +57,12 @@ class ViteAPIClass extends Provider {
 
         if (!data || (data instanceof Array && data.length < 2)) {
             return {
-                balance: null,
-                unreceived: null
+                balance: undefined,
+                unreceived: undefined
             };
         }
+
+        
 
         if (data[0].error) {
             throw data[0].error;
@@ -114,7 +116,7 @@ class ViteAPIClass extends Provider {
             if (isDecodeTx) {
                 transaction.contractParams = contractAddress && abi
                     ? decodeContractAccountBlock({ accountBlock, contractAddress, abi })
-                    : null;
+                    : undefined;
             }
 
             list.push(transaction);
@@ -192,7 +194,7 @@ class ViteAPIClass extends Provider {
 
         const originalAddress = getOriginalAddressFromAddress(address);
         const getNonceHashBuffer = Buffer.from(originalAddress + previousHash, 'hex');
-        const getNonceHash = blake2bHex(getNonceHashBuffer, null, 32);
+        const getNonceHash = blake2bHex(getNonceHashBuffer, undefined, 32);
 
         return this.request('util_getPoWNonce', difficulty, getNonceHash);
     }
