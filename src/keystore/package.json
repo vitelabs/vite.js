@@ -1,7 +1,8 @@
 {
     "name": "@vite/vitejs-keystore",
-    "version": "2.3.18",
+    "version": "2.3.19",
     "main": "dist/index.js",
+    "types": "dist/index.d.ts",
     "browser": "dist/index.js",
     "repository": {
         "type": "git",
@@ -16,6 +17,11 @@
         "access": "public"
     },
     "dependencies": {
+        "@vite/vitejs-constant": "^2.3.19",
+        "@vite/vitejs-wallet": "^2.3.19",
+        "@vite/vitejs-utils": "^2.3.19",
+        "@vite/vitejs-error": "^2.3.19",
+        "@vite/vitejs-keystore": "^2.3.19",
         "pure-uuid": "^1.6.2",
         "scryptsy": "^2.1.0"
     }

@@ -4,10 +4,18 @@ import * as blake from 'blakejs';
 import { paramsMissing, paramsFormat } from '@vite/vitejs-error';
 import { Delegate_Gid, Contracts } from '@vite/vitejs-constant';
 import { getAbiByType, encodeParameters, encodeFunctionCall, encodeFunctionSignature, decodeLog } from '@vite/vitejs-abi';
-import { isValidAddress, getAddressFromPublicKey, createAddressByPrivateKey, getOriginalAddressFromAddress, AddressType, getAddressFromOriginalAddress } from '@vite/vitejs-wallet/address';
+import addressUtils from '@vite/vitejs-wallet';
 import { checkParams, isNonNegativeInteger, isHexString, isValidTokenId, getOriginalTokenIdFromTokenId, isObject, ed25519, isBase64String } from '@vite/vitejs-utils';
 
 import { BlockType, Address, Base64, Hex, TokenId, Uint64, BigInt, AccountBlockType, Uint8 } from './type';
+
+
+const isValidAddress = addressUtils.isValidAddress;
+const getAddressFromPublicKey = addressUtils.getAddressFromPublicKey;
+const createAddressByPrivateKey = addressUtils.createAddressByPrivateKey;
+const getOriginalAddressFromAddress = addressUtils.getOriginalAddressFromAddress;
+const AddressType = addressUtils.AddressType;
+const getAddressFromOriginalAddress = addressUtils.getAddressFromOriginalAddress;
 
 export const Default_Hash = '0000000000000000000000000000000000000000000000000000000000000000'; // A total of 64 0
 

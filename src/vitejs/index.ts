@@ -4,7 +4,7 @@ import * as _keystore from '@vite/vitejs-keystore';
 import * as _utils from '@vite/vitejs-utils';
 import * as _constant from '@vite/vitejs-constant';
 import * as _accountBlock from '@vite/vitejs-accountblock';
-import * as  _viteAPI from '@vite/vitejs-viteapi';
+import ViteAPI from '@vite/vitejs-viteapi';
 import _wallet from '@vite/vitejs-wallet';
 
 
@@ -22,5 +22,5 @@ export const accountBlock = _accountBlock;
 export const account = _accountBlock.Account;
 
 // Add
-export const ViteAPI = _viteAPI;
+export { ViteAPI };
 export const wallet = _wallet;

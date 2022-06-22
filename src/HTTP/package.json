@@ -1,7 +1,8 @@
 {
     "name": "@vite/vitejs-http",
-    "version": "2.3.18",
+    "version": "2.3.19",
     "main": "dist/index.js",
+    "types": "dist/index.d.ts",
     "browser": "dist/index.js",
     "repository": {
         "type": "git",
@@ -14,5 +15,9 @@
     "homepage": "https://github.com/vitelabs/vite.js#readme",
     "publishConfig": {
         "access": "public"
+    },
+    "dependencies": {
+        "@vite/vitejs-communication": "^2.3.19",
+        "xhr2": "^0.2.1"
     }
 }

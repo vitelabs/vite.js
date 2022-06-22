@@ -1,4 +1,4 @@
-import { isValidAddress } from '@vite/vitejs-wallet/address';
+import addressUtils from '@vite/vitejs-wallet';
 import { checkParams, isHexString } from '@vite/vitejs-utils';
 
 import Account from './account';
@@ -21,7 +21,7 @@ export class ReceiveAccountBlockTask {
     }) {
         const err = checkParams({ address, provider, privateKey }, [ 'address', 'provider' ], [ {
             name: 'address',
-            func: isValidAddress
+            func: addressUtils.isValidAddress
         }, {
             name: 'privateKey',
             func: function (str: string | undefined | null): boolean {

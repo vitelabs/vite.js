@@ -1,11 +1,12 @@
 {
   "compilerOptions": {
-    "target": "es2020",
+    "target": "es2016",
     "module": "commonjs",
     "allowJs": true,
     "noImplicitAny": false,
     "declaration": true,
     "declarationMap": true,
+    "moduleResolution": "node",
     "sourceMap": true,
     "strict": true,
     "esModuleInterop": true,

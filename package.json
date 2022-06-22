@@ -9,8 +9,8 @@
         "src/*"
     ],
     "scripts": {
-        "build": "tsc --build src/abi src/accountBlock src/communication src/constant src/error src/HTTP src/IPC src/keystore src/utils src/viteAPI src/vitejs src/wallet src/WS",
-        "clean": "tsc --build --clean src/abi src/accountBlock src/communication src/constant src/error src/HTTP src/IPC src/keystore src/utils src/viteAPI src/vitejs src/wallet src/WS"
+        "build": "tsc --build ./tsconfig.project.json",
+        "clean": "tsc --build --clean ./tsconfig.project.json"
     },
     "repository": {
         "type": "git",

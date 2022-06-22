@@ -1,7 +1,8 @@
 {
     "name": "@vite/vitejs-accountblock",
-    "version": "2.3.18",
+    "version": "2.3.19",
     "main": "dist/index.js",
+    "types": "dist/index.d.ts",
     "browser": "dist/index.js",
     "repository": {
         "type": "git",
@@ -14,5 +15,12 @@
     "homepage": "https://github.com/vitelabs/vite.js#readme",
     "publishConfig": {
         "access": "public"
+    },
+    "dependencies": {
+        "@vite/vitejs-constant": "^2.3.19",
+        "@vite/vitejs-wallet": "^2.3.19",
+        "@vite/vitejs-utils": "^2.3.19",
+        "@vite/vitejs-error": "^2.3.19",
+        "@vite/vitejs-abi": "^2.3.19"
     }
 }

@@ -1,5 +1,4 @@
-import * as _communication from './communication.js';
-import * as _ipc_ws from './ipc_ws.js';
+import Communication from "./communication.js";
+import IPC_WS from "./ipc_ws.js";
 
-export const Communication = _communication;
-export const IPC_WS = _ipc_ws;
+export { Communication, IPC_WS };

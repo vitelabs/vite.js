@@ -1,7 +1,8 @@
 {
     "name": "@vite/vitejs-wallet",
-    "version": "2.3.18",
+    "version": "2.3.19",
     "main": "dist/index.js",
+    "types": "dist/index.d.ts",
     "browser": "dist/index.js",
     "repository": {
         "type": "git",
@@ -16,6 +17,9 @@
         "access": "public"
     },
     "dependencies": {
+        "@vite/vitejs-utils": "^2.3.19",
+        "@vite/vitejs-wallet": "^2.3.19",
+        "@vite/vitejs-error": "^2.3.19",
         "@sisi/ed25519-blake2b-hd-key": "^1.0.2",
         "bip39": "^3.0.4",
         "blakejs": "^1.2.1"

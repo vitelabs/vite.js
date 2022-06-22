@@ -1,0 +1,44 @@
+{
+	"references": [
+	  {
+		"path": "src/abi"
+	  },
+	  {
+		"path": "./src/accountBlock"
+	  },
+	  {
+		"path": "./src/communication"
+	  },
+	  {
+		"path": "./src/constant"
+	  },
+	  {
+		"path": "./src/error"
+	  },
+	  {
+		"path": "./src/HTTP"
+	  },
+	  {
+		"path": "./src/IPC"
+	  },
+	  {
+		"path": "./src/keystore"
+	  },
+	  {
+		"path": "./src/utils"
+	  },
+	  {
+		"path": "./src/viteAPI"
+	  },
+	  {
+		"path": "./src/vitejs"
+	  },
+	  {
+		"path": "./src/wallet"
+	  },
+	  {
+		"path": "./src/WS"
+	  }
+	],
+	"files": []
+  }

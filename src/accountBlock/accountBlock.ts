@@ -2,7 +2,7 @@ import * as BigNumber from 'bn.js';
 import * as blake from 'blakejs';
 import { paramsMissing } from '@vite/vitejs-error'
 import { checkParams, isHexString, isBase64String } from '@vite/vitejs-utils';
-import { getOriginalAddressFromAddress, getAddressFromPublicKey, isValidAddress, createAddressByPrivateKey } from '@vite/vitejs-wallet/address';
+import addressUtils from '@vite/vitejs-wallet';
 
 import {
     isRequestBlock, isResponseBlock, isValidAccountBlockWithoutHash, checkAccountBlock,
@@ -48,7 +48,7 @@ class AccountBlockClass {
             msg: `Don\'t have blockType ${ blockType }`
         }, {
             name: 'address',
-            func: isValidAddress
+            func: addressUtils.isValidAddress
         } ]);
         if (err) {
             throw err;
@@ -104,7 +104,7 @@ class AccountBlockClass {
     }
 
     get originalAddress(): Hex {
-        return getOriginalAddressFromAddress(this.address);
+        return addressUtils.getOriginalAddressFromAddress(this.address);
     }
 
     get blockTypeHex(): Hex {
@@ -195,7 +195,7 @@ class AccountBlockClass {
             throw err;
         }
 
-        const { address } = createAddressByPrivateKey(privateKey);
+        const { address } = addressUtils.createAddressByPrivateKey(privateKey);
         if (address !== this.address) {
             throw new Error('PrivateKey is wrong');
         }
@@ -333,7 +333,7 @@ class AccountBlockClass {
             ? Buffer.from(`${ publicKey }`, 'hex').toString('base64')
             : publicKey;
 
-        const address = getAddressFromPublicKey(publicKeyHex);
+        const address = addressUtils.getAddressFromPublicKey(publicKeyHex);
         if (this.address !== address) {
             throw new Error('PublicKey is wrong.');
         }

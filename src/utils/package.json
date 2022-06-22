@@ -1,7 +1,8 @@
 {
     "name": "@vite/vitejs-utils",
-    "version": "2.3.18",
+    "version": "2.3.19",
     "main": "dist/index.js",
+    "types": "dist/index.d.ts",
     "browser": "dist/index.js",
     "repository": {
         "type": "git",
@@ -16,6 +17,7 @@
         "access": "public"
     },
     "dependencies": {
+        "@vite/vitejs-error": "^2.3.19",
         "@sisi/tweetnacl-blake2b": "^1.0.0",
         "bn.js": "^5.2.1",
         "qs": "^6.10.3"

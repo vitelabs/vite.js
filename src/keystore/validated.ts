@@ -1,6 +1,6 @@
 import UUID from 'pure-uuid';
 import { checkParams } from '@vite/vitejs-utils';
-import { isValidAddress } from '@vite/vitejs-wallet/address';
+import addressUtils from '@vite/vitejs-wallet';
 
 import { currentVersion, algorithm, scryptName } from './vars';
 
@@ -115,7 +115,7 @@ function isValidOldKeystore(keyJson) {
     if (!keyJson.id
         || !keyJson.crypto
         || !keyJson.hexaddress
-        || !isValidAddress(keyJson.hexaddress)) {
+        || !addressUtils.isValidAddress(keyJson.hexaddress)) {
         return false;
     }
 
