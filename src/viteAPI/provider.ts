@@ -109,9 +109,9 @@ class ProviderClass {
             });
         }
 
-        event._id = this.subscriptionId++;
+        event['_id'] = this.subscriptionId++;
 
-        this.subscriptionList[event._id] = event;
+        this.subscriptionList[event['_id']] = event;
         return event;
     }
 

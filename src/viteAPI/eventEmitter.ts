@@ -6,7 +6,6 @@ class EventEmitter {
     private provider: ProviderType;
     private timeLoop: any;
     private callback?: Function;
-    _id: number;
 
     constructor(id: string, provider: ProviderType, isSubscribe: boolean) {
         this.id = id;
@@ -14,7 +13,6 @@ class EventEmitter {
         this.provider = provider;
         this.isSubscribe = isSubscribe;
         this.timeLoop = undefined;
-        this._id = 0;
     }
 
     on(callback: Function) {
