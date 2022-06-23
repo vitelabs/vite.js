@@ -217,8 +217,7 @@ class IpcWs extends Communication {
     }
 }
 
-const IPC_WS = IpcWs;
-export default IPC_WS;
+export default IpcWs;
 
 
 function getIdFromPayloads(payloads) {

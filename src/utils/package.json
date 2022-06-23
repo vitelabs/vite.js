@@ -17,8 +17,9 @@
         "access": "public"
     },
     "dependencies": {
-        "@vite/vitejs-error": "^2.3.19",
         "@sisi/tweetnacl-blake2b": "^1.0.0",
+        "@vite/vitejs-error": "^2.3.19",
+        "blakejs": "1.1.1",
         "bn.js": "^5.2.1",
         "qs": "^6.10.3"
     }

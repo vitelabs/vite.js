@@ -17,11 +17,11 @@
         "access": "public"
     },
     "dependencies": {
+        "@sisi/ed25519-blake2b-hd-key": "^1.0.2",
+        "@vite/vitejs-error": "^2.3.19",
         "@vite/vitejs-utils": "^2.3.19",
         "@vite/vitejs-wallet": "^2.3.19",
-        "@vite/vitejs-error": "^2.3.19",
-        "@sisi/ed25519-blake2b-hd-key": "^1.0.2",
         "bip39": "^3.0.4",
-        "blakejs": "^1.2.1"
+        "blakejs": "1.1.1"
     }
 }

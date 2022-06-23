@@ -9,7 +9,7 @@
         "src/*"
     ],
     "scripts": {
-        "build": "tsc --build ./tsconfig.project.json",
+        "build": "npm run clean && tsc --build ./tsconfig.project.json",
         "clean": "tsc --build --clean ./tsconfig.project.json"
     },
     "repository": {
@@ -23,5 +23,8 @@
     "devDependencies": {
         "@types/node": "^17.0.40",
         "typescript": "^4.7.3"
+    },
+    "dependencies": {
+        "blakejs": "1.1.1"
     }
 }

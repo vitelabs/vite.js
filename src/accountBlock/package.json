@@ -17,10 +17,11 @@
         "access": "public"
     },
     "dependencies": {
+        "@vite/vitejs-abi": "^2.3.19",
         "@vite/vitejs-constant": "^2.3.19",
-        "@vite/vitejs-wallet": "^2.3.19",
-        "@vite/vitejs-utils": "^2.3.19",
         "@vite/vitejs-error": "^2.3.19",
-        "@vite/vitejs-abi": "^2.3.19"
+        "@vite/vitejs-utils": "^2.3.19",
+        "@vite/vitejs-wallet": "^2.3.19",
+        "blakejs": "1.1.1"
     }
 }

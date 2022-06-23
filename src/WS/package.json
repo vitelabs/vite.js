@@ -15,5 +15,9 @@
     "homepage": "https://github.com/vitelabs/vite.js#readme",
     "publishConfig": {
         "access": "public"
+    },
+    "dependencies": {
+        "@vite/vitejs-communication": "^2.3.19",
+        "websocket": "^1.0.34"
     }
 }
