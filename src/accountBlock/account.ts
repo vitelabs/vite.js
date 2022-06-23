@@ -841,6 +841,62 @@ class AccountClass {
             params: [id]
         });
     }
+
+    dexTransfer({ destination, tokenId, amount }: {
+        destination: Address;
+        tokenId: TokenId;
+        amount: Uint256;
+    }): AccountBlock {
+        const err = checkParams({ destination, tokenId, amount }, [ 'destination', 'tokenId', 'amount' ]);
+        if (err) {
+            throw err;
+        }
+
+        return this.callContract({
+            abi: Contracts.DexTransfer.abi,
+            toAddress: Contracts.DexTransfer.contractAddress,
+            params: [ destination, tokenId, amount ],
+            tokenId
+        });
+    }
+
+    dexAgentDeposit({ beneficiary, tokenId, amount }: {
+        beneficiary: Address;
+        tokenId: TokenId;
+        amount: BigInt;
+    }): AccountBlock {
+        const err = checkParams({ beneficiary, tokenId, amount }, [ 'beneficiary', 'tokenId', 'amount' ]);
+        if (err) {
+            throw err;
+        }
+
+        return this.callContract({
+            abi: Contracts.DexAgentDeposit.abi,
+            toAddress: Contracts.DexAgentDeposit.contractAddress,
+            params: [beneficiary],
+            tokenId,
+            amount
+        });
+    }
+
+    dexAssignedWithdraw({ destination, tokenId, amount, label = '0x00' }: {
+        destination: Address;
+        tokenId: TokenId;
+        amount: Uint256;
+        label?: Bytes32;
+    }): AccountBlock {
+        const err = checkParams({ destination, tokenId, amount }, [ 'destination', 'tokenId', 'amount' ]);
+        if (err) {
+            throw err;
+        }
+
+        return this.callContract({
+            abi: Contracts.DexAssignedWithdraw.abi,
+            toAddress: Contracts.DexAssignedWithdraw.contractAddress,
+            params: [ destination, tokenId, amount, label ],
+            tokenId
+        });
+    }
 }
 
 export const Account = AccountClass;

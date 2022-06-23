@@ -1,3 +1,51 @@
+## [2.3.19-alpha.3](https://github.com/vitelabs/vite.js/compare/v2.3.19-alpha.2...v2.3.19-alpha.3) (2022-05-09)
+
+
+### chore
+
+* 2.3.19-alpha.2 changelog ([71a3cbb](https://github.com/vitelabs/vite.js/commit/71a3cbbbb8b24bfcac638eb2f1df03e369370663))
+
+### feat
+
+* add rpc modules into main package ([652686d](https://github.com/vitelabs/vite.js/commit/652686d22178ad03595ccbe25798c3378cc4f473))
+* add support for dex internal transfer, agent deposit and assigned withdraw ([b7756cc](https://github.com/vitelabs/vite.js/commit/b7756cc60dcc895e6c1d473b05cdb5f4aa9d91bc))
+* refactor reconnect and support for renew subscription ([5bd74e1](https://github.com/vitelabs/vite.js/commit/5bd74e135dfcdb6e86e5fe33cbf78d56534ee823))
+
+
+
+## [2.3.19-alpha.2](https://github.com/vitelabs/vite.js/compare/v2.3.19-alpha.1...v2.3.19-alpha.2) (2022-04-22)
+
+
+### chore
+
+* use tsc-alias ([cc9d06c](https://github.com/vitelabs/vite.js/commit/cc9d06ceac0b3e04bd92966e2af3ea6e3e292ac2))
+* v2.3.19-alpha.1 changelog ([59012a1](https://github.com/vitelabs/vite.js/commit/59012a18a70b052aa1cde4858f4a62c410cb96d8))
+
+### fix
+
+* make keepalive default ([7719e50](https://github.com/vitelabs/vite.js/commit/7719e50f9f413e3e4ed0fc9e563656435d83fe00))
+
+### test
+
+* add test case ([f566fdf](https://github.com/vitelabs/vite.js/commit/f566fdff92ad48eb74696a349fbf65416083033a))
+* add test case for decodeLog ([ba64095](https://github.com/vitelabs/vite.js/commit/ba640954f654582c7d1612dfd092a31a86c2595f))
+
+
+
+## [2.3.19-alpha.1](https://github.com/vitelabs/vite.js/compare/v2.3.18...v2.3.19-alpha.1) (2022-04-20)
+
+
+### chore
+
+* 2.3.18 changelog ([0350a4a](https://github.com/vitelabs/vite.js/commit/0350a4a89d18815178dc3e8339f256a37aaf679c))
+* remove outdated package ([686ad6b](https://github.com/vitelabs/vite.js/commit/686ad6b1279867362ac0584d562d077bd01e1aed))
+
+### fix
+
+* lint ([ce26532](https://github.com/vitelabs/vite.js/commit/ce26532f3f945205301806bd006bc6a714bab5fa))
+
+
+
 ## [2.3.18](https://github.com/vitelabs/vite.js/compare/v2.3.18-alpha.3...v2.3.18) (2022-04-02)
 
 

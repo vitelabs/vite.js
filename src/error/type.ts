@@ -80,7 +80,10 @@ export enum TransactionType {
     'DexLockVxForDividend',
     'DexSwitchConfig',
     'DexStakeForPrincipalSVIP',
-    'DexCancelStakeById'
+    'DexCancelStakeById',
+    'DexTransfer',
+    'DexAgentDeposit',
+    'DexAssignedWithdraw'
 }
 
 export declare type TokenInfo = {

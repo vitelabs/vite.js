@@ -12,6 +12,11 @@
         "build": "npm run clean && tsc --build ./tsconfig.project.json",
         "clean": "tsc --build --clean ./tsconfig.project.json"
     },
+    "config": {
+        "commitizen": {
+            "path": "./node_modules/cz-conventional-changelog"
+        }
+    },
     "repository": {
         "type": "git",
         "url": "git+https://github.com/vitelabs/vite.js.git"

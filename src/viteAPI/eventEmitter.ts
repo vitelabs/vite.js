@@ -1,20 +1,23 @@
 import { ProviderType } from './type';
 
 class EventEmitter {
-    readonly id: string;
+    id: string;
     readonly isSubscribe: boolean;
+    readonly payload: {method: string, params: any};
     private provider: ProviderType;
     private timeLoop: any;
     private callback?: Function;
 
-    constructor(id: string, provider: ProviderType, isSubscribe: boolean) {
+    constructor(id: string, provider: ProviderType, isSubscribe: boolean, payload: {method: string, params: any}) {
         this.id = id;
         this.callback = undefined;
         this.provider = provider;
         this.isSubscribe = isSubscribe;
+        this.payload = payload;
         this.timeLoop = undefined;
     }
 
+    // call this method to register the subscription event handler
     on(callback: Function) {
         this.callback = callback;
     }
@@ -24,6 +27,7 @@ class EventEmitter {
         this.provider.unsubscribe(this);
     }
 
+    // called by provider when received subscription event
     emit(result) {
         this.callback && this.callback(result);
     }

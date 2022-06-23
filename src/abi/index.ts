@@ -55,7 +55,7 @@ export function decodeLog(abi, data = '', topics, methodName?: string) {
         if (input.indexed) {
             // parse indexed params from topics
             // if it's a reference type such as a string for an indexed argument, the blake2b hash of the value is stored as a topic instead.
-            const param = ([ 'bool', 'int', 'uint', 'address', 'fixed', 'ufixed' ].find(function (staticType) {
+            const param = ([ 'bool', 'int', 'uint', 'address', 'fixed', 'ufixed', 'tokenId' ].find(function (staticType) {
                 return input.type.indexOf(staticType) !== -1;
             })) ? decodeParameter(input.type, topics[topicIndex]) : topics[topicIndex];
             topicIndex++;

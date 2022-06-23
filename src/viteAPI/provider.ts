@@ -2,19 +2,23 @@ import { requestTimeout } from '@vite/vitejs-error';
 
 import { RPCRequest, RPCResponse, Methods } from './type';
 import EventEmitter from './eventEmitter';
+import ConnectHandler, { ReconnectHandler } from './connectHandler';
 
 
 class ProviderClass {
     isConnected = false;
-    private _provider: any;
+    private _provider: any; // connection provider
     private subscriptionList: {[id:number]:EventEmitter} = {};
     private subscriptionId = 0;
-    private requestList: {[id:number]:()=>void} = {};
+    private requestList: {[id:number]:()=>void} = {}; // pending request queue
     private requestId = 0;
+    private connectHandler?: ConnectHandler;
 
-    constructor(provider: any, onInitCallback: Function) {
+    constructor(provider: any, onInitCallback: Function, onConnectCallback?: ConnectHandler) {
         this._provider = provider;
-        this.connectedOnce(onInitCallback);
+        this.connectHandler = onConnectCallback || new ReconnectHandler();
+        this.connectHandler.init(this);
+        this.connectHandler.onConnect(onInitCallback);
     }
 
     setProvider(provider, onInitCallback, abort) {
@@ -27,7 +31,7 @@ class ProviderClass {
 
         this._provider = provider;
         this.isConnected = false;
-        this.connectedOnce(onInitCallback);
+        this.connectHandler?.onConnect(onInitCallback);
     }
 
     unsubscribe(event:EventEmitter) {
@@ -87,24 +91,25 @@ class ProviderClass {
 
         let rep;
         if (this.isConnected) {
-            rep = await this._provider.request(subMethodName, params);
+            rep = await this._provider.request(subMethodName, params); // call rpc
             rep = rep.result;
-        } else {
+        } else { // if the connection is not established, temporarily put the request in the request queue
             rep = await this._onReq('request', subMethodName, ...params);
         }
 
         const subscription = rep;
 
-        if (!Object.keys(this.subscriptionList).length) {
+        if (!Object.keys(this.subscriptionList).length) { // initialize if the subscription list is empty
             this.subscriptionList = {};
+            // register the subscription event handling callback to the connection provider
             this._provider.subscribe && this._provider.subscribe(jsonEvent => {
                 this.subscribeCallback(jsonEvent);
             });
         }
 
-        const event = new EventEmitter(subscription, this, !!this._provider.subscribe);
+        const event = new EventEmitter(subscription, this, !!this._provider.subscribe, {method: subMethodName, params: params});
         if (!this._provider.subscribe) {
-            event.startLoop(jsonEvent => {
+            event.startLoop(jsonEvent => { // polling for http
                 this.subscribeCallback(jsonEvent);
             });
         }
@@ -115,17 +120,17 @@ class ProviderClass {
         return event;
     }
 
-
     private _offReq(_q) {
         delete this.requestList[_q._id];
     }
 
+    // when the connection is not established, the request is stored in requestList and wait to be executed after the connection is established
     private _onReq(type, methods, ...args) {
         return new Promise((res, rej) => {
-            const _q = () => {
+            const _q = () => { // create the request
                 this[type](methods, ...args).then(data => {
                     clearTimeout(_timeout);
-                    this._offReq(_q);
+                    this._offReq(_q); // move the request out of queue after execution
                     res(data);
                 }).catch(err => {
                     this._offReq(_q);
@@ -144,6 +149,7 @@ class ProviderClass {
         });
     }
 
+    // process the event response
     private subscribeCallback(jsonEvent) {
         if (!jsonEvent) {
             return;
@@ -154,6 +160,7 @@ class ProviderClass {
             return;
         }
 
+        // find the matching corresponding event handler in the subscription list
         Object.values(this.subscriptionList).forEach(s => {
             if (s.id !== id) {
                 return;
@@ -164,27 +171,7 @@ class ProviderClass {
                 return;
             }
 
-            s.emit(result);
-        });
-    }
-
-    private connectedOnce(cb) {
-        const connectedCB = () => {
-            this.isConnected = true;
-            this.requestList && Object.values(this.requestList).forEach((_q:()=>void) => {
-                _q && _q();
-            });
-            cb && cb(this);
-        };
-
-        if (this._provider.type === 'http' || this._provider.connectStatus) {
-            connectedCB();
-            return;
-        }
-
-        this._provider.on && this._provider.on('connect', () => {
-            connectedCB();
-            this._provider.remove('connect');
+            s.emit(result); // call the event handling callback defined through event.on
         });
     }
 }

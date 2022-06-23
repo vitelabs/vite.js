@@ -1,9 +1,15 @@
 {
     "name": "@vite/vitejs-utils",
+<<<<<<< HEAD
     "version": "2.3.19",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "browser": "dist/index.js",
+=======
+    "version": "2.3.19-alpha.3",
+    "main": "dist/index.node.js",
+    "browser": "dist/index.web.js",
+>>>>>>> origin/dev/2.3.19
     "repository": {
         "type": "git",
         "url": "git+https://github.com/vitelabs/vite.js.git"

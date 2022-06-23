@@ -6,9 +6,10 @@ class WsRpc extends IPC_WS {
     constructor(path = 'ws://localhost:31420', timeout = 60000, options = {
         protocol: '',
         headers: '',
-        clientConfig: '',
-        retryTimes: 10,
-        retryInterval: 10000
+        clientConfig: {
+            keepalive: true,
+            keepaliveInterval: 30 * 1000
+        }
     }) {
         super({
             onEventTypes: [ 'error', 'close', 'connect' ],
@@ -25,29 +26,14 @@ class WsRpc extends IPC_WS {
         this.headers = options.headers;
         this.clientConfig = options.clientConfig;
 
-        this._timeout = null;
         this._destroyed = false;
 
         this.reconnect();
-
-        // Try to reconnect.
-        let times = 0;
-        this.on('connect', () => {
-            times = 0;
-        });
-        this.on('close', () => {
-            if (times > options.retryTimes) {
-                return;
-            }
-            this._timeout = setTimeout(() => {
-                times++;
-                this.reconnect();
-            }, options.retryInterval);
-        });
     }
 
     reconnect() {
         if (this._destroyed) return;
+        this.socket && (this.socket.onclose = () => {}); // reset before disconnect to avoid unnecessary reconnect
         this.disconnect();
         this.socket = new Websocket(this.path, this.protocol, null, this.headers, null, this.clientConfig);
         this.socket.onopen = () => {
@@ -67,7 +53,6 @@ class WsRpc extends IPC_WS {
 
     disconnect() {
         this.socket && this.socket.close && this.socket.close();
-        clearTimeout(this._timeout);
         this.socket = null;
     }
 
