@@ -1,4 +1,4 @@
-import { checkParams, isObject } from '~@vite/vitejs-utils';
+import { checkParams, isObject } from '@vite/vitejs-utils';
 
 import _AccountBlock from './accountBlock';
 import _Account from './account';

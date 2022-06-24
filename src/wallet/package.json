@@ -1,8 +1,9 @@
 {
     "name": "@vite/vitejs-wallet",
-    "version": "2.3.19-alpha.3",
-    "main": "dist/index.node.js",
-    "browser": "dist/index.web.js",
+    "version": "2.3.19",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "browser": "dist/index.js",
     "repository": {
         "type": "git",
         "url": "git+https://github.com/vitelabs/vite.js.git"
@@ -17,22 +18,10 @@
     },
     "dependencies": {
         "@sisi/ed25519-blake2b-hd-key": "^1.0.2",
-        "@sisi/tweetnacl-blake2b": "^1.0.0",
+        "@vite/vitejs-error": "^2.3.19",
+        "@vite/vitejs-utils": "^2.3.19",
+        "@vite/vitejs-wallet": "^2.3.19",
         "bip39": "^3.0.4",
-        "blake2b": "^2.1.4",
-        "blakejs": "^1.1.1",
-        "bn.js": "^5.2.0",
-        "browserify-aes": "^1.2.0",
-        "buffer": "^5.7.1",
-        "create-hmac": "^1.1.7",
-        "es6-promise": "^4.2.8",
-        "jsonrpc-lite": "^2.2.0",
-        "net": "^1.0.2",
-        "pure-uuid": "^1.6.2",
-        "qs": "^6.10.3",
-        "scryptsy": "^2.1.0",
-        "websocket": "^1.0.34",
-        "xhr2": "^0.2.1"
-    },
-    "types": "./distSrc/index.ts"
+        "blakejs": "1.1.1"
+    }
 }

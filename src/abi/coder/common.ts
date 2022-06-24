@@ -1,10 +1,10 @@
 // address bool gid number
 
-const BigNumber = require('bn.js');
+import * as BigNumber from 'bn.js';
 
-import { unsafeInteger, integerIllegal } from '~@vite/vitejs-error';
-import { getAddressFromOriginalAddress, getOriginalAddressFromAddress } from '~@vite/vitejs-wallet/address';
-import { getOriginalTokenIdFromTokenId, getTokenIdFromOriginalTokenId, isSafeInteger } from '~@vite/vitejs-utils';
+import { unsafeInteger, integerIllegal } from '@vite/vitejs-error';
+import addressUtils from '@vite/vitejs-wallet';
+import { getOriginalTokenIdFromTokenId, getTokenIdFromOriginalTokenId, isSafeInteger } from '@vite/vitejs-utils';
 
 
 export function encode(typeObj, params) {
@@ -68,7 +68,7 @@ export function decode(typeObj, params) {
 function getRawData({ type, typeStr, actualByteLen }, params, _params) {
     switch (type) {
     case 'address':
-        return getAddressFromOriginalAddress(params);
+        return addressUtils.getAddressFromOriginalAddress(params);
     case 'bool':
         return showNumber(params === '01' ? '1' : '0', 'uint');
     case 'number':
@@ -96,7 +96,7 @@ function getBytesData({ type, typeStr, actualByteLen }, params) {
 }
 
 function formatAddr(address) {
-    const addr = getOriginalAddressFromAddress(address);
+    const addr = addressUtils.getOriginalAddressFromAddress(address);
     return Buffer.from(addr, 'hex');
 }
 

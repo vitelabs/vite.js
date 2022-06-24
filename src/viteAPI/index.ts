@@ -1,8 +1,8 @@
-import { Contracts } from '~@vite/vitejs-constant';
-import { checkParams, isArray, blake2bHex } from '~@vite/vitejs-utils';
-import { isValidAddress, AddressType, getOriginalAddressFromAddress } from '~@vite/vitejs-wallet/address';
-import { decodeParameters, encodeFunctionCall, getAbiByType, getAbiByName } from '~@vite/vitejs-abi';
-import { Default_Contract_TransactionType, encodeContractList, getTransactionType, decodeContractAccountBlock } from '~@vite/vitejs-accountblock/utils';
+import { Contracts } from '@vite/vitejs-constant';
+import { checkParams, isArray, blake2bHex } from '@vite/vitejs-utils';
+import addressUtils from '@vite/vitejs-wallet';
+import { decodeParameters, encodeFunctionCall, getAbiByType, getAbiByName } from '@vite/vitejs-abi';
+import { utils } from '@vite/vitejs-accountblock';
 
 import { Address, AccountBlockType, Transaction, Hex, Base64, BigInt } from './type';
 
@@ -21,7 +21,7 @@ class ViteAPIClass extends Provider {
     }
 
     get transactionType() {
-        return Object.assign({}, this.customTransactionType, Default_Contract_TransactionType);
+        return Object.assign({}, this.customTransactionType, utils.Default_Contract_TransactionType);
     }
 
     // contractList = { 'transactionTypeName': { contractAddress, abi } }
@@ -35,20 +35,20 @@ class ViteAPIClass extends Provider {
             }
         }
 
-        const transactionTypeAfterEncode = encodeContractList(contractList);
+        const transactionTypeAfterEncode = utils.encodeContractList(contractList);
         this.customTransactionType = Object.assign({}, this.customTransactionType, transactionTypeAfterEncode);
     }
 
-    async getBalanceInfo(address: Address): Promise<{ balance: Object; unreceived: Object }> {
+    async getBalanceInfo(address: Address): Promise<{ balance: any; unreceived: any}> {
         const err = checkParams({ address }, ['address'], [{
             name: 'address',
-            func: isValidAddress
+            func: addressUtils.isValidAddress
         }]);
         if (err) {
             throw err;
         }
 
-        const data = await this.batch([ {
+        const data:any = await this.batch([ {
             methodName: 'ledger_getAccountInfoByAddress',
             params: [address]
         }, {
@@ -58,10 +58,12 @@ class ViteAPIClass extends Provider {
 
         if (!data || (data instanceof Array && data.length < 2)) {
             return {
-                balance: null,
-                unreceived: null
+                balance: undefined,
+                unreceived: undefined
             };
         }
+
+        
 
         if (data[0].error) {
             throw data[0].error;
@@ -81,7 +83,7 @@ class ViteAPIClass extends Provider {
     }, decodeTxTypeList: 'all' | string[] = 'all'): Promise<Transaction[]> {
         const err = checkParams({ address, pageIndex, decodeTxTypeList }, [ 'address', 'pageIndex' ], [ {
             name: 'address',
-            func: isValidAddress
+            func: addressUtils.isValidAddress
         }, {
             name: 'decodeTxTypeList',
             func: function (_d) {
@@ -100,7 +102,7 @@ class ViteAPIClass extends Provider {
         const list: Transaction[] = [];
         rawList.forEach((accountBlock: AccountBlockType) => {
             const transaction: Transaction = accountBlock;
-            const { abi, transactionType, contractAddress } = getTransactionType(accountBlock, this.customTransactionType);
+            const { abi, transactionType, contractAddress } = utils.getTransactionType(accountBlock, this.customTransactionType);
 
             transaction.transactionType = transactionType;
 
@@ -114,8 +116,8 @@ class ViteAPIClass extends Provider {
 
             if (isDecodeTx) {
                 transaction.contractParams = contractAddress && abi
-                    ? decodeContractAccountBlock({ accountBlock, contractAddress, abi })
-                    : null;
+                    ? utils.decodeContractAccountBlock({ accountBlock, contractAddress, abi })
+                    : undefined;
             }
 
             list.push(transaction);
@@ -127,7 +129,7 @@ class ViteAPIClass extends Provider {
     async callOffChainContract({ address, abi, code, params }) {
         const err = checkParams({ address, abi }, [ 'address', 'abi' ], [{
             name: 'address',
-            func: _a => isValidAddress(_a) === AddressType.Contract
+            func: _a => addressUtils.isValidAddress(_a) === addressUtils.AddressType.Contract
         }]);
         if (err) {
             throw err;
@@ -156,7 +158,7 @@ class ViteAPIClass extends Provider {
     async queryContractState({ address, abi, methodName, params }) {
         const err = checkParams({ address, abi }, [ 'address', 'abi' ], [{
             name: 'address',
-            func: _a => isValidAddress(_a) === AddressType.Contract
+            func: _a => addressUtils.isValidAddress(_a) === addressUtils.AddressType.Contract
         }]);
         if (err) {
             throw err;
@@ -191,9 +193,9 @@ class ViteAPIClass extends Provider {
             throw err;
         }
 
-        const originalAddress = getOriginalAddressFromAddress(address);
+        const originalAddress = addressUtils.getOriginalAddressFromAddress(address);
         const getNonceHashBuffer = Buffer.from(originalAddress + previousHash, 'hex');
-        const getNonceHash = blake2bHex(getNonceHashBuffer, null, 32);
+        const getNonceHash = blake2bHex(getNonceHashBuffer, undefined, 32);
 
         return this.request('util_getPoWNonce', difficulty, getNonceHash);
     }

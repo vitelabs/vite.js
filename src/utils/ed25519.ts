@@ -1,4 +1,4 @@
-const nacl = require('@sisi/tweetnacl-blake2b');
+import * as nacl from '@sisi/tweetnacl-blake2b';
 import { Hex } from './type';
 import { checkParams, isHexString } from './index';
 
@@ -36,7 +36,7 @@ export function sign(hexStr: Hex, privKey: Hex): Hex {
     const hash = Buffer.from(hexStr, 'hex');
     const pubKey = getPublicKey(privateKeyBuffer);
 
-    const signature = nacl.sign.detached(hash, privateKeyBuffer, pubKey);
+    const signature = nacl.sign.detached(hash, privateKeyBuffer);
     const signatureHex = Buffer.from(signature).toString('hex');
     return signatureHex;
 }

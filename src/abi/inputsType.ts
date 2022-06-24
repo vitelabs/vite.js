@@ -1,4 +1,4 @@
-import { isArray, isObject } from '~@vite/vitejs-utils';
+import { isArray, isObject } from '@vite/vitejs-utils';
 
 const ADDR_SIZE = 21;
 const getNum = new RegExp(/(\d+)/g);
@@ -7,7 +7,7 @@ const typePre = [ 'uint', 'int', 'address', 'bool', 'bytes', 'string', 'tokenId'
 function formatType(typeStr) {
     const { isArr, type, size } = validType(typeStr);
 
-    const arrLen = [];
+    const arrLen:number[] = [];
     let isDynamic = type === 'string';
     if (isArr) {
         const _typeStrArr = typeStr.split('[').slice(1);
@@ -94,7 +94,7 @@ function validType(typeStr) {
 
 function getTypes(jsonInterface) {
     if (isArray(jsonInterface)) {
-        const types = [];
+        const types: string[] = [];
         jsonInterface && jsonInterface.forEach(function (param) {
             const type = typeof param === 'string' ? param : param.type;
             validType(type);
@@ -107,7 +107,7 @@ function getTypes(jsonInterface) {
         throw new Error(`[Error] Illegal types: ${ jsonInterface }. Should be Array<string> or JsonInterface.`);
     }
 
-    const types = [];
+    const types: string[] = [];
     jsonInterface.inputs && jsonInterface.inputs.forEach(function (param) {
         validType(param.type);
         types.push(param.type);

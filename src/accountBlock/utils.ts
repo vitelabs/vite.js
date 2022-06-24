@@ -1,13 +1,21 @@
-const BigNumber = require('bn.js');
-const blake = require('blakejs/blake2b');
+import * as BigNumber from 'bn.js';
+import * as blake from 'blakejs';
 
-import { paramsMissing, paramsFormat } from '~@vite/vitejs-error';
-import { Delegate_Gid, Contracts } from '~@vite/vitejs-constant';
-import { getAbiByType, encodeParameters, encodeFunctionCall, encodeFunctionSignature, decodeLog } from '~@vite/vitejs-abi';
-import { isValidAddress, getAddressFromPublicKey, createAddressByPrivateKey, getOriginalAddressFromAddress, AddressType, getAddressFromOriginalAddress } from '~@vite/vitejs-wallet/address';
-import { checkParams, isNonNegativeInteger, isHexString, isValidTokenId, getOriginalTokenIdFromTokenId, isObject, ed25519, isBase64String } from '~@vite/vitejs-utils';
+import { paramsMissing, paramsFormat } from '@vite/vitejs-error';
+import { Delegate_Gid, Contracts } from '@vite/vitejs-constant';
+import { getAbiByType, encodeParameters, encodeFunctionCall, encodeFunctionSignature, decodeLog } from '@vite/vitejs-abi';
+import addressUtils from '@vite/vitejs-wallet';
+import { checkParams, isNonNegativeInteger, isHexString, isValidTokenId, getOriginalTokenIdFromTokenId, isObject, ed25519, isBase64String } from '@vite/vitejs-utils';
 
 import { BlockType, Address, Base64, Hex, TokenId, Uint64, BigInt, AccountBlockType, Uint8 } from './type';
+
+
+const isValidAddress = addressUtils.isValidAddress;
+const getAddressFromPublicKey = addressUtils.getAddressFromPublicKey;
+const createAddressByPrivateKey = addressUtils.createAddressByPrivateKey;
+const getOriginalAddressFromAddress = addressUtils.getOriginalAddressFromAddress;
+const AddressType = addressUtils.AddressType;
+const getAddressFromOriginalAddress = addressUtils.getAddressFromOriginalAddress;
 
 export const Default_Hash = '0000000000000000000000000000000000000000000000000000000000000000'; // A total of 64 0
 
@@ -39,7 +47,7 @@ export function checkAccountBlock(accountBlock: {
 }, status: AccountBlockStatus = AccountBlockStatus.Before_Hash): {
     code: string;
     message: string;
-} {
+} | undefined {
     const err = checkParams(accountBlock,
         [ 'blockType', 'address', 'height', 'previousHash' ],
         [ {
@@ -119,7 +127,7 @@ export function checkAccountBlock(accountBlock: {
     }
 
     if (status === AccountBlockStatus.Before_Hash) {
-        return null;
+        return undefined;
     }
 
     if (!accountBlock.hash) {
@@ -138,7 +146,7 @@ export function checkAccountBlock(accountBlock: {
     }
 
     if (status === AccountBlockStatus.Before_Signature) {
-        return null;
+        return undefined;
     }
 
     if (!accountBlock.publicKey) {
@@ -173,14 +181,14 @@ export function checkAccountBlock(accountBlock: {
         };
     }
 
-    return null;
+    return undefined;
 }
 
 export function isValidAccountBlockWithoutHash(accountBlock: {
     blockType: BlockType;
     address: Address;
-    height: Uint64;
-    previousHash: Hex;
+    height?: Uint64;
+    previousHash?: Hex;
     fee?: BigInt;
     amount?: BigInt;
     toAddress?: Address;
@@ -258,7 +266,7 @@ export function createContractAddress({ address, height, previousHash }: {
 
     const totalLength = originAddressBuffer.length + heightBuffer.length + previousHashBuffer.length;
     const _o: Buffer = Buffer.concat([ originAddressBuffer, heightBuffer, previousHashBuffer ], totalLength);
-    const _originContractAddress = blake.blake2b(_o, null, 20);
+    const _originContractAddress = blake.blake2b(_o, undefined, 20);
 
     const originContractAddress = new Uint8Array(21);
     originContractAddress.set(_originContractAddress);
@@ -315,7 +323,7 @@ export function getAccountBlockHash(accountBlock: {
     source += getTriggeredSendBlockListHex(accountBlock.triggeredSendBlockList);
 
     const sourceHex = Buffer.from(source, 'hex');
-    const hashBuffer = blake.blake2b(sourceHex, null, 32);
+    const hashBuffer = blake.blake2b(sourceHex, undefined, 32);
     return Buffer.from(hashBuffer).toString('hex');
 }
 
@@ -323,19 +331,19 @@ export function getBlockTypeHex(blockType: BlockType): Hex {
     return Buffer.from([blockType]).toString('hex');
 }
 
-export function getPreviousHashHex(previousHash: Hex): Hex {
+export function getPreviousHashHex(previousHash: Hex | undefined): Hex {
     return previousHash || Default_Hash;
 }
 
-export function getHeightHex(height: Uint64): Hex {
+export function getHeightHex(height: Uint64 | undefined): Hex {
     return height ? Buffer.from(new BigNumber(height).toArray('big', 8)).toString('hex') : '';
 }
 
-export function getAddressHex(address: Address): Hex {
+export function getAddressHex(address: Address | undefined): Hex {
     return address ? getOriginalAddressFromAddress(address) : '';
 }
 
-export function getToAddressHex(toAddress: Address): Hex {
+export function getToAddressHex(toAddress: Address | undefined): Hex {
     return toAddress ? getOriginalAddressFromAddress(toAddress) : '';
 }
 
@@ -343,23 +351,23 @@ export function getAmountHex(amount): Hex {
     return getNumberHex(amount);
 }
 
-export function getTokenIdHex(tokenId: TokenId): Hex {
+export function getTokenIdHex(tokenId: TokenId | undefined): Hex {
     return tokenId ? getOriginalTokenIdFromTokenId(tokenId) || '' : '';
 }
 
-export function getSendBlockHashHex(sendBlockHash: Hex): Hex {
+export function getSendBlockHashHex(sendBlockHash: Hex | undefined): Hex {
     return sendBlockHash || Default_Hash;
 }
 
-export function getDataHex(data: Base64): Hex {
-    return data ? blake.blake2bHex(Buffer.from(data, 'base64'), null, 32) : '';
+export function getDataHex(data: Base64 | undefined): Hex {
+    return data ? blake.blake2bHex(Buffer.from(data, 'base64'), undefined, 32) : '';
 }
 
-export function getFeeHex(fee: BigInt): Hex {
+export function getFeeHex(fee: BigInt | undefined): Hex {
     return getNumberHex(fee);
 }
 
-export function getNonceHex(nonce: Base64) {
+export function getNonceHex(nonce: Base64 | undefined) {
     const nonceBytes = nonce ? Buffer.from(nonce, 'base64') : '';
     return leftPadBytes(nonceBytes, 8);
 }
@@ -472,6 +480,12 @@ export function signAccountBlock(accountBlock: {
         throw new Error('PrivateKey is wrong.');
     }
 
+    if(!accountBlock.hash){
+        throw {
+            code: paramsMissing.code,
+            message: `${ paramsMissing.message } ${ "hash" }.`
+        }
+    }
     const signature: Hex = ed25519.sign(accountBlock.hash, privateKey);
     return {
         signature: Buffer.from(signature, 'hex').toString('base64'),
@@ -489,6 +503,12 @@ export function decodeContractAccountBlock({ accountBlock, contractAddress, abi,
     topics?: any;
     methodName?: string;
 }) {
+    if (!accountBlock.data) {
+        throw {
+            code: paramsMissing.code,
+            message: `${ paramsMissing.message } ${ "block.data"}`
+        }
+    }
     const err = checkParams({ accountBlock, contractAddress, abi }, [ 'accountBlock', 'contractAddress', 'abi' ], [{
         name: 'contractAddress',
         func: _a => isValidAddress(_a) === AddressType.Contract
@@ -499,7 +519,7 @@ export function decodeContractAccountBlock({ accountBlock, contractAddress, abi,
 
     if (accountBlock.blockType !== BlockType.TransferRequest
         || accountBlock.toAddress !== contractAddress) {
-        return null;
+        return undefined;
     }
 
     return decodeAccountBlockDataByContract({
@@ -528,7 +548,7 @@ export function decodeAccountBlockDataByContract({ data, abi, topics = [], metho
 
     const encodeFuncSign = encodeFunctionSignature(abi, methodName);
     if (encodeFuncSign !== hexData.substring(0, 8)) {
-        return null;
+        return undefined;
     }
 
     return decodeLog(abi, hexData.substring(8), topics, methodName);

@@ -1,4 +1,4 @@
-import { requestTimeout } from '~@vite/vitejs-error';
+import { requestTimeout } from '@vite/vitejs-error';
 
 import { RPCRequest, RPCResponse, Methods } from './type';
 import EventEmitter from './eventEmitter';
@@ -12,7 +12,7 @@ class ProviderClass {
     private subscriptionId = 0;
     private requestList: {[id:number]:()=>void} = {}; // pending request queue
     private requestId = 0;
-    private connectHandler = null;
+    private connectHandler?: ConnectHandler;
 
     constructor(provider: any, onInitCallback: Function, onConnectCallback?: ConnectHandler) {
         this._provider = provider;
@@ -31,7 +31,7 @@ class ProviderClass {
 
         this._provider = provider;
         this.isConnected = false;
-        this.connectHandler.onConnect(onInitCallback);
+        this.connectHandler?.onConnect(onInitCallback);
     }
 
     unsubscribe(event:EventEmitter) {
@@ -114,9 +114,9 @@ class ProviderClass {
             });
         }
 
-        event._id = this.subscriptionId++;
+        event['_id'] = this.subscriptionId++;
 
-        this.subscriptionList[event._id] = event;
+        this.subscriptionList[event['_id']] = event;
         return event;
     }
 

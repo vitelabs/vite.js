@@ -1,5 +1,5 @@
-import { paramsFormat } from '~@vite/vitejs-error';
-import { checkParams } from '~@vite/vitejs-utils';
+import { paramsFormat } from '@vite/vitejs-error';
+import { checkParams } from '@vite/vitejs-utils';
 
 import { decipheriv, encryptPwd } from './tools';
 import { defaultScryptParams, additionData } from './vars';

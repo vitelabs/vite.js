@@ -1,8 +1,8 @@
-const UUID = require('pure-uuid');
+import UUID from 'pure-uuid';
 
-import { checkParams, ed25519 } from '~@vite/vitejs-utils';
-import { createAddressByPrivateKey } from '~@vite/vitejs-wallet/address';
-import { paramsFormat } from '~@vite/vitejs-error';
+import { checkParams, ed25519 } from '@vite/vitejs-utils';
+import addressUtils from '@vite/vitejs-wallet';
+import { paramsFormat } from '@vite/vitejs-error';
 
 import isValid from './validated';
 import { cipheriv, encryptPwd } from './tools';
@@ -79,7 +79,7 @@ export function encryptOldKeystore(privKey, pwd, selfScryptsy) {
         throw new Error(err.message);
     }
 
-    const AddressObj = createAddressByPrivateKey(privKey);
+    const AddressObj = addressUtils.createAddressByPrivateKey(privKey);
 
     const scryptParams = {
         n,

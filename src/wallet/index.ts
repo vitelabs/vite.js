@@ -1,6 +1,6 @@
-const bip39 = require('bip39');
+import * as bip39 from 'bip39';
 
-import { checkParams } from '~@vite/vitejs-utils';
+import { checkParams } from '@vite/vitejs-utils';
 
 import Wallet from './wallet';
 import * as hdKey from './hdKey';

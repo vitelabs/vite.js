@@ -1,8 +1,9 @@
 {
     "name": "@vite/vitejs-error",
-    "version": "2.3.19-alpha.3",
-    "main": "dist/index.node.js",
-    "browser": "dist/index.web.js",
+    "version": "2.3.19",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "browser": "dist/index.js",
     "repository": {
         "type": "git",
         "url": "git+https://github.com/vitelabs/vite.js.git"

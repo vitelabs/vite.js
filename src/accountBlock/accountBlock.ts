@@ -1,8 +1,8 @@
-const BigNumber = require('bn.js');
-const blake = require('blakejs/blake2b');
-
-import { checkParams, isHexString, isBase64String } from '~@vite/vitejs-utils';
-import { getOriginalAddressFromAddress, getAddressFromPublicKey, isValidAddress, createAddressByPrivateKey } from '~@vite/vitejs-wallet/address';
+import * as BigNumber from 'bn.js';
+import * as blake from 'blakejs';
+import { paramsMissing } from '@vite/vitejs-error'
+import { checkParams, isHexString, isBase64String } from '@vite/vitejs-utils';
+import addressUtils from '@vite/vitejs-wallet';
 
 import {
     isRequestBlock, isResponseBlock, isValidAccountBlockWithoutHash, checkAccountBlock,
@@ -29,8 +29,8 @@ class AccountBlockClass {
     publicKey?: Base64;
     _toAddress?: Address;
 
-    private privateKey: Hex;
-    private provider: ProviderType;
+    private privateKey?: Hex;
+    private provider?: ProviderType;
 
     constructor({ blockType, address, fee, data, sendBlockHash, amount, toAddress, tokenId }: {
         blockType: BlockType;
@@ -48,7 +48,7 @@ class AccountBlockClass {
             msg: `Don\'t have blockType ${ blockType }`
         }, {
             name: 'address',
-            func: isValidAddress
+            func: addressUtils.isValidAddress
         } ]);
         if (err) {
             throw err;
@@ -71,29 +71,29 @@ class AccountBlockClass {
         return {
             blockType: this.blockType,
             address: this.address,
-            fee: this.fee === '' ? null : this.fee,
-            data: this.data === '' ? null : this.data,
-            sendBlockHash: this.sendBlockHash === '' ? null : this.sendBlockHash,
-            toAddress: this.toAddress === '' ? null : this.toAddress,
-            tokenId: this.tokenId === '' ? null : this.tokenId,
-            amount: this.amount === '' ? null : this.amount,
-            height: this.height === '' ? null : this.height,
-            previousHash: this.previousHash === '' ? null : this.previousHash,
-            difficulty: this.difficulty === '' ? null : this.difficulty,
-            nonce: this.nonce === '' ? null : this.nonce,
-            hash: this.hash === '' ? null : this.hash,
-            publicKey: this.publicKey === '' ? null : this.publicKey,
-            signature: this.signature === '' ? null : this.signature
+            fee: this.fee === '' ? undefined : this.fee,
+            data: this.data === '' ? undefined : this.data,
+            sendBlockHash: this.sendBlockHash === '' ? undefined : this.sendBlockHash,
+            toAddress: this.toAddress === '' ? undefined : this.toAddress,
+            tokenId: this.tokenId === '' ? undefined : this.tokenId,
+            amount: this.amount === '' ? undefined : this.amount,
+            height: this.height === '' ? undefined : this.height,
+            previousHash: this.previousHash === '' ? undefined : this.previousHash,
+            difficulty: this.difficulty === '' ? undefined : this.difficulty,
+            nonce: this.nonce === '' ? undefined : this.nonce,
+            hash: this.hash === '' ? undefined : this.hash,
+            publicKey: this.publicKey === '' ? undefined : this.publicKey,
+            signature: this.signature === '' ? undefined : this.signature
         };
     }
 
-    get toAddress(): Address {
+    get toAddress(): Address | undefined {
         if (this.blockType !== BlockType.CreateContractRequest) {
             return this._toAddress;
         }
 
         if (!this.previousHash || !this.height) {
-            return '';
+            return undefined;
         }
 
         return createContractAddress({
@@ -104,7 +104,7 @@ class AccountBlockClass {
     }
 
     get originalAddress(): Hex {
-        return getOriginalAddressFromAddress(this.address);
+        return addressUtils.getOriginalAddressFromAddress(this.address);
     }
 
     get blockTypeHex(): Hex {
@@ -159,7 +159,7 @@ class AccountBlockClass {
         return isResponseBlock(this.blockType);
     }
 
-    get hash(): Hex {
+    get hash(): Hex | undefined {
         const block = {
             blockType: this.blockType,
             address: this.address,
@@ -178,7 +178,7 @@ class AccountBlockClass {
         if (isValidAccountBlockWithoutHash(block)) {
             return getAccountBlockHash(block);
         }
-        return null;
+        return undefined;
     }
 
     setProvider(provider: ProviderType): AccountBlockClass {
@@ -195,7 +195,7 @@ class AccountBlockClass {
             throw err;
         }
 
-        const { address } = createAddressByPrivateKey(privateKey);
+        const { address } = addressUtils.createAddressByPrivateKey(privateKey);
         if (address !== this.address) {
             throw new Error('PrivateKey is wrong');
         }
@@ -205,7 +205,7 @@ class AccountBlockClass {
     }
 
     async getPreviousAccountBlock(): Promise<AccountBlockType> {
-        const previousAccountBlock: AccountBlockType = await this.provider.request('ledger_getLatestAccountBlock', this.address);
+        const previousAccountBlock: AccountBlockType = await this.provider?.request('ledger_getLatestAccountBlock', this.address);
         return previousAccountBlock;
     }
 
@@ -230,8 +230,8 @@ class AccountBlockClass {
     }
 
     async autoSetPreviousAccountBlock(): Promise<{
-        height: Uint64;
-        previousHash: Hex;
+        height: Uint64 | undefined;
+        previousHash: Hex | undefined;
     }> {
         const previousAccountBlock: AccountBlockType = await this.getPreviousAccountBlock();
         this.setPreviousAccountBlock(previousAccountBlock);
@@ -252,7 +252,7 @@ class AccountBlockClass {
             difficulty: BigInt;
             qc: BigInt;
             isCongestion: boolean;
-        } = await this.provider.request('ledger_getPoWDifficulty', {
+        } = await this.provider?.request('ledger_getPoWDifficulty', {
             address: this.address,
             previousHash: this.previousHash,
             blockType: this.blockType,
@@ -268,7 +268,7 @@ class AccountBlockClass {
         return this;
     }
 
-    async autoSetDifficulty(): Promise<BigInt> {
+    async autoSetDifficulty(): Promise<BigInt | undefined> {
         const difficulty = await this.getDifficulty();
         this.setDifficulty(difficulty);
         return this.difficulty;
@@ -284,9 +284,9 @@ class AccountBlockClass {
         }
 
         const getNonceHashBuffer = Buffer.from(this.originalAddress + this.previousHash, 'hex');
-        const getNonceHash = blake.blake2bHex(getNonceHashBuffer, null, 32);
+        const getNonceHash = blake.blake2bHex(getNonceHashBuffer, undefined, 32);
 
-        const nonce: Base64 = this.provider.request('util_getPoWNonce', this.difficulty, getNonceHash);
+        const nonce: Base64 = this.provider?.request('util_getPoWNonce', this.difficulty, getNonceHash);
         return nonce;
     }
 
@@ -295,7 +295,7 @@ class AccountBlockClass {
         return this;
     }
 
-    async autoSetNonce(): Promise<Base64> {
+    async autoSetNonce(): Promise<Base64 | undefined> {
         if (!this.difficulty) {
             return this.nonce;
         }
@@ -305,7 +305,7 @@ class AccountBlockClass {
         return this.nonce;
     }
 
-    async PoW(difficulty?: BigInt): Promise<{difficulty: BigInt; nonce: Base64}> {
+    async PoW(difficulty?: BigInt): Promise<{difficulty: BigInt | undefined; nonce: Base64 | undefined}> {
         const _difficulty = difficulty || await this.getDifficulty();
         this.setDifficulty(_difficulty);
         await this.autoSetNonce();
@@ -333,7 +333,7 @@ class AccountBlockClass {
             ? Buffer.from(`${ publicKey }`, 'hex').toString('base64')
             : publicKey;
 
-        const address = getAddressFromPublicKey(publicKeyHex);
+        const address = addressUtils.getAddressFromPublicKey(publicKeyHex);
         if (this.address !== address) {
             throw new Error('PublicKey is wrong.');
         }
@@ -361,7 +361,13 @@ class AccountBlockClass {
         return this;
     }
 
-    sign(privateKey: Hex = this.privateKey): AccountBlockClass {
+    sign(privateKey: Hex | undefined = this.privateKey): AccountBlockClass {
+        if (!privateKey) {
+            throw {
+                code: paramsMissing.code,
+                message: `${ paramsMissing.message } ${ 'private key' }.`
+            }
+        }
         const { signature, publicKey } = signAccountBlock(this.accountBlock, privateKey);
         this.setPublicKey(publicKey);
         this.setSignature(signature);
@@ -375,26 +381,44 @@ class AccountBlockClass {
         }
 
         try {
-            const res = await this.provider.request('ledger_sendRawTransaction', this.accountBlock);
+            const res = await this.provider?.request('ledger_sendRawTransaction', this.accountBlock);
             return res || this.accountBlock;
         } catch (err) {
-            err.acccountBlock = this.accountBlock;
-            throw err;
+            const newErr = Object.assign({}, err, {'accountBlock': this.accountBlock});
+            throw newErr;
         }
     }
 
-    async sendByPoW(privateKey: Hex = this.privateKey): Promise<AccountBlockBlock> {
+    async sendByPoW(privateKey: Hex | undefined = this.privateKey): Promise<AccountBlockBlock> {
+        if (!privateKey) {
+            throw {
+                code: paramsMissing.code,
+                message: `${ paramsMissing.message } ${ 'private key' }.`
+            }
+        }
         await this.PoW();
         return this.sign(privateKey).send();
     }
 
-    async autoSendByPoW(privateKey: Hex = this.privateKey): Promise<AccountBlockBlock> {
+    async autoSendByPoW(privateKey: Hex | undefined = this.privateKey): Promise<AccountBlockBlock> {
+        if (!privateKey) {
+            throw {
+                code: paramsMissing.code,
+                message: `${ paramsMissing.message } ${ 'private key' }.`
+            }
+        }
         await this.autoSetPreviousAccountBlock();
         await this.PoW();
         return this.sign(privateKey).send();
     }
 
-    async autoSend(privateKey: Hex = this.privateKey): Promise<AccountBlockBlock> {
+    async autoSend(privateKey: Hex | undefined = this.privateKey): Promise<AccountBlockBlock> {
+        if (!privateKey) {
+            throw {
+                code: paramsMissing.code,
+                message: `${ paramsMissing.message } ${ 'private key' }.`
+            }
+        }
         await this.autoSetPreviousAccountBlock();
         return this.sign(privateKey).send();
     }

@@ -1,4 +1,4 @@
-import { isArray } from '~@vite/vitejs-utils';
+import { isArray } from '@vite/vitejs-utils';
 import { formatType } from '../inputsType';
 
 import { encode as commonEncode, decode as commonDecode } from './common';
@@ -66,8 +66,8 @@ export function encodeParameters(types, params) {
         throw new Error('[Error] Illegal params. Params should be array and the length should be equal to inputs.length');
     }
 
-    const tempResult = [];
-    const dynamicRes = [];
+    const tempResult:any[] = [];
+    const dynamicRes:any[] = [];
     let totalLength = 0;
 
     types.forEach((type, i) => {
@@ -125,8 +125,8 @@ export function decodeParameters(types, params) {
     }
 
     let _params = params;
-    const resArr = [];
-    const indexArr = [];
+    const resArr: any[] = [];
+    const indexArr: number[] = [];
 
     types.forEach(type => {
         const typeObj = formatType(type);
@@ -166,7 +166,7 @@ export function decodeParameters(types, params) {
         });
     });
 
-    const result = [];
+    const result:any[] = [];
     let currentInx = 0;
     resArr.forEach((_res, i) => {
         if (!_res.isDynamic) {
@@ -238,7 +238,7 @@ function decodeArr(typeObj, arrLen, params) {
         _param = params.substring(64);
     }
 
-    const result = [];
+    const result: any[] = [];
     for (let i = 0; i < arrLen; i++) {
         const res = decode[typeObj.type](typeObj, _param);
         result.push(res.result);
@@ -258,7 +258,7 @@ function decodeArrs(typeObj, params) {
         }
 
         const l = lenArr[i];
-        let _r = [];
+        let _r: any[] = [];
 
         if (result) {
             let resultOpt = result && result.length;

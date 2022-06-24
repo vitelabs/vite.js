@@ -6,15 +6,15 @@ class EventEmitter {
     readonly payload: {method: string, params: any};
     private provider: ProviderType;
     private timeLoop: any;
-    private callback: Function;
+    private callback?: Function;
 
     constructor(id: string, provider: ProviderType, isSubscribe: boolean, payload: {method: string, params: any}) {
         this.id = id;
-        this.callback = null;
+        this.callback = undefined;
         this.provider = provider;
         this.isSubscribe = isSubscribe;
         this.payload = payload;
-        this.timeLoop = null;
+        this.timeLoop = undefined;
     }
 
     // call this method to register the subscription event handler
