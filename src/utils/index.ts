@@ -1,5 +1,5 @@
 const bn = require('bn.js');
-import { stringify } from 'qs';
+import { stringify } from 'query-string';
 const blake = require('blakejs/blake2b');
 
 import { paramsMissing, paramsFormat } from '~@vite/vitejs-error';
