@@ -199,5 +199,5 @@ function getTokenIdCheckSum(originalTokenId: Hex): Hex {
 
 // https://howchoo.com/javascript/how-to-turn-an-object-into-query-string-parameters-in-javascript
 function toQueryString(params: object) {
-    return Object.keys(params).map(key => `${key}=${params[key]}`).join('&');
+    return Object.keys(params).map(key => `${ key }=${ params[key] }`).join('&');
 }
