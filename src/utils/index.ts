@@ -25,7 +25,7 @@ export function uriStringify(o: {
     if (params && (params as any).data) {
         (params as any).data = (params as any).data.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');// base64 urlsafe
     }
-    const _params = params ? `?${ toQueryString(params, { encode: false }) }` : '';
+    const _params = params ? `?${ toQueryString(params) }` : '';
     const str = `${ _schema }${ _prefix }${ _target_address }${ _chain_id }${ _function_name }${ _params }`;
     return str;
 }
