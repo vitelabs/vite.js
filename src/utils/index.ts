@@ -14,7 +14,7 @@ declare const enum Charset {
 export const ed25519 = _e;
 
 export function uriStringify(o: {
-    schema: string; prefix: string; target_address: string; chain_id: number; function_name: string; params: Object;
+    schema?: string; prefix?: string; target_address?: string; chain_id?: number; function_name?: string; params?: Object;
 }) {
     const { schema, prefix, target_address, chain_id, function_name, params } = o;
     const _schema = schema ? `${ schema }:` : 'vite:';
