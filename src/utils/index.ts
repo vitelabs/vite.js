@@ -1,5 +1,4 @@
 const bn = require('bn.js');
-import { stringify } from 'qs';
 const blake = require('blakejs/blake2b');
 
 import { paramsMissing, paramsFormat } from '~@vite/vitejs-error';
@@ -26,7 +25,7 @@ export function uriStringify(o: {
     if (params && (params as any).data) {
         (params as any).data = (params as any).data.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');// base64 urlsafe
     }
-    const _params = params ? `?${ stringify(params, { encode: false }) }` : '';
+    const _params = params ? `?${ toQueryString(params) }` : '';
     const str = `${ _schema }${ _prefix }${ _target_address }${ _chain_id }${ _function_name }${ _params }`;
     return str;
 }
@@ -196,4 +195,9 @@ export const _bn = bn;
 
 function getTokenIdCheckSum(originalTokenId: Hex): Hex {
     return blake.blake2bHex(Buffer.from(originalTokenId, 'hex'), null, 2);
+}
+
+// https://howchoo.com/javascript/how-to-turn-an-object-into-query-string-parameters-in-javascript
+function toQueryString(params: object) {
+    return Object.keys(params).map(key => `${ key }=${ params[key] }`).join('&');
 }
