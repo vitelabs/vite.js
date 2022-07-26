@@ -1,6 +1,6 @@
 {
     "name": "@vite/vitejs-viteapi",
-    "version": "2.3.19-alpha.3",
+    "version": "2.3.19-alpha.4",
     "main": "dist/index.node.js",
     "browser": "dist/index.web.js",
     "repository": {
