@@ -1,3 +1,16 @@
+## [2.3.19-alpha.4](https://github.com/vitelabs/vite.js/compare/v2.3.19-alpha.3...v2.3.19-alpha.4) (2022-07-26)
+
+
+### chore
+
+* 2.3.19-alpha.3 changelog ([2529d33](https://github.com/vitelabs/vite.js/commit/2529d332b8bb2dbb5ccff7f3936e01c2716ee2e4))
+
+### fix
+
+* params ([776a3af](https://github.com/vitelabs/vite.js/commit/776a3af27939465cecbf37d74ecd008c91564bbb))
+
+
+
 ## [2.3.19-alpha.3](https://github.com/vitelabs/vite.js/compare/v2.3.19-alpha.2...v2.3.19-alpha.3) (2022-05-09)
 
 
