@@ -1,4 +1,4 @@
-const Buffer = require('buffer/').Buffer
+const Buffer = require('buffer/').Buffer;
 import { checkParams, ed25519, blake2b, isHexString } from '~@vite/vitejs-utils';
 import { addressIllegal } from '~@vite/vitejs-error';
 

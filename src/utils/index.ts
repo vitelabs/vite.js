@@ -1,4 +1,4 @@
-const Buffer = require('buffer/').Buffer
+const Buffer = require('buffer/').Buffer;
 const bn = require('bn.js');
 import { stringify } from 'qs';
 const blake = require('blakejs/blake2b');

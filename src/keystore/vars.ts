@@ -1,4 +1,4 @@
-const Buffer = require('buffer/').Buffer
+const Buffer = require('buffer/').Buffer;
 export const additionData = Buffer.from('vite');
 export const algorithm = 'aes-256-gcm';
 export const scryptName = 'scrypt';

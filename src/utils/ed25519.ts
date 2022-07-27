@@ -1,4 +1,4 @@
-const Buffer = require('buffer/').Buffer
+const Buffer = require('buffer/').Buffer;
 const nacl = require('@sisi/tweetnacl-blake2b');
 import { Hex } from './type';
 import { checkParams, isHexString } from './index';

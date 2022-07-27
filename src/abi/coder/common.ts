@@ -1,7 +1,7 @@
 // address bool gid number
 
 const BigNumber = require('bn.js');
-const Buffer = require('buffer/').Buffer
+const Buffer = require('buffer/').Buffer;
 
 import { unsafeInteger, integerIllegal } from '~@vite/vitejs-error';
 import { getAddressFromOriginalAddress, getOriginalAddressFromAddress } from '~@vite/vitejs-wallet/address';

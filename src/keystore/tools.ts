@@ -1,4 +1,4 @@
-const Buffer = require('buffer/').Buffer
+const Buffer = require('buffer/').Buffer;
 const scryptsy = require('scryptsy');
 
 declare const window;

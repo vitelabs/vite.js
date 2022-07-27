@@ -1,4 +1,4 @@
-const Buffer = require('buffer/').Buffer
+const Buffer = require('buffer/').Buffer;
 const assert = require('assert');
 
 import { Contracts } from '../../../src/constant/index';

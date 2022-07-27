@@ -1,4 +1,4 @@
-const Buffer = require('buffer/').Buffer
+const Buffer = require('buffer/').Buffer;
 const bip39 = require('bip39');
 const hd = require('@sisi/ed25519-blake2b-hd-key');
 
