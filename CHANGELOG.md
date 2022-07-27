@@ -1,3 +1,16 @@
+## [2.3.19-alpha.5](https://github.com/vitelabs/vite.js/compare/v2.3.19-alpha.4...v2.3.19-alpha.5) (2022-07-27)
+
+
+### build
+
+* fix buffer polyfill ([4e5f08a](https://github.com/vitelabs/vite.js/commit/4e5f08a880cf54e104ae78a2a992ac2a0752b758))
+
+### chore
+
+* 2.3.19-alpha.4 changelog ([4673804](https://github.com/vitelabs/vite.js/commit/4673804930d7a7c961eb818ff066ccbe4ec6f103))
+
+
+
 ## [2.3.19-alpha.4](https://github.com/vitelabs/vite.js/compare/v2.3.19-alpha.3...v2.3.19-alpha.4) (2022-07-26)
 
 
