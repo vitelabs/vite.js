@@ -1,3 +1,4 @@
+const Buffer = require('buffer/').Buffer
 import { encode as commonEncode, encodeBytesData, decode as commonDecode, decodeToHexData } from './common';
 
 

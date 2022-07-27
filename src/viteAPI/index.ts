@@ -1,3 +1,4 @@
+const Buffer = require('buffer/').Buffer
 import { Contracts } from '~@vite/vitejs-constant';
 import { checkParams, isArray, blake2bHex } from '~@vite/vitejs-utils';
 import { isValidAddress, AddressType, getOriginalAddressFromAddress } from '~@vite/vitejs-wallet/address';

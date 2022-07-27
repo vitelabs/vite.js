@@ -1,3 +1,4 @@
+const Buffer = require('buffer/').Buffer
 const UUID = require('pure-uuid');
 import { checkParams } from '~@vite/vitejs-utils';
 import { isValidAddress } from '~@vite/vitejs-wallet/address';

@@ -1,3 +1,4 @@
+const Buffer = require('buffer/').Buffer
 const BigNumber = require('bn.js');
 const blake = require('blakejs/blake2b');
 
