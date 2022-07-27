@@ -3,17 +3,11 @@ const webpack = require('webpack');
 
 const baseDir = path.join(__dirname, './src');
 const target = process.env.build_target;
-const Buffer_Path = path.join(__dirname, './node_modules/buffer/index.js');
 
 const plugins = [
     new webpack.DefinePlugin({ 'processSilence': process.env.NODE_ENV && process.env.NODE_ENV.indexOf('test') === 0 ? 0 : 1 }),
     new webpack.IgnorePlugin({ resourceRegExp: /^\.\/wordlists\/(?!english)/, contextRegExp: /bip39\/src/ })
 ];
-if (target === 'web') {
-    plugins.push(new webpack.NormalModuleReplacementPlugin(/\/buffer\//, function (resource) {
-        resource.request = Buffer_Path;
-    }));
-}
 
 module.exports = {
     plugins,

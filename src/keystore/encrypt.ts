@@ -1,3 +1,4 @@
+const Buffer = require('buffer/').Buffer;
 const UUID = require('pure-uuid');
 
 import { checkParams, ed25519 } from '~@vite/vitejs-utils';

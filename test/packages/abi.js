@@ -1,3 +1,4 @@
+const Buffer = require('buffer/').Buffer;
 const assert = require('assert');
 
 import { type } from 'os';

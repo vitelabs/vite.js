@@ -1,3 +1,4 @@
+const Buffer = require('buffer/').Buffer;
 const bip39 = require('bip39');
 const blake = require('blakejs/blake2b');
 
