@@ -1,3 +1,16 @@
+## [2.3.19-alpha.6](https://github.com/vitelabs/vite.js/compare/v2.3.19-alpha.5...v2.3.19-alpha.6) (2022-07-29)
+
+
+### chore
+
+* 2.3.19-alpha.5 changelog ([5fa4e5d](https://github.com/vitelabs/vite.js/commit/5fa4e5d8679ad6278ce5f6f0cee4ea7664050989))
+
+### fix
+
+* webpack polyfill ([9f9c48f](https://github.com/vitelabs/vite.js/commit/9f9c48f7c9884bcc41b4036146598b00fdb205d7))
+
+
+
 ## [2.3.19-alpha.5](https://github.com/vitelabs/vite.js/compare/v2.3.19-alpha.4...v2.3.19-alpha.5) (2022-07-27)
 
 
