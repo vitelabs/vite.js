@@ -9,7 +9,7 @@ const plugins = [
     new webpack.IgnorePlugin({ resourceRegExp: /^\.\/wordlists\/(?!english)/, contextRegExp: /bip39\/src/ })
 ];
 if (target === 'web') {
-    plugins.push(new webpack.ProvidePlugin({ Buffer: [ 'buffer', 'Buffer' ] }));
+    plugins.push(new webpack.ProvidePlugin({ process: 'process/browser', Buffer: [ 'buffer', 'Buffer' ] }));
 }
 
 module.exports = {
@@ -87,7 +87,8 @@ module.exports = {
             vm: require.resolve('vm-browserify'),
             stream: require.resolve('stream-browserify'),
             crypto: require.resolve('crypto-browserify'),
-            buffer: require.resolve('buffer/')
+            buffer: require.resolve('buffer/'),
+            process: require.resolve('process/browser')
         },
         extensions: [ '.js', '.json', '.ts' ]
     }
