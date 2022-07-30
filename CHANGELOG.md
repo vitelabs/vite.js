@@ -1,3 +1,16 @@
+## [2.3.19-alpha.7](https://github.com/vitelabs/vite.js/compare/v2.3.19-alpha.6...v2.3.19-alpha.7) (2022-07-30)
+
+
+### chore
+
+* 2.3.19-alpha.6 changelog ([f0ca4ba](https://github.com/vitelabs/vite.js/commit/f0ca4ba5997babee182b2164e8780379319cc67a))
+
+### fix
+
+* process polyfill ([37c9631](https://github.com/vitelabs/vite.js/commit/37c9631d9ea227411956dd3e051a59c364ae1270))
+
+
+
 ## [2.3.19-alpha.6](https://github.com/vitelabs/vite.js/compare/v2.3.19-alpha.5...v2.3.19-alpha.6) (2022-07-29)
 
 
