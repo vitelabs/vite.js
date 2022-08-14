@@ -3,11 +3,20 @@ const blake = require('blakejs/blake2b');
 
 import { paramsMissing, paramsFormat } from '~@vite/vitejs-error';
 import { Delegate_Gid, Contracts } from '~@vite/vitejs-constant';
-import { getAbiByType, encodeParameters, encodeFunctionCall, encodeFunctionSignature, decodeLog } from '~@vite/vitejs-abi';
+import {
+    getAbiByType,
+    encodeParameters,
+    encodeFunctionCall,
+    encodeFunctionSignature,
+    decodeLog,
+    AbiFragment,
+    decodeFunctionCall
+} from '~@vite/vitejs-abi';
 import { isValidAddress, getAddressFromPublicKey, createAddressByPrivateKey, getOriginalAddressFromAddress, AddressType, getAddressFromOriginalAddress } from '~@vite/vitejs-wallet/address';
 import { checkParams, isNonNegativeInteger, isHexString, isValidTokenId, getOriginalTokenIdFromTokenId, isObject, ed25519, isBase64String } from '~@vite/vitejs-utils';
 
 import { BlockType, Address, Base64, Hex, TokenId, Uint64, BigInt, AccountBlockType, Uint8 } from './type';
+import { EventFragment, Fragment, FunctionFragment } from '../abi/fragments';
 
 export const Default_Hash = '0000000000000000000000000000000000000000000000000000000000000000'; // A total of 64 0
 
@@ -377,7 +386,7 @@ export function getTriggeredSendBlockListHex(triggeredSendBlockList: AccountBloc
 
 
 // Get AccountBlock.data
-export function getCreateContractData({ abi, code, params, responseLatency = '0', quotaMultiplier = '10', randomDegree = '0' }: {
+export function getCreateContractData({ abi, code, params = [], responseLatency = '0', quotaMultiplier = '10', randomDegree = '0' }: {
     responseLatency?: Uint8;
     quotaMultiplier?: Uint8;
     randomDegree?: Uint8;
@@ -410,7 +419,7 @@ export function getCreateContractData({ abi, code, params, responseLatency = '0'
     let data = `${ Delegate_Gid }01${ Buffer.from(_responseLatency).toString('hex') }${ Buffer.from(_randomDegree).toString('hex') }${ Buffer.from(_quotaMultiplier).toString('hex') }${ code }`;
 
     if (jsonInterface) {
-        data += encodeParameters(jsonInterface, params);
+        data += encodeParameters(jsonInterface, Array.isArray(params) ? params : [params]);
     }
     return Buffer.from(data, 'hex').toString('base64');
 }
@@ -485,7 +494,7 @@ export function signAccountBlock(accountBlock: {
 export function decodeContractAccountBlock({ accountBlock, contractAddress, abi, topics = [], methodName }: {
     accountBlock: AccountBlockType;
     contractAddress: Address;
-    abi: any;
+    abi: AbiFragment;
     topics?: any;
     methodName?: string;
 }) {
@@ -512,7 +521,7 @@ export function decodeContractAccountBlock({ accountBlock, contractAddress, abi,
 
 export function decodeAccountBlockDataByContract({ data, abi, topics = [], methodName }: {
     data: Base64;
-    abi: any;
+    abi: AbiFragment;
     topics?: any;
     methodName?: string;
 }) {
@@ -530,8 +539,13 @@ export function decodeAccountBlockDataByContract({ data, abi, topics = [], metho
     if (encodeFuncSign !== hexData.substring(0, 8)) {
         return null;
     }
-
-    return decodeLog(abi, hexData.substring(8), topics, methodName);
+    const _abi = Fragment.from(abi);
+    if (FunctionFragment.isFunctionFragment(_abi)) {
+        return decodeFunctionCall(_abi, hexData, methodName);
+    } else if (EventFragment.isEventFragment(_abi)) {
+        return decodeLog(_abi, hexData, topics, methodName);
+    }
+    throw new Error(`unsupported abi type ${ _abi.type }`);
 }
 
 // contractList = { 'transactionTypeName': { contractAddress, abi } }

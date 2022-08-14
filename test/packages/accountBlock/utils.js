@@ -322,7 +322,7 @@ describe('decodeContractAccountBlock decodeAccountBlockDataByContract', function
             for (let i = 0; i < (abi.inputs || []).length; i++) {
                 const item = abi.inputs[i];
                 it(item.name, function () {
-                    assert.equal(!!decodeRes[item.name], true);
+                    assert.ok(decodeRes[item.name] != null);
                 });
             }
         });
@@ -369,7 +369,7 @@ describe('getTransactionType', function () {
         });
     }
     it('customTransactionType helloWorld', function () {
-        const abi = { methodName: 'hello', inputs: [] };
+        const abi = { type: 'function', name: 'hello', inputs: [] };
         const contractAddress = 'vite_0000000000000000000000000000000000000003f6af7459b9';
 
         const signFunc = encodeFunctionSignature(abi);

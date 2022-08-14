@@ -1,139 +1,154 @@
 import { isArray, isObject } from '~@vite/vitejs-utils';
 
-import { encodeFunction, getFunction } from './encodeFunction';
-import { encodeParameter as _encodeParameter, encodeParameters as _encodeParameters, decodeParameter as _decodeParameter, decodeParameters as _decodeParameters } from './coder';
-import { getTypes } from './inputsType';
+import { defaultAbiCoder } from './abicoder';
+import { Abi } from './abi';
+import { Fragment, JsonFragment, JsonParamType, ParamType } from './fragments';
+import * as utils from './utils';
 
+export type AbiFragment = Fragment | JsonFragment | string;
+export type AbiParam = ParamType | JsonParamType | string;
+export { Abi, utils };
 
-export function encodeLogSignature(jsonFunction, methodName?: string) {
-    return encodeFunction(jsonFunction, methodName);
-}
-export function encodeFunctionSignature(jsonFunction, methodName?: string) {
-    const result = encodeFunction(jsonFunction, methodName);
-    return result.slice(0, 8);
-}
-export function encodeFunctionCall(jsonInterface, params, methodName?: string) {
-    return encodeFunctionSignature(jsonInterface, methodName) + encodeParameters(jsonInterface, params, methodName);
+export function encodeLogSignature(abiFragment: Array<AbiFragment> | AbiFragment, eventName?: string): string {
+    return Abi.from(abiFragment).getEventTopic(eventName);
 }
 
-export function encodeParameter(type, param) {
-    return _encodeParameter(type, param).result;
+export function encodeFunctionSignature(abiFragment: Array<AbiFragment> | AbiFragment, methodName?: string) {
+    return Abi.from(abiFragment).getSighash(methodName);
 }
-export const decodeParameter = _decodeParameter;
-
-export function encodeParameters(types, params, methodName?: string) {
-    try {
-        if (methodName || !isArray(types) && isObject(types)) {
-            const func = getFunction(types, methodName);
-            types = getTypes(func);
-        }
-    } catch (err) {
-        // Do nothing
-    }
-
-    return _encodeParameters(getTypes(types), params);
-}
-export function decodeParameters(types, params, methodName?: string) {
-    try {
-        if (methodName || !isArray(types) && isObject(types)) {
-            const func = getFunction(types, methodName);
-            types = getTypes(func);
-        }
-    } catch (err) {
-        // Do nothing
-    }
-    return _decodeParameters(getTypes(types), params);
+export function encodeFunctionCall(abiFragment: Array<AbiFragment> | AbiFragment, params?: Array<any>, methodName?: string) {
+    return Abi.from(abiFragment).encodeFunctionData(methodName, params);
 }
 
-export function decodeLog(abi, data = '', topics, methodName?: string) {
-    const nonIndexedInputs = [];
-    const nonIndexedTypes = [];
-    const inputs = getInputs(abi, methodName);
-    const returnValues = {};
-    let topicIndex = abi.anonymous ? 0 : 1; // for non-anonymous events, topics[0] always refers to the hash of the event signature
-    inputs.forEach((input, i) => {
-        if (input.indexed) {
-            // parse indexed params from topics
-            // if it's a reference type such as a string for an indexed argument, the blake2b hash of the value is stored as a topic instead.
-            const param = ([ 'bool', 'int', 'uint', 'address', 'fixed', 'ufixed', 'tokenId' ].find(function (staticType) {
-                return input.type.indexOf(staticType) !== -1;
-            })) ? decodeParameter(input.type, topics[topicIndex]) : topics[topicIndex];
-            topicIndex++;
-            // add the indexed param to the return values
-            returnValues[i] = param;
-            if (input.name) returnValues[input.name] = param;
-        } else {
-            nonIndexedInputs.push(input);
-            nonIndexedTypes.push(input.type);
-        }
-    });
-    // parse non-indexed params from data
-    const nonIndexedParams = decodeParameters(nonIndexedTypes, data);
-    // add non-indexed params to the return values
-    let index = 0;
-    inputs.forEach((input, i) => {
-        if (!input.indexed) {
-            returnValues[i] = nonIndexedParams[index];
-            if (input.name) returnValues[input.name] = nonIndexedParams[index];
-            index++;
-        }
-    });
-
-    return returnValues;
+export function decodeFunctionCall(abiFragment: Array<AbiFragment> | AbiFragment, data: string, methodName?: string) {
+    return Abi.from(abiFragment).decodeFunctionData(methodName, data);
 }
 
-export function getAbiByType(jsonInterfaces, type) {
-    if (!jsonInterfaces || !type) {
+export function decodeFunctionOutput(abiFragment: Array<AbiFragment> | AbiFragment, data: string, methodName?: string) {
+    return Abi.from(abiFragment).decodeFunctionResult(methodName, data);
+}
+
+export function encodeOffchainCall(abiFragment: Array<AbiFragment> | AbiFragment, params?: Array<any>, methodName?: string) {
+    return Abi.from(abiFragment).encodeOffchainData(methodName, params);
+}
+
+export function decodeOffchainOutput(abiFragment: Array<AbiFragment> | AbiFragment, data: string, methodName?: string) {
+    return Abi.from(abiFragment).decodeOffchainResult(methodName, data);
+}
+
+export function encodeConstructor(abiFragment: Array<AbiFragment> | AbiFragment, params?: Array<any>) {
+    return Abi.from(abiFragment).encodeDeploy(params);
+}
+
+export function encodeParameter(type: AbiParam, param: any) {
+    return defaultAbiCoder.encode([ParamType.from(type)], [param]);
+}
+
+export function decodeParameter(type: AbiParam, data: string) {
+    return defaultAbiCoder.decode([ParamType.from(type)], data)[0];
+}
+
+export function encodeParameters(types: Array<AbiParam | AbiFragment> | AbiParam | AbiFragment, params?: Array<any>, methodName?: string) {
+    return defaultAbiCoder.encode(getTypes(types, methodName), params || []);
+}
+export function decodeParameters(types: Array<AbiParam | AbiFragment> | AbiParam | AbiFragment, data: string, methodName?: string) {
+    return defaultAbiCoder.decode(getTypes(types, methodName), data);
+}
+
+export function decodeLog(abiFragment: Array<AbiFragment> | AbiFragment, data = '', topics: Array<string>, eventName?: string) {
+    return Abi.from(abiFragment).decodeEventLog(eventName, data, topics);
+}
+
+export function encodeLogFilter(abiFragment: Array<AbiFragment> | AbiFragment, values: Array<any>, eventName?: string) {
+    return Abi.from(abiFragment).encodeFilterTopics(eventName, values);
+}
+
+/**
+ * Return matched JSON fragment according to type, or return null if the type is not found
+ * @param jsonFragment
+ * @param type
+ * @return JsonFragment
+ */
+export function getAbiByType(jsonFragment: Array<JsonFragment> | JsonFragment, type: string): JsonFragment {
+    if (!jsonFragment || !type) {
         return null;
     }
 
-    if (!(isArray(jsonInterfaces) || isObject(jsonInterfaces))) {
-        throw new Error('jsonInterfaces need array or object ');
+    if (!(isArray(jsonFragment) || isObject(jsonFragment))) {
+        throw new Error('jsonFragment should be an array or object');
     }
 
-    // jsonInterfaces is an object
-    if (!isArray(jsonInterfaces) && isObject(jsonInterfaces)) {
-        if (jsonInterfaces.type === type) {
-            return jsonInterfaces;
-        }
+    // jsonFragment is an object
+    if (!Array.isArray(jsonFragment)) {
+        return (jsonFragment.type === type) ? jsonFragment : null;
     }
 
-    // jsonInterfaces is an array
-    return jsonInterfaces.find(e => e.type === type) || null;
+    // jsonFragment is an array
+    return jsonFragment.find(item => item.type === type) || null;
 }
 
-export function getAbiByName(jsonInterfaces, methodName) {
-    if (!jsonInterfaces || !methodName) {
+/**
+ * Return matched JSON fragment according to method name, or return null if the method is not found
+ * @param jsonFragment
+ * @param methodName
+ * @return JsonFragment
+ */
+export function getAbiByName(jsonFragment: Array<JsonFragment> | JsonFragment, methodName: string): JsonFragment {
+    if (!jsonFragment || !methodName) {
         return null;
     }
 
-    if (!(isArray(jsonInterfaces) || isObject(jsonInterfaces))) {
-        throw new Error('jsonInterfaces need array or object ');
+    if (!(isArray(jsonFragment) || isObject(jsonFragment))) {
+        throw new Error('jsonFragment should be an array or object');
     }
 
-    // jsonInterfaces is an object
-    if (!isArray(jsonInterfaces) && isObject(jsonInterfaces)) {
-        if (jsonInterfaces.name === methodName) {
-            return jsonInterfaces;
-        }
+    // jsonFragment is an object
+    if (!Array.isArray(jsonFragment)) {
+        return (jsonFragment.name === methodName) ? jsonFragment : null;
     }
 
-    // jsonInterfaces is an array
-    return jsonInterfaces.find(e => e.name === methodName) || null;
+    // jsonFragment is an array
+    return jsonFragment.find(item => item.name === methodName) || null;
 }
 
-function getInputs(inputs, methodName?: string) {
-    try {
-        const func = getFunction(inputs, methodName);
-        func && (inputs = func);
-    } catch (err) {
-        // Do nothing
-    }
+// Parse input fragments or types and return matched type array
+function getTypes(types: Array<ParamType | AbiFragment> | ParamType | AbiFragment, methodName?: string): Array<ParamType> {
+    const _types: Array<ParamType> = [ ];
+    const _frags: Array<Fragment> = [ ];
 
-    if (!isArray(inputs) && !isObject(inputs)) {
-        throw new Error(`[Error] decodeLog: Illegal inputs ${ JSON.stringify(inputs) }. Should be Array or JsonInterface.`);
-    }
+    const _parseInput = (inputs: any, _types: Array<ParamType>, _frags: Array<Fragment>): void => {
+        if (typeof (inputs) === 'string') {
+            const jsonParam: JsonParamType = utils.safeParseJson(inputs);
+            if (jsonParam) { // is json
+                inputs = jsonParam;
+            }
+        }
+        if (!Array.isArray(inputs)) {
+            try {
+                _types.push(ParamType.from(inputs));
+                return;
+            } catch (e) {
+                try {
+                    _frags.push(Fragment.from(inputs));
+                    return;
+                } catch (e) {
+                    throw new Error(`invalid type or fragment ${ inputs }`);
+                }
+            }
+        }
+        inputs.forEach(item => _parseInput(item, _types, _frags));
+    };
 
-    inputs = isArray(inputs) ? inputs : inputs.inputs;
-    return inputs || [];
+    _parseInput(types, _types, _frags);
+
+    if (methodName) { // fragment array + methodName
+        const result = _frags.find(item => item.name === (item.type === 'callback' ? `${ methodName }Callback` : methodName))?.inputs;
+        return result ? result : [];
+    }
+    if (_frags.length === 1) {
+        return _frags[0].inputs;
+    } else if (_frags.length > 1) {
+        throw new Error('missing method name');
+    }
+    return _types;
 }

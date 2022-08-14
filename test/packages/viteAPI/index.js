@@ -17,14 +17,28 @@ it('extends of ViteAPI/Provider', function () {
 });
 
 describe('ViteAPI addTxType', function () {
-    const abi = { methodName: 'hello', inputs: [] };
-    const contractAddress = 'vite_0000000000000000000000000000000000000003f6af7459b9';
+    const contractLists = {
+        helloWorld: {
+            contractAddress: 'vite_0000000000000000000000000000000000000003f6af7459b9',
+            abi: { type: 'function', name: 'hello', inputs: [] }
+        },
+        FullNodeStake: {
+            contractAddress: 'vite_8cf2663cc949442db2d3f78f372621733292d1fb0b846f1651',
+            abi: { 'inputs': [], 'name': 'stake', 'outputs': [], 'payable': true, 'type': 'function' }
+        },
+        FullNodeCancelStake: {
+            contractAddress: 'vite_b3b6335ef23ef3826cff125b81efd158dac3c2209748e0601a',
+            abi: { 'inputs': [{ 'name': 'id', 'type': 'bytes32' }], 'name': 'cancelStake', 'payable': false, 'type': 'function' }
+        }
+    };
 
-    myViteAPI.addTransactionType({ helloWorld: { contractAddress, abi }});
-    const signFunc = encodeFunctionSignature(abi);
-    const key = `${ signFunc }_${ contractAddress }`;
+    myViteAPI.addTransactionType(contractLists);
+    for (const name in contractLists) {
+        const signFunc = encodeFunctionSignature(contractLists[name].abi);
+        const key = `${ signFunc }_${ contractLists[name].contractAddress }`;
 
-    it('isHaveTxType', function () {
-        assert.equal(myViteAPI.transactionType[key].transactionType, 'helloWorld');
-    });
+        it('isHaveTxType', function () {
+            assert.equal(myViteAPI.transactionType[key].transactionType, name);
+        });
+    }
 });

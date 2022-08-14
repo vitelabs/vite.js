@@ -4,10 +4,12 @@ module.exports = {
         '@typescript-eslint'
     ],
     'env': {
+        'es2020': true,
         'browser': true,
         'commonjs': true,
-        'es6': true,
-        'node': true
+        // 'es6': true,
+        'node': true,
+        'mocha': true
     },
     'parserOptions': {
         'ecmaFeatures': {'jsx': true},
@@ -29,7 +31,7 @@ module.exports = {
         'guard-for-in': 'off',
         'no-throw-literal': 'off',
         'prefer-promise-reject-errors': 'off',
-        'eqeqeq': 'error',
+        'eqeqeq': [ 'error', 'smart' ],
         'no-else-return': 'error',
         'no-labels': 'error',
         'no-return-assign': 'error',
