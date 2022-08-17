@@ -417,7 +417,12 @@ export class Abi {
                 if (!isObject(value)) {
                     throw new Error(`type error, expect object but got ${ typeof value }`);
                 }
-                const result = param.components.reduce((accum, item) => accum.concat(encodeTopic(item, value[item.name], true)), '');
+                const result = param.components.reduce((accum, item) => {
+                    if (value[item.name] === undefined) {
+                        throw new Error(`missing tuple property: ${ item.name }`);
+                    }
+                    return accum.concat(encodeTopic(item, value[item.name], true));
+                }, '');
                 if (_isSubElement) {
                     return result;
                 }
@@ -439,6 +444,11 @@ export class Abi {
         };
         // only get indexed inputs
         const _inputs = _fragment.inputs.filter(item => item.indexed);
+
+        if (values.length > _inputs.length) {
+            throw new Error(`too many indexed arguments for ${ _fragment.format() }: ${ values }`);
+        }
+
         values.forEach((value, index) => {
             const param = _inputs[index];
 

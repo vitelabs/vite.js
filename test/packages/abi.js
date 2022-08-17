@@ -1027,7 +1027,7 @@ describe('abi', function () {
             assert.deepEqual(result, [{ lowerLimit: 1, upperLimit: 2, tipPer: 3, users: [ {name: 'name', addr: 'vite_5a600b6c5103f242107b6eebf8aa290bda86800adb0c264ab6' }, {name: 'name', addr: 'vite_5a600b6c5103f242107b6eebf8aa290bda86800adb0c264ab6' } ], result: [[['alice'], ['alice'], ['alice']], [['alice'], ['alice'], ['alice']]]}]);
         });
         it('uint256[][] string[5][] uint256[3][5] abi', function () {
-            const result = abi.decodeParameters({'inputs': [ {'internalType': 'uint256[][]', 'name': 'input1', 'type': 'uint256[][]'}, {'internalType': 'string[5][]', 'name': 'input2', 'type': 'string[5][]'}, {'internalType': 'uint256[3][5]', 'name': 'input3', 'type': 'uint256[3][5]'} ], 'name': 'compoundArr2DR3WithInput', 'outputs': [ {'internalType': 'uint256[][]', 'name': '', 'type': 'uint256[][]'}, {'internalType': 'string[5][]', 'name': '', 'type': 'string[5][]'}, {'internalType': 'uint256[3][5]', 'name': '', 'type': 'uint256[3][5]'} ], 'stateMutability': 'pure', 'type': 'function'},
+            const result = abi.decodeParameters({'inputs': [ {'internalType': 'uint256[][]', 'name': 'input1', 'type': 'uint256[][]'}, {'internalType': 'string[5][]', 'name': 'input2', 'type': 'string[5][]'}, {'internalType': 'uint256[3][5]', 'name': 'input3', 'type': 'uint256[3][5]'} ], 'name': 'compoundArr2DR3WithInput', 'outputs': [ {'internalType': 'uint256[][]', 'name': '', 'type': 'uint256[][]'}, {'internalType': 'string[5][]', 'name': '', 'type': 'string[5][]'}, {'internalType': 'uint256[3][5]', 'name': '', 'type': 'uint256[3][5]'} ], 'stateMutability': 'view', 'type': 'function'},
                 '00000000000000000000000000000000000000000000000000000000000002200000000000000000000000000000000000000000000000000000000000000560000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000003000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000003000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000003000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000003000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000003000000000000000000000000000000000000000000000000000000000000000500000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000e0000000000000000000000000000000000000000000000000000000000000014000000000000000000000000000000000000000000000000000000000000001c0000000000000000000000000000000000000000000000000000000000000026000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000300000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000300000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000030000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000500000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000300000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000005000000000000000000000000000000000000000000000000000000000000000500000000000000000000000000000000000000000000000000000000000000a0000000000000000000000000000000000000000000000000000000000000028000000000000000000000000000000000000000000000000000000000000004600000000000000000000000000000000000000000000000000000000000000640000000000000000000000000000000000000000000000000000000000000082000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000e00000000000000000000000000000000000000000000000000000000000000120000000000000000000000000000000000000000000000000000000000000016000000000000000000000000000000000000000000000000000000000000001a00000000000000000000000000000000000000000000000000000000000000005616c6963650000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005616c6963650000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005616c6963650000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005616c6963650000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005616c69636500000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000e00000000000000000000000000000000000000000000000000000000000000120000000000000000000000000000000000000000000000000000000000000016000000000000000000000000000000000000000000000000000000000000001a00000000000000000000000000000000000000000000000000000000000000005616c6963650000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005616c6963650000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005616c6963650000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005616c6963650000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005616c69636500000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000e00000000000000000000000000000000000000000000000000000000000000120000000000000000000000000000000000000000000000000000000000000016000000000000000000000000000000000000000000000000000000000000001a00000000000000000000000000000000000000000000000000000000000000005616c6963650000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005616c6963650000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005616c6963650000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005616c6963650000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005616c69636500000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000e00000000000000000000000000000000000000000000000000000000000000120000000000000000000000000000000000000000000000000000000000000016000000000000000000000000000000000000000000000000000000000000001a00000000000000000000000000000000000000000000000000000000000000005616c6963650000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005616c6963650000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005616c6963650000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005616c6963650000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005616c69636500000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000e00000000000000000000000000000000000000000000000000000000000000120000000000000000000000000000000000000000000000000000000000000016000000000000000000000000000000000000000000000000000000000000001a00000000000000000000000000000000000000000000000000000000000000005616c6963650000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005616c6963650000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005616c6963650000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005616c6963650000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005616c696365000000000000000000000000000000000000000000000000000000');
             assert.deepEqual(result, [[[1], [ 1, 2 ], [ 1, 2, 3 ], [ 1, 2, 3, 4 ], [ 1, 2, 3, 4, 5 ]], [[ 'alice', 'alice', 'alice', 'alice', 'alice' ], [ 'alice', 'alice', 'alice', 'alice', 'alice' ], [ 'alice', 'alice', 'alice', 'alice', 'alice' ], [ 'alice', 'alice', 'alice', 'alice', 'alice' ], [ 'alice', 'alice', 'alice', 'alice', 'alice' ]], [[ 1, 2, 3 ], [ 1, 2, 3 ], [ 1, 2, 3 ], [ 1, 2, 3 ], [ 1, 2, 3 ]]]);
         });
@@ -1428,8 +1428,8 @@ describe('abi', function () {
             assert.equal('aa941d3300000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000002fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffeffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffd8f1', result);
         });
         it('int16[] signature', function () {
-            const result = abi.encodeFunctionCall([ 'function vote(int16[] proposal)',
-                'receive()' ], [[ -2, -9999 ]], 'vote');
+            const result = abi.encodeFunctionCall([ 'function vote(int16[] proposal) external nonpayable',
+                'receive() payable' ], [[ -2, -9999 ]], 'vote');
             assert.equal('aa941d3300000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000002fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffeffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffd8f1', result);
         });
         it('CreateNewInviter', function () {
@@ -1645,6 +1645,24 @@ describe('abi', function () {
 
             assert.equal(_data.type, type);
         });
+        it('abi is string', function () {
+            const type = 'constructor';
+            const _data = abi.getAbiByType(JSON.stringify([
+                { 'type': 'offchain', 'inputs': [{ 'type': 'address' }] },
+                { 'type': 'constructor', 'inputs': [{ 'type': 'address' }] }
+            ]), type);
+
+            assert.equal(_data.type, type);
+        });
+        it('abi is string array', function () {
+            const type = 'constructor';
+            const _data = abi.getAbiByType([
+                JSON.stringify({ 'type': 'offchain', 'inputs': [{ 'type': 'address' }] }),
+                JSON.stringify({ 'type': 'constructor', 'inputs': [{ 'type': 'address' }] })
+            ], type);
+
+            assert.equal(_data.type, type);
+        });
         it('type is object', function () {
             const type = 'constructor';
             const _data = abi.getAbiByType({ 'type': 'constructor', 'inputs': [{ 'type': 'address' }] }, type);
@@ -1659,6 +1677,10 @@ describe('abi', function () {
             ], type);
 
             assert.equal(_data, null);
+        });
+        it('abi is wrong', function () {
+            const name = 'constructor';
+            assert.throws(() => abi.getAbiByType('constructor(address)', name), new Error('invalid jsonFragment: constructor(address)'));
         });
     });
 
@@ -1689,6 +1711,30 @@ describe('abi', function () {
 
             assert.equal(_data.name, name);
         });
+        it('part of abi is string', function () {
+            const name = 'myMethod';
+            const _data = abi.getAbiByName([
+                JSON.stringify({ name: 'myMethod', type: 'function', inputs: [ {type: 'uint256', name: 'myNumber'}, { type: 'string', name: 'myString'} ]}),
+                { name: 'myethod', type: 'function', inputs: [ {type: 'uint256', name: 'myNumber'}, {type: 'string', name: 'myString'} ]}
+            ], name);
+
+            assert.equal(_data.name, name);
+        });
+        it('abi is string array', function () {
+            const name = 'myMethod';
+            const _data = abi.getAbiByName([
+                '{ "name": "myMethod", "type": "function", "inputs": [ {"type": "uint256", "name": "myNumber"}, {"type": "string", "name": "myString"} ]}',
+                '{ "name": "myethod", "type": "function", "inputs": [ {"type": "uint256", "name": "myNumber"}, {"type": "string", "name": "myString"} ]}'
+            ], name);
+
+            assert.equal(_data.name, name);
+        });
+        it('abi is string', function () {
+            const name = 'myMethod';
+            const _data = abi.getAbiByName('[{"name":"myMethod","type":"function","inputs":[{"type":"uint256","name":"myNumber"},{"type":"string","name":"myString"}]},{"name":"myethod","type":"function","inputs":[{"type":"uint256","name":"myNumber"},{"type":"string","name":"myString"}]}]', name);
+
+            assert.equal(_data.name, name);
+        });
         it('abi is object', function () {
             const name = 'myMethod';
             const _data = abi.getAbiByName({ name: 'myMethod', type: 'function', inputs: [{type: 'uint256', name: 'myNumber'}]}, name);
@@ -1696,12 +1742,8 @@ describe('abi', function () {
             assert.equal(_data.name, name);
         });
         it('abi is wrong', function () {
-            try {
-                const name = 'myMethod';
-                abi.getAbiByName('myMethod', name);
-            } catch (err) {
-                assert.equal(err.message.indexOf('jsonFragment should be an array or object') !== -1, true);
-            }
+            const name = 'myMethod';
+            assert.throws(() => abi.getAbiByName('myMethod', name), new Error('invalid jsonFragment: myMethod'));
         });
     });
 
@@ -1737,6 +1779,26 @@ describe('abi', function () {
         it('multiple functions with same name', function () {
             assert.throws(() => abi.decodeFunctionCall([ 'callback StakeForQuotaWithCallback(bytes32 id, bool success)', 'function StakeForQuotaWithCallback(address beneficiary, uint64 stakeHeight)' ], Buffer.from('VLTtU9GkzOKAn9+1FlLaZrpXGM8380QdWjmpn5qxSyCSBqssAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE=', 'base64').toString('hex'),
                 'StakeForQuotaWithCallback'), new Error('multiple matching functions: StakeForQuotaWithCallback'));
+        });
+        it('constant payable function', function () {
+            assert.throws(() => abi.decodeFunctionCall(['function strArr1Static(string[1] input) constant payable returns (string[1] name)'], '0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000047573657200000000000000000000000000000000000000000000000000000000',
+                'strArr1Static'), new Error('cannot have constant function with mutability payable [object Object]'));
+        });
+        it('wrong string length', function () {
+            assert.throws(() => abi.decodeParameter('string', '000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000ff666f6f6261720000000000000000000000000000000000000000000000000000'), new Error('data out-of-bounds: 288, actual: 64'));
+        });
+        it('struct duplicated name', function () {
+            assert.throws(() => abi.encodeParameter('tuple(uint256 lowerLimit, uint256 tipPer, uint256 tipPer)', { lowerLimit: 1, upperLimit: 1, tipPer: 1 }), new Error('cannot encode object for signature with duplicate names: tipPer'));
+        });
+        it('struct missing name', function () {
+            assert.throws(() => abi.encodeParameter('tuple(uint256 lowerLimit, uint256 tipPer, uint256)', { lowerLimit: 1, upperLimit: 1, tipPer: 1 }), new Error('cannot encode object for signature with missing names: uint256'));
+        });
+        it('missing indexed param', function () {
+            assert.throws(() => abi.encodeLogFilter('event DeployedUser(tuple(string name, address addr))', ['1']), new Error('too many indexed arguments for DeployedUser((string,address)): 1'));
+        });
+        it('missing tuple property', function () {
+            assert.throws(() => abi.encodeLogFilter('event DeployedUser(tuple(string indexed, address indexed addr) indexed user)',
+                [{ name: 'name', addr: 'vite_5a600b6c5103f242107b6eebf8aa290bda86800adb0c264ab6' }]), new Error('missing tuple property: null'));
         });
     });
 
@@ -1982,6 +2044,24 @@ describe('abi', function () {
                 'a726de6a27282e9f2fd40ef5acb830570c4692fb93330688f812d9de29c4a4de',
                 'd24057e115ec2936b95a95de18f6272a7ff18a572a393f3fecb9c517e322be95' ]);
         });
+        it('indexed struct(string,address) signature', function () {
+            const result = abi.encodeLogFilter('event DeployedUser(tuple(string name, address addr) indexed)',
+                [{ name: 'name', addr: 'vite_5a600b6c5103f242107b6eebf8aa290bda86800adb0c264ab6' }]);
+
+            assert.deepEqual(result, [
+                'a726de6a27282e9f2fd40ef5acb830570c4692fb93330688f812d9de29c4a4de',
+                'd24057e115ec2936b95a95de18f6272a7ff18a572a393f3fecb9c517e322be95'
+            ]);
+        });
+        it('indexed struct(string,address) signature unnamed property', function () {
+            const result = abi.encodeLogFilter('event DeployedUser(tuple(string indexed, address addr) indexed user)',
+                [{ null: 'name', addr: 'vite_5a600b6c5103f242107b6eebf8aa290bda86800adb0c264ab6' }]);
+
+            assert.deepEqual(result, [
+                'a726de6a27282e9f2fd40ef5acb830570c4692fb93330688f812d9de29c4a4de',
+                'd24057e115ec2936b95a95de18f6272a7ff18a572a393f3fecb9c517e322be95'
+            ]);
+        });
         it('indexed struct(uint256,uint256,uint256,string[][3][])', function () {
             const result = abi.encodeLogFilter([{'anonymous': false, 'inputs': [{'components': [ {'internalType': 'uint256', 'name': 'lowerLimit', 'type': 'uint256'}, {'internalType': 'uint256', 'name': 'upperLimit', 'type': 'uint256'}, {'internalType': 'uint256', 'name': 'tipPer', 'type': 'uint256'}, {'internalType': 'string[][3][]', 'name': 'result', 'type': 'string[][3][]'} ], 'indexed': true, 'internalType': 'struct Hello.BetLimit', 'name': 'bet', 'type': 'tuple'}], 'name': 'DeployedBet', 'type': 'event'}],
                 [{ lowerLimit: 1, upperLimit: 2, tipPer: 3, result: [[['alice'], ['alice'], ['alice']], [['alice'], ['alice'], ['alice']]] }],
@@ -2102,6 +2182,24 @@ describe('abi', function () {
             }));
             assert.equal(_abi.encodeFunctionResult('strArr1Static(string[1])', [['user']]), '0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000047573657200000000000000000000000000000000000000000000000000000000');
         });
+        it('string[1] signature', function () {
+            const _abi = abi.Abi.from('function strArr1Static(string[1] input) constant view returns (string[1] name)');
+            assert.equal(_abi.encodeFunctionResult('strArr1Static(string[1])', [['user']]), '0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000047573657200000000000000000000000000000000000000000000000000000000');
+        });
+        it('string[1]', function () {
+            const _abi = abi.Abi.from({
+                'inputs': [{
+                    'internalType': 'string[1]',
+                    'name': 'input',
+                    'type': 'string[1]'
+                }],
+                'name': 'strArr1Static',
+                'outputs': [{'internalType': 'string[1]', 'name': '', 'type': 'string[1]'}],
+                'constant': true,
+                'type': 'function'
+            });
+            assert.equal(_abi.encodeFunctionResult('strArr1Static(string[1])', [['user']]), '0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000047573657200000000000000000000000000000000000000000000000000000000');
+        });
     });
 
     describe('encodeLog', function () {
@@ -2127,6 +2225,16 @@ describe('abi', function () {
                     data: '',
                     topics: [
                         '8b5075daac7054843301efa983d65ebb0a2ab0943c4464c5d90116bac31b558e',
+                        '00000000000000000000000000000000000000000000b0de22e5d54c92c43c3a' ]
+                });
+        });
+        it('tokenId indexed signature', function () {
+            const _abi = abi.Abi.from('event TestEvent(tokenId indexed, string data)');
+            assert.deepEqual(_abi.encodeEventLog('TestEvent', [ 'tti_b0de22e5d54c92c43c3a9e54', 'hello world' ]),
+                {
+                    data: '0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000b68656c6c6f20776f726c64000000000000000000000000000000000000000000',
+                    topics: [
+                        'c7e4eaf8596c7e94486185e5114b368d99296052b5c8ffac4e4e0c6a1ceb4904',
                         '00000000000000000000000000000000000000000000b0de22e5d54c92c43c3a' ]
                 });
         });
@@ -2156,12 +2264,15 @@ describe('abi', function () {
             assert.throws(() => abi.utils.hexlify(-1), new Error('invalid hexlify value -1'));
         });
         it('hexlify bigint', function () {
+            assert.equal(abi.utils.hexlify(1n), '01');
             assert.equal(abi.utils.hexlify(BigInt(9007199254740991)), '1fffffffffffff');
             assert.equal(abi.utils.hexlify(BigInt('0b11111111111111111111111111111111111111111111111111111')), '1fffffffffffff');
             assert.throws(() => abi.utils.hexlify(-1n), new Error('invalid hexlify value -1'));
         });
         it('hexlify string', function () {
             assert.equal(abi.utils.hexlify('1fffffffffffff'), '1fffffffffffff');
+            assert.equal(abi.utils.hexlify('fffffffffffff'), '0fffffffffffff');
+            assert.equal(abi.utils.hexlify('0x1fffffffffffff'), '1fffffffffffff');
             assert.throws(() => abi.utils.hexlify('function'), new Error('not hex string function'));
         });
         it('hexlify buffer', function () {
@@ -2174,6 +2285,7 @@ describe('abi', function () {
             assert.throws(() => abi.utils.arrayify(-1), new Error('invalid arrayify value -1'));
         });
         it('arrayify bigint', function () {
+            assert.deepEqual(abi.utils.arrayify(BigInt(1)), new Uint8Array([1]));
             assert.deepEqual(abi.utils.arrayify(BigInt(9007199254740991)), new Uint8Array([ 31, 255, 255, 255, 255, 255, 255 ]));
             assert.throws(() => abi.utils.arrayify(-1n), new Error('invalid arrayify value -1'));
         });
@@ -2184,6 +2296,13 @@ describe('abi', function () {
         it('arrayify buffer', function () {
             assert.deepEqual(abi.utils.arrayify(new Uint8Array([ 102, 117, 110, 99, 116, 105, 111, 110 ])), Buffer.from('function'));
             assert.deepEqual(abi.utils.arrayify(Buffer.from('function')), new Uint8Array([ 102, 117, 110, 99, 116, 105, 111, 110 ]));
+        });
+        it('pad zeros', function () {
+            assert.equal(abi.utils.leftPadZero(Buffer.from('function'), 8), '66756e6374696f6e');
+            assert.throws(() => abi.utils.leftPadZero('function', 8), new Error('invalid hex string: function'));
+            assert.throws(() => abi.utils.leftPadZero(Buffer.from('function'), 4), new Error('value out of range: 66756e6374696f6e, length: 4'));
+            assert.throws(() => abi.utils.rightPadZero('function', 8), new Error('invalid hex string: function'));
+            assert.throws(() => abi.utils.rightPadZero(Buffer.from('function'), 4), new Error('value out of range: 66756e6374696f6e, length: 4'));
         });
     });
 

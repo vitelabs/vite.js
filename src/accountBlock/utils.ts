@@ -9,18 +9,18 @@ import {
     encodeFunctionCall,
     encodeFunctionSignature,
     decodeLog,
-    AbiFragment,
-    decodeFunctionCall
+    decodeFunctionCall,
+    getAbiByName, JsonInterface
 } from '~@vite/vitejs-abi';
 import { isValidAddress, getAddressFromPublicKey, createAddressByPrivateKey, getOriginalAddressFromAddress, AddressType, getAddressFromOriginalAddress } from '~@vite/vitejs-wallet/address';
-import { checkParams, isNonNegativeInteger, isHexString, isValidTokenId, getOriginalTokenIdFromTokenId, isObject, ed25519, isBase64String } from '~@vite/vitejs-utils';
+import { checkParams, isNonNegativeInteger, isHexString, isValidTokenId, getOriginalTokenIdFromTokenId, isObject, ed25519, isBase64String, isArray } from '~@vite/vitejs-utils';
 
 import { BlockType, Address, Base64, Hex, TokenId, Uint64, BigInt, AccountBlockType, Uint8 } from './type';
-import { EventFragment, Fragment, FunctionFragment } from '../abi/fragments';
+import { EventFragment, Fragment, FunctionFragment } from '~@vite/vitejs-abi/fragments';
 
 export const Default_Hash = '0000000000000000000000000000000000000000000000000000000000000000'; // A total of 64 0
 
-export const Default_Contract_TransactionType = encodeContractList(Contracts);
+export const Default_Contract_TransactionType: {readonly [key: string]: ContractInfo} = encodeContractList(Contracts);
 
 export enum AccountBlockStatus {
     'Before_Hash' = 1,
@@ -28,7 +28,20 @@ export enum AccountBlockStatus {
     'Complete'
 }
 
+export interface ContractInfo {
+    transactionType?: string,
+    contractAddress: string,
+    abi: JsonInterface | string
+}
+
+type TypeCheck<T> = { -readonly [K in keyof T]: T[K] };
+
 // Check AccountBlock
+/**
+ * Check if an account block has all the necessary information according to AccountBlockStatus, if not, return an error message.
+ * @param accountBlock
+ * @param status AccountBlockStatus
+ */
 export function checkAccountBlock(accountBlock: {
     blockType: BlockType;
     address: Address;
@@ -222,11 +235,19 @@ export function isValidAccountBlockWithoutSignature(accountBlock: {
     return !err;
 }
 
+/**
+ * Check if an account block is complete and ready to send
+ * @param accountBlock
+ */
 export function isValidAccountBlock(accountBlock) {
     const err = checkAccountBlock(accountBlock, AccountBlockStatus.Complete);
     return !err;
 }
 
+/**
+ * Check if an account block is request block
+ * @param blockType
+ */
 export function isRequestBlock(blockType: BlockType): boolean {
     return blockType === BlockType.CreateContractRequest
         || blockType === BlockType.TransferRequest
@@ -234,12 +255,22 @@ export function isRequestBlock(blockType: BlockType): boolean {
         || blockType === BlockType.ReIssueRequest;
 }
 
+/**
+ * Check if an account block is response block
+ * @param blockType
+ */
 export function isResponseBlock(blockType: BlockType): boolean {
     return blockType === BlockType.Response
         || blockType === BlockType.ResponseFail
         || blockType === BlockType.GenesisResponse;
 }
 
+/**
+ * Generate a new contract address according to account address, height and previous hash
+ * @param address
+ * @param height
+ * @param previousHash
+ */
 export function createContractAddress({ address, height, previousHash }: {
     address: Address;
     height: Uint64;
@@ -283,7 +314,10 @@ export function createContractAddress({ address, height, previousHash }: {
 
 // 2.receiveBlock
 // hash = HashFunction(BlockType + PrevHash  + Height + AccountAddress + FromBlockHash + Data + Fee + LogHash + Nonce + sendBlock + hashList）
-
+/**
+ * Calculate hash for the given account block
+ * @param accountBlock
+ */
 export function getAccountBlockHash(accountBlock: {
     blockType: BlockType;
     address: Address;
@@ -384,15 +418,23 @@ export function getTriggeredSendBlockListHex(triggeredSendBlockList: AccountBloc
     return source;
 }
 
-
 // Get AccountBlock.data
+/**
+ * Generate account block data for smart contract deployment
+ * @param abi
+ * @param code Binary code in hex format
+ * @param params Constructor parameters
+ * @param responseLatency
+ * @param quotaMultiplier
+ * @param randomDegree
+ */
 export function getCreateContractData({ abi, code, params = [], responseLatency = '0', quotaMultiplier = '10', randomDegree = '0' }: {
     responseLatency?: Uint8;
     quotaMultiplier?: Uint8;
     randomDegree?: Uint8;
     code?: Hex;
-    abi?: Object | Array<Object>;
-    params?: string | Array<string | boolean>;
+    abi?: JsonInterface | string;
+    params?: any;
 }): Base64 {
     const err = checkParams({ responseLatency, quotaMultiplier, randomDegree, code }, [ 'responseLatency', 'quotaMultiplier', 'randomDegree' ], [ {
         name: 'responseLatency',
@@ -424,8 +466,14 @@ export function getCreateContractData({ abi, code, params = [], responseLatency 
     return Buffer.from(data, 'hex').toString('base64');
 }
 
+/**
+ * Encode a function call into base64 string
+ * @param abi
+ * @param params
+ * @param methodName
+ */
 export function getCallContractData({ abi, params, methodName }: {
-    abi: Object | Array<Object>;
+    abi: JsonInterface | string;
     params?: any;
     methodName?: string;
 }): Base64 {
@@ -488,14 +536,20 @@ export function signAccountBlock(accountBlock: {
     };
 }
 
-
 // About Transaction and Contracts
-
+/**
+ * Decode a function call or event logs with the given account block
+ * @param accountBlock Account block that includes a function call or event logs
+ * @param contractAddress
+ * @param abi
+ * @param topics Topics, for event log decode only
+ * @param methodName Function or event name
+ */
 export function decodeContractAccountBlock({ accountBlock, contractAddress, abi, topics = [], methodName }: {
     accountBlock: AccountBlockType;
     contractAddress: Address;
-    abi: AbiFragment;
-    topics?: any;
+    abi: JsonInterface | string;
+    topics?: Array<string>;
     methodName?: string;
 }) {
     const err = checkParams({ accountBlock, contractAddress, abi }, [ 'accountBlock', 'contractAddress', 'abi' ], [{
@@ -506,9 +560,11 @@ export function decodeContractAccountBlock({ accountBlock, contractAddress, abi,
         throw err;
     }
 
-    if (accountBlock.blockType !== BlockType.TransferRequest
-        || accountBlock.toAddress !== contractAddress) {
-        return null;
+    if (accountBlock.blockType !== BlockType.TransferRequest && accountBlock.blockType !== BlockType.Response) {
+        throw new Error(`wrong block type: ${ accountBlock.blockType }`);
+    }
+    if (accountBlock.toAddress !== contractAddress) {
+        throw new Error(`contract address mismatch, expected: ${ contractAddress }, actual: ${ accountBlock.toAddress }`);
     }
 
     return decodeAccountBlockDataByContract({
@@ -519,10 +575,17 @@ export function decodeContractAccountBlock({ accountBlock, contractAddress, abi,
     });
 }
 
+/**
+ * Decode a function call or event logs according to ABI
+ * @param data Base64 data string
+ * @param abi
+ * @param topics Topics, for event log decode only
+ * @param methodName Function or event name
+ */
 export function decodeAccountBlockDataByContract({ data, abi, topics = [], methodName }: {
     data: Base64;
-    abi: AbiFragment;
-    topics?: any;
+    abi: JsonInterface | string;
+    topics?: Array<string>;
     methodName?: string;
 }) {
     const err = checkParams({ data, abi }, [ 'data', 'abi' ], [{
@@ -533,12 +596,18 @@ export function decodeAccountBlockDataByContract({ data, abi, topics = [], metho
         throw err;
     }
 
+    if (typeof abi === 'string') {
+        abi = JSON.parse(abi);
+    }
+    if (Array.isArray(abi)) {
+        if (!methodName) {
+            throw new Error('method name must be present when abi is an array');
+        }
+        abi = getAbiByName(abi, methodName);
+    }
+
     const hexData = Buffer.from(data, 'base64').toString('hex');
 
-    const encodeFuncSign = encodeFunctionSignature(abi, methodName);
-    if (encodeFuncSign !== hexData.substring(0, 8)) {
-        return null;
-    }
     const _abi = Fragment.from(abi);
     if (FunctionFragment.isFunctionFragment(_abi)) {
         return decodeFunctionCall(_abi, hexData, methodName);
@@ -548,20 +617,19 @@ export function decodeAccountBlockDataByContract({ data, abi, topics = [], metho
     throw new Error(`unsupported abi type ${ _abi.type }`);
 }
 
-// contractList = { 'transactionTypeName': { contractAddress, abi } }
-export function encodeContractList(contractList: Object): Object {
-    const err = checkParams({ contractList }, ['contractList'], [{
-        name: 'contractList',
-        func: isObject
-    }]);
-    if (err) {
-        throw err;
-    }
-
-    const txType = {};
+/**
+ * Transform a contract list into new list with 'sighash_address' as the key
+ * @param contractList { 'transactionType': { contractAddress, abi } }
+ * @return contractList { 'sighash_address': { transactionType, contractAddress, abi } }
+ */
+export function encodeContractList(contractList: { [name: string]: ContractInfo }): { [key: string]: ContractInfo } {
+    const txType = { };
 
     for (const transactionType in contractList) {
-        const { contractAddress, abi } = contractList[transactionType];
+        const { contractAddress, abi }: TypeCheck<{
+            contractAddress: string,
+            abi: JsonInterface | string
+        }> = contractList[transactionType];
 
         const err = checkParams({ contractAddress, abi }, [ 'contractAddress', 'abi' ], [{
             name: 'contractAddress',
@@ -572,31 +640,31 @@ export function encodeContractList(contractList: Object): Object {
         }
 
         const funcSign = encodeFunctionSignature(abi);
-        const _contract: {
-            transactionType: string;
-            contractAddress: Address;
-            abi: Object;
-        } = {
+        txType[`${ funcSign }_${ contractAddress }`] = {
             transactionType,
             contractAddress,
             abi
         };
-        txType[`${ funcSign }_${ contractAddress }`] = _contract;
     }
 
     return txType;
 }
 
 // contractTransactionType = { [funcSign + contractAddress]: { contractAddress, abi, transactionType } }
+/**
+ * Find transaction type in default contract list according to toAddress, data and blockType.
+ * Return BlockType if no transaction type is found.
+ * @param toAddress
+ * @param data
+ * @param blockType
+ * @param contractTransactionType Additional list to look into
+ * @return ContractInfo with transaction type
+ */
 export function getTransactionType({ toAddress, data, blockType }: {
     toAddress?: Address;
     data?: Base64;
     blockType: BlockType;
-}, contractTransactionType?): {
-    transactionType: string;
-    contractAddress?: Address;
-    abi?: Object;
-} {
+}, contractTransactionType?): ContractInfo {
     const err = checkParams({ blockType, toAddress }, ['blockType'], [ {
         name: 'toAddress',
         func: isValidAddress
@@ -611,7 +679,7 @@ export function getTransactionType({ toAddress, data, blockType }: {
     }
 
     blockType = Number(blockType);
-    const defaultType = { transactionType: BlockType[blockType] };
+    const defaultType = { contractAddress: undefined, abi: undefined, transactionType: BlockType[blockType] };
 
     if (blockType !== BlockType.TransferRequest) {
         return defaultType;
@@ -627,7 +695,13 @@ export function getTransactionType({ toAddress, data, blockType }: {
     const dataPrefix = _data.slice(0, 8);
     const key = `${ dataPrefix }_${ toAddress }`;
 
-    return allContractTransactionType[key] || defaultType;
+    const result: TypeCheck<{
+        transactionType: string;
+        contractAddress: Address;
+        abi: JsonInterface | string;
+    }> = allContractTransactionType[key] || defaultType;
+
+    return result;
 }
 
 

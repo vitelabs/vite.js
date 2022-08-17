@@ -10,6 +10,63 @@
         "sourceMap": false,
         "moduleResolution": "node",
         "resolveJsonModule": true,
+        "baseUrl": "../",
+        "paths": {
+            "~@vite/vitejs-abi": [
+                "abi/index.ts"
+            ],
+            "~@vite/vitejs-abi/*": [
+                "abi/*"
+            ],
+            "~@vite/vitejs-accountblock": [
+                "accountBlock/index.ts"
+            ],
+            "~@vite/vitejs-accountblock/*": [
+                "accountBlock/*"
+            ],
+            "~@vite/vitejs-communication": [
+                "communication/index.js"
+            ],
+            "~@vite/vitejs-communication/*": [
+                "communication/*"
+            ],
+            "~@vite/vitejs-constant": [
+                "constant/index.ts"
+            ],
+            "~@vite/vitejs-error": [
+                "error/index.ts"
+            ],
+            "~@vite/vitejs-keystore": [
+                "keystore/index.ts"
+            ],
+            "~@vite/vitejs-viteapi": [
+                "viteAPI/index.ts"
+            ],
+            "~@vite/vitejs-viteapi/*": [
+                "viteAPI/*"
+            ],
+            "~@vite/vitejs-wallet": [
+                "wallet/index.ts"
+            ],
+            "~@vite/vitejs-wallet/*": [
+                "wallet/*"
+            ],
+            "~@vite/vitejs-utils": [
+                "utils/index.ts"
+            ],
+            "~@vite/vitejs-ws": [
+                "WS/index.js"
+            ],
+            "~@vite/vitejs-http": [
+                "HTTP/index.js"
+            ],
+            "~@vite/vitejs-ipc": [
+                "IPC/index.js"
+            ],
+            "~@vite/vitejs": [
+                "vitejs/index.ts"
+            ]
+        },
         "lib": [
             "es5",
             "es2017",

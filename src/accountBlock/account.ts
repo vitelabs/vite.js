@@ -2,6 +2,7 @@ import { BlockType, Vite_TokenId, Contracts } from '~@vite/vitejs-constant';
 import { isValidAddress, AddressType, createAddressByPrivateKey } from '~@vite/vitejs-wallet/address';
 import { checkParams, isNonNegativeInteger, isHexString, isArray, isObject, isValidSBPName, isValidTokenId, isBase64String } from '~@vite/vitejs-utils';
 import { paramsConflict } from '~@vite/vitejs-error';
+import { JsonInterface } from '~@vite/vitejs-abi';
 
 import AccountBlock from './accountBlock';
 import { getCreateContractData, getCallContractData } from './utils';
@@ -92,7 +93,7 @@ class AccountClass {
         responseLatency?: Uint8;
         quotaMultiplier?: Uint8;
         randomDegree?: Uint8;
-        abi?: Object | Array<Object>;
+        abi?: JsonInterface | string;
         params?: string | Array<string | boolean>;
     }): AccountBlock {
         const err = checkParams({ abi, responseLatency, quotaMultiplier, randomDegree },
@@ -113,7 +114,6 @@ class AccountClass {
             };
         }
 
-
         const data = getCreateContractData({
             abi,
             code,
@@ -133,7 +133,7 @@ class AccountClass {
 
     callContract({ toAddress, tokenId = Vite_TokenId, amount = '0', fee = '0', abi, methodName, params = [] }: {
         toAddress: Address;
-        abi: Object | Array<Object>;
+        abi: JsonInterface | string;
         methodName?: string;
         params?: any;
         tokenId?: TokenId;

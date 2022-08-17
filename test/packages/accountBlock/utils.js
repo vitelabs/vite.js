@@ -1,3 +1,5 @@
+import * as abi from '~@vite/vitejs-abi/index';
+
 const assert = require('assert');
 
 import { Contracts } from '../../../src/constant/index';
@@ -329,6 +331,65 @@ describe('decodeContractAccountBlock decodeAccountBlockDataByContract', function
     }
 });
 
+describe('decodeAccountBlockDataByContract log', function () {
+    it('reIssue', function () {
+        const _data = {
+            data: '',
+            abi: '{"anonymous": false, "inputs": [{"indexed": true, "internalType": "tokenId", "name": "tokenId", "type": "tokenId"}], "name": "reIssue", "type": "event"}',
+            topics: [
+                '0d21bc90666d2ba979f104f8fbd1ee0331d8e11da2893ffedbd375557e2d453d',
+                '000000000000000000000000000000000000000000000a1a6be7e19ed593dbb6' ]
+        };
+
+        const decodeDataRes = decodeAccountBlockDataByContract(_data);
+        assert.deepEqual(decodeDataRes, {
+            '0': 'tti_0a1a6be7e19ed593dbb664c8',
+            tokenId: 'tti_0a1a6be7e19ed593dbb664c8'
+        });
+    });
+    it('anonymous', function () {
+        const _data = {
+            data: Buffer.from('0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000b68656c6c6f20776f726c64000000000000000000000000000000000000000000', 'hex').toString('base64'),
+            abi: JSON.stringify([{
+                'anonymous': true,
+                'inputs': [
+                    {'indexed': true, 'internalType': 'uint256', 'name': 'i', 'type': 'uint256'},
+                    {'indexed': false, 'internalType': 'string', 'name': 'data', 'type': 'string'}
+                ],
+                'name': 'AnonymousEvent',
+                'type': 'event'
+            }]),
+            topics: ['000000000000000000000000000000000000000000000000000000000000007b'],
+            methodName: 'AnonymousEvent'
+        };
+
+        const decodeDataRes = decodeAccountBlockDataByContract(_data);
+        assert.deepEqual(decodeDataRes, {
+            '0': '123',
+            '1': 'hello world',
+            i: '123',
+            data: 'hello world'
+        });
+    });
+});
+
+describe('decodeAccountBlockDataByContract error', function () {
+    it('type offchain', function () {
+        const _data = {
+            data: '',
+            abi: { 'type': 'offchain', 'name': 'getData', 'inputs': [{ 'name': 'id', 'type': 'tokenId' }], 'outputs': [{ 'name': 'amount', 'type': 'uint256' }] }
+        };
+        assert.throws(() => decodeAccountBlockDataByContract(_data), new Error('unsupported abi type offchain'));
+    });
+    it('no method name', function () {
+        const _data = {
+            data: '',
+            abi: ['{"anonymous": false, "inputs": [{"indexed": true, "internalType": "tokenId", "name": "tokenId", "type": "tokenId"}], "name": "reIssue", "type": "event"}']
+        };
+        assert.throws(() => decodeAccountBlockDataByContract(_data), new Error('method name must be present when abi is an array'));
+    });
+});
+
 describe('encodeContractList', function () {
     const res = encodeContractList(Contracts);
 
@@ -355,8 +416,8 @@ describe('encodeContractList', function () {
             it('abi', function () {
                 assert.deepEqual(result.abi, contract.abi);
             });
-            it('contranctAddress', function () {
-                assert.deepEqual(result.contranctAddress, contract.contranctAddress);
+            it('contractAddress', function () {
+                assert.deepEqual(result.contractAddress, contract.contractAddress);
             });
         });
     }

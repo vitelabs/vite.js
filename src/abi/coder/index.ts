@@ -43,11 +43,11 @@ export abstract class Coder {
             arrayValues = coders.map(coder => {
                 const name = coder.localName;
                 if (!name) {
-                    throw new Error(`cannot encode object for signature with missing names: ${ coder }`);
+                    throw new Error(`cannot encode object for signature with missing names: ${ coder.type }`);
                 }
 
                 if (unique[name]) {
-                    throw new Error(`cannot encode object for signature with duplicate names: ${ coder }`);
+                    throw new Error(`cannot encode object for signature with duplicate names: ${ name }`);
                 }
 
                 unique[name] = true;
@@ -287,7 +287,7 @@ export class Reader {
             if (this.allowLoose && loose && this._offset + length <= this._data.length) {
                 alignedLength = length;
             } else {
-                throw new Error(`data out-of-bounds ${ this._data.length } ${ this._offset + alignedLength }`);
+                throw new Error(`data out-of-bounds: ${ this._offset + alignedLength }, actual: ${ this._data.length }`);
             }
         }
         return this._data.slice(this._offset, this._offset + alignedLength);

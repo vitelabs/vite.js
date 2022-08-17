@@ -41,4 +41,13 @@ describe('ViteAPI addTxType', function () {
             assert.equal(myViteAPI.transactionType[key].transactionType, name);
         });
     }
+
+    it('add default type', function () {
+        assert.throws(() => myViteAPI.addTransactionType({
+            RegisterSBP_V1: {
+                contractAddress: 'vite_0000000000000000000000000000000000000003f6af7459b9',
+                abi: { 'type': 'function', 'name': 'Register', 'inputs': [ { 'name': 'gid', 'type': 'gid' }, { 'name': 'sbpName', 'type': 'string' }, { 'name': 'blockProducingAddress', 'type': 'address' } ] }
+            }
+        }), new Error('Please rename it. Your transactionType RegisterSBP_V1 conflicts with default transactionType.'));
+    });
 });

@@ -40,8 +40,8 @@ export function hexlify(value: Buffer | Uint8Array | string | number | bigint): 
         }
         if (isHexString(value)) {
             if (value.length % 2) {
-                throw new Error(`hex data is odd-length ${ value }`);
-                // value = `0${ value }`;
+                // throw new Error(`hex data is odd-length ${ value }`);
+                value = `0${ value }`;
             }
             return value;
         }
