@@ -45,8 +45,9 @@ function copyFile({ fromPath, name }) {
     fs.writeFileSync(packageFile, `${ JSON.stringify(packageJsonContent, null, 4) }\n`);
 
     const tsConfigFile = path.join(fromPath, './tsconfig.json');
-    delete currTsConfigJsonContent.compilerOptions.baseUrl;
-    delete currTsConfigJsonContent.compilerOptions.paths;
+    currTsConfigJsonContent.compilerOptions.baseUrl = '../';
+    // delete currTsConfigJsonContent.compilerOptions.baseUrl;
+    // delete currTsConfigJsonContent.compilerOptions.paths;
     delete currTsConfigJsonContent.compilerOptions.outDir;
     delete currTsConfigJsonContent.include;
     delete currTsConfigJsonContent.exclude;

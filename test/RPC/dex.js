@@ -5,15 +5,17 @@ import { sleep, SendTXByPreviousAccountBlock, viteProvider, privateKey, address,
 export default async function TestFunc() {
     console.log('Step 0 DEX Test Start. \n');
 
-    console.log('Step 1 Get balance. \n');
-    await GetBalance();
-
     let previousAccountBlock = null;
 
     // 1. Deposit-Withdraw
 
-    console.log('Step 2 Deposit. \n');
+    console.log('Step 1 Deposit. \n');
     previousAccountBlock = await Deposit();
+
+    await sleep(2000);
+
+    console.log('Step 2 Get balance. \n');
+    await GetBalance();
 
     await sleep(2000);
 
@@ -130,7 +132,7 @@ async function GetBalance() {
 
 async function Deposit() {
     const accountBlock = await tx.dexDeposit({
-        toAddress: address, 
+        toAddress: address,
         tokenId: Vite_TokenId,
         amount: '300000000000000000000000'
     });
@@ -142,7 +144,7 @@ async function Deposit() {
 
 async function Withdraw(previousAccountBlock) {
     const accountBlock = await tx.dexWithdraw({
-        toAddress: address, 
+        toAddress: address,
         tokenId: Vite_TokenId,
         amount: '1000000000000000000'
     });

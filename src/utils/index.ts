@@ -1,10 +1,10 @@
-const bn = require('bn.js');
-const blake = require('blakejs/blake2b');
-
-import { paramsMissing, paramsFormat } from '~@vite/vitejs-error';
+import { paramsFormat, paramsMissing } from '~@vite/vitejs-error';
 
 import * as _e from './ed25519';
 import { Hex, TokenId } from './type';
+
+const bn = require('bn.js');
+const blake = require('blakejs/blake2b');
 
 declare const enum Charset {
     'utf16' = 'utf16',
@@ -173,8 +173,21 @@ export function isSafeInteger(num): -1 | 0 | 1 {
     return 1;
 }
 
-export function isHexString(str: string): boolean {
-    return /^[0-9a-fA-F]+$/.test(str);
+/**
+ * Determine if the input is a hex string. The 2nd argument is to check if a hex string meets the specified length in bytes,
+ * if not the function will return false.
+ * @param str
+ * @param length in bytes
+ */
+export function isHexString(str: string, length?: number): boolean {
+    // return /^[0-9a-fA-F]+$/.test(str);
+    if (typeof (str) !== 'string' || !str.match(/^[0-9A-Fa-f]*$/)) {
+        return false;
+    }
+    if (length && str.length !== 2 * length) {
+        return false;
+    }
+    return true;
 }
 
 export function isBase64String(str): boolean {

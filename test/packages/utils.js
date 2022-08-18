@@ -8,99 +8,107 @@ import {
 
 const { keyPair, verify, getPublicKey, sign, random } = ed25519;
 
-it('getBytesSize', function () {
-    assert.equal(40, getBytesSize('是打发发发 水电费是否爽肤水'));
-    assert.equal(30, getBytesSize('sdjafofaodsfjwo8eifhsnodslkfjs'));
-    assert.equal(56, getBytesSize('[坏笑]😊🙂🙂😆😅😅'));
-    assert.equal(32, getBytesSize('[坏笑]😊🙂🙂😆😅😅', 'utf16'));
-});
-it('uriStringify', function () {
-    assert.equal('vite:vite_fa1d81d93bcc36f234f7bccf1403924a0834609f4b2e9856ad/echo?amount=1&data=MTIzYWJjZA', uriStringify({ target_address: 'vite_fa1d81d93bcc36f234f7bccf1403924a0834609f4b2e9856ad', params: { amount: 1, data: 'MTIzYWJjZA' }, function_name: 'echo' }));
-    assert.equal('vite:vite_fa1d81d93bcc36f234f7bccf1403924a0834609f4b2e9856ad?tti=tti_5649544520544f4b454e6e40&amount=1&data=MTIzYWJjZA', uriStringify({ target_address: 'vite_fa1d81d93bcc36f234f7bccf1403924a0834609f4b2e9856ad', params: { tti: 'tti_5649544520544f4b454e6e40', amount: 1, data: 'MTIzYWJjZA' }}));
-});
-it('isValidTokenId', function () {
-    assert.equal(false, isValidTokenId('5649544520544f4b454e'));
-    assert.equal(true, isValidTokenId('tti_5649544520544f4b454e6e40'));
-});
-it('getTokenIdFromOriginalTokenId', function () {
-    assert.equal('tti_5649544520544f4b454e6e40', getTokenIdFromOriginalTokenId('5649544520544f4b454e'));
-});
-it('getOriginalTokenIdFromTokenId', function () {
-    assert.equal('5649544520544f4b454e', getOriginalTokenIdFromTokenId('tti_5649544520544f4b454e6e40'));
-});
-it('isValidSBPName', function () {
-    assert.equal(true, isValidSBPName('2323_sdsd'));
-    assert.equal(true, isValidSBPName('2323_sd sd'));
-    assert.equal(false, isValidSBPName(' 2323_sdsd '));
-    assert.equal(false, isValidSBPName('2323_sd  sd'));
-    assert.equal(false, isValidSBPName('232涉及到法律是否啊3_sd  sd'));
-});
-it('isInteger', function () {
-    assert.equal(false, isInteger('232   2323'));
-    assert.equal(true, isInteger('2323'));
-    assert.equal(true, isInteger('209823'));
-    assert.equal(false, isInteger('09823'));
-    assert.equal(false, isInteger('-09823'));
-    assert.equal(false, isInteger('0000'));
-    assert.equal(true, isInteger('0'));
-    assert.equal(false, isInteger('-0'));
-    assert.equal(true, isInteger('-209823'));
-    assert.equal(false, isInteger('-2.323'));
-    assert.equal(false, isInteger('0.23829'));
-});
-it('isNonNegativeInteger', function () {
-    assert.equal(false, isNonNegativeInteger('232   2323'));
-    assert.equal(true, isNonNegativeInteger('2323'));
-    assert.equal(false, isNonNegativeInteger('0000'));
-    assert.equal(true, isNonNegativeInteger('0'));
-    assert.equal(false, isNonNegativeInteger('0.23829'));
-});
-it('isSafeInteger', function () {
-    assert.equal(-1, isSafeInteger('232   2323'));
-    assert.equal(1, isSafeInteger('2323'));
-    assert.equal(1, isSafeInteger(209823));
-    assert.equal(-1, isSafeInteger('09823'));
-    assert.equal(-1, isSafeInteger('-09823'));
-    assert.equal(-1, isSafeInteger('0000'));
-    assert.equal(1, isSafeInteger('0'));
-    assert.equal(-1, isSafeInteger('-0'));
-    assert.equal(1, isSafeInteger('-209823'));
-    assert.equal(0, isSafeInteger(-2.323));
-    assert.equal(-1, isSafeInteger('0.23829'));
-    assert.equal(0, isSafeInteger(0.23829));
-    assert.equal(0, isSafeInteger(-1000000000000000000));
-    assert.equal(0, isSafeInteger(1000000000000000000));
-});
-it('isArray', function () {
-    assert.equal(false, isArray('2323_sdsd'));
-    assert.equal(true, isArray([]));
-    assert.equal(false, isArray({}));
-    assert.equal(true, isArray(new Array(3)));
-    assert.equal(false, isArray(new function a() {}()));
-});
-it('isObject', function () {
-    assert.equal(false, isObject('2323_sdsd'));
-    assert.equal(false, isObject(1));
-    assert.equal(true, isObject([]));
-    assert.equal(true, isObject({}));
-    assert.equal(true, isObject(new Array(3)));
-    assert.equal(true, isObject(new function a() {}()));
-});
-it('isHexString', function () {
-    assert.equal(false, isHexString('2323_sdsd'));
-    assert.equal(true, isHexString(1));
-    assert.equal(false, isHexString([]));
-    assert.equal(true, isHexString('f0fde0110193147e7961e61eeb22576c535b3442fd6bd9c457775e0cc69f1951'));
-    assert.equal(true, isHexString('3132333435363738393054455354'));
-});
-it('isBase64String', function () {
-    assert.equal(false, isBase64String('2323_sdsd'));
-    assert.equal(false, isBase64String(1));
-    assert.equal(false, isBase64String([]));
-    assert.equal(true, isBase64String('f0fde0110193147e7961e61eeb22576c535b3442fd6bd9c457775e0cc69f1951'));
-    assert.equal(false, isBase64String('f0fde0110193147e71e61eeb22576c535b3442fd6bd9c457775e0cc69f1951'));
-    assert.equal(true, isBase64String('pinFMQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB'));
+describe('utils', function () {
+    it('getBytesSize', function () {
+        assert.equal(40, getBytesSize('是打发发发 水电费是否爽肤水'));
+        assert.equal(30, getBytesSize('sdjafofaodsfjwo8eifhsnodslkfjs'));
+        assert.equal(56, getBytesSize('[坏笑]😊🙂🙂😆😅😅'));
+        assert.equal(32, getBytesSize('[坏笑]😊🙂🙂😆😅😅', 'utf16'));
+    });
+    it('uriStringify', function () {
+        assert.equal('vite:vite_fa1d81d93bcc36f234f7bccf1403924a0834609f4b2e9856ad/echo?amount=1&data=MTIzYWJjZA', uriStringify({ target_address: 'vite_fa1d81d93bcc36f234f7bccf1403924a0834609f4b2e9856ad', params: { amount: 1, data: 'MTIzYWJjZA' }, function_name: 'echo' }));
+        assert.equal('vite:vite_fa1d81d93bcc36f234f7bccf1403924a0834609f4b2e9856ad?tti=tti_5649544520544f4b454e6e40&amount=1&data=MTIzYWJjZA', uriStringify({ target_address: 'vite_fa1d81d93bcc36f234f7bccf1403924a0834609f4b2e9856ad', params: { tti: 'tti_5649544520544f4b454e6e40', amount: 1, data: 'MTIzYWJjZA' }}));
+    });
+    it('isValidTokenId', function () {
+        assert.equal(false, isValidTokenId('5649544520544f4b454e'));
+        assert.equal(true, isValidTokenId('tti_5649544520544f4b454e6e40'));
+        assert.equal(true, isValidTokenId('tti_14004f86a14b291f0d7966ae'));
+    });
+    it('getTokenIdFromOriginalTokenId', function () {
+        assert.equal('tti_5649544520544f4b454e6e40', getTokenIdFromOriginalTokenId('5649544520544f4b454e'));
+    });
+    it('getOriginalTokenIdFromTokenId', function () {
+        assert.equal('5649544520544f4b454e', getOriginalTokenIdFromTokenId('tti_5649544520544f4b454e6e40'));
+    });
+    it('isValidSBPName', function () {
+        assert.equal(true, isValidSBPName('2323_sdsd'));
+        assert.equal(true, isValidSBPName('2323_sd sd'));
+        assert.equal(false, isValidSBPName(' 2323_sdsd '));
+        assert.equal(false, isValidSBPName('2323_sd  sd'));
+        assert.equal(false, isValidSBPName('232涉及到法律是否啊3_sd  sd'));
+    });
+    it('isInteger', function () {
+        assert.equal(false, isInteger('232   2323'));
+        assert.equal(true, isInteger('2323'));
+        assert.equal(true, isInteger('209823'));
+        assert.equal(false, isInteger('09823'));
+        assert.equal(false, isInteger('-09823'));
+        assert.equal(false, isInteger('0000'));
+        assert.equal(true, isInteger('0'));
+        assert.equal(false, isInteger('-0'));
+        assert.equal(true, isInteger('-209823'));
+        assert.equal(false, isInteger('-2.323'));
+        assert.equal(false, isInteger('0.23829'));
+    });
+    it('isNonNegativeInteger', function () {
+        assert.equal(false, isNonNegativeInteger('232   2323'));
+        assert.equal(true, isNonNegativeInteger('2323'));
+        assert.equal(false, isNonNegativeInteger('0000'));
+        assert.equal(true, isNonNegativeInteger('0'));
+        assert.equal(false, isNonNegativeInteger('0.23829'));
+    });
+    it('isSafeInteger', function () {
+        assert.equal(-1, isSafeInteger('232   2323'));
+        assert.equal(1, isSafeInteger('2323'));
+        assert.equal(1, isSafeInteger(209823));
+        assert.equal(-1, isSafeInteger('09823'));
+        assert.equal(-1, isSafeInteger('-09823'));
+        assert.equal(-1, isSafeInteger('0000'));
+        assert.equal(1, isSafeInteger('0'));
+        assert.equal(-1, isSafeInteger('-0'));
+        assert.equal(1, isSafeInteger('-209823'));
+        assert.equal(0, isSafeInteger(-2.323));
+        assert.equal(-1, isSafeInteger('0.23829'));
+        assert.equal(0, isSafeInteger(0.23829));
+        assert.equal(0, isSafeInteger(-1000000000000000000));
+        assert.equal(0, isSafeInteger(1000000000000000000));
+    });
+    it('isArray', function () {
+        assert.equal(false, isArray('2323_sdsd'));
+        assert.equal(true, isArray([]));
+        assert.equal(false, isArray({}));
+        assert.equal(true, isArray(new Array(3)));
+        assert.equal(false, isArray(new function a() {}()));
+    });
+    it('isObject', function () {
+        assert.equal(false, isObject('2323_sdsd'));
+        assert.equal(false, isObject(1));
+        assert.equal(true, isObject([]));
+        assert.equal(true, isObject({}));
+        assert.equal(true, isObject(new Array(3)));
+        assert.equal(true, isObject(new function a() {}()));
+    });
+    it('isHexString', function () {
+        assert.equal(false, isHexString('2323_sdsd'));
+        assert.equal(false, isHexString(1));
+        assert.equal(false, isHexString('1', 1));
+        assert.equal(false, isHexString([]));
+        assert.equal(false, isHexString(JSON.stringify({ name: 'alice' })));
+        assert.equal(true, isHexString('f0fde0110193147e7961e61eeb22576c535b3442fd6bd9c457775e0cc69f1951'));
+        assert.equal(true, isHexString('f0fde0110193147e7961e61eeb22576c535b3442fd6bd9c457775e0cc69f1951', 32));
+        assert.equal(false, isHexString('0f0fde0110193147e7961e61eeb22576c535b3442fd6bd9c457775e0cc69f1951', 32));
+        assert.equal(true, isHexString('3132333435363738393054455354'));
+        assert.equal(true, isHexString(''));
+    });
+    it('isBase64String', function () {
+        assert.equal(false, isBase64String('2323_sdsd'));
+        assert.equal(false, isBase64String(1));
+        assert.equal(false, isBase64String([]));
+        assert.equal(true, isBase64String('f0fde0110193147e7961e61eeb22576c535b3442fd6bd9c457775e0cc69f1951'));
+        assert.equal(false, isBase64String('f0fde0110193147e71e61eeb22576c535b3442fd6bd9c457775e0cc69f1951'));
+        assert.equal(true, isBase64String('pinFMQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB'));
     // assert.equal(false, isBase64String('00000500fffffffffeffffffffff005dfb62cb000001'));
+    });
 });
 
 describe('ed25519', function () {
