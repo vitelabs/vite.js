@@ -1,6 +1,6 @@
 {
     "name": "@vite/vitejs-accountblock",
-    "version": "2.3.19-alpha.7",
+    "version": "2.3.19-alpha.8",
     "main": "dist/index.node.js",
     "browser": "dist/index.web.js",
     "repository": {
