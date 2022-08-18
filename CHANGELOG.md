@@ -1,3 +1,17 @@
+## [2.3.19-alpha.8](https://github.com/vitelabs/vite.js/compare/v2.3.19-alpha.7...v2.3.19-alpha.8) (2022-08-18)
+
+
+### chore
+
+* 2.3.19-alpha.7 changelog ([634d926](https://github.com/vitelabs/vite.js/commit/634d926114173737ce760bacc48fde9c2b7495f2))
+
+### refactor
+
+* fix types and add more test ([7b36a6c](https://github.com/vitelabs/vite.js/commit/7b36a6cce6f4f8e4ae4f1dfbbdfd4a47a93f4103))
+* new abi ([7e99408](https://github.com/vitelabs/vite.js/commit/7e99408c6d74f5e66daf7266f7f953a2cae2a9cd)), closes [#77](https://github.com/vitelabs/vite.js/issues/77)
+
+
+
 ## [2.3.19-alpha.7](https://github.com/vitelabs/vite.js/compare/v2.3.19-alpha.6...v2.3.19-alpha.7) (2022-07-30)
 
 
