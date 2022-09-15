@@ -16,33 +16,24 @@ class IpcRpc extends IPC_WS {
         this.type = 'ipc';
         this.timeout = timeout;
         this.delimiter = options.delimiter;
-
-        // Try to reconnect.
-        let times = 0;
         this.socket = net.connect({ path });
 
+        // register listeners
         this.socket.on('connect', () => {
-            times = 0;
             this._connected();
         });
         this.socket.on('close', () => {
             this._closed();
-            if (times > options.retryTimes) {
-                return;
-            }
-            setTimeout(() => {
-                times++;
-                this.reconnect();
-            }, options.retryInterval);
         });
-        this.socket.on('error', () => {
-            this._errored();
+        this.socket.on('error', err => {
+            this._errored(err);
         });
-        this.socket.on('end', err => {
-            this._connectEnd && this._connectEnd(err);
+        this.socket.on('end', msg => {
+            this._connectEnd && this._connectEnd(msg);
         });
-        this.socket.on('timeout', err => {
-            this._connectTimeout && this._connectTimeout(err);
+        this.socket.on('timeout', () => {
+            this._connectTimeout && this._connectTimeout();
+            this.socket.end();
         });
 
         let ipcBuffer = '';
@@ -67,6 +58,20 @@ class IpcRpc extends IPC_WS {
 
     disconnect() {
         this.socket && this.socket.destroy && this.socket.destroy();
+    }
+
+    setTimeout(ms) {
+        this.socket && this.socket.setTimeout(ms);
+    }
+
+    destroy() {
+        this.remove('error');
+        this.remove('close');
+        this.remove('connect');
+        this.remove('end');
+        this.remove('timeout');
+        this.disconnect();
+        this.socket = null;
     }
 }
 

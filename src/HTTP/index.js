@@ -3,7 +3,7 @@ const XMLHttpRequest = typeof window !== 'undefined' && window.XMLHttpRequest
     ? window.XMLHttpRequest : require('xhr2');
 
 class HttpRpc extends Communication {
-    constructor(host = 'http://localhost:8415', timeout = 60000, options = { headers: [] }) {
+    constructor(host = 'http://localhost:23456', timeout = 60000, options = { headers: [] }) {
         super();
 
         this.type = 'http';
@@ -73,7 +73,7 @@ class HttpRpc extends Communication {
                         return rej(result);
                     }
                 } catch (e) {
-                    return rej(this.ERRORS.INVAILID_RESPONSE(result));
+                    return rej(this.ERRORS.INVALID_RESPONSE(result));
                 }
 
                 return res(result);
@@ -98,7 +98,7 @@ class HttpRpc extends Communication {
 
         return this._send(requestObj).then(res => {
             if (!res) {
-                throw this.ERRORS.INVAILID_RESPONSE(res);
+                throw this.ERRORS.INVALID_RESPONSE(res);
             }
 
             return {

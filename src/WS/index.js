@@ -2,7 +2,7 @@ import IPC_WS from '~@vite/vitejs-communication/ipc_ws';
 const Websocket = require('websocket').w3cwebsocket;
 
 class WsRpc extends IPC_WS {
-    constructor(path = 'ws://localhost:31420', timeout = 60000, options = {
+    constructor(path = 'ws://localhost:23457', timeout = 60000, options = {
         protocol: '',
         headers: '',
         clientConfig: {
@@ -19,7 +19,7 @@ class WsRpc extends IPC_WS {
         if (!path) {
             throw this.ERRORS.CONNECT(path);
         }
-
+        // request timeout
         this.timeout = timeout;
         this.protocol = options.protocol;
         this.headers = options.headers;
@@ -34,6 +34,8 @@ class WsRpc extends IPC_WS {
         if (this._destroyed) return;
         this.socket && (this.socket.onclose = () => {}); // reset before disconnect to avoid unnecessary reconnect
         this.disconnect();
+
+        // create new websocket connection and register listeners
         this.socket = new Websocket(this.path, this.protocol, null, this.headers, null, this.clientConfig);
         this.socket.onopen = () => {
             (this.socket.readyState === this.socket.OPEN) && this._connected();
@@ -56,10 +58,10 @@ class WsRpc extends IPC_WS {
     }
 
     destroy() {
-        this.disconnect();
         this.remove('error');
         this.remove('close');
         this.remove('connect');
+        this.disconnect();
         this._destroyed = true;
     }
 }

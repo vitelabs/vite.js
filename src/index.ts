@@ -6,6 +6,7 @@ import * as _constant from './constant/index';
 import * as _account from './accountBlock/account';
 import * as _accountBlock from './accountBlock/index';
 import * as _communication from './communication/index';
+import * as _provider from './viteAPI/provider';
 import _viteAPI from './viteAPI/index';
 import _wallet from './wallet/index';
 import _httpRpc from './HTTP/index';
@@ -25,6 +26,7 @@ export const communication = _communication;
 // Change a lot
 export const accountBlock = _accountBlock;
 export const account = _account;
+export const provider = _provider;
 
 // Add
 export const ViteAPI = _viteAPI;

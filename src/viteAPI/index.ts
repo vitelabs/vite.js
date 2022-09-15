@@ -12,9 +12,7 @@ import {
 
 import { Address, AccountBlockType, Transaction, Hex, Base64, BigInt } from './type';
 
-import Provider from './provider';
-import ConnectHandler from './connectHandler';
-
+import Provider, { ConnectHandler, ReconnectHandler, AlwaysReconnect, RenewSubscription } from './provider';
 
 class ViteAPIClass extends Provider {
     private customTransactionType: { [key: string]: ContractInfo };
@@ -202,5 +200,6 @@ class ViteAPIClass extends Provider {
     }
 }
 
+export { ConnectHandler, ReconnectHandler, AlwaysReconnect, RenewSubscription };
 export const ViteAPI = ViteAPIClass;
 export default ViteAPI;

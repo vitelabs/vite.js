@@ -9,6 +9,7 @@ import * as _constant from '~@vite/vitejs-constant';
 import * as _account from '~@vite/vitejs-accountblock/account';
 import * as _accountBlock from '~@vite/vitejs-accountblock';
 import * as _communication from '~@vite/vitejs-communication';
+import * as _provider from '~@vite/vitejs-viteapi/provider';
 import _viteAPI from '~@vite/vitejs-viteapi';
 import _wallet from '~@vite/vitejs-wallet';
 import _httpRpc from '~@vite/vitejs-http';
@@ -28,6 +29,7 @@ export const communication = _communication;
 // Change a lot
 export const accountBlock = _accountBlock;
 export const account = _account;
+export const provider = _provider;
 
 // Add
 export const ViteAPI = _viteAPI;
@@ -35,4 +37,3 @@ export const wallet = _wallet;
 export const HTTP_RPC = _httpRpc;
 export const IPC_RPC = _ipcRpc;
 export const WS_RPC = _wsRpc;
-
