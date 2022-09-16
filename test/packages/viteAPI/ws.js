@@ -9,7 +9,7 @@ import Provider, {
 import WS_RPC from '../../../src/WS';
 import HTTP_RPC from '../../../src/HTTP';
 import IPC_RPC from '../../../src/IPC';
-import {sleep, tx, waitUntil} from '../../RPC/utils';
+import {sleep, tx, viteProvider, waitUntil} from '../../RPC/utils';
 import {Vite_TokenId} from '../../../src/constant/index';
 
 const abi = require('../../../src/abi/index');
@@ -268,7 +268,7 @@ describe('test provider and connect handlers', () => {
         }, new NoReconnectHandler());
         tx.setProvider(_provider);
 
-        const event = await newOnroadBlocksByAddr(config.address, _provider);
+        const event = await newAccountBlockByAddress(config.address, _provider);
         event.on(result => {
             console.log(result);
             assert.fail(); // we should not receive event
@@ -327,6 +327,8 @@ describe('test provider and connect handlers', () => {
 
     after(() => {
         wsServer.destroy();
+        // reset provider
+        tx.setProvider(viteProvider);
     });
 });
 

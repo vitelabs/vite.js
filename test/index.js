@@ -14,10 +14,14 @@ describe('ViteAPI Test: src/viteAPI', function () {
     require('./packages/viteAPI/ws');
 });
 
-require('./packages/accountBlock/account');
+describe('AccountBlock Test', function () {
+    require('./packages/accountBlock/account');
+});
 
 // viteAPI
 // http
 // ipc
 // ws
-require('./RPC/index.js');
+describe('RPC Test', function () {
+    require('./RPC/index.js');
+});
