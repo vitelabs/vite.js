@@ -1,3 +1,21 @@
+## [2.3.19](https://github.com/vitelabs/vite.js/compare/v2.3.19-alpha.8...v2.3.19) (2022-09-17)
+
+
+### chore
+
+* 2.3.19-alpha.8 changelog ([03d3b6d](https://github.com/vitelabs/vite.js/commit/03d3b6d6ea52983e6b16a64cb14c0889747fbe4b))
+
+### refactor
+
+* connect handler and provider ([e3dcc6e](https://github.com/vitelabs/vite.js/commit/e3dcc6e56aafbd57980ba7a0a4f04267e092305d))
+
+### test
+
+* fix ([2481799](https://github.com/vitelabs/vite.js/commit/24817998e06bd79d9a4de6a52db603bc50507c49))
+* use buidl ([1b69488](https://github.com/vitelabs/vite.js/commit/1b69488c857f0f1066415803b55fbb7ed7cc74a4))
+
+
+
 ## [2.3.19-alpha.8](https://github.com/vitelabs/vite.js/compare/v2.3.19-alpha.7...v2.3.19-alpha.8) (2022-08-18)
 
 
