@@ -2,18 +2,23 @@ import { Contracts } from '~@vite/vitejs-constant';
 import { checkParams, isArray, blake2bHex } from '~@vite/vitejs-utils';
 import { isValidAddress, AddressType, getOriginalAddressFromAddress } from '~@vite/vitejs-wallet/address';
 import { decodeParameters, encodeFunctionCall, getAbiByType, getAbiByName } from '~@vite/vitejs-abi';
-import { Default_Contract_TransactionType, encodeContractList, getTransactionType, decodeContractAccountBlock } from '~@vite/vitejs-accountblock/utils';
+import {
+    Default_Contract_TransactionType,
+    encodeContractList,
+    getTransactionType,
+    decodeContractAccountBlock,
+    ContractInfo
+} from '~@vite/vitejs-accountblock/utils';
 
 import { Address, AccountBlockType, Transaction, Hex, Base64, BigInt } from './type';
 
-import Provider from './provider';
-
+import Provider, { ConnectHandler, ReconnectHandler, AlwaysReconnect, RenewSubscription } from './provider';
 
 class ViteAPIClass extends Provider {
-    private customTransactionType: Object;
+    private customTransactionType: { [key: string]: ContractInfo };
 
-    constructor(provider: any, onInitCallback: Function) {
-        super(provider, onInitCallback);
+    constructor(provider: any, onInitCallback: Function, onConnectCallback?: ConnectHandler) {
+        super(provider, onInitCallback, onConnectCallback);
 
         // { [funcSign + contractAddress]: { contractAddress, abi, transactionType } }
         this.customTransactionType = {};
@@ -24,13 +29,10 @@ class ViteAPIClass extends Provider {
     }
 
     // contractList = { 'transactionTypeName': { contractAddress, abi } }
-    addTransactionType(contractList: Object = {}) {
+    addTransactionType(contractList: { [name: string]: ContractInfo } = {}) {
         for (const transactionType in contractList) {
             if (Contracts[transactionType]) {
                 throw new Error(`Please rename it. Your transactionType ${ transactionType } conflicts with default transactionType.`);
-            }
-            if (this.customTransactionType && this.customTransactionType[transactionType]) {
-                throw new Error(`Please rename it. Your transactionType ${ transactionType } conflicts with custom transactionType.`);
             }
         }
 
@@ -198,5 +200,6 @@ class ViteAPIClass extends Provider {
     }
 }
 
+export { ConnectHandler, ReconnectHandler, AlwaysReconnect, RenewSubscription };
 export const ViteAPI = ViteAPIClass;
 export default ViteAPI;

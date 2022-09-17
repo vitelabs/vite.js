@@ -30,3 +30,16 @@ export function sleep(ms) {
         setTimeout(res, ms);
     });
 }
+
+export function waitUntil(condition) {
+    return new Promise((res) => {
+        let interval = setInterval(() => {
+            if (!condition()) {
+                return;
+            }
+
+            clearInterval(interval);
+            res();
+        }, 1000);
+    });
+}

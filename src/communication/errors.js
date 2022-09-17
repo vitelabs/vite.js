@@ -11,7 +11,7 @@ export default {
     TIMEOUT(timeout) {
         return new Error(`CONNECTION TIMEOUT: timeout of ${ timeout } ms achived`);
     },
-    INVAILID_RESPONSE(res) {
+    INVALID_RESPONSE(res) {
         return new Error(`Invalid JSON RPC response: ${ JSON.stringify(res) }`);
     },
     IPC_ON(type) {

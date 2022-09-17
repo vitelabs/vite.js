@@ -29,6 +29,9 @@ export default async function start() {
         console.log('success', result);
         if(!result.accountBlockList) {
             ReceiveTask.stop();
+            if (viteProvider.subscribe) {
+                viteProvider._provider.destroy();
+            }
         }
     });
     ReceiveTask.onError((error) => {
@@ -42,7 +45,7 @@ export default async function start() {
 
 async function SendTxToMyself(previousAccountBlock) {
     const accountBlock = await tx.send({
-        toAddress: address, 
+        toAddress: address,
         tokenId: Vite_TokenId,
         amount: '10000000000000000000'
     });

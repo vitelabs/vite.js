@@ -3,16 +3,13 @@ const webpack = require('webpack');
 
 const baseDir = path.join(__dirname, './src');
 const target = process.env.build_target;
-const Buffer_Path = path.join(__dirname, './node_modules/buffer/index.js');
 
 const plugins = [
     new webpack.DefinePlugin({ 'processSilence': process.env.NODE_ENV && process.env.NODE_ENV.indexOf('test') === 0 ? 0 : 1 }),
     new webpack.IgnorePlugin({ resourceRegExp: /^\.\/wordlists\/(?!english)/, contextRegExp: /bip39\/src/ })
 ];
 if (target === 'web') {
-    plugins.push(new webpack.NormalModuleReplacementPlugin(/\/buffer\//, function (resource) {
-        resource.request = Buffer_Path;
-    }));
+    plugins.push(new webpack.ProvidePlugin({ process: 'process/browser', Buffer: [ 'buffer', 'Buffer' ] }));
 }
 
 module.exports = {
@@ -30,9 +27,9 @@ module.exports = {
         wallet: path.join(baseDir, '/wallet/index.ts'),
         utils: path.join(baseDir, '/utils/index.ts'),
         vitejs: path.join(baseDir, '/vitejs/index.ts'),
-        WS: path.join(baseDir, 'WS/index.js'),
-        HTTP: path.join(baseDir, 'HTTP/index.js'),
-        IPC: path.join(baseDir, 'IPC/index.js')
+        WS: path.join(baseDir, '/WS/index.js'),
+        HTTP: path.join(baseDir, '/HTTP/index.js'),
+        IPC: path.join(baseDir, '/IPC/index.js')
     },
     output: {
         globalObject: 'this',
@@ -81,12 +78,17 @@ module.exports = {
             '~@vite/vitejs-viteapi': path.join(__dirname, '/src/viteAPI/'),
             '~@vite/vitejs-wallet': path.join(__dirname, '/src/wallet/'),
             '~@vite/vitejs-accountblock': path.join(__dirname, '/src/accountBlock/'),
+            '~@vite/vitejs-ipc': path.join(__dirname, '/src/IPC/'),
+            '~@vite/vitejs-http': path.join(__dirname, '/src/HTTP/'),
+            '~@vite/vitejs-ws': path.join(__dirname, '/src/WS/'),
             '~@vite/vitejs': path.join(__dirname, '/src/vitejs/')
         },
         fallback: {
-            'vm': false,
-            'stream': false,
-            'crypto': require.resolve('crypto-browserify')
+            vm: require.resolve('vm-browserify'),
+            stream: require.resolve('stream-browserify'),
+            crypto: require.resolve('crypto-browserify'),
+            buffer: require.resolve('buffer/'),
+            process: require.resolve('process/browser')
         },
         extensions: [ '.js', '.json', '.ts' ]
     }

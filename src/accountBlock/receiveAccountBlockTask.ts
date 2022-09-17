@@ -4,7 +4,7 @@ import { checkParams, isHexString } from '~@vite/vitejs-utils';
 import Account from './account';
 
 import { Address, Hex, ProviderType, AccountBlockBlock } from './type';
-
+const sleep = (ms:number) => setTimeout(() => Promise.resolve(), ms);
 export class ReceiveAccountBlockTask {
     address: Address;
 
@@ -57,19 +57,22 @@ export class ReceiveAccountBlockTask {
 
     start({
         checkTime = 3000,
-        transactionNumber = 5
+        transactionNumber = 5,
+        gapTime = 1000
     }: {
         checkTime: number;
         transactionNumber: number;
+        gapTime:number;
     } = {
         checkTime: 3000,
-        transactionNumber: 5
+        transactionNumber: 5,
+        gapTime: 1000
     }) {
         this.stop();
 
         const toReceive = () => {
             this._timer = setTimeout(async () => {
-                await this.receive(transactionNumber);
+                await this.receive(transactionNumber, gapTime);
                 if (!this._timer) {
                     return;
                 }
@@ -92,7 +95,7 @@ export class ReceiveAccountBlockTask {
         this.successCB = successCB;
     }
 
-    private async receive(pageSize: number) {
+    private async receive(pageSize: number, gapTime:number) {
         let unreceivedBlocks = null;
         try {
             unreceivedBlocks = await this.getUnreceivedBlocks(pageSize);
@@ -137,6 +140,7 @@ export class ReceiveAccountBlockTask {
                 });
                 return;
             }
+            await sleep(gapTime);
         }
 
         this.emitSuccess({

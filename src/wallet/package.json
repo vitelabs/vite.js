@@ -1,6 +1,6 @@
 {
     "name": "@vite/vitejs-wallet",
-    "version": "2.3.18",
+    "version": "2.3.19",
     "main": "dist/index.node.js",
     "browser": "dist/index.web.js",
     "repository": {
@@ -29,7 +29,6 @@
         "jsonrpc-lite": "^2.2.0",
         "net": "^1.0.2",
         "pure-uuid": "^1.6.2",
-        "qs": "^6.10.3",
         "scryptsy": "^2.1.0",
         "websocket": "^1.0.34",
         "xhr2": "^0.2.1"

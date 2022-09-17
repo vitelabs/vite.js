@@ -1,11 +1,10 @@
-const bn = require('bn.js');
-import { stringify } from 'qs';
-const blake = require('blakejs/blake2b');
-
-import { paramsMissing, paramsFormat } from '~@vite/vitejs-error';
+import { paramsFormat, paramsMissing } from '~@vite/vitejs-error';
 
 import * as _e from './ed25519';
 import { Hex, TokenId } from './type';
+
+const bn = require('bn.js');
+const blake = require('blakejs/blake2b');
 
 declare const enum Charset {
     'utf16' = 'utf16',
@@ -15,7 +14,7 @@ declare const enum Charset {
 export const ed25519 = _e;
 
 export function uriStringify(o: {
-    schema: string; prefix: string; target_address: string; chain_id: number; function_name: string; params: Object;
+    schema?: string; prefix?: string; target_address?: string; chain_id?: number; function_name?: string; params?: Object;
 }) {
     const { schema, prefix, target_address, chain_id, function_name, params } = o;
     const _schema = schema ? `${ schema }:` : 'vite:';
@@ -26,7 +25,7 @@ export function uriStringify(o: {
     if (params && (params as any).data) {
         (params as any).data = (params as any).data.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');// base64 urlsafe
     }
-    const _params = params ? `?${ stringify(params, { encode: false }) }` : '';
+    const _params = params ? `?${ toQueryString(params) }` : '';
     const str = `${ _schema }${ _prefix }${ _target_address }${ _chain_id }${ _function_name }${ _params }`;
     return str;
 }
@@ -174,8 +173,21 @@ export function isSafeInteger(num): -1 | 0 | 1 {
     return 1;
 }
 
-export function isHexString(str: string): boolean {
-    return /^[0-9a-fA-F]+$/.test(str);
+/**
+ * Determine if the input is a hex string. The 2nd argument is to check if a hex string meets the specified length in bytes,
+ * if not the function will return false.
+ * @param str
+ * @param length in bytes
+ */
+export function isHexString(str: string, length?: number): boolean {
+    // return /^[0-9a-fA-F]+$/.test(str);
+    if (typeof (str) !== 'string' || !str.match(/^[0-9A-Fa-f]*$/)) {
+        return false;
+    }
+    if (length && str.length !== 2 * length) {
+        return false;
+    }
+    return true;
 }
 
 export function isBase64String(str): boolean {
@@ -196,4 +208,9 @@ export const _bn = bn;
 
 function getTokenIdCheckSum(originalTokenId: Hex): Hex {
     return blake.blake2bHex(Buffer.from(originalTokenId, 'hex'), null, 2);
+}
+
+// https://howchoo.com/javascript/how-to-turn-an-object-into-query-string-parameters-in-javascript
+function toQueryString(params: object) {
+    return Object.keys(params).map(key => `${ key }=${ params[key] }`).join('&');
 }

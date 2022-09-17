@@ -278,5 +278,17 @@ export const Contracts = {
     DexCancelStakeById: {
         contractAddress: DexFund_ContractAddress,
         abi: { 'type': 'function', 'name': 'CancelStakeById', 'inputs': [{ 'name': 'id', 'type': 'bytes32' }] }
+    },
+    DexTransfer: {
+        contractAddress: DexFund_ContractAddress,
+        abi: {'type': 'function', 'name': 'Transfer', 'inputs': [ {'name': 'target', 'type': 'address'}, {'name': 'token', 'type': 'tokenId'}, {'name': 'amount', 'type': 'uint256'} ]}
+    },
+    DexAgentDeposit: {
+        contractAddress: DexFund_ContractAddress,
+        abi: {'type': 'function', 'name': 'AgentDeposit', 'inputs': [{'name': 'beneficiary', 'type': 'address'}]}
+    },
+    DexAssignedWithdraw: {
+        contractAddress: DexFund_ContractAddress,
+        abi: {'type': 'function', 'name': 'AssignedWithdraw', 'inputs': [ {'name': 'target', 'type': 'address'}, {'name': 'token', 'type': 'tokenId'}, {'name': 'amount', 'type': 'uint256'}, {'name': 'label', 'type': 'bytes'} ]}
     }
 };

@@ -1,282 +1,309 @@
-import { isArray } from '~@vite/vitejs-utils';
-import { formatType } from '../inputsType';
+import * as BigNumber from 'bn.js';
+import { arrayify, hexlify } from '../utils';
 
-import { encode as commonEncode, decode as commonDecode } from './common';
-import { encode as dynamicEncode, decode as dynamicDecode } from './dynamic';
-
-const encode = {
-    address: commonEncode,
-    gid: commonEncode,
-    tokenId: commonEncode,
-    number: commonEncode,
-    bool: commonEncode,
-    string: dynamicEncode,
-    bytes: dynamicEncode
-};
-
-const decode = {
-    address: commonDecode,
-    gid: commonDecode,
-    tokenId: commonDecode,
-    number: commonDecode,
-    bool: commonDecode,
-    string: dynamicDecode,
-    bytes: dynamicDecode
-};
-
-export function encodeParameter(typeStr, params) {
-    const typeObj = formatType(typeStr);
-    if (!typeObj.isArr && [ 'string', 'boolean', 'number' ].indexOf(typeof params) === -1) {
-        throw new Error(`[Error] Illegal type or params. type: ${ typeObj.type }, params: ${ params }`);
-    }
-
-    if (typeObj.isArr && !isArray(params)) {
-        try {
-            params = JSON.parse(params);
-            if (!isArray(params)) {
-                throw new Error(`[Error] Illegal type or params. type: ${ typeObj.typeStr }, params: ${ params }`);
-            }
-        } catch (err) {
-            throw new Error(`[Error] Illegal type or params. type: ${ typeObj.typeStr }, params: ${ params }`);
-        }
-    }
-
-    if (!typeObj.isArr) {
-        return encode[typeObj.type](typeObj, params);
-    }
-
-    return encodeArrs(typeObj, params);
+export interface Result extends ReadonlyArray<any> {
+    readonly [key: string]: any;
 }
 
-export function encodeParameters(types, params) {
-    if (typeof params === 'string') {
-        params = JSON.parse(params);
+export { BigNumber };
+
+export abstract class Coder {
+    // The coder name:
+    //   - address, uint256, tuple, array, etc.
+    readonly name: string;
+
+    // The fully expanded type, including composite types:
+    //   - address, uint256, tuple(address,bytes), uint256[3][4][],  etc.
+    readonly type: string;
+
+    // The localName bound in the signature, in this example it is "baz":
+    //   - tuple(address foo, uint bar) baz
+    readonly localName: string;
+
+    // Whether this type is dynamic:
+    //  - Dynamic: bytes, string, address[], tuple(boolean[]), etc.
+    //  - Static: address, uint256, boolean[3], tuple(address, uint8)
+    readonly dynamic: boolean;
+
+    protected constructor(name: string, type: string, localName: string, dynamic: boolean) {
+        this.name = name;
+        this.type = type;
+        this.localName = localName;
+        this.dynamic = dynamic;
     }
 
-    if (!isArray(types)) {
-        throw new Error('[Error] Illegal inputs. Inputs should be array.');
-    }
+    pack(writer: Writer, coders: ReadonlyArray<Coder>, values: Array<any> | { [ name: string ]: any }): number {
+        let arrayValues: Array<any> = null;
 
-    // console.log(types);
-    if (!types.length) {
-        return '';
-    }
+        if (Array.isArray(values)) {
+            arrayValues = values;
+        } else if (values && typeof (values) === 'object') {
+            const unique: { [ name: string ]: boolean } = { };
 
-    if (!isArray(params) || types.length !== params.length) {
-        throw new Error('[Error] Illegal params. Params should be array and the length should be equal to inputs.length');
-    }
+            arrayValues = coders.map(coder => {
+                const name = coder.localName;
+                if (!name) {
+                    throw new Error(`cannot encode object for signature with missing names: ${ coder.type }`);
+                }
 
-    const tempResult = [];
-    const dynamicRes = [];
-    let totalLength = 0;
+                if (unique[name]) {
+                    throw new Error(`cannot encode object for signature with duplicate names: ${ name }`);
+                }
 
-    types.forEach((type, i) => {
-        const _res = encodeParameter(type, params[i]);
+                unique[name] = true;
 
-        if (!_res.typeObj.isDynamic) {
-            totalLength += _res.result.length;
-            tempResult.push(_res.result);
-            return;
-        }
-
-        let result = _res.result;
-        if (_res.typeObj.type === 'bytes' && !_res.typeObj.isArr) {
-            result = result.slice(64);
-        }
-
-        totalLength += 64;
-        tempResult.push(false);
-        dynamicRes.push(result);
-    });
-
-    let result = '';
-    let dynamicResult = '';
-    tempResult.forEach(_r => {
-        if (_r) {
-            result += _r;
-            return;
-        }
-
-        const index = (totalLength + dynamicResult.length) / 2;
-        result += encode.number({ type: 'number', typeStr: 'uint', byteLength: 32, isArr: false }, index).result;
-        dynamicResult += dynamicRes.shift();
-    });
-
-    return result + dynamicResult;
-}
-
-export function decodeParameter(typeStr, params) {
-    const typeObj = formatType(typeStr);
-    if (!typeObj.isArr) {
-        return decode[typeObj.type](typeObj, params).result;
-    }
-    return decodeArrs(typeObj, params);
-}
-
-export function decodeParameters(types, params) {
-    // console.log('startDecode', types, params);
-
-    if (!isArray(types)) {
-        throw new Error('[Error] Illegal types. Should be array.');
-    }
-
-    if (!params) {
-        return null;
-    }
-
-    let _params = params;
-    const resArr = [];
-    const indexArr = [];
-
-    types.forEach(type => {
-        const typeObj = formatType(type);
-        // console.log(typeObj);
-        if (!typeObj.isDynamic && typeObj.isArr) {
-            let len = 0;
-            typeObj.arrLen.forEach(_l => {
-                len += _l * typeObj.byteLength;
+                return values[name];
             });
-            const _p = _params.slice(0, len * 2);
-            _params = _params.slice(len * 2);
-            resArr.push({
-                isDynamic: false,
-                result: decodeArrs(typeObj, _p)
-            });
-            return;
-        }
-
-        if (!typeObj.isDynamic) {
-            const _res = decode[typeObj.type](typeObj, _params);
-            _params = _res.params;
-            resArr.push({
-                isDynamic: false,
-                result: _res.result
-            });
-            return;
-        }
-
-        const _res = decode.number({ type: 'number', typeStr: 'uint', byteLength: 32, isArr: false }, _params);
-        const index = _res.result;
-        _params = _res.params;
-        indexArr.push(index * 2);
-        resArr.push({
-            isDynamic: true,
-            typeObj,
-            index: index * 2
-        });
-    });
-
-    const result = [];
-    let currentInx = 0;
-    resArr.forEach((_res, i) => {
-        if (!_res.isDynamic) {
-            result.push(_res.result);
-            return;
-        }
-
-        let _p;
-        if ((currentInx + 1) === indexArr.length) {
-            _p = params.slice(_res.index);
         } else {
-            _p = params.slice(_res.index, indexArr[currentInx + 1]);
+            throw new Error(`invalid tuple value: ${ values }`);
         }
 
-        if (_res.typeObj.type === 'bytes' && !_res.typeObj.isArr) {
-            const len = 32 * Math.ceil(_p.length / 2 / 32);
-            _p = encode.number({ type: 'number', typeStr: 'uint', byteLength: 32 }, len).result + _p;
+        if (coders.length !== arrayValues.length) {
+            throw new Error(`types/value length mismatch: ${ values }`);
         }
-        currentInx++;
 
-        result.push(decodeParameter(types[i], _p));
-    });
+        const staticWriter = new Writer(writer.wordSize);
+        const dynamicWriter = new Writer(writer.wordSize);
 
-    return result;
-}
+        const updateFuncs: Array<(baseOffset: number) => void> = [];
+        coders.forEach((coder, index) => {
+            const value = arrayValues[index];
 
+            if (coder.dynamic) {
+                // Get current dynamic offset (for the future pointer)
+                const dynamicOffset = dynamicWriter.length;
 
-function encodeArr(typeObj, arrLen, params) {
-    if (!params || (arrLen && params.length !== Number(arrLen))) {
-        throw new Error(`[Error] Params.length !== arr.length. Params: ${ JSON.stringify(params) }. ${ JSON.stringify(typeObj) }`);
-    }
+                // Encode the dynamic value into the dynamicWriter, including subarray
+                coder.encode(dynamicWriter, value);
 
-    let result = '';
-    params.forEach(_param => {
-        const res = encode[typeObj.type](typeObj, _param);
-        result += res.result;
-    });
-
-    const bytesArrLen = arrLen ? ''
-        : encode.number({ type: 'number', typeStr: 'uint', byteLength: 32, isArr: false }, params.length).result;
-
-    return bytesArrLen + result;
-}
-
-function encodeArrs(typeObj, params) {
-    let result = '';
-    const lenArr = typeObj.arrLen;
-
-    const loop = (params, i = 0) => {
-        if (i === lenArr.length - 1) {
-            result += encodeArr(typeObj, lenArr[lenArr.length - i - 1], params);
-            return;
-        }
-        i++;
-        isArray(params) && params.forEach(_p => {
-            loop(_p, i);
+                // Prepare to populate the correct offset once we are done
+                const updateFunc = staticWriter.writeUpdatableValue();
+                updateFuncs.push((baseOffset: number) => {
+                    updateFunc(baseOffset + dynamicOffset);
+                });
+            } else {
+                coder.encode(staticWriter, value);
+            }
         });
-    };
 
-    loop(params);
-    return { typeObj, result };
-}
+        // Backfill all the dynamic offsets, now that we know the static length
+        updateFuncs.forEach(func => {
+            func(staticWriter.length);
+        });
 
-function decodeArr(typeObj, arrLen, params) {
-    let _param = params;
-    if (typeObj.isDynamic) {
-        const len = params.substring(0, 64);
-        arrLen = decode.number({ type: 'number', typeStr: 'uint', byteLength: 32, isArr: false }, len).result;
-        _param = params.substring(64);
+        let length = writer.appendWriter(staticWriter);
+        length += writer.appendWriter(dynamicWriter);
+        return length;
     }
 
-    const result = [];
-    for (let i = 0; i < arrLen; i++) {
-        const res = decode[typeObj.type](typeObj, _param);
-        result.push(res.result);
-        _param = res.params;
+    unpack(reader: Reader, coders: Array<Coder>): Result {
+        let values: any = [];
+
+        // A reader anchored to this base
+        const baseReader = reader.subReader(0);
+
+        coders.forEach(coder => {
+            let value: any = null;
+
+            if (coder.dynamic) {
+                const offset = reader.readValue();
+                const offsetReader = baseReader.subReader(offset.toNumber());
+                value = coder.decode(offsetReader);
+            } else {
+                value = coder.decode(reader);
+            }
+
+            if (value !== undefined) {
+                values.push(value);
+            }
+        });
+
+        // We only output named properties for uniquely named coders
+        const uniqueNames = coders.reduce((accum, coder) => {
+            const name = coder.localName;
+            if (name) {
+                if (!accum[name]) {
+                    accum[name] = 0;
+                }
+                accum[name]++;
+            }
+            return accum;
+        }, { });
+
+        // Add any named parameters (i.e. tuples)
+        const tuple = { };
+        coders.forEach((coder: Coder, index: number) => {
+            let name = coder.localName;
+            if (!name || uniqueNames[name] !== 1) {
+                return;
+            }
+
+            if (name === 'length') {
+                name = '_length';
+            }
+
+            if (values[name] != null) {
+                return;
+            }
+
+            if (this.name === 'tuple' && this.localName !== '_') {
+                tuple[name] = values[index];
+            } else { // TODO: enable to add name index to decode result
+                values[name] = values[index];
+            }
+        });
+        if (this.name === 'tuple' && this.localName !== '_' && Object.keys(tuple).length === values.length) {
+            values = tuple;
+        }
+
+        return Object.freeze(values);
     }
 
-    return { result, params: _param };
+    abstract encode(writer: Writer, value: any): number;
+    abstract decode(reader: Reader): any;
+
+    abstract defaultValue(): any;
 }
 
-function decodeArrs(typeObj, params) {
-    const lenArr = typeObj.arrLen;
+export class Writer {
+    readonly wordSize: number;
 
-    const loop = (i = 0, result?) => {
-        if ((lenArr.length <= 1 && i === lenArr.length)
-            || (lenArr.length > 1 && i === lenArr.length - 1)) {
-            return result;
+    _data: Buffer[];
+    _dataLength: number;
+    _padding: Buffer;
+
+    constructor(wordSize?: number) {
+        this.wordSize = wordSize || 32;
+        this._data = [ ];
+        this._dataLength = 0;
+        this._padding = Buffer.alloc(this.wordSize);
+    }
+
+    get data(): string {
+        let result = '';
+        this._data.forEach(item => {
+            result += hexlify(item);
+        });
+        return result;
+    }
+
+    get length(): number {
+        return this._dataLength;
+    }
+
+    _writeData(data: Buffer): number {
+        this._data.push(data);
+        this._dataLength += data.length;
+        return data.length;
+    }
+
+    appendWriter(writer: Writer): number {
+        // let result = '';
+        // this._data.forEach(item => {
+        //     result += Buffer.concat(item);
+        // });
+        return this._writeData(Buffer.concat(writer._data));
+    }
+
+    // Arrayish items; padded on the right to wordSize
+    writeBytes(value: Buffer | string): number {
+        if (typeof (value) === 'string') {
+            value = Buffer.from(value, 'utf8');
         }
-
-        const l = lenArr[i];
-        let _r = [];
-
-        if (result) {
-            let resultOpt = result && result.length;
-            while (resultOpt) {
-                _r.push(result.splice(0, l));
-                resultOpt = result && result.length;
-            }
-        } else {
-            while (params) {
-                const _res = decodeArr(typeObj, l, params);
-                params = _res.params;
-                _r.push(_res.result);
-            }
-            _r = _r.length > 1 ? _r : _r[0];
+        let bytes = arrayify(value);
+        const paddingOffset = bytes.length % this.wordSize;
+        if (paddingOffset) {
+            bytes = Buffer.concat([ bytes, this._padding.slice(paddingOffset) ]);
         }
+        return this._writeData(bytes);
+    }
 
-        i++;
-        return loop(i, _r);
-    };
-    return loop();
+    _getValue(value: number | bigint | string | BigNumber): Buffer {
+        if (value instanceof BigNumber) {
+            value = value.toString(16);
+        }
+        let bytes = arrayify(value);
+        if (bytes.length > this.wordSize) {
+            throw new Error(`value out-of-bounds ${ this.wordSize } ${ bytes.length }`);
+        }
+        if (bytes.length % this.wordSize) {
+            bytes = Buffer.concat([ this._padding.slice(bytes.length % this.wordSize), bytes ]);
+        }
+        return bytes;
+    }
+
+    writeValue(value: number | bigint | string | BigNumber): number {
+        return this._writeData(this._getValue(value));
+    }
+
+    writeUpdatableValue(): (value: number | bigint | string) => void {
+        const offset = this._data.length;
+        this._data.push(this._padding);
+        this._dataLength += this.wordSize;
+        return (value: number | bigint | string) => {
+            this._data[offset] = this._getValue(value);
+        };
+    }
+}
+
+export class Reader {
+    readonly wordSize: number;
+    readonly allowLoose: boolean;
+    readonly _data: Buffer;
+
+    _offset: number;
+
+    constructor(data: Buffer | string, wordSize?: number, allowLoose?: boolean) {
+        this._data = arrayify(data);
+        this.wordSize = wordSize || 32;
+        this.allowLoose = allowLoose;
+        this._offset = 0;
+    }
+
+    get data(): string {
+        return hexlify(this._data);
+    }
+
+    get consumed(): number {
+        return this._offset;
+    }
+
+    coerce(coder: Coder, value: any): any {
+        if (coder.name.match('^u?int([0-9]+)$')) {
+            // TODO: enable to return numeric types for numbers
+            // if (parseInt(match[1]) <= 48 || value.lt(new BigNumber(Number.MAX_SAFE_INTEGER))) {
+            //     value = value.toNumber();
+            // } else {
+            //     value = value.toString();
+            // }
+            value = value.toString();
+        }
+        return value;
+    }
+
+    _peekBytes(offset: number, length: number, loose?: boolean): Buffer {
+        let alignedLength = Math.ceil(length / this.wordSize) * this.wordSize;
+        if (this._offset + alignedLength > this._data.length) {
+            if (this.allowLoose && loose && this._offset + length <= this._data.length) {
+                alignedLength = length;
+            } else {
+                throw new Error(`data out-of-bounds: ${ this._offset + alignedLength }, actual: ${ this._data.length }`);
+            }
+        }
+        return this._data.slice(this._offset, this._offset + alignedLength);
+    }
+
+    subReader(offset: number): Reader {
+        return new Reader(this._data.slice(this._offset + offset), this.wordSize, this.allowLoose);
+    }
+
+    readBytes(length: number, loose?: boolean): Buffer {
+        const bytes = this._peekBytes(0, length, !!loose);
+        this._offset += bytes.length;
+        return bytes.slice(0, length);
+    }
+
+    readValue(): BigNumber {
+        return new BigNumber(this.readBytes(this.wordSize));
+    }
 }
